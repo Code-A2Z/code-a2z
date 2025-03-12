@@ -5,6 +5,7 @@ import { createContext, useEffect, useState } from "react";
 import { lookInSession } from "./common/session";
 import Editor from "./pages/Editor";
 import Home from "./pages/Home";
+import SearchPage from "./pages/Search";
 
 export const UserContext = createContext({});
 
@@ -25,6 +26,7 @@ function App() {
           <Route index element={<Home />} />
           <Route path="login" element={<UserAuthForm type="login" />} />
           <Route path="signup" element={<UserAuthForm type="signup" />} />
+          <Route path="search/:query" element={<SearchPage />} />
         </Route>
       </Routes>
     </UserContext.Provider>

@@ -104,8 +104,16 @@ export const trendingProjects = async (req, res) => {
 
 export const searchProjects = async (req, res) => {
 
-    let { tag, page } = req.body;
-    let findQuery = { tags: tag, draft: false };
+    let { tag, query, page } = req.body;
+
+    let findQuery;
+
+    if (tag) {
+        findQuery = { tags: tag, draft: false };
+    } else if (query) {
+        findQuery = { draft: false, title: new RegExp(query, 'i') };
+    }
+
     let maxLimit = 5;
 
     Project.find(findQuery)
@@ -135,8 +143,15 @@ export const allLatestProjectsCount = async (req, res) => {
 
 export const searchProjectsCount = async (req, res) => {
 
-    let { tag } = req.body;
-    let findQuery = { tags: tag, draft: false };
+    let { tag, query } = req.body;
+
+    let findQuery;
+
+    if (tag) {
+        findQuery = { tags: tag, draft: false };
+    } else if (query) {
+        findQuery = { draft: false, title: new RegExp(query, 'i') };
+    }
 
     Project.countDocuments(findQuery)
         .then(count => {
