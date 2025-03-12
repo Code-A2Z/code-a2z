@@ -8,12 +8,14 @@ import NoDataMessage from "../components/NoData";
 import LoadMoreDataBtn from "../components/LoadMoreData";
 import axios from "axios";
 import { filterPaginationData } from "../common/filter-pagination-data";
+import UserCard from "../components/UserCard";
 
 const SearchPage = () => {
 
     let { query } = useParams();
 
     let [projects, setProjects] = useState(null);
+    let [users, setUsers] = useState(null);
 
     const searchProjects = ({ page = 1, create_new_arr = false }) => {
         axios.post(import.meta.env.VITE_SERVER_DOMAIN + "/api/project/search", { tag: query, page })
@@ -34,13 +36,46 @@ const SearchPage = () => {
             })
     }
 
+    const fetchUsers = () => {
+        axios.post(import.meta.env.VITE_SERVER_DOMAIN + "/api/auth/search", { query })
+            .then(({ data: { users } }) => {
+                setUsers(users);
+            })
+            .catch(err => {
+                console.log(err);
+            })
+    }
+
     useEffect(() => {
         resetState();
         searchProjects({ page: 1, create_new_arr: true });
+        fetchUsers();
     }, [query])
 
     const resetState = () => {
         setProjects(null);
+        setUsers(null);
+    }
+
+    const UserCardWrapper = () => {
+        return (
+            <>
+                {
+                    users === null ? <Loader /> :
+                        users.length ?
+                            users.map((user, i) => {
+                                return (
+                                    <AnimationWrapper key={i} transition={{ duration: 1, delay: i * 0.08 }}>
+                                        <UserCard user={user} />
+                                    </AnimationWrapper>
+                                );
+                            })
+                            : (
+                                <NoDataMessage message="No user found" />
+                            )
+                }
+            </>
+        )
     }
 
     return (
@@ -65,7 +100,18 @@ const SearchPage = () => {
                         }
                         <LoadMoreDataBtn state={projects} fetchDataFun={searchProjects} />
                     </>
+
+                    <UserCardWrapper />
                 </InPageNavigation>
+            </div>
+
+            <div className="min-w-[40%] lg:min-w-[350px] max-w-min border-l border-gray-50 pl-8 pt-3 max-md:hidden">
+                <h1 className="font-medium text-xl mb-8">
+                    User related to search
+                    <i className="fi fi-rr-user mt-1"></i>
+                </h1>
+
+                <UserCardWrapper />
             </div>
         </section>
     );
