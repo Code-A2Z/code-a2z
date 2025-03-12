@@ -6,6 +6,9 @@ const projectSchema = Schema(
             type: String,
             required: true,
             unique: true,
+            default: function () {
+                return `PID-${Date.now().toString(36)}`;
+            }
         },
         title: {
             type: String,
@@ -67,7 +70,54 @@ const projectSchema = Schema(
         draft: {
             type: Boolean,
             default: false
-        }
+        },
+        pr: [
+            {
+                number: {
+                    type: Number,
+                    unique: true,
+                    required: true
+                },
+                status: {
+                    type: String,
+                    enum: ["pending", "approved", "merged", "rejected"],
+                    default: "pending"
+                },
+                raisedBy: {
+                    type: Schema.Types.ObjectId,
+                    ref: 'users'
+                },
+                createdAt: {
+                    type: Date,
+                    default: Date.now
+                },
+                mergedAt: {
+                    type: Date,
+                    default: null
+                },
+                reviewers: [
+                    {
+                        reviewer: {
+                            type: Schema.Types.ObjectId,
+                            ref: 'users',
+                            required: true
+                        },
+                        approved: {
+                            type: Boolean,
+                            default: false
+                        },
+                        createdAt: {
+                            type: Date,
+                            default: Date.now
+                        },
+                        updatedAt: {
+                            type: Date,
+                            default: Date.now
+                        }
+                    }
+                ]
+            }
+        ]
     },
     {
         timestamps: {
