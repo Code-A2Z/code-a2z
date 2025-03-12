@@ -70,12 +70,14 @@ export const createProject = async (req, res) => {
 
 export const getProjects = async (req, res) => {
 
+    let { page } = req.body;
     let maxLimit = 5;
 
     Project.find({ draft: false })
         .populate("author", "personal_info.profile_img personal_info.username personal_info.fullname -_id")
         .sort({ "publishedAt": -1 })
         .select("project_id title des banner tags activity publishedAt -_id")
+        .skip((page - 1) * maxLimit)
         .limit(maxLimit)
         .then(projects => {
             return res.status(200).json({ projects });
@@ -102,7 +104,7 @@ export const trendingProjects = async (req, res) => {
 
 export const searchProjects = async (req, res) => {
 
-    let { tag } = req.body;
+    let { tag, page } = req.body;
     let findQuery = { tags: tag, draft: false };
     let maxLimit = 5;
 
@@ -110,9 +112,35 @@ export const searchProjects = async (req, res) => {
         .populate("author", "personal_info.profile_img personal_info.username personal_info.fullname -_id")
         .sort({ "publishedAt": -1 })
         .select("project_id title des banner tags activity publishedAt -_id")
+        .skip((page - 1) * maxLimit)
         .limit(maxLimit)
         .then(projects => {
             return res.status(200).json({ projects });
+        })
+        .catch(err => {
+            return res.status(500).json({ error: err.message });
+        })
+}
+
+export const allLatestProjectsCount = async (req, res) => {
+
+    Project.countDocuments({ draft: false })
+        .then(count => {
+            return res.status(200).json({ totalDocs: count });
+        })
+        .catch(err => {
+            return res.status(500).json({ error: err.message });
+        })
+}
+
+export const searchProjectsCount = async (req, res) => {
+
+    let { tag } = req.body;
+    let findQuery = { tags: tag, draft: false };
+
+    Project.countDocuments(findQuery)
+        .then(count => {
+            return res.status(200).json({ totalDocs: count });
         })
         .catch(err => {
             return res.status(500).json({ error: err.message });
