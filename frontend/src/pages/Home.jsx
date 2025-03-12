@@ -6,6 +6,8 @@ import axios from "axios";
 import ProjectPostCard from "../components/ProjectPostCard";
 import MinimalProjectPost from "../components/NoBannerProjectPost";
 import NoDataMessage from "../components/NoData";
+import { filterPaginationData } from "../common/filter-pagination-data";
+import LoadMoreDataBtn from "../components/LoadMoreData";
 
 const Home = () => {
 
@@ -15,20 +17,36 @@ const Home = () => {
 
     let categories = ["web", "data science", "game development", "automation", "cloud computing", "blockchain"]
 
-    const fetchLatestProjects = () => {
-        axios.get(import.meta.env.VITE_SERVER_DOMAIN + "/api/project/get")
-            .then(({ data }) => {
-                setProjects(data.projects);
+    const fetchLatestProjects = ({ page = 1 }) => {
+        axios.post(import.meta.env.VITE_SERVER_DOMAIN + "/api/project/get", { page })
+            .then(async ({ data }) => {
+
+                let formattedData = await filterPaginationData({
+                    state: projects,
+                    data: data.projects,
+                    page,
+                    countRoute: "/api/project/all-latest-count"
+                })
+                setProjects(formattedData);
             })
             .catch(err => {
                 console.log(err);
             })
     }
 
-    const fetchProjectsByCategory = () => {
-        axios.post(import.meta.env.VITE_SERVER_DOMAIN + "/api/project/search", { tag: pageState })
-            .then(({ data }) => {
-                setProjects(data.projects);
+    const fetchProjectsByCategory = ({ page = 1 }) => {
+        axios.post(import.meta.env.VITE_SERVER_DOMAIN + "/api/project/search", { tag: pageState, page })
+            .then(async ({ data }) => {
+
+                let formattedData = await filterPaginationData({
+                    state: projects,
+                    data: data.projects,
+                    page,
+                    countRoute: "/api/project/search-count",
+                    data_to_send: { tag: pageState }
+                })
+
+                setProjects(formattedData);
             })
             .catch(err => {
                 console.log(err);
@@ -60,9 +78,9 @@ const Home = () => {
         activeTabRef.current.click();
 
         if (pageState === "home") {
-            fetchLatestProjects();
+            fetchLatestProjects({ page: 1 });
         } else {
-            fetchProjectsByCategory();
+            fetchProjectsByCategory({ page: 1 });
         }
         if (!trendingProjects) {
             fetchTrendingProjects();
@@ -80,8 +98,8 @@ const Home = () => {
                                 projects === null ? (
                                     <Loader />
                                 ) : (
-                                    projects.length ?
-                                        projects.map((project, i) => {
+                                    projects && projects.results.length ?
+                                        projects.results.map((project, i) => {
                                             return (
                                                 <AnimationWrapper key={i} transition={{ duration: 1, delay: i * .1 }}>
                                                     <ProjectPostCard content={project} author={project.author.personal_info} />
@@ -91,6 +109,7 @@ const Home = () => {
                                         : <NoDataMessage message="No projects published" />
                                 )
                             }
+                            <LoadMoreDataBtn state={projects} fetchDataFun={(pageState === "home" ? fetchLatestProjects : fetchProjectsByCategory)} />
                         </>
                         {
                             trendingProjects === null ? (
