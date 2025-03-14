@@ -2,9 +2,8 @@ name: Auto Close Inactive PRs
 
 on:
   schedule:
-    # Runs at 00:00 UTC every day
-    - cron: '0 0 * * *'
-  workflow_dispatch: # Allow manual triggering
+    - cron: '0 0 */2 * *'
+  workflow_dispatch:
 
 jobs:
   auto-close:
@@ -59,25 +58,20 @@ jobs:
                   pull_number: pr.number,
                   state: 'closed'
                 });
-                
+
                 // Trigger webhook cleanup for the database
                 try {
-                  // You can use an HTTP client like axios or fetch to call your webhook cleanup endpoint
-                  // This is commented out because it would require installing additional packages
-                  // Instead we will rely on the daily cron job on your server
-                  
-                  // Example if you were to implement it:
-                  // const axios = require('axios');
-                  // await axios.post('https://your-website.com/api/webhook/cleanup-drafts', {
-                  //   prNumber: pr.number,
-                  //   secret: process.env.WEBHOOK_SECRET
-                  // });
-                  
+                  const axios = require('axios');
+                  await axios.post('https://blog-script-1-1cc6.onrender.com/api/webhook/cleanup-drafts', {
+                    prNumber: pr.number,
+                    secret: process.env.WEBHOOK_SECRET
+                  });
+
                   closed++;
                 } catch (error) {
                   console.error(`Error triggering cleanup webhook for PR #${pr.number}:`, error);
                 }
               }
             }
-            
+
             console.log(`Closed ${closed} inactive PRs`);
