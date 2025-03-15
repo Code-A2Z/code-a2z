@@ -6,6 +6,7 @@ import Loader from "../components/Loader";
 import { getDay } from "../common/date";
 import ProjectInteraction from "../components/ProjectInteraction";
 import ProjectPostCard from "../components/ProjectPostCard";
+import ProjectContent from "../components/ProjectContent";
 
 export const projectStructure = {
     title: '',
@@ -86,6 +87,18 @@ const ProjectPage = () => {
                             </div>
 
                             <ProjectInteraction />
+
+                            <div className="my-12 font-gelasio project-page-content">
+                                {
+                                    content[0].blocks.map((block, i) => {
+                                        return (
+                                            <div key={i} className="my-4 md:my-8">
+                                                <ProjectContent block={block} />
+                                            </div>
+                                        )
+                                    })
+                                }
+                            </div>
 
                             <ProjectInteraction />
 
