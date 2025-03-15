@@ -112,7 +112,7 @@ export const searchProjects = async (req, res) => {
         findQuery = { tags: tag, draft: false };
     } else if (query) {
         findQuery = { draft: false, title: new RegExp(query, 'i') };
-    } else if(author) {
+    } else if (author) {
         findQuery = { draft: false, author: author };
     }
 
@@ -153,13 +153,37 @@ export const searchProjectsCount = async (req, res) => {
         findQuery = { tags: tag, draft: false };
     } else if (query) {
         findQuery = { draft: false, title: new RegExp(query, 'i') };
-    } else if(author) {
+    } else if (author) {
         findQuery = { draft: false, author: author };
     }
 
     Project.countDocuments(findQuery)
         .then(count => {
             return res.status(200).json({ totalDocs: count });
+        })
+        .catch(err => {
+            return res.status(500).json({ error: err.message });
+        })
+}
+
+export const getProject = async (req, res) => {
+    let { project_id } = req.body;
+
+    let incrementVal = 1;
+
+    Project.findOneAndUpdate({ project_id }, { $inc: { "activity.total_reads": incrementVal } })
+        .populate("author", "personal_info.fullname personal_info.username personal_info.profile_img")
+        .select("title des content banner activity publishedAt project_id tags")
+        .then(project => {
+
+            User.findOneAndUpdate({ "personal_info.username": project.author.personal_info.username }, {
+                $inc: { 'account_info.total_reads': incrementVal }
+            })
+                .catch(err => {
+                    return res.status(500).json({ error: err.message });
+                })
+
+            return res.status(200).json({ project });
         })
         .catch(err => {
             return res.status(500).json({ error: err.message });
