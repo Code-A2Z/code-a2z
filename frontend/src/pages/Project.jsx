@@ -1,9 +1,10 @@
 import axios from "axios";
-import { useEffect, useState } from "react";
+import { createContext, useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import AnimationWrapper from "../common/page-animation";
 import Loader from "../components/Loader";
 import { getDay } from "../common/date";
+import ProjectInteraction from "../components/ProjectInteraction";
 
 export const projectStructure = {
     title: '',
@@ -14,6 +15,8 @@ export const projectStructure = {
     banner: '',
     publishedAt: '',
 }
+
+export const ProjectContext = createContext({});
 
 const ProjectPage = () => {
 
@@ -44,27 +47,31 @@ const ProjectPage = () => {
         <AnimationWrapper>
             {
                 loading ? <Loader /> :
-                    <div className="max-w-[900px] center py-10 max-lg:px-[5vw]">
-                        <img src={banner} alt="" className="aspect-video" />
-                        <div className="mt-12">
-                            <h2>{title}</h2>
+                    <ProjectContext.Provider value={{ project, setProject }}>
+                        <div className="max-w-[900px] center py-10 max-lg:px-[5vw]">
+                            <img src={banner} alt="" className="aspect-video" />
+                            <div className="mt-12">
+                                <h2>{title}</h2>
 
-                            <div className="flex max-sm:flex-col justify-between my-8">
-                                <div className="flex gap-5 items-start">
-                                    <img src={profile_img} alt="" className="w-12 h-12 rounded-full" />
-                                    <p className="capitalize">
-                                        {fullname}
-                                        <br />
-                                        @
-                                        <Link to={`/user/${author_username}`} className="underline">{author_username}</Link>
-                                    </p>
+                                <div className="flex max-sm:flex-col justify-between my-8">
+                                    <div className="flex gap-5 items-start">
+                                        <img src={profile_img} alt="" className="w-12 h-12 rounded-full" />
+                                        <p className="capitalize">
+                                            {fullname}
+                                            <br />
+                                            @
+                                            <Link to={`/user/${author_username}`} className="underline">{author_username}</Link>
+                                        </p>
+                                    </div>
+
+                                    <p className="text-gray-700 opacity-75 max-sm:mt-6 max-sm:ml-12 max-sm:pl-5">Published on {getDay(publishedAt)}</p>
                                 </div>
-
-                                <p className="text-gray-700 opacity-75 max-sm:mt-6 max-sm:ml-12 max-sm:pl-5">Published on {getDay(publishedAt)}</p>
                             </div>
+
+                            <ProjectInteraction />
+
                         </div>
-                        
-                    </div>
+                    </ProjectContext.Provider>
             }
         </AnimationWrapper>
     )
