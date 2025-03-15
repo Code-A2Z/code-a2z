@@ -5,12 +5,12 @@ import AnimationWrapper from "../common/page-animation";
 import Loader from "../components/Loader";
 import { getDay } from "../common/date";
 import ProjectInteraction from "../components/ProjectInteraction";
+import ProjectPostCard from "../components/ProjectPostCard";
 
 export const projectStructure = {
     title: '',
     des: '',
     content: [],
-    tags: [],
     author: { personal_info: {} },
     banner: '',
     publishedAt: '',
@@ -23,6 +23,7 @@ const ProjectPage = () => {
     let { project_id } = useParams();
 
     const [project, setProject] = useState(projectStructure);
+    const [similarProjects, setSimilarProjects] = useState(null);
     const [loading, setLoading] = useState(true);
 
     let { title, content, banner, author: { personal_info: { fullname, username: author_username, profile_img } }, publishedAt } = project;
@@ -30,6 +31,15 @@ const ProjectPage = () => {
     const fetchProject = () => {
         axios.post(import.meta.env.VITE_SERVER_DOMAIN + "/api/project/get", { project_id })
             .then(({ data: { project } }) => {
+
+                axios.post(import.meta.env.VITE_SERVER_DOMAIN + "/api/project/search", { tag: project.tags[0], limit: 6, elminate_project: project_id })
+                    .then(({ data }) => {
+                        setSimilarProjects(data.projects);
+                    })
+                    .catch(err => {
+                        console.log(err);
+                    })
+
                 setProject(project);
                 setLoading(false);
             })
@@ -40,8 +50,15 @@ const ProjectPage = () => {
     }
 
     useEffect(() => {
+        resetStates();
         fetchProject();
-    }, []);
+    }, [project_id]);
+
+    const resetStates = () => {
+        setProject(projectStructure);
+        setSimilarProjects(null);
+        setLoading(true);
+    }
 
     return (
         <AnimationWrapper>
@@ -69,6 +86,27 @@ const ProjectPage = () => {
                             </div>
 
                             <ProjectInteraction />
+
+                            <ProjectInteraction />
+
+                            {
+                                similarProjects && similarProjects.length ?
+                                    <>
+                                        <h1 className="text-2xl mt-14 mb-10 font-medium">Similar Projects</h1>
+                                        {
+                                            similarProjects.map((project, i) => {
+                                                let { author: { personal_info } } = project;
+
+                                                return (
+                                                    <AnimationWrapper key={i} transition={{ duration: 1, delay: i * 0.08 }}>
+                                                        <ProjectPostCard content={project} author={personal_info} />
+                                                    </AnimationWrapper>
+                                                )
+                                            })
+                                        }
+                                    </>
+                                    : ""
+                            }
 
                         </div>
                     </ProjectContext.Provider>

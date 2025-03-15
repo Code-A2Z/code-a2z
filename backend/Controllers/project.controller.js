@@ -104,19 +104,19 @@ export const trendingProjects = async (req, res) => {
 
 export const searchProjects = async (req, res) => {
 
-    let { tag, query, author, page } = req.body;
+    let { tag, query, author, page, limit, elminate_project } = req.body;
 
     let findQuery;
 
     if (tag) {
-        findQuery = { tags: tag, draft: false };
+        findQuery = { tags: tag, draft: false, project_id: { $ne: elminate_project } };
     } else if (query) {
         findQuery = { draft: false, title: new RegExp(query, 'i') };
     } else if (author) {
         findQuery = { draft: false, author: author };
     }
 
-    let maxLimit = 5;
+    let maxLimit = limit ? limit : 2;
 
     Project.find(findQuery)
         .populate("author", "personal_info.profile_img personal_info.username personal_info.fullname -_id")
