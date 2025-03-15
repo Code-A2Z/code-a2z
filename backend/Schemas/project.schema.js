@@ -5,10 +5,7 @@ const projectSchema = Schema(
         project_id: {
             type: String,
             required: true,
-            unique: true,
-            default: function () {
-                return `PID-${Date.now().toString(36)}`;
-            }
+            unique: true
         },
         title: {
             type: String,
