@@ -51,8 +51,7 @@ export const login = async (req, res) => {
     }
 };
 
-// Google Authorization using Firebase
-
+// Google Authorization using Firebase Admin SDK
 admin.initializeApp({
     credential: admin.credential.cert(serviceAccountKey)
 })
@@ -106,21 +105,4 @@ export const googleAuth = async (req, res) => {
     } catch (err) {
         return res.status(500).json({ "error": err.message });
     }
-}
-
-// Search for users
-
-export const searchUsers = async (req, res) => {
-
-    let { query } = req.body;
-
-    User.find({ "personal_info.username": new RegExp(query, 'i') })
-        .limit(50)
-        .select("personal_info.fullname personal_info.username personal_info.profile_img -_id")
-        .then(users => {
-            return res.status(200).json({ users });
-        })
-        .catch(err => {
-            return res.status(500).json({ error: err.message });
-        })
-}
+};
