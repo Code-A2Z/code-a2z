@@ -68,7 +68,7 @@ export const createProject = async (req, res) => {
         })
 }
 
-export const getProjects = async (req, res) => {
+export const getAllProjects = async (req, res) => {
 
     let { page } = req.body;
     let maxLimit = 5;
@@ -173,7 +173,7 @@ export const getProject = async (req, res) => {
 
     Project.findOneAndUpdate({ project_id }, { $inc: { "activity.total_reads": incrementVal } })
         .populate("author", "personal_info.fullname personal_info.username personal_info.profile_img")
-        .select("title des content banner activity publishedAt project_id tags")
+        .select("title des content banner activity publishedAt project_id tags projectUrl repository")
         .then(project => {
 
             User.findOneAndUpdate({ "personal_info.username": project.author.personal_info.username }, {
