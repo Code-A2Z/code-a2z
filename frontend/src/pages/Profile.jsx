@@ -5,6 +5,12 @@ import AnimationWrapper from '../common/page-animation';
 import Loader from '../components/Loader';
 import { UserContext } from '../App';
 import AboutUser from '../components/AboutUser';
+import { filterPaginationData } from '../common/filter-pagination-data';
+import InPageNavigation from '../components/InPageNavigation';
+import ProjectPostCard from '../components/ProjectPostCard';
+import NoDataMessage from '../components/NoData';
+import LoadMoreDataBtn from '../components/LoadMoreData';
+import PageNotFound from './404';
 
 export const profileDataStructure = {
     personal_info: {
@@ -27,6 +33,8 @@ const ProfilePage = () => {
 
     let [profile, setProfile] = useState(profileDataStructure);
     let [loading, setLoading] = useState(true);
+    let [projects, setProjects] = useState(null);
+    let [profileLoaded, setProfileLoaded] = useState("");
 
     let { personal_info: { fullname, username: profile_username, profile_img, bio }, account_info: { total_posts, total_reads }, social_links, joinedAt } = profile;
 
@@ -37,7 +45,11 @@ const ProfilePage = () => {
             username: profileId
         })
             .then(({ data: user }) => {
-                setProfile(user);
+                if(user !== null) {
+                    setProfile(user);
+                    getProjects({ user_id: user._id });
+                }
+                setProfileLoaded(profileId);
                 setLoading(false);
             })
             .catch(err => {
@@ -46,47 +58,102 @@ const ProfilePage = () => {
             })
     }
 
+    const getProjects = ({ page = 1, user_id }) => {
+        user_id = user_id == undefined ? projects.user_id : user_id;
+
+        axios.post(import.meta.env.VITE_SERVER_DOMAIN + "/api/project/search", {
+            author: user_id,
+            page
+        })
+            .then(async ({ data }) => {
+                let formattedData = await filterPaginationData({
+                    state: projects,
+                    data: data.projects,
+                    page,
+                    countRoute: "/api/project/search-count",
+                    data_to_send: { author: user_id }
+                })
+
+                formattedData.user_id = user_id;
+                setProjects(formattedData);
+            })
+    }
+
     useEffect(() => {
-        resetState();
-        fetchUserProfile();
-    }, [profileId]);
+        if (profileId !== profileLoaded) {
+            setProjects(null);
+        }
+        if (projects === null) {
+            resetState();
+            fetchUserProfile();
+        }
+    }, [profileId, projects]);
 
     const resetState = () => {
         setProfile(profileDataStructure);
         setLoading(true);
+        setProfileLoaded("");
     }
 
     return (
         <AnimationWrapper>
             {
                 loading ? <Loader /> :
-                    <section className='h-cover md:flex flex-row-reverse items-start gap-5 min-[1100px]:gap-12'>
-                        <div className='flex flex-col max-md:items-center gap-5 min-w-[250px]'>
+                    profile_username.length ?
+                        <section className='h-cover md:flex flex-row-reverse items-start gap-5 min-[1100px]:gap-12'>
+                            <div className='flex flex-col max-md:items-center gap-5 min-w-[250px] md:w-[50%] md:pl-8 md:border-l border-gray-300 md:sticky md:top[100px] md:py-10'>
 
-                            <img src={profile_img} alt="" className='w-48 h-48 bg-gray-200 rounded-full md:w-32 md:h-32' />
+                                <img src={profile_img} alt="" className='w-48 h-48 bg-gray-200 rounded-full md:w-32 md:h-32' />
 
-                            <h1 className='text-2xl font-medium'>
-                                @{profile_username}
-                            </h1>
-                            <p className='text-xl capitalize h-6'>
-                                {fullname}
-                            </p>
+                                <h1 className='text-2xl font-medium'>
+                                    @{profile_username}
+                                </h1>
+                                <p className='text-xl capitalize h-6'>
+                                    {fullname}
+                                </p>
 
-                            <p>{total_posts.toLocaleString()} Projects - {total_reads.toLocaleString()} Reads</p>
+                                <p>{total_posts.toLocaleString()} Projects - {total_reads.toLocaleString()} Reads</p>
 
-                            <div className='flex gap-4 mt-2'>
-                                {
-                                    profileId === username ?
-                                        <Link to="/settings/edit-profile" className='btn-light rounded-md'>
-                                            Edit Profile
-                                        </Link> : ""
-                                }
+                                <div className='flex gap-4 mt-2'>
+                                    {
+                                        profileId === username ?
+                                            <Link to="/settings/edit-profile" className='btn-light rounded-md'>
+                                                Edit Profile
+                                            </Link> : ""
+                                    }
+                                </div>
+
+                                <AboutUser className="max-md:hidden" bio={bio} social_links={social_links} joinedAt={joinedAt} />
+
                             </div>
 
-                            <AboutUser className="max-md:hidden" bio={bio} social_links={social_links} joinedAt={joinedAt} />
+                            <div className='max-wd-:mt-12 w-full'>
+                                <InPageNavigation routes={["Projects Published", "About"]} defaultHidden={["About"]}>
+                                    <>
+                                        {
+                                            projects === null ? (
+                                                <Loader />
+                                            ) : (
+                                                projects && projects.results.length ?
+                                                    projects.results.map((project, i) => {
+                                                        return (
+                                                            <AnimationWrapper key={i} transition={{ duration: 1, delay: i * .1 }}>
+                                                                <ProjectPostCard content={project} author={project.author.personal_info} />
+                                                            </AnimationWrapper>
+                                                        )
+                                                    })
+                                                    : <NoDataMessage message="No projects published" />
+                                            )
+                                        }
+                                        <LoadMoreDataBtn state={projects} fetchDataFun={getProjects} />
+                                    </>
 
-                        </div>
-                    </section>
+                                    <AboutUser bio={bio} social_links={social_links} joinedAt={joinedAt} />
+                                </InPageNavigation>
+
+                            </div>
+                        </section> :
+                        <PageNotFound />
             }
         </AnimationWrapper>
     )

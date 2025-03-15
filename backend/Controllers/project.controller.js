@@ -104,7 +104,7 @@ export const trendingProjects = async (req, res) => {
 
 export const searchProjects = async (req, res) => {
 
-    let { tag, query, page } = req.body;
+    let { tag, query, author, page } = req.body;
 
     let findQuery;
 
@@ -112,6 +112,8 @@ export const searchProjects = async (req, res) => {
         findQuery = { tags: tag, draft: false };
     } else if (query) {
         findQuery = { draft: false, title: new RegExp(query, 'i') };
+    } else if(author) {
+        findQuery = { draft: false, author: author };
     }
 
     let maxLimit = 5;
@@ -143,7 +145,7 @@ export const allLatestProjectsCount = async (req, res) => {
 
 export const searchProjectsCount = async (req, res) => {
 
-    let { tag, query } = req.body;
+    let { tag, author, query } = req.body;
 
     let findQuery;
 
@@ -151,6 +153,8 @@ export const searchProjectsCount = async (req, res) => {
         findQuery = { tags: tag, draft: false };
     } else if (query) {
         findQuery = { draft: false, title: new RegExp(query, 'i') };
+    } else if(author) {
+        findQuery = { draft: false, author: author };
     }
 
     Project.countDocuments(findQuery)
