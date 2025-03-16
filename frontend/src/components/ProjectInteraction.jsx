@@ -7,7 +7,7 @@ import axios from "axios";
 
 const ProjectInteraction = () => {
 
-    let { project, project: { _id, project_id, title, activity, activity: { total_likes, total_comments }, author: { personal_info: { username: author_username } } }, setProject, islikedByUser, setLikedByUser } = useContext(ProjectContext);
+    let { project, project: { _id, project_id, title, activity, activity: { total_likes, total_comments }, author: { personal_info: { username: author_username } } }, setProject, islikedByUser, setLikedByUser, commentsWrapper, setCommentsWrapper } = useContext(ProjectContext);
 
     let { userAuth: { username, access_token } } = useContext(UserContext);
 
@@ -65,7 +65,10 @@ const ProjectInteraction = () => {
                     </button>
                     <p className="text-xl text-gray-700">{total_likes}</p>
 
-                    <button className="w-10 h-10 rounded-full flex items-center justify-center bg-gray-100">
+                    <button
+                        onClick={() => setCommentsWrapper(preVal => !preVal)}
+                        className="w-10 h-10 rounded-full flex items-center justify-center bg-gray-100"
+                    >
                         <i className="fi fi-rr-comment-dots"></i>
                     </button>
                     <p className="text-xl text-gray-700">{total_comments}</p>
