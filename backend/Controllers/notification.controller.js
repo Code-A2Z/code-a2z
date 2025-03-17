@@ -146,3 +146,54 @@ export const getReplies = async (req, res) => {
             return res.status(500).json({ error: err.message });
         })
 }
+
+const deleteComments = (_id) => {
+    Comment.findOneAndDelete({ _id })
+        .then(comment => {
+            if (comment.parent) {
+                Comment.findOneAndUpdate({ _id: comment.parent }, { $pull: { children: _id } })
+                    .then(data => {
+                        console.log('Comment deleted successfully')
+                    })
+                    .catch(err => {
+                        console.log(err);
+                    })
+            }
+
+            Notification.findOneAndDelete({ comment: _id })
+                .then(notification => console.log('Notification deleted successfully'))
+                .catch(err => console.log(err));
+
+            Notification.findOneAndDelete({ reply: _id })
+                .then(notification => console.log('Notification deleted successfully'))
+                .catch(err => console.log(err));
+
+            Project.findOneAndUpdate({ _id: comment.project_id }, { $pull: { comments: _id }, $inc: { "activity.total_comments": -1 }, "activity.total_parent_comments": comment.parent ? 0 : -1 })
+                .then(project => {
+                    if (comment.children.length) {
+                        comment.children.map(replies => {
+                            deleteComments(replies);
+                        })
+                    }
+                })
+        })
+        .catch(err => {
+            console.log(err.message);
+        })
+}
+
+export const deleteComment = async (req, res) => {
+    let user_id = req.user;
+
+    let { _id } = req.body;
+
+    Comment.findOne({ _id })
+        .then(comment => {
+            if (user_id === comment.commented_by || user_id === comment.project_author) {
+                deleteComments(_id);
+                return res.status(200).json({ message: "Comment deleted successfully" });
+            } else {
+                return res.status(403).json({ error: "You are not authorized to delete this comment" });
+            }
+        })
+}
