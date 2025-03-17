@@ -8,15 +8,29 @@ import axios from "axios";
 
 const CommentCard = ({ index, leftVal, commentData }) => {
 
-    let { commented_by: { personal_info: { profile_img, fullname, username } }, commentedAt, comment, _id, children } = commentData;
+    let { commented_by: { personal_info: { profile_img, fullname, username: commented_by_username } }, commentedAt, comment, _id, children } = commentData;
 
-    let { project, project: { comments, comments: { results: commentsArr } }, setProject } = useContext(ProjectContext);
+    let { project, project: { comments, comments: { results: commentsArr }, activity, activity: { total_parent_comments }, author: { personal_info: { username: blog_author } } }, setProject, setTotalParentCommentsLoaded } = useContext(ProjectContext);
 
-    let { userAuth: { access_token } } = useContext(UserContext);
+    let { userAuth: { access_token, username } } = useContext(UserContext);
 
     const [isReplying, setReplying] = useState(false);
 
-    const removeCommentsCards = (startingPoint) => {
+    const getParentIndex = () => {
+        let startingPoint = index - 1;
+
+        try {
+            while (commentsArr[startingPoint].childrenLevel > commentData.childrenLevel) {
+                startingPoint--;
+            }
+        } catch {
+            startingPoint = undefined;
+        }
+
+        return startingPoint;
+    }
+
+    const removeCommentsCards = (startingPoint, isDelete = false) => {
         if (commentsArr[startingPoint]) {
             while (commentsArr[startingPoint].childrenLevel > commentData.childrenLevel) {
                 commentsArr.splice(startingPoint, 1);
@@ -26,7 +40,25 @@ const CommentCard = ({ index, leftVal, commentData }) => {
             }
         }
 
-        setProject({ ...project, comments: { results: commentsArr } });
+        if (isDelete) {
+            let parentIndex = getParentIndex();
+
+            if (parentIndex !== undefined) {
+                commentsArr[parentIndex].children = commentsArr[parentIndex].children.filter(child => child !== _id);
+
+                if (!commentsArr[parentIndex].children.length) {
+                    commentsArr[parentIndex].isReplyLoaded = false;
+                }
+            }
+
+            commentsArr.splice(index, 1);
+        }
+
+        if (commentData.childrenLevel === 0 && isDelete) {
+            setTotalParentCommentsLoaded(preVal => preVal - 1);
+        }
+
+        setProject({ ...project, comments: { results: commentsArr }, activity: { ...activity, total_parent_comments: total_parent_comments - (commentData.childrenLevel === 0 && isDelete ? 1 : 0) } });
     }
 
     const loadReplies = ({ skip = 0 }) => {
@@ -47,6 +79,24 @@ const CommentCard = ({ index, leftVal, commentData }) => {
         }
     }
 
+    const deleteComment = (e) => {
+        e.target.setAttribute("disabled", true);
+
+        axios.post(import.meta.env.VITE_SERVER_DOMAIN + "/api/notification/delete-comment", { _id }, {
+            headers: {
+                Authorization: `Bearer ${access_token}`
+            }
+        })
+            .then(() => {
+                e.target.removeAttribute("disabled");
+                removeCommentsCards(index + 1, true);
+            })
+            .catch(err => {
+                e.target.removeAttribute("disabled");
+                console.log(err);
+            })
+    }
+
     const hideReplies = () => {
         commentData.isReplyLoaded = false;
         removeCommentsCards(index + 1);
@@ -65,7 +115,7 @@ const CommentCard = ({ index, leftVal, commentData }) => {
                 <div className="flex gap-3 items-center mb-8">
                     <img src={profile_img} alt="" className="w-6 h-6 rounded-full" />
 
-                    <p className="line-clamp-1">{fullname} @{username}</p>
+                    <p className="line-clamp-1">{fullname} @{commented_by_username}</p>
                     <p className="min-w-fit">{getDay(commentedAt)}</p>
                 </div>
 
@@ -89,6 +139,17 @@ const CommentCard = ({ index, leftVal, commentData }) => {
                     }
 
                     <button className="underline" onClick={handleReplyClick}>Reply</button>
+
+                    {
+                        username === commented_by_username || username === blog_author ?
+                            <button
+                                onClick={deleteComment}
+                                className="p-2 px-3 rounded-md border border-gray-100 ml-auto hover:bg-red-50 hover:text-red-500 flex items-center"
+                            >
+                                <i className="fi fi-rr-trash"></i>
+                            </button>
+                            : ""
+                    }
                 </div>
 
                 {
