@@ -6,7 +6,7 @@ import { ProjectContext } from "../pages/Project";
 
 const CommentField = ({ action }) => {
 
-    let { project, project: { _id, author: { _id: project_author }, comments, activity, activity: { total_comments, total_parent_comments } }, setProject, totalParentCommentsLoaded, setTotalParentCommentsLoaded } = useContext(ProjectContext);
+    let { project, project: { _id, author: { _id: project_author }, comments, comments: { results: commentArr }, activity, activity: { total_comments, total_parent_comments } }, setProject, totalParentCommentsLoaded, setTotalParentCommentsLoaded } = useContext(ProjectContext);
 
     let { userAuth: { access_token, username, fullname, profile_img } } = useContext(UserContext);
 
@@ -36,7 +36,7 @@ const CommentField = ({ action }) => {
 
                 data.childrenLevel = 0;
 
-                newCommentArr = [data]
+                newCommentArr = [data, ...commentArr];
 
                 let parentCommentIncrementval = 1;
 

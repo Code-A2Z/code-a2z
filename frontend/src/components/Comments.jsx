@@ -2,6 +2,9 @@ import { useContext } from "react";
 import { ProjectContext } from "../pages/Project";
 import CommentField from "./CommentField";
 import axios from "axios";
+import NoDataMessage from "./NoData";
+import AnimationWrapper from "../common/page-animation";
+import CommentCard from "./CommentCard";
 
 export const fetchComments = async ({ skip = 0, project_id, setParentCommentCountFun, comment_arry = null }) => {
     let res;
@@ -18,11 +21,16 @@ export const fetchComments = async ({ skip = 0, project_id, setParentCommentCoun
                 res = { results: [...comment_arry, ...data] }
             }
         })
+        .catch(err => {
+            console.log(err);
+        })
+
+    return res;
 }
 
 const CommentsContainer = () => {
 
-    let { project: { title }, commentsWrapper, setCommentsWrapper } = useContext(ProjectContext);
+    let { project: { title, comments: { results: commentsArr } }, commentsWrapper, setCommentsWrapper } = useContext(ProjectContext);
 
     return (
         <div className={"max-sm:w-full fixed " + (commentsWrapper ? "top-0 sm:right-0" : "top-[100%] sm:right-[-100%]") + " duration-700 max-sm:right-0 sm:top-0 w-[30%] min-w-[350px] h-full z-50 bg-white shadow-2xl p-8 px-16 overflow-y-auto overflow-x-hidden"}>
@@ -42,6 +50,18 @@ const CommentsContainer = () => {
             <hr className="border-gray-100 my-8 w-[120%] -ml-10" />
 
             <CommentField action="comment" />
+
+            {
+                commentsArr && commentsArr.length ?
+                    commentsArr.map((comment, i) => {
+                        return (
+                            <AnimationWrapper key={i}>
+                                <CommentCard index={i} leftVal={comment.childrenLevel * 4} commentData={comment} />
+                            </AnimationWrapper>
+                        )
+                    }) :
+                    <NoDataMessage message="No Comments" />
+            }
         </div>
     )
 }
