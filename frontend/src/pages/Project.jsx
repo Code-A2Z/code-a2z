@@ -7,7 +7,7 @@ import { getDay } from "../common/date";
 import ProjectInteraction from "../components/ProjectInteraction";
 import ProjectPostCard from "../components/ProjectPostCard";
 import ProjectContent from "../components/ProjectContent";
-import CommentsContainer from "../components/Comments";
+import CommentsContainer, { fetchComments } from "../components/Comments";
 
 export const projectStructure = {
     title: '',
@@ -37,7 +37,11 @@ const ProjectPage = () => {
 
     const fetchProject = () => {
         axios.post(import.meta.env.VITE_SERVER_DOMAIN + "/api/project/get", { project_id })
-            .then(({ data: { project } }) => {
+            .then(async ({ data: { project } }) => {
+
+                project.comments = await fetchComments({ project_id: project._id, setParentCommentCountFun: setTotalParentCommentsLoaded });
+
+                setProject(project);
 
                 axios.post(import.meta.env.VITE_SERVER_DOMAIN + "/api/project/search", { tag: project.tags[0], limit: 6, elminate_project: project_id })
                     .then(({ data }) => {

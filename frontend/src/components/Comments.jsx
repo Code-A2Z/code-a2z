@@ -1,6 +1,24 @@
 import { useContext } from "react";
 import { ProjectContext } from "../pages/Project";
 import CommentField from "./CommentField";
+import axios from "axios";
+
+export const fetchComments = async ({ skip = 0, project_id, setParentCommentCountFun, comment_arry = null }) => {
+    let res;
+    await axios.post(import.meta.env.VITE_SERVER_DOMAIN + "/api/notification/get-comments", { project_id, skip })
+        .then(({ data }) => {
+            data.map(comment => {
+                comment.childrenLevel = 0;
+            })
+            setParentCommentCountFun(preVal => preVal + data.length);
+
+            if (comment_arry === null) {
+                res = { results: data }
+            } else {
+                res = { results: [...comment_arry, ...data] }
+            }
+        })
+}
 
 const CommentsContainer = () => {
 
