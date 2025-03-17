@@ -8,12 +8,16 @@ import CommentCard from "./CommentCard";
 
 export const fetchComments = async ({ skip = 0, project_id, setParentCommentCountFun, comment_arry = null }) => {
     let res;
+
     await axios.post(import.meta.env.VITE_SERVER_DOMAIN + "/api/notification/get-comments", { project_id, skip })
         .then(({ data }) => {
-            data.map(comment => {
-                comment.childrenLevel = 0;
-            })
-            setParentCommentCountFun(preVal => preVal + data.length);
+            if (data.length) {
+                const updatedData = data.map(comment => ({
+                    ...comment,
+                    childrenLevel: 0
+                }));
+                setParentCommentCountFun(preVal => preVal + updatedData.length);
+            }
 
             if (comment_arry === null) {
                 res = { results: data }
@@ -30,7 +34,13 @@ export const fetchComments = async ({ skip = 0, project_id, setParentCommentCoun
 
 const CommentsContainer = () => {
 
-    let { project: { title, comments: { results: commentsArr } }, commentsWrapper, setCommentsWrapper } = useContext(ProjectContext);
+    let { project, project: { _id, title, comments: { results: commentsArr }, activity: { total_parent_comments } }, commentsWrapper, setCommentsWrapper, totalParentCommentsLoaded, setTotalParentCommentsLoaded, setProject } = useContext(ProjectContext);
+
+    const loadMoreComments = async () => {
+        let newCommentsArr = await fetchComments({ skip: totalParentCommentsLoaded, project_id: _id, setParentCommentCountFun: setTotalParentCommentsLoaded, comment_arry: commentsArr || [] });
+
+        setProject({ ...project, comments: newCommentsArr });
+    }
 
     return (
         <div className={"max-sm:w-full fixed " + (commentsWrapper ? "top-0 sm:right-0" : "top-[100%] sm:right-[-100%]") + " duration-700 max-sm:right-0 sm:top-0 w-[30%] min-w-[350px] h-full z-50 bg-white shadow-2xl p-8 px-16 overflow-y-auto overflow-x-hidden"}>
@@ -61,6 +71,17 @@ const CommentsContainer = () => {
                         )
                     }) :
                     <NoDataMessage message="No Comments" />
+            }
+
+            {
+                total_parent_comments > totalParentCommentsLoaded ?
+                    <button
+                        onClick={loadMoreComments}
+                        className="text-gray-500 p-2 px-3 hover:bg-gray-50 rounded-md flex items-center gap-2"
+                    >
+                        Load More
+                    </button>
+                    : ""
             }
         </div>
     )

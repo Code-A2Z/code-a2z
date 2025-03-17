@@ -67,7 +67,7 @@ export const addComment = async (req, res) => {
     commentObj.save().then(commentFile => {
         let { comment, commentedAt, children } = commentFile;
 
-        Project.findOneAndUpdate({ _id }, { $push: { "comments": commentFile._id }, $inc: { "activity.total_comments": 1 }, "activity.total_parent_comments": 1 })
+        Project.findOneAndUpdate({ _id }, { $push: { "comments": commentFile._id }, $inc: { "activity.total_comments": 1, "activity.total_parent_comments": 1 } })
             .then(project => {
                 console.log('New comment created')
             });
