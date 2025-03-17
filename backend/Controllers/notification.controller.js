@@ -87,3 +87,21 @@ export const addComment = async (req, res) => {
         return res.status(200).json({ comment, commentedAt, _id: commentFile._id, user_id, children });
     })
 }
+
+export const getComments = async (req, res) => {
+    let { project_id, skip } = req.body;
+
+    let maxLimit = 5;
+
+    Comment.find({ project_id, isReply: false })
+        .populate("commented_by", "personal_info.username personal_info.fullname personal_info.profile_img")
+        .skip(skip)
+        .limit(maxLimit)
+        .sort({ "commentedAt": -1 })
+        .then(comment => {
+            return res.status(200).json(comment);
+        })
+        .catch(err => {
+            return res.status(500).json({ error: err.message });
+        })
+}
