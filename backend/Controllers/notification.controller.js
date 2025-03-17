@@ -1,5 +1,6 @@
 import Project from "../Models/project.model.js";
 import Notification from "../Models/notification.model.js";
+import Comment from "../Models/comment.model.js";
 
 export const likeProject = async (req, res) => {
     let user_id = req.user;
@@ -45,4 +46,44 @@ export const likeStatus = async (req, res) => {
         .catch(err => {
             return res.status(500).json({ error: err.message });
         })
+}
+
+export const addComment = async (req, res) => {
+    let user_id = req.user;
+
+    let { _id, comment, project_author } = req.body;
+
+    if (!comment.length) {
+        return res.status(403).json({ error: "Write something to leave a comment" });
+    }
+
+    let commentObj = new Comment({
+        project_id: _id,
+        project_author,
+        comment,
+        commented_by: user_id,
+    });
+
+    commentObj.save().then(commentFile => {
+        let { comment, commentedAt, children } = commentFile;
+
+        Project.findOneAndUpdate({ _id }, { $push: { "comments": commentFile._id }, $inc: { "activity.total_comments": 1 }, "activity.total_parent_comments": 1 })
+            .then(project => {
+                console.log('New comment created')
+            });
+
+        let notificationObj = new Notification({
+            type: "comment",
+            project: _id,
+            notification_for: project_author,
+            user: user_id,
+            comment: commentFile._id,
+        })
+
+        notificationObj.save().then(notification => {
+            console.log('New notification created')
+        });
+
+        return res.status(200).json({ comment, commentedAt, _id: commentFile._id, user_id, children });
+    })
 }
