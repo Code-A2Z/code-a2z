@@ -66,6 +66,7 @@ export const addComment = async (req, res) => {
 
     if (replying_to) {
         commentObj.parent = replying_to;
+        commentObj.isReply = true;
     }
 
     new Comment(commentObj).save().then(async commentFile => {
@@ -112,6 +113,34 @@ export const getComments = async (req, res) => {
         .sort({ "commentedAt": -1 })
         .then(comment => {
             return res.status(200).json(comment);
+        })
+        .catch(err => {
+            return res.status(500).json({ error: err.message });
+        })
+}
+
+export const getReplies = async (req, res) => {
+    let { _id, skip } = req.body;
+
+    let maxLimit = 5;
+
+    Comment.findOne({ _id })
+        .populate({
+            path: "children",
+            option: {
+                limit: maxLimit,
+                skip: skip,
+                sort: { "commentedAt": -1 }
+            },
+            populate: {
+                path: 'commented_by',
+                select: 'personal_info.username personal_info.fullname personal_info.profile_img'
+            },
+            select: "-project_id -updatedAt"
+        })
+        .select("children")
+        .then(doc => {
+            return res.status(200).json({ replies: doc.children });
         })
         .catch(err => {
             return res.status(500).json({ error: err.message });
