@@ -51,34 +51,46 @@ export const likeStatus = async (req, res) => {
 export const addComment = async (req, res) => {
     let user_id = req.user;
 
-    let { _id, comment, project_author } = req.body;
+    let { _id, comment, project_author, replying_to } = req.body;
 
     if (!comment.length) {
         return res.status(403).json({ error: "Write something to leave a comment" });
     }
 
-    let commentObj = new Comment({
+    let commentObj = {
         project_id: _id,
         project_author,
         comment,
         commented_by: user_id,
-    });
+    }
 
-    commentObj.save().then(commentFile => {
+    if (replying_to) {
+        commentObj.parent = replying_to;
+    }
+
+    new Comment(commentObj).save().then(async commentFile => {
         let { comment, commentedAt, children } = commentFile;
 
-        Project.findOneAndUpdate({ _id }, { $push: { "comments": commentFile._id }, $inc: { "activity.total_comments": 1, "activity.total_parent_comments": 1 } })
+        Project.findOneAndUpdate({ _id }, { $push: { "comments": commentFile._id }, $inc: { "activity.total_comments": 1, "activity.total_parent_comments": replying_to ? 0 : 1 } })
             .then(project => {
                 console.log('New comment created')
             });
 
         let notificationObj = new Notification({
-            type: "comment",
+            type: replying_to ? "reply" : "comment",
             project: _id,
             notification_for: project_author,
             user: user_id,
             comment: commentFile._id,
         })
+
+        if (replying_to) {
+            notificationObj.replied_on_comment = replying_to;
+            await Comment.findOneAndUpdate({ _id: replying_to }, { $push: { children: commentFile._id } })
+                .then(replyingToCommentDoc => {
+                    notificationObj.notification_for = replyingToCommentDoc.commented_by;
+                });
+        }
 
         notificationObj.save().then(notification => {
             console.log('New notification created')
