@@ -9,6 +9,7 @@ import SearchPage from "./pages/Search";
 import PageNotFound from "./pages/404";
 import ProfilePage from "./pages/Profile";
 import ProjectPage from "./pages/Project";
+import SideNav from "./components/SideNavBar";
 
 export const UserContext = createContext({});
 
@@ -28,6 +29,10 @@ function App() {
         <Route path="/editor/:project_id" element={<Editor />} />
         <Route path="/" element={<Navbar />}>
           <Route index element={<Home />} />
+          <Route path="settings" element={<SideNav />}>
+            <Route path="edit-profile" element={<h1>This is Edit Profile page</h1>} />
+            <Route path="change-password" element={<h1>This is Change Password page</h1>} />
+          </Route>
           <Route path="login" element={<UserAuthForm type="login" />} />
           <Route path="signup" element={<UserAuthForm type="signup" />} />
           <Route path="search/:query" element={<SearchPage />} />
