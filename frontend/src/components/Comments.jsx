@@ -11,13 +11,11 @@ export const fetchComments = async ({ skip = 0, project_id, setParentCommentCoun
 
     await axios.post(import.meta.env.VITE_SERVER_DOMAIN + "/api/notification/get-comments", { project_id, skip })
         .then(({ data }) => {
-            if (data.length) {
-                const updatedData = data.map(comment => ({
-                    ...comment,
-                    childrenLevel: 0
-                }));
-                setParentCommentCountFun(preVal => preVal + updatedData.length);
-            }
+            data.map(comment => {
+                comment.childrenLevel = 0;
+            })
+
+            setParentCommentCountFun(preVal => preVal + data.length);
 
             if (comment_arry === null) {
                 res = { results: data }
@@ -37,7 +35,7 @@ const CommentsContainer = () => {
     let { project, project: { _id, title, comments: { results: commentsArr }, activity: { total_parent_comments } }, commentsWrapper, setCommentsWrapper, totalParentCommentsLoaded, setTotalParentCommentsLoaded, setProject } = useContext(ProjectContext);
 
     const loadMoreComments = async () => {
-        let newCommentsArr = await fetchComments({ skip: totalParentCommentsLoaded, project_id: _id, setParentCommentCountFun: setTotalParentCommentsLoaded, comment_arry: commentsArr || [] });
+        let newCommentsArr = await fetchComments({ skip: totalParentCommentsLoaded, project_id: _id, setParentCommentCountFun: setTotalParentCommentsLoaded, comment_arry: commentsArr });
 
         setProject({ ...project, comments: newCommentsArr });
     }
