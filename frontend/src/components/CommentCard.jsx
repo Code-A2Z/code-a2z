@@ -20,7 +20,7 @@ const CommentCard = ({ index, leftVal, commentData }) => {
         let startingPoint = index - 1;
 
         try {
-            while (startingPoint > 0 && commentsArr[startingPoint].childrenLevel >= commentData.childrenLevel) {
+            while (commentsArr[startingPoint].childrenLevel >= commentData.childrenLevel) {
                 startingPoint--;
             }
         } catch {
