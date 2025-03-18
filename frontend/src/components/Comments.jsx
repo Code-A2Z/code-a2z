@@ -10,9 +10,11 @@ export const fetchComments = async ({ skip = 0, project_id, setParentCommentCoun
     let res;
 
     try {
+        // Only fetch parent comments (not replies)
         const { data } = await axios.post(import.meta.env.VITE_SERVER_DOMAIN + "/api/notification/get-comments", { 
             project_id, 
-            skip: skip
+            skip,
+            isReply: false // Only get parent comments
         });
 
         if (data.length) {
@@ -23,10 +25,11 @@ export const fetchComments = async ({ skip = 0, project_id, setParentCommentCoun
             }));
 
             setParentCommentCountFun(skip + updatedData.length);
-            
+
             if (comment_arry === null) {
                 res = { results: updatedData };
             } else {
+                // Only append new parent comments
                 res = { results: [...comment_arry, ...updatedData] };
             }
         } else {
@@ -41,7 +44,6 @@ export const fetchComments = async ({ skip = 0, project_id, setParentCommentCoun
 }
 
 const CommentsContainer = () => {
-
     let { project, project: { _id, title, comments: { results: commentsArr }, activity: { total_parent_comments } }, commentsWrapper, setCommentsWrapper, totalParentCommentsLoaded, setTotalParentCommentsLoaded, setProject } = useContext(ProjectContext);
 
     const loadMoreComments = async () => {
@@ -62,7 +64,6 @@ const CommentsContainer = () => {
 
     return (
         <div className={"max-sm:w-full fixed " + (commentsWrapper ? "top-0 sm:right-0" : "top-[100%] sm:right-[-100%]") + " duration-700 max-sm:right-0 sm:top-0 w-[30%] min-w-[350px] h-full z-50 bg-white shadow-2xl p-8 px-16 overflow-y-auto overflow-x-hidden"}>
-
             <div className="relative">
                 <h1 className="font-medium text-xl">Comments</h1>
                 <p className="text-lg mt-2 w-[70%] text-gray-500 line-clamp-1">{title}</p>
@@ -81,10 +82,15 @@ const CommentsContainer = () => {
 
             {
                 commentsArr && commentsArr.length ?
-                    commentsArr.map((comment, i) => {
+                    // Only display parent comments (where isReply is false)
+                    commentsArr.filter(comment => !comment.isReply).map((comment, i) => {
                         return (
-                            <AnimationWrapper key={i}>
-                                <CommentCard index={i} leftVal={comment.childrenLevel * 4} commentData={comment} />
+                            <AnimationWrapper key={comment._id}>
+                                <CommentCard 
+                                    index={i} 
+                                    leftVal={0} 
+                                    commentData={comment}
+                                />
                             </AnimationWrapper>
                         )
                     }) :
