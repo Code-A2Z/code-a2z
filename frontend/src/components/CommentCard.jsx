@@ -1,4 +1,4 @@
-import { useContext, useState } from "react";
+import { useContext, useState, useEffect } from "react";
 import { getDay } from "../common/date";
 import { UserContext } from "../App";
 import { toast } from "react-hot-toast";
@@ -14,11 +14,19 @@ const CommentCard = ({ index, leftVal, commentData }) => {
     let { userAuth: { access_token, username } } = useContext(UserContext);
 
     const [isReplying, setReplying] = useState(false);
-    const [isReplyLoaded, setIsReplyLoaded] = useState(false);
-    const [replies, setReplies] = useState([]);
+    const [isReplyLoaded, setIsReplyLoaded] = useState(commentData.isReplyLoaded || false);
+    const [replies, setReplies] = useState(commentData.replies || []);
+
+    // Update replies when commentData changes
+    useEffect(() => {
+        if (commentData.replies) {
+            setReplies(commentData.replies);
+            setIsReplyLoaded(commentData.isReplyLoaded);
+        }
+    }, [commentData.replies, commentData.isReplyLoaded]);
 
     const loadReplies = async ({ skip = 0 }) => {
-        if (children.length) {
+        if (children && children.length) {
             try {
                 const { data: { replies: newReplies } } = await axios.post(
                     import.meta.env.VITE_SERVER_DOMAIN + "/api/notification/get-replies", 
@@ -29,13 +37,47 @@ const CommentCard = ({ index, leftVal, commentData }) => {
                 const formattedReplies = newReplies.map(reply => ({
                     ...reply,
                     isReply: true,
-                    childrenLevel: commentData.childrenLevel + 1
+                    parent: _id,
+                    childrenLevel: commentData.childrenLevel + 1,
+                    children: reply.children || [],
+                    replies: [],
+                    isReplyLoaded: false
                 }));
 
                 setReplies(formattedReplies);
                 setIsReplyLoaded(true);
+
+                // Update the comment in the main array
+                const updateCommentsWithReplies = (comments) => {
+                    return comments.map(comment => {
+                        if (comment._id === _id) {
+                            return {
+                                ...comment,
+                                replies: formattedReplies,
+                                isReplyLoaded: true
+                            };
+                        } else if (comment.replies && comment.replies.length) {
+                            return {
+                                ...comment,
+                                replies: updateCommentsWithReplies(comment.replies)
+                            };
+                        }
+                        return comment;
+                    });
+                };
+
+                const updatedCommentsArr = updateCommentsWithReplies(commentsArr);
+
+                setProject(prevProject => ({
+                    ...prevProject,
+                    comments: {
+                        ...prevProject.comments,
+                        results: updatedCommentsArr
+                    }
+                }));
             } catch (err) {
                 console.log(err);
+                toast.error("Failed to load replies. Please try again.");
                 setIsReplyLoaded(false);
             }
         }
@@ -44,6 +86,35 @@ const CommentCard = ({ index, leftVal, commentData }) => {
     const hideReplies = () => {
         setReplies([]);
         setIsReplyLoaded(false);
+
+        // Update the comment in the main array
+        const updateCommentsWithHiddenReplies = (comments) => {
+            return comments.map(comment => {
+                if (comment._id === _id) {
+                    return {
+                        ...comment,
+                        replies: [],
+                        isReplyLoaded: false
+                    };
+                } else if (comment.replies && comment.replies.length) {
+                    return {
+                        ...comment,
+                        replies: updateCommentsWithHiddenReplies(comment.replies)
+                    };
+                }
+                return comment;
+            });
+        };
+
+        const updatedCommentsArr = updateCommentsWithHiddenReplies(commentsArr);
+
+        setProject(prevProject => ({
+            ...prevProject,
+            comments: {
+                ...prevProject.comments,
+                results: updatedCommentsArr
+            }
+        }));
     }
 
     const handleReplyClick = () => {
@@ -67,26 +138,69 @@ const CommentCard = ({ index, leftVal, commentData }) => {
                 }
             );
 
-            // If this is a reply, update the parent's children array
+            // If this is a reply, update the parent's children array and replies
             if (commentData.isReply && commentData.parent) {
-                const parentComment = commentsArr.find(c => c._id === commentData.parent);
-                if (parentComment) {
-                    parentComment.children = parentComment.children.filter(childId => childId !== _id);
-                }
-            }
+                const updateCommentsAfterDelete = (comments) => {
+                    return comments.map(comment => {
+                        if (comment._id === commentData.parent) {
+                            return {
+                                ...comment,
+                                children: comment.children.filter(childId => childId !== _id),
+                                replies: comment.replies ? comment.replies.filter(reply => reply._id !== _id) : []
+                            };
+                        } else if (comment.replies && comment.replies.length) {
+                            return {
+                                ...comment,
+                                replies: updateCommentsAfterDelete(comment.replies)
+                            };
+                        }
+                        return comment;
+                    });
+                };
 
-            // Remove this comment from the array if it's a parent comment
-            if (!commentData.isReply) {
-                commentsArr.splice(index, 1);
+                const updatedCommentsArr = updateCommentsAfterDelete(commentsArr);
 
                 setProject(prevProject => ({
                     ...prevProject,
                     comments: {
                         ...prevProject.comments,
-                        results: [...commentsArr]
+                        results: updatedCommentsArr
                     },
                     activity: {
                         ...prevProject.activity,
+                        total_comments: prevProject.activity.total_comments - 1
+                    }
+                }));
+            } else {
+                // Remove parent comment and all its replies
+                const updatedCommentsArr = commentsArr.filter(comment => comment._id !== _id);
+                
+                // Count total replies recursively
+                const countReplies = (comment) => {
+                    let count = 0;
+                    if (comment.children) {
+                        count += comment.children.length;
+                        comment.children.forEach(child => {
+                            const childComment = commentsArr.find(c => c._id === child);
+                            if (childComment) {
+                                count += countReplies(childComment);
+                            }
+                        });
+                    }
+                    return count;
+                };
+
+                const totalReplies = countReplies(commentData);
+                
+                setProject(prevProject => ({
+                    ...prevProject,
+                    comments: {
+                        ...prevProject.comments,
+                        results: updatedCommentsArr
+                    },
+                    activity: {
+                        ...prevProject.activity,
+                        total_comments: prevProject.activity.total_comments - (1 + totalReplies),
                         total_parent_comments: prevProject.activity.total_parent_comments - 1
                     }
                 }));
@@ -97,6 +211,7 @@ const CommentCard = ({ index, leftVal, commentData }) => {
             e.target.removeAttribute("disabled");
         } catch (err) {
             console.log(err);
+            toast.error("Failed to delete comment. Please try again.");
             e.target.removeAttribute("disabled");
         }
     }
@@ -159,7 +274,7 @@ const CommentCard = ({ index, leftVal, commentData }) => {
 
                 {/* Display replies if loaded */}
                 {isReplyLoaded && replies.length > 0 && (
-                    <div className="mt-4">
+                    <div className="mt-4 pl-4 border-l border-gray-100">
                         {replies.map((reply, i) => (
                             <CommentCard 
                                 key={reply._id}
