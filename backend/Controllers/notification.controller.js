@@ -189,7 +189,7 @@ export const deleteComment = async (req, res) => {
 
     Comment.findOne({ _id })
         .then(comment => {
-            if (user_id === comment.commented_by || user_id === comment.project_author) {
+            if (user_id == comment.commented_by || user_id == comment.project_author) {
                 deleteComments(_id);
                 return res.status(200).json({ message: "Comment deleted successfully" });
             } else {
