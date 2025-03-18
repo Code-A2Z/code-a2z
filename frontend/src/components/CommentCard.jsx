@@ -20,7 +20,7 @@ const CommentCard = ({ index, leftVal, commentData }) => {
         let startingPoint = index - 1;
 
         try {
-            while (commentsArr[startingPoint].childrenLevel > commentData.childrenLevel) {
+            while (startingPoint > 0 && commentsArr[startingPoint].childrenLevel >= commentData.childrenLevel) {
                 startingPoint--;
             }
         } catch {
@@ -61,17 +61,24 @@ const CommentCard = ({ index, leftVal, commentData }) => {
         setProject({ ...project, comments: { results: commentsArr }, activity: { ...activity, total_parent_comments: total_parent_comments - (commentData.childrenLevel === 0 && isDelete ? 1 : 0) } });
     }
 
-    const loadReplies = ({ skip = 0 }) => {
-        if (children.length) {
+    const loadReplies = ({ skip = 0, currentIndex = index }) => {
+
+        if (commentsArr[currentIndex].children.length) {
+
             hideReplies();
-            axios.post(import.meta.env.VITE_SERVER_DOMAIN + "/api/notification/get-replies", { _id, skip })
+
+            axios.post(import.meta.env.VITE_SERVER_DOMAIN + "/api/notification/get-replies", { _id: commentsArr[currentIndex]._id, skip })
                 .then(({ data: { replies } }) => {
-                    commentData.isReplyLoaded = true;
+
+                    commentsArr[currentIndex].isReplyLoaded = true;
+
                     for (let i = 0; i < replies.length; i++) {
-                        replies[i].childrenLevel = commentData.childrenLevel + 1;
-                        commentsArr.splice(index + 1 + i + skip, 0, replies[i]);
+                        replies[i].childrenLevel = commentsArr[currentIndex].childrenLevel + 1;
+                        commentsArr.splice(currentIndex + 1 + i + skip, 0, replies[i]);
                     }
+
                     setProject({ ...project, comments: { ...comments, results: commentsArr } });
+
                 })
                 .catch(err => {
                     console.log(err);
@@ -107,6 +114,32 @@ const CommentCard = ({ index, leftVal, commentData }) => {
             return toast.error("Please login to reply");
         }
         setReplying(preVal => !preVal);
+    }
+
+    const LoadMoreRepliesButton = () => {
+        let parentIndex = getParentIndex();
+
+        let btn = (
+            <button
+                onClick={() => loadReplies({ skip: index - parentIndex, currentIndex: getParentIndex() })}
+                className="text-gray-500 p-2 px-3 hover:bg-gray-50 rounded-md flex items-center gap-2">
+                Load More Replies
+            </button>
+        );
+
+        if (commentsArr[index + 1]) {
+            if (commentsArr[index + 1].childrenLevel < commentsArr[index].childrenLevel) {
+                if ((index - parentIndex) < commentsArr[parentIndex].children.length) {
+                    return btn;
+                }
+            }
+        } else {
+            if (parentIndex !== undefined) {
+                if ((index - parentIndex) < commentsArr[parentIndex].children.length) {
+                    return btn;
+                }
+            }
+        }
     }
 
     return (
@@ -160,6 +193,9 @@ const CommentCard = ({ index, leftVal, commentData }) => {
                         : ""
                 }
             </div>
+
+            <LoadMoreRepliesButton />
+
         </div>
     )
 }
