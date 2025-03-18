@@ -9,61 +9,42 @@ import CommentCard from "./CommentCard";
 export const fetchComments = async ({ skip = 0, project_id, setParentCommentCountFun, comment_arry = null }) => {
     let res;
 
-    try {
-        // Only fetch parent comments (not replies)
-        const { data } = await axios.post(import.meta.env.VITE_SERVER_DOMAIN + "/api/notification/get-comments", {
-            project_id,
-            skip,
-            isReply: false // Only get parent comments
-        });
-
-        if (data.length) {
-            const updatedData = data.map(comment => ({
-                ...comment,
-                childrenLevel: 0,
-                isReplyLoaded: false
-            }));
-
-            setParentCommentCountFun(skip + updatedData.length);
+    await axios.post(import.meta.env.VITE_SERVER_DOMAIN + "/api/notification/get-comments", { project_id, skip })
+        .then(({ data }) => {
+            if (data.length) {
+                const updatedData = data.map(comment => ({
+                    ...comment,
+                    childrenLevel: 0
+                }));
+                setParentCommentCountFun(preVal => preVal + updatedData.length);
+            }
 
             if (comment_arry === null) {
-                res = { results: updatedData };
+                res = { results: data }
             } else {
-                // Only append new parent comments
-                res = { results: [...comment_arry, ...updatedData] };
+                res = { results: [...comment_arry, ...data] }
             }
-        } else {
-            res = comment_arry === null ? { results: [] } : { results: comment_arry };
-        }
-    } catch (err) {
-        console.log(err);
-        res = comment_arry === null ? { results: [] } : { results: comment_arry };
-    }
+        })
+        .catch(err => {
+            console.log(err);
+        })
 
     return res;
 }
 
 const CommentsContainer = () => {
+
     let { project, project: { _id, title, comments: { results: commentsArr }, activity: { total_parent_comments } }, commentsWrapper, setCommentsWrapper, totalParentCommentsLoaded, setTotalParentCommentsLoaded, setProject } = useContext(ProjectContext);
 
     const loadMoreComments = async () => {
-        const newCommentsArr = await fetchComments({
-            skip: totalParentCommentsLoaded,
-            project_id: _id,
-            setParentCommentCountFun: setTotalParentCommentsLoaded,
-            comment_arry: commentsArr || []
-        });
+        let newCommentsArr = await fetchComments({ skip: totalParentCommentsLoaded, project_id: _id, setParentCommentCountFun: setTotalParentCommentsLoaded, comment_arry: commentsArr || [] });
 
-        if (newCommentsArr && newCommentsArr.results) {
-            setProject(prevProject => ({
-                ...prevProject,
-                comments: newCommentsArr
-            }));
-        }
+        setProject({ ...project, comments: newCommentsArr });
     }
 
     return (
         <div className={"max-sm:w-full fixed " + (commentsWrapper ? "top-0 sm:right-0" : "top-[100%] sm:right-[-100%]") + " duration-700 max-sm:right-0 sm:top-0 w-[30%] min-w-[350px] h-full z-50 bg-white shadow-2xl p-8 px-16 overflow-y-auto overflow-x-hidden"}>
+
             <div className="relative">
                 <h1 className="font-medium text-xl">Comments</h1>
                 <p className="text-lg mt-2 w-[70%] text-gray-500 line-clamp-1">{title}</p>
@@ -82,15 +63,10 @@ const CommentsContainer = () => {
 
             {
                 commentsArr && commentsArr.length ?
-                    // Only display parent comments (where isReply is false)
-                    commentsArr.filter(comment => !comment.isReply).map((comment, i) => {
+                    commentsArr.map((comment, i) => {
                         return (
-                            <AnimationWrapper key={comment._id}>
-                                <CommentCard
-                                    index={i}
-                                    leftVal={0}
-                                    commentData={comment}
-                                />
+                            <AnimationWrapper key={i}>
+                                <CommentCard index={i} leftVal={comment.childrenLevel * 4} commentData={comment} />
                             </AnimationWrapper>
                         )
                     }) :
