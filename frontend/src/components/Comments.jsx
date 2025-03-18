@@ -11,8 +11,8 @@ export const fetchComments = async ({ skip = 0, project_id, setParentCommentCoun
 
     try {
         // Only fetch parent comments (not replies)
-        const { data } = await axios.post(import.meta.env.VITE_SERVER_DOMAIN + "/api/notification/get-comments", { 
-            project_id, 
+        const { data } = await axios.post(import.meta.env.VITE_SERVER_DOMAIN + "/api/notification/get-comments", {
+            project_id,
             skip,
             isReply: false // Only get parent comments
         });
@@ -47,9 +47,9 @@ const CommentsContainer = () => {
     let { project, project: { _id, title, comments: { results: commentsArr }, activity: { total_parent_comments } }, commentsWrapper, setCommentsWrapper, totalParentCommentsLoaded, setTotalParentCommentsLoaded, setProject } = useContext(ProjectContext);
 
     const loadMoreComments = async () => {
-        const newCommentsArr = await fetchComments({ 
+        const newCommentsArr = await fetchComments({
             skip: totalParentCommentsLoaded,
-            project_id: _id, 
+            project_id: _id,
             setParentCommentCountFun: setTotalParentCommentsLoaded,
             comment_arry: commentsArr || []
         });
@@ -86,9 +86,9 @@ const CommentsContainer = () => {
                     commentsArr.filter(comment => !comment.isReply).map((comment, i) => {
                         return (
                             <AnimationWrapper key={comment._id}>
-                                <CommentCard 
-                                    index={i} 
-                                    leftVal={0} 
+                                <CommentCard
+                                    index={i}
+                                    leftVal={0}
                                     commentData={comment}
                                 />
                             </AnimationWrapper>

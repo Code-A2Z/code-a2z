@@ -32,12 +32,12 @@ const CommentField = ({ action, index = undefined, replyingTo = undefined, setRe
 
                 const newCommentData = {
                     ...data,
-                    commented_by: { 
-                        personal_info: { 
-                            username, 
-                            fullname, 
-                            profile_img 
-                        } 
+                    commented_by: {
+                        personal_info: {
+                            username,
+                            fullname,
+                            profile_img
+                        }
                     },
                     children: [],
                     replies: [],
@@ -51,14 +51,14 @@ const CommentField = ({ action, index = undefined, replyingTo = undefined, setRe
                     const parentCommentIndex = commentsArr.findIndex(comment => {
                         // Check in main comments array
                         if (comment._id === replyingTo) return true;
-                        
+
                         // Check in replies array recursively
                         if (comment.replies && comment.replies.length) {
                             return comment.replies.some(reply => reply._id === replyingTo);
                         }
                         return false;
                     });
-                    
+
                     if (parentCommentIndex !== -1) {
                         const updateReplies = (replies) => {
                             return replies.map(reply => {
@@ -67,14 +67,14 @@ const CommentField = ({ action, index = undefined, replyingTo = undefined, setRe
                                     newCommentData.isReply = true;
                                     newCommentData.parent = replyingTo;
                                     newCommentData.childrenLevel = reply.childrenLevel + 1;
-                                    
+
                                     if (!reply.children) reply.children = [];
                                     reply.children.push(newCommentData._id);
-                                    
+
                                     if (!reply.replies) reply.replies = [];
                                     reply.replies.push(newCommentData);
                                     reply.isReplyLoaded = true;
-                                    
+
                                     return reply;
                                 } else if (reply.replies && reply.replies.length) {
                                     // Check nested replies
@@ -88,15 +88,15 @@ const CommentField = ({ action, index = undefined, replyingTo = undefined, setRe
                         };
 
                         const parentComment = commentsArr[parentCommentIndex];
-                        
+
                         if (parentComment._id === replyingTo) {
                             // Replying to a main comment
                             newCommentData.isReply = true;
                             newCommentData.parent = replyingTo;
                             newCommentData.childrenLevel = parentComment.childrenLevel + 1;
-                            
+
                             parentComment.children.push(newCommentData._id);
-                            
+
                             if (parentComment.isReplyLoaded) {
                                 if (!parentComment.replies) {
                                     parentComment.replies = [];
@@ -107,7 +107,7 @@ const CommentField = ({ action, index = undefined, replyingTo = undefined, setRe
                             // Replying to a nested reply
                             parentComment.replies = updateReplies(parentComment.replies);
                         }
-                        
+
                         newCommentArr = [...commentsArr];
                         newCommentArr[parentCommentIndex] = parentComment;
                     } else {
@@ -122,17 +122,17 @@ const CommentField = ({ action, index = undefined, replyingTo = undefined, setRe
 
                 let parentCommentIncrementval = replyingTo ? 0 : 1;
 
-                setProject({ 
-                    ...project, 
-                    comments: { 
-                        ...comments, 
-                        results: newCommentArr 
-                    }, 
-                    activity: { 
-                        ...activity, 
-                        total_comments: total_comments + 1, 
-                        total_parent_comments: total_parent_comments + parentCommentIncrementval 
-                    } 
+                setProject({
+                    ...project,
+                    comments: {
+                        ...comments,
+                        results: newCommentArr
+                    },
+                    activity: {
+                        ...activity,
+                        total_comments: total_comments + 1,
+                        total_parent_comments: total_parent_comments + parentCommentIncrementval
+                    }
                 });
 
                 setTotalParentCommentsLoaded(preVal => preVal + parentCommentIncrementval);

@@ -29,7 +29,7 @@ const CommentCard = ({ index, leftVal, commentData }) => {
         if (children && children.length) {
             try {
                 const { data: { replies: newReplies } } = await axios.post(
-                    import.meta.env.VITE_SERVER_DOMAIN + "/api/notification/get-replies", 
+                    import.meta.env.VITE_SERVER_DOMAIN + "/api/notification/get-replies",
                     { _id, skip }
                 );
 
@@ -129,8 +129,8 @@ const CommentCard = ({ index, leftVal, commentData }) => {
 
         try {
             await axios.post(
-                import.meta.env.VITE_SERVER_DOMAIN + "/api/notification/delete-comment", 
-                { _id }, 
+                import.meta.env.VITE_SERVER_DOMAIN + "/api/notification/delete-comment",
+                { _id },
                 {
                     headers: {
                         Authorization: `Bearer ${access_token}`
@@ -174,7 +174,7 @@ const CommentCard = ({ index, leftVal, commentData }) => {
             } else {
                 // Remove parent comment and all its replies
                 const updatedCommentsArr = commentsArr.filter(comment => comment._id !== _id);
-                
+
                 // Count total replies recursively
                 const countReplies = (comment) => {
                     let count = 0;
@@ -191,7 +191,7 @@ const CommentCard = ({ index, leftVal, commentData }) => {
                 };
 
                 const totalReplies = countReplies(commentData);
-                
+
                 setProject(prevProject => ({
                     ...prevProject,
                     comments: {
@@ -218,7 +218,7 @@ const CommentCard = ({ index, leftVal, commentData }) => {
 
     return (
         <div className="w-full">
-            <div className={"my-5 p-6 rounded-md border border-gray-100"} style={{ marginLeft: `${leftVal * 20}px` }}>
+            <div className={"my-5 p-6 rounded-md border border-gray-100"} style={{ marginLeft: `${leftVal * 10}px` }}>
                 <div className="flex gap-3 items-center mb-8">
                     <img src={profile_img} alt="" className="w-6 h-6 rounded-full" />
                     <p className="line-clamp-1">
@@ -263,10 +263,10 @@ const CommentCard = ({ index, leftVal, commentData }) => {
 
                 {isReplying && (
                     <div className="mt-8">
-                        <CommentField 
-                            action="reply" 
-                            index={index} 
-                            replyingTo={_id} 
+                        <CommentField
+                            action="reply"
+                            index={index}
+                            replyingTo={_id}
                             setReplying={setReplying}
                         />
                     </div>
@@ -274,11 +274,11 @@ const CommentCard = ({ index, leftVal, commentData }) => {
 
                 {/* Display replies if loaded */}
                 {isReplyLoaded && replies.length > 0 && (
-                    <div className="mt-4 pl-4 border-l border-gray-100">
+                    <div className="mt-2">
                         {replies.map((reply, i) => (
-                            <CommentCard 
+                            <CommentCard
                                 key={reply._id}
-                                index={i} 
+                                index={i}
                                 leftVal={leftVal + 1}
                                 commentData={reply}
                             />
