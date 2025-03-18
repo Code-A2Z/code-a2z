@@ -9,25 +9,33 @@ import CommentCard from "./CommentCard";
 export const fetchComments = async ({ skip = 0, project_id, setParentCommentCountFun, comment_arry = null }) => {
     let res;
 
-    await axios.post(import.meta.env.VITE_SERVER_DOMAIN + "/api/notification/get-comments", { project_id, skip })
-        .then(({ data }) => {
-            if (data.length) {
-                const updatedData = data.map(comment => ({
-                    ...comment,
-                    childrenLevel: 0
-                }));
-                setParentCommentCountFun(preVal => preVal + updatedData.length);
-            }
+    try {
+        const { data } = await axios.post(import.meta.env.VITE_SERVER_DOMAIN + "/api/notification/get-comments", { 
+            project_id, 
+            skip: skip
+        });
 
+        if (data.length) {
+            const updatedData = data.map(comment => ({
+                ...comment,
+                childrenLevel: 0,
+                isReplyLoaded: false
+            }));
+
+            setParentCommentCountFun(skip + updatedData.length);
+            
             if (comment_arry === null) {
-                res = { results: data }
+                res = { results: updatedData };
             } else {
-                res = { results: [...comment_arry, ...data] }
+                res = { results: [...comment_arry, ...updatedData] };
             }
-        })
-        .catch(err => {
-            console.log(err);
-        })
+        } else {
+            res = comment_arry === null ? { results: [] } : { results: comment_arry };
+        }
+    } catch (err) {
+        console.log(err);
+        res = comment_arry === null ? { results: [] } : { results: comment_arry };
+    }
 
     return res;
 }
@@ -37,9 +45,19 @@ const CommentsContainer = () => {
     let { project, project: { _id, title, comments: { results: commentsArr }, activity: { total_parent_comments } }, commentsWrapper, setCommentsWrapper, totalParentCommentsLoaded, setTotalParentCommentsLoaded, setProject } = useContext(ProjectContext);
 
     const loadMoreComments = async () => {
-        let newCommentsArr = await fetchComments({ skip: totalParentCommentsLoaded, project_id: _id, setParentCommentCountFun: setTotalParentCommentsLoaded, comment_arry: commentsArr || [] });
+        const newCommentsArr = await fetchComments({ 
+            skip: totalParentCommentsLoaded,
+            project_id: _id, 
+            setParentCommentCountFun: setTotalParentCommentsLoaded,
+            comment_arry: commentsArr || []
+        });
 
-        setProject({ ...project, comments: newCommentsArr });
+        if (newCommentsArr && newCommentsArr.results) {
+            setProject(prevProject => ({
+                ...prevProject,
+                comments: newCommentsArr
+            }));
+        }
     }
 
     return (

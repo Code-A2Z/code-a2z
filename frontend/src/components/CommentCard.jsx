@@ -67,15 +67,33 @@ const CommentCard = ({ index, leftVal, commentData }) => {
             axios.post(import.meta.env.VITE_SERVER_DOMAIN + "/api/notification/get-replies", { _id, skip })
                 .then(({ data: { replies } }) => {
                     commentData.isReplyLoaded = true;
-                    for (let i = 0; i < replies.length; i++) {
-                        replies[i].childrenLevel = commentData.childrenLevel + 1;
-                        commentsArr.splice(index + 1 + i + skip, 0, replies[i]);
-                    }
-                    setProject({ ...project, comments: { ...comments, results: commentsArr } });
+
+                    // Format replies with proper nesting level and parent reference
+                    const formattedReplies = replies.map(reply => ({
+                        ...reply,
+                        childrenLevel: commentData.childrenLevel + 1,
+                        parentId: _id,
+                        isReplyLoaded: false
+                    }));
+
+                    // Insert replies right after their parent comment
+                    let insertIndex = index + 1;
+                    formattedReplies.forEach((reply, i) => {
+                        commentsArr.splice(insertIndex + i, 0, reply);
+                    });
+
+                    setProject(prevProject => ({
+                        ...prevProject,
+                        comments: {
+                            ...prevProject.comments,
+                            results: [...commentsArr]
+                        }
+                    }));
                 })
                 .catch(err => {
                     console.log(err);
-                })
+                    commentData.isReplyLoaded = false;
+                });
         }
     }
 
@@ -99,7 +117,20 @@ const CommentCard = ({ index, leftVal, commentData }) => {
 
     const hideReplies = () => {
         commentData.isReplyLoaded = false;
-        removeCommentsCards(index + 1);
+        
+        // Find and remove all nested replies for this comment
+        let i = index + 1;
+        while (i < commentsArr.length && commentsArr[i].childrenLevel > commentData.childrenLevel) {
+            commentsArr.splice(i, 1);
+        }
+
+        setProject(prevProject => ({
+            ...prevProject,
+            comments: {
+                ...prevProject.comments,
+                results: [...commentsArr]
+            }
+        }));
     }
 
     const handleReplyClick = () => {
