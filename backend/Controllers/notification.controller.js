@@ -51,7 +51,7 @@ export const likeStatus = async (req, res) => {
 export const addComment = async (req, res) => {
     let user_id = req.user;
 
-    let { _id, comment, project_author, replying_to } = req.body;
+    let { _id, comment, project_author, replying_to, notification_id } = req.body;
 
     if (!comment.length) {
         return res.status(403).json({ error: "Write something to leave a comment" });
@@ -91,6 +91,16 @@ export const addComment = async (req, res) => {
                 .then(replyingToCommentDoc => {
                     notificationObj.notification_for = replyingToCommentDoc.commented_by;
                 });
+
+            if (notification_id) {
+                Notification.findOneAndUpdate({ _id: notification_id }, { reply: commentFile._id })
+                    .then(() => {
+                        console.log('Notification updated successfully')
+                    })
+                    .catch(err => {
+                        console.log(err);
+                    })
+            }
         }
 
         notificationObj.save().then(notification => {
