@@ -174,7 +174,7 @@ const deleteComments = (_id) => {
                 .then(notification => console.log('Notification deleted successfully'))
                 .catch(err => console.log(err));
 
-            Notification.findOneAndDelete({ reply: _id })
+            Notification.findOneAndUpdate({ reply: _id }, { $unset: { reply: 1 } })
                 .then(notification => console.log('Notification deleted successfully'))
                 .catch(err => console.log(err));
 
@@ -255,6 +255,17 @@ export const getNotifications = async (req, res) => {
         .sort({ createdAt: -1 })
         .select("createdAt type seen reply")
         .then(notifications => {
+
+            Notification.updateMany(findQuery, { seen: true })
+                .skip(skipDocs)
+                .limit(maxLimit)
+                .then(() => {
+                    console.log('Notifications seen')
+                })
+                .catch(err => {
+                    console.log(err);
+                })
+
             return res.status(200).json({ notifications });
         })
         .catch(err => {

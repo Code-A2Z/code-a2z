@@ -36,7 +36,6 @@ const Notifications = () => {
                 })
 
                 setNotifications(formattedData);
-                console.log(formattedData);
             })
             .catch(err => {
                 console.log(err);

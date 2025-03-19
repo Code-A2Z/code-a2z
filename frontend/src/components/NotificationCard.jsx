@@ -3,21 +3,48 @@ import { getDay } from "../common/date";
 import { useContext, useState } from "react";
 import NotificationCommentField from "./NotificationCommentField";
 import { UserContext } from "../App";
+import axios from "axios";
 
 const NotificationCard = ({ data, index, notificationState }) => {
 
     let [isReplying, setIsReplying] = useState(false);
 
-    let { type, reply, createdAt, comment, replied_on_comment, user, user: { personal_info: { fullname, username, profile_img } }, project: { _id, project_id, title }, _id: notification_id } = data;
+    let { seen, type, reply, createdAt, comment, replied_on_comment, user, user: { personal_info: { fullname, username, profile_img } }, project: { _id, project_id, title }, _id: notification_id } = data;
 
     let { userAuth: { username: author_username, profile_img: author_profile_img, access_token } } = useContext(UserContext);
+
+    let { notifications, notifications: { results, totalDocs }, setNotifications } = notificationState;
 
     const handleReplyClick = () => {
         setIsReplying(preVal => !preVal);
     }
 
+    const handleDelete = (comment_id, type, target) => {
+
+        target.setAttribute("disabled", true);
+
+        axios.post(import.meta.env.VITE_SERVER_DOMAIN + "/api/notification/delete-comment", { _id: comment_id }, {
+            headers: {
+                Authorization: `Bearer ${access_token}`
+            }
+        })
+            .then(() => {
+                if (type === "comment") {
+                    results.splice(index, 1);
+                } else {
+                    delete results[index].reply;
+                }
+
+                target.removeAttribute("disabled");
+                setNotifications({ ...notifications, results, totalDocs: totalDocs - 1, deleteDocCount: notifications.deleteDocCount + 1 });
+            })
+            .catch(err => {
+                console.log(err);
+            })
+    }
+
     return (
-        <div className="p-6 border-b border-gray-100 border-l-black">
+        <div className={"p-6 border-b border-gray-100 border-l-black " + (!seen ? "border-l-2" : "")}>
             <div className="flex gap-5 mb-3">
                 <img src={profile_img} alt="" className="w-14 h-14 flex-none rounded-full" />
                 <div className="w-full">
@@ -58,7 +85,7 @@ const NotificationCard = ({ data, index, notificationState }) => {
                     type !== 'like' ?
                         <>
                             {
-                                reply ?
+                                !reply ?
                                     <button
                                         className="underline hover:text-black"
                                         onClick={handleReplyClick}
@@ -70,6 +97,7 @@ const NotificationCard = ({ data, index, notificationState }) => {
 
                             <button
                                 className="underline hover:text-black"
+                                onClick={(e) => handleDelete(comment._id, "comment", e.target)}
                             >
                                 Delete
                             </button>
@@ -104,6 +132,14 @@ const NotificationCard = ({ data, index, notificationState }) => {
                         </div>
 
                         <p className="ml-14 font-gelasio text-xl my-2">{reply.comment}</p>
+
+                        <button
+                            className="underline hover:text-black ml-14 mt-2"
+                            onClick={(e) => handleDelete(reply._id, "reply", e.target)}
+                        >
+                            Delete
+                        </button>
+
                     </div>
                     : ""
             }
