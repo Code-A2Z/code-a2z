@@ -10,7 +10,7 @@ import LoadMoreDataBtn from "../components/LoadMoreData";
 
 const Notifications = () => {
 
-    let { userAuth: { access_token } } = useContext(UserContext);
+    let { userAuth, userAuth: { access_token, new_notification_available }, setUserAuth } = useContext(UserContext);
 
     const [filter, setFilter] = useState("all");
     const [notifications, setNotifications] = useState(null);
@@ -25,6 +25,10 @@ const Notifications = () => {
             }
         })
             .then(async ({ data: { notifications: data } }) => {
+
+                if (new_notification_available) {
+                    setUserAuth({ ...userAuth, new_notification_available: false });
+                }
 
                 let formattedData = await filterPaginationData({
                     state: notifications,
