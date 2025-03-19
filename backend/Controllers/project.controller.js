@@ -204,3 +204,29 @@ export const getProject = async (req, res) => {
             return res.status(500).json({ error: err.message });
         })
 }
+
+export const userWrittenProjects = async (req, res) => {
+
+    let user_id = req.user;
+
+    let { page, draft, query, deletedDocCount } = req.body;
+
+    let maxLimit = 5;
+    let skipDocs = (page - 1) * maxLimit;
+
+    if (deletedDocCount) {
+        skipDocs -= deletedDocCount;
+    }
+
+    Project.find({ author: user_id, draft, title: new RegExp(query, 'i') })
+        .skip(skipDocs)
+        .limit(maxLimit)
+        .sort({ publishedAt: -1 })
+        .select("title banner publishedAt project_id activity des draft -_id")
+        .then(projects => {
+            return res.status(200).json({ projects });
+        })
+        .catch(err => {
+            return res.status(500).json({ error: err.message });
+        })
+}
