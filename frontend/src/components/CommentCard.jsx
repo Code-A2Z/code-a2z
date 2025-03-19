@@ -10,7 +10,7 @@ const CommentCard = ({ index, leftVal, commentData }) => {
 
     let { commented_by: { personal_info: { profile_img, fullname, username: commented_by_username } }, commentedAt, comment, _id, children } = commentData;
 
-    let { project, project: { comments, comments: { results: commentsArr }, activity, activity: { total_parent_comments }, author: { personal_info: { username: blog_author } } }, setProject, setTotalParentCommentsLoaded } = useContext(ProjectContext);
+    let { project, project: { comments, comments: { results: commentsArr }, activity, activity: { total_parent_comments }, author: { personal_info: { username: project_author } } }, setProject, setTotalParentCommentsLoaded } = useContext(ProjectContext);
 
     let { userAuth: { access_token, username } } = useContext(UserContext);
 
@@ -174,7 +174,7 @@ const CommentCard = ({ index, leftVal, commentData }) => {
                     <button className="underline" onClick={handleReplyClick}>Reply</button>
 
                     {
-                        username === commented_by_username || username === blog_author ?
+                        username === commented_by_username || username === project_author ?
                             <button
                                 onClick={deleteComment}
                                 className="p-2 px-3 rounded-md border border-gray-100 ml-auto hover:bg-red-50 hover:text-red-500 flex items-center"
