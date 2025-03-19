@@ -12,6 +12,7 @@ import ProjectPage from "./pages/Project";
 import SideNav from "./components/SideNavBar";
 import ChangePassword from "./pages/ChangePassword";
 import EditProfile from "./pages/EditProfile";
+import Notifications from "./pages/Notifications";
 
 export const UserContext = createContext({});
 
@@ -31,6 +32,9 @@ function App() {
         <Route path="/editor/:project_id" element={<Editor />} />
         <Route path="/" element={<Navbar />}>
           <Route index element={<Home />} />
+          <Route path="dashboard" element={<SideNav />}>
+            <Route path="notifications" element={<Notifications />} />
+          </Route>
           <Route path="settings" element={<SideNav />}>
             <Route path="edit-profile" element={<EditProfile />} />
             <Route path="change-password" element={<ChangePassword />} />
