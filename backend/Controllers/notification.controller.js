@@ -214,3 +214,40 @@ export const newNotification = async (req, res) => {
             return res.status(500).json({ error: err.message });
         })
 }
+
+export const getNotifications = async (req, res) => {
+    let user_id = req.user;
+
+    let { page, filter, deletedDocCount } = req.body;
+
+    let maxLimit = 10;
+
+    let findQuery = { notification_for: user_id, user: { $ne: user_id } };
+
+    let skipDocs = (page - 1) * maxLimit;
+
+    if (filter !== 'all') {
+        findQuery.type = filter;
+    }
+
+    if (deletedDocCount) {
+        skipDocs -= deletedDocCount;
+    }
+
+    Notification.find(findQuery)
+        .skip(skipDocs)
+        .limit(maxLimit)
+        .populate("project", "title project_id")
+        .populate("user", "personal_info.username personal_info.fullname personal_info.profile_img")
+        .populate("comment", "comment")
+        .populate("replied_on_comment", "comment")
+        .populate("reply", "comment")
+        .sort({ createdAt: -1 })
+        .select("createdAt type seen reply")
+        .then(notifications => {
+            return res.status(200).json({ notifications });
+        })
+        .catch(err => {
+            return res.status(500).json({ error: err.message });
+        })
+}
