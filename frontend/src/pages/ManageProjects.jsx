@@ -8,6 +8,7 @@ import Loader from "../components/Loader";
 import NoDataMessage from "../components/NoData";
 import AnimationWrapper from "../common/page-animation";
 import { ManagePublishedProjectCard, ManageDraftProjectPost } from "../components/ManageProjectCard";
+import LoadMoreDataBtn from "../components/LoadMoreData";
 
 const ManageProjects = () => {
 
@@ -98,8 +99,7 @@ const ManageProjects = () => {
             </div>
 
             <InPageNavigation routes={["Published Projects", "Drafts"]}>
-                {
-                    // Published Projects
+                { // Published Projects
                     projects === null ? <Loader /> :
                         projects.results.length ?
                             <>
@@ -112,12 +112,18 @@ const ManageProjects = () => {
                                         )
                                     })
                                 }
+
+                                <LoadMoreDataBtn
+                                    state={projects}
+                                    fetchDataFun={getProjects}
+                                    additionalParam={{ draft: false, deletedDocCount: projects.deletedDocCount }}
+                                />
+
                             </> :
                             <NoDataMessage message="No Published Projects" />
                 }
 
-                {
-                    // Published Projects
+                { // Draft Projects
                     drafts === null ? <Loader /> :
                         drafts.results.length ?
                             <>
@@ -130,6 +136,13 @@ const ManageProjects = () => {
                                         )
                                     })
                                 }
+
+                                <LoadMoreDataBtn
+                                    state={drafts}
+                                    fetchDataFun={getProjects}
+                                    additionalParam={{ draft: true, deletedDocCount: drafts.deletedDocCount }}
+                                />
+
                             </> :
                             <NoDataMessage message="No Draft Projects" />
                 }
