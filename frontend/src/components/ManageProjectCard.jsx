@@ -1,6 +1,8 @@
 import { Link } from "react-router-dom";
 import { getDay } from "../common/date";
-import { useState } from "react";
+import { useContext, useState } from "react";
+import { UserContext } from "../App";
+import axios from "axios";
 
 const ProjectStats = ({ stats }) => {
 
@@ -27,9 +29,48 @@ const ProjectStats = ({ stats }) => {
     )
 }
 
+const deleteProject = (project, access_token, target) => {
+
+    let { index, project_id, setStateFunc } = project;
+
+    target.setAttribute("disabled", true);
+
+    axios.post(import.meta.env.VITE_SERVER_DOMAIN + "/api/project/delete", { project_id }, {
+        headers: {
+            Authorization: `Bearer ${access_token}`
+        }
+    })
+        .then(({ data }) => {
+
+            target.removeAttribute("disabled");
+
+            setStateFunc(preVal => {
+                let { deletedDocCount, totalDocs, results } = preVal;
+
+                results.splice(index, 1);
+
+                if (!deletedDocCount) {
+                    deletedDocCount = 0;
+                }
+
+                if (!results.length && totalDocs - 1 > 0) {
+                    return null;
+                }
+
+                return { ...preVal, totalDocs: totalDocs - 1, deletedDocCount: deletedDocCount + 1 };
+            })
+        })
+        .catch(err => {
+            target.removeAttribute("disabled");
+            console.log(err);
+        })
+}
+
 export const ManagePublishedProjectCard = ({ project }) => {
 
     let { banner, project_id, title, publishedAt, activity } = project;
+
+    let { userAuth: { access_token } } = useContext(UserContext);
 
     let [showStat, setShowStat] = useState(false);
 
@@ -55,7 +96,13 @@ export const ManagePublishedProjectCard = ({ project }) => {
                             Stats
                         </button>
 
-                        <button className="pr-4 py-2 underline text-red-500">Delete</button>
+                        <button
+                            className="pr-4 py-2 underline text-red-500"
+                            onClick={(e) => deleteProject(project, access_token, e.target)}
+                        >
+                            Delete
+                        </button>
+
                     </div>
                 </div>
 
@@ -75,9 +122,14 @@ export const ManagePublishedProjectCard = ({ project }) => {
     )
 }
 
-export const ManageDraftProjectPost = ({ project, index }) => {
+export const ManageDraftProjectPost = ({ project }) => {
 
-    let {title, des, project_id} = project;
+    let { title, des, project_id, index } = project;
+
+    let { userAuth: { access_token } } = useContext(UserContext);
+
+    index++;
+
     return (
         <div className="flex gap-5 lg:gap-10 pb-6 border-b mb-6 border-gray-100">
             <h1 className="project-index text-center ph-4 md:pl-6 flex-none">
@@ -91,7 +143,12 @@ export const ManageDraftProjectPost = ({ project, index }) => {
                 <div className="flex gap-6 mt-3">
                     <Link to={`/editor/${project_id}`} className="pr-4 py-2 underline">Edit</Link>
 
-                    <button className="pr-4 py-2 underline text-red-500">Delete</button>
+                    <button
+                        className="pr-4 py-2 underline text-red-500"
+                        onClick={(e) => deleteProject(project, access_token, e.target)}
+                    >
+                        Delete
+                    </button>
                 </div>
             </div>
         </div>

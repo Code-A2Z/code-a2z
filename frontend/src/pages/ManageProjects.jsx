@@ -17,10 +17,10 @@ const ManageProjects = () => {
 
     let { userAuth: { access_token } } = useContext(UserContext);
 
-    const getProjects = ({ page, draft, deleteDocCount = 0 }) => {
+    const getProjects = ({ page, draft, deletedDocCount = 0 }) => {
 
         axios.post(import.meta.env.VITE_SERVER_DOMAIN + "/api/project/user-written", {
-            page, draft, query, deleteDocCount
+            page, draft, query, deletedDocCount
         }, {
             headers: {
                 Authorization: `Bearer ${access_token}`
@@ -107,7 +107,7 @@ const ManageProjects = () => {
                                     projects.results.map((project, i) => {
                                         return (
                                             <AnimationWrapper key={i} transition={{ delay: i * 0.04 }}>
-                                                <ManagePublishedProjectCard project={project} />
+                                                <ManagePublishedProjectCard project={{ ...project, index: i, setStateFunc: setProjects }} />
                                             </AnimationWrapper>
                                         )
                                     })
@@ -125,7 +125,7 @@ const ManageProjects = () => {
                                     drafts.results.map((project, i) => {
                                         return (
                                             <AnimationWrapper key={i} transition={{ delay: i * 0.04 }}>
-                                                <ManageDraftProjectPost project={project} index={i+1} />
+                                                <ManageDraftProjectPost project={{ ...project, index: i, setStateFunc: setDrafts }} />
                                             </AnimationWrapper>
                                         )
                                     })
