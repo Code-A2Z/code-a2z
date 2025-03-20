@@ -245,3 +245,31 @@ export const userWrittenProjectsCount = async (req, res) => {
             return res.status(500).json({ error: err.message });
         })
 }
+
+export const deleteProject = async (req, res) => {
+
+    let user_id = req.user;
+
+    let { project_id } = req.body;
+
+    Project.findOneAndDelete({ project_id })
+        .then(project => {
+
+            Notification.deleteMany({ project: project._id })
+                .then(data => console.log("Nofiication deleted"));
+
+            Comment.deleteMany({ project: project._id })
+                .then(data => console.log("Comments deleted"));
+
+            User.findOneAndUpdate({ _id: user_id }, { $pull: { project: project._id }, $inc: { "account_info.total_posts": -1 } })
+                .then(user => {
+                    return res.status(200).json({ message: "Project deleted successfully" });
+                })
+                .catch(err => {
+                    return res.status(500).json({ error: err.message });
+                })
+        })
+        .catch(err => {
+            return res.status(500).json({ error: err.message });
+        })
+}
