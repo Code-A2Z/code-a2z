@@ -7,7 +7,7 @@ import InPageNavigation from "../components/InPageNavigation";
 import Loader from "../components/Loader";
 import NoDataMessage from "../components/NoData";
 import AnimationWrapper from "../common/page-animation";
-import ManagePublishedProjectCard from "../components/ManageProjectCard";
+import { ManagePublishedProjectCard, ManageDraftProjectPost } from "../components/ManageProjectCard";
 
 const ManageProjects = () => {
 
@@ -114,6 +114,24 @@ const ManageProjects = () => {
                                 }
                             </> :
                             <NoDataMessage message="No Published Projects" />
+                }
+
+                {
+                    // Published Projects
+                    drafts === null ? <Loader /> :
+                        drafts.results.length ?
+                            <>
+                                {
+                                    drafts.results.map((project, i) => {
+                                        return (
+                                            <AnimationWrapper key={i} transition={{ delay: i * 0.04 }}>
+                                                <ManageDraftProjectPost project={project} index={i+1} />
+                                            </AnimationWrapper>
+                                        )
+                                    })
+                                }
+                            </> :
+                            <NoDataMessage message="No Draft Projects" />
                 }
             </InPageNavigation>
         </>

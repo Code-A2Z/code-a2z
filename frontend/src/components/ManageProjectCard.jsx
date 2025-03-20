@@ -27,7 +27,7 @@ const ProjectStats = ({ stats }) => {
     )
 }
 
-const ManagePublishedProjectCard = ({ project }) => {
+export const ManagePublishedProjectCard = ({ project }) => {
 
     let { banner, project_id, title, publishedAt, activity } = project;
 
@@ -75,4 +75,25 @@ const ManagePublishedProjectCard = ({ project }) => {
     )
 }
 
-export default ManagePublishedProjectCard;
+export const ManageDraftProjectPost = ({ project, index }) => {
+
+    let {title, des, project_id} = project;
+    return (
+        <div className="flex gap-5 lg:gap-10 pb-6 border-b mb-6 border-gray-100">
+            <h1 className="project-index text-center ph-4 md:pl-6 flex-none">
+                {index < 10 ? "0" + index : index}
+            </h1>
+
+            <div>
+                <h1 className="project-title mb-3">{title}</h1>
+                <p className="line-clamp-2 font-gelasio">{des.length ? des : "No Description"}</p>
+
+                <div className="flex gap-6 mt-3">
+                    <Link to={`/editor/${project_id}`} className="pr-4 py-2 underline">Edit</Link>
+
+                    <button className="pr-4 py-2 underline text-red-500">Delete</button>
+                </div>
+            </div>
+        </div>
+    )
+}
