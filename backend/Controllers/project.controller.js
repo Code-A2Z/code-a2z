@@ -39,7 +39,7 @@ export const createProject = async (req, res) => {
     let project_id = id || title.replace(/[^a-zA-Z0-9]/g, ' ').replace(/\s+/g, '-').trim() + nanoid();
 
     if (id) {
-        Project.findOneAndUpdate({ project_id }, { title, des, banner, content, tags, draft: draft ? draft : false })
+        Project.findOneAndUpdate({ project_id }, { title, des, banner, projectUrl, repository, content, tags, draft: draft ? draft : false })
             .then(project => {
                 return res.status(200).json({ id: project_id });
             })

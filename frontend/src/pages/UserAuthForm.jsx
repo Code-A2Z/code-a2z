@@ -16,9 +16,12 @@ const UserAuthForm = ({ type }) => {
     const userAuthThroughServer = async (serverRoute, formData) => {
         axios.post(import.meta.env.VITE_SERVER_DOMAIN + serverRoute, formData)
             .then(({ data }) => {
-                storeInSession("user", JSON.stringify(data));
                 toast.success("Logged in successfully");
-                setUserAuth(data);
+
+                setTimeout(() => {
+                    storeInSession("user", JSON.stringify(data));
+                    setUserAuth(data);
+                }, 1000);
             })
             .catch(({ response }) => {
                 toast.error(response.data.error);
