@@ -2,6 +2,12 @@ import axios from "axios";
 import { useContext, useEffect, useState } from "react";
 import { UserContext } from "../App";
 import { filterPaginationData } from "../common/filter-pagination-data";
+import { Toaster } from "react-hot-toast";
+import InPageNavigation from "../components/InPageNavigation";
+import Loader from "../components/Loader";
+import NoDataMessage from "../components/NoData";
+import AnimationWrapper from "../common/page-animation";
+import ManagePublishedProjectCard from "../components/ManageProjectCard";
 
 const ManageProjects = () => {
 
@@ -52,11 +58,64 @@ const ManageProjects = () => {
             }
         }
 
-    }, [access_token, projects, drafts, query])
+    }, [access_token, projects, drafts, query]);
+
+    const handleSearch = (e) => {
+        let searchQuery = e.target.value;
+
+        setQuery(searchQuery);
+
+        if (e.keyCode === 13 && searchQuery.length) {
+            setProjects(null);
+            setDrafts(null);
+        }
+    }
+
+    const handleChange = (e) => {
+        if (!e.target.value.length) {
+            setQuery("");
+            setProjects(null);
+            setDrafts(null);
+        }
+    }
 
     return (
         <>
-            <h1>Manage Projects</h1>
+            <h1 className="max-md:hidden">Manage Projects</h1>
+
+            <Toaster />
+
+            <div className="relative max-md:mt-5 md:mt-8 mb-10">
+                <input
+                    type="search"
+                    className="w-full bg-gray-100 p-4 pl-12 pr-6 rounded-full placeholder:text-gray-500"
+                    placeholder="Search Projects"
+                    onChange={handleChange}
+                    onKeyDown={handleSearch}
+                />
+
+                <i className="fi fi-rr-search absolute right-[10%] md:pointer-events-none md:left-5 top-1/2 -translate-y-1/2 text-xl text-gray-500"></i>
+            </div>
+
+            <InPageNavigation routes={["Published Projects", "Drafts"]}>
+                {
+                    // Published Projects
+                    projects === null ? <Loader /> :
+                        projects.results.length ?
+                            <>
+                                {
+                                    projects.results.map((project, i) => {
+                                        return (
+                                            <AnimationWrapper key={i} transition={{ delay: i * 0.04 }}>
+                                                <ManagePublishedProjectCard project={project} />
+                                            </AnimationWrapper>
+                                        )
+                                    })
+                                }
+                            </> :
+                            <NoDataMessage message="No Published Projects" />
+                }
+            </InPageNavigation>
         </>
     )
 }
