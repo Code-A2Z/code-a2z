@@ -97,7 +97,7 @@ const PublishForm = () => {
                 toast.success("Project published successfully");
 
                 setTimeout(() => {
-                    navigate("/");
+                    navigate("/dashboard/projects");
                 }, 500);
             })
             .catch(({ response }) => {

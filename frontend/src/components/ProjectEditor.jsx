@@ -139,7 +139,7 @@ const ProjectEditor = () => {
                             toast.success("Project saved successfully");
 
                             setTimeout(() => {
-                                navigate("/");
+                                navigate("/dashboard/projects?tag=draft");
                             }, 500);
                         })
                         .catch(({ response }) => {

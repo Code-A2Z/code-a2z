@@ -9,12 +9,15 @@ import NoDataMessage from "../components/NoData";
 import AnimationWrapper from "../common/page-animation";
 import { ManagePublishedProjectCard, ManageDraftProjectPost } from "../components/ManageProjectCard";
 import LoadMoreDataBtn from "../components/LoadMoreData";
+import { useSearchParams } from "react-router-dom";
 
 const ManageProjects = () => {
 
     const [projects, setProjects] = useState(null);
     const [drafts, setDrafts] = useState(null);
     const [query, setQuery] = useState("");
+
+    let activeTab = useSearchParams()[0].get("tab");
 
     let { userAuth: { access_token } } = useContext(UserContext);
 
@@ -98,7 +101,7 @@ const ManageProjects = () => {
                 <i className="fi fi-rr-search absolute right-[10%] md:pointer-events-none md:left-5 top-1/2 -translate-y-1/2 text-xl text-gray-500"></i>
             </div>
 
-            <InPageNavigation routes={["Published Projects", "Drafts"]}>
+            <InPageNavigation routes={["Published Projects", "Drafts"]} defaultActiveIndex={activeTab !== "draft" ? 0 : 1}>
                 { // Published Projects
                     projects === null ? <Loader /> :
                         projects.results.length ?
