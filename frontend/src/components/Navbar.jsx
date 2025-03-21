@@ -2,12 +2,14 @@ import { useContext, useEffect, useState } from "react";
 import { Link, Outlet, useNavigate } from "react-router-dom";
 import { UserContext } from "../App";
 import UserNavigationPanel from "./UserNavigationPanel";
+import SubscribeModal from "./SubscribeModal";
 import axios from "axios";
 
 const Navbar = () => {
 
     const [searchBoxVisibility, setSearchBoxVisibility] = useState(false);
     const [userNavPanel, setUserNavPanel] = useState(false);
+    const [showSubscribeModal, setShowSubscribeModal] = useState(false);
 
     let navigate = useNavigate();
 
@@ -46,6 +48,10 @@ const Navbar = () => {
         setTimeout(() => {
             setUserNavPanel(false);
         }, 200);
+    }
+
+    const toggleSubscribeModal = () => {
+        setShowSubscribeModal(prev => !prev);
     }
 
     return (
@@ -104,6 +110,13 @@ const Navbar = () => {
                             </>
                             :
                             <>
+                                <button
+                                    onClick={toggleSubscribeModal}
+                                    className="text-gray-700 bg-gray-200 py-2 px-4 rounded-full transition cursor-pointer"
+                                >
+                                    <i className="fi fi-rr-envelope-plus text-xl"></i>
+                                </button>
+
                                 <Link className="bg-black text-white py-2 px-5 rounded-full hover:bg-gray-800 transition" to="/login">
                                     Login
                                 </Link>
@@ -114,6 +127,8 @@ const Navbar = () => {
                     }
                 </div>
             </nav>
+
+            {showSubscribeModal && <SubscribeModal onClose={toggleSubscribeModal} />}
 
             <Outlet />
         </>
