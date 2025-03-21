@@ -37,3 +37,32 @@ export const subscribeEmail = async (req, res) => {
             return res.status(500).json({ error: err.message });
         });
 }
+
+export const unsubscribeEmail = async (req, res) => {
+    const { email } = req.body;
+
+    if (!email) {
+        return res.status(400).json({ error: "Email is required" });
+    }
+
+    const subscriber = await Subscriber.findOne({ email });
+
+    if (!subscriber) {
+        return res.status(404).json({ error: "Email not found in our subscription list" });
+    }
+
+    if (!subscriber.isSubscribed) {
+        return res.status(200).json({ error: "You are already unsubscribed from our newsletter" });
+    }
+
+    subscriber.isSubscribed = false;
+    subscriber.unsubscribedAt = new Date();
+
+    await subscriber.save()
+        .then(() => {
+            return res.status(200).json({ message: "You have been unsubscribed from our newsletter" });
+        })
+        .catch(err => {
+            return res.status(500).json({ error: err.message });
+        });
+}
