@@ -66,3 +66,15 @@ export const unsubscribeEmail = async (req, res) => {
             return res.status(500).json({ error: err.message });
         });
 }
+
+export const getAllSubscribers = async (req, res) => {
+    await Subscriber.find({ isSubscribed: true })
+        .select("email subscribedAt")
+        .sort({ subscribedAt: -1 })
+        .then(subscribers => {
+            return res.status(200).json({ subscribers });
+        })
+        .catch(err => {
+            return res.status(500).json({ error: err.message });
+        });
+}
