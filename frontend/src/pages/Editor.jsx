@@ -7,6 +7,7 @@ import Loader from "../components/Loader";
 import axios from "axios";
 
 const projectStructure = {
+    projectId: `PID-${Date.now().toString(36)}`,
     title: "",
     banner: "",
     projectUrl: "",
