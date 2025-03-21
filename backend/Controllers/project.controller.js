@@ -6,7 +6,7 @@ import User from "../Models/user.model.js";
 export const createProject = async (req, res) => {
     let authorId = req.user;
 
-    let { title, des, banner, projectUrl, repository, tags, content, draft } = req.body;
+    let { title, des, banner, projectUrl, repository, tags, content, draft, id } = req.body;
 
     if (!title.length) {
         return res.status(403).json({ error: "You must provide a title" });
@@ -36,39 +36,50 @@ export const createProject = async (req, res) => {
 
     tags = tags.map(tag => tag.toLowerCase());
 
-    let project_id = title.replace(/[^a-zA-Z0-9]/g, ' ').replace(/\s+/g, '-').trim() + nanoid();
+    let project_id = id || title.replace(/[^a-zA-Z0-9]/g, ' ').replace(/\s+/g, '-').trim() + nanoid();
 
-    let project = new Project({
-        title,
-        des,
-        banner,
-        projectUrl,
-        repository,
-        tags,
-        content,
-        author: authorId,
-        project_id,
-        draft: Boolean(draft)
-    })
-
-    project.save()
-        .then(project => {
-            let incrementVal = draft ? 0 : 1;
-
-            User.findOneAndUpdate({ _id: authorId }, { $inc: { "account_info.total_posts": incrementVal }, $push: { "projects": project._id } })
-                .then(user => {
-                    return res.status(200).json({ id: project.project_id });
-                })
-                .catch(err => {
-                    return res.status(500).json({ error: "Failed to update total posts number" });
-                })
+    if (id) {
+        Project.findOneAndUpdate({ project_id }, { title, des, banner, projectUrl, repository, content, tags, draft: draft ? draft : false })
+            .then(project => {
+                return res.status(200).json({ id: project_id });
+            })
+            .catch(err => {
+                return res.status(500).json({ error: err.message });
+            })
+    } else {
+        let project = new Project({
+            title,
+            des,
+            banner,
+            projectUrl,
+            repository,
+            tags,
+            content,
+            author: authorId,
+            project_id,
+            draft: Boolean(draft)
         })
-        .catch(err => {
-            return res.status(500).json({ error: err.message });
-        })
+
+        project.save()
+            .then(project => {
+                let incrementVal = draft ? 0 : 1;
+
+                User.findOneAndUpdate({ _id: authorId }, { $inc: { "account_info.total_posts": incrementVal }, $push: { "projects": project._id } })
+                    .then(user => {
+                        return res.status(200).json({ id: project.project_id });
+                    })
+                    .catch(err => {
+                        return res.status(500).json({ error: "Failed to update total posts number" });
+                    })
+            })
+            .catch(err => {
+                return res.status(500).json({ error: err.message });
+            })
+    }
+
 }
 
-export const getProjects = async (req, res) => {
+export const getAllProjects = async (req, res) => {
 
     let { page } = req.body;
     let maxLimit = 5;
@@ -104,17 +115,19 @@ export const trendingProjects = async (req, res) => {
 
 export const searchProjects = async (req, res) => {
 
-    let { tag, query, page } = req.body;
+    let { tag, query, author, page, limit, elminate_project } = req.body;
 
     let findQuery;
 
     if (tag) {
-        findQuery = { tags: tag, draft: false };
+        findQuery = { tags: tag, draft: false, project_id: { $ne: elminate_project } };
     } else if (query) {
         findQuery = { draft: false, title: new RegExp(query, 'i') };
+    } else if (author) {
+        findQuery = { draft: false, author: author };
     }
 
-    let maxLimit = 5;
+    let maxLimit = limit ? limit : 2;
 
     Project.find(findQuery)
         .populate("author", "personal_info.profile_img personal_info.username personal_info.fullname -_id")
@@ -143,7 +156,7 @@ export const allLatestProjectsCount = async (req, res) => {
 
 export const searchProjectsCount = async (req, res) => {
 
-    let { tag, query } = req.body;
+    let { tag, author, query } = req.body;
 
     let findQuery;
 
@@ -151,11 +164,110 @@ export const searchProjectsCount = async (req, res) => {
         findQuery = { tags: tag, draft: false };
     } else if (query) {
         findQuery = { draft: false, title: new RegExp(query, 'i') };
+    } else if (author) {
+        findQuery = { draft: false, author: author };
     }
 
     Project.countDocuments(findQuery)
         .then(count => {
             return res.status(200).json({ totalDocs: count });
+        })
+        .catch(err => {
+            return res.status(500).json({ error: err.message });
+        })
+}
+
+export const getProject = async (req, res) => {
+    let { project_id, draft, mode } = req.body;
+
+    let incrementVal = mode !== 'edit' ? 1 : 0;
+
+    Project.findOneAndUpdate({ project_id }, { $inc: { "activity.total_reads": incrementVal } })
+        .populate("author", "personal_info.fullname personal_info.username personal_info.profile_img")
+        .select("title des content banner activity publishedAt project_id tags projectUrl repository")
+        .then(project => {
+
+            User.findOneAndUpdate({ "personal_info.username": project.author.personal_info.username }, {
+                $inc: { 'account_info.total_reads': incrementVal }
+            })
+                .catch(err => {
+                    return res.status(500).json({ error: err.message });
+                })
+
+            if (project.draft && !draft) {
+                return res.status(500).json({ error: "You can't access draft project" });
+            }
+
+            return res.status(200).json({ project });
+        })
+        .catch(err => {
+            return res.status(500).json({ error: err.message });
+        })
+}
+
+export const userWrittenProjects = async (req, res) => {
+
+    let user_id = req.user;
+
+    let { page, draft, query, deletedDocCount } = req.body;
+
+    let maxLimit = 5;
+    let skipDocs = (page - 1) * maxLimit;
+
+    if (deletedDocCount) {
+        skipDocs -= deletedDocCount;
+    }
+
+    Project.find({ author: user_id, draft, title: new RegExp(query, 'i') })
+        .skip(skipDocs)
+        .limit(maxLimit)
+        .sort({ publishedAt: -1 })
+        .select("title banner publishedAt project_id activity des draft -_id")
+        .then(projects => {
+            return res.status(200).json({ projects });
+        })
+        .catch(err => {
+            return res.status(500).json({ error: err.message });
+        })
+}
+
+export const userWrittenProjectsCount = async (req, res) => {
+
+    let user_id = req.user;
+
+    let { draft, query } = req.body;
+
+    Project.countDocuments({ author: user_id, draft, title: new RegExp(query, 'i') })
+        .then(count => {
+            return res.status(200).json({ totalDocs: count });
+        })
+        .catch(err => {
+            return res.status(500).json({ error: err.message });
+        })
+}
+
+export const deleteProject = async (req, res) => {
+
+    let user_id = req.user;
+
+    let { project_id } = req.body;
+
+    Project.findOneAndDelete({ project_id })
+        .then(project => {
+
+            Notification.deleteMany({ project: project._id })
+                .then(data => console.log("Nofiication deleted"));
+
+            Comment.deleteMany({ project: project._id })
+                .then(data => console.log("Comments deleted"));
+
+            User.findOneAndUpdate({ _id: user_id }, { $pull: { project: project._id }, $inc: { "account_info.total_posts": -1 } })
+                .then(user => {
+                    return res.status(200).json({ message: "Project deleted successfully" });
+                })
+                .catch(err => {
+                    return res.status(500).json({ error: err.message });
+                })
         })
         .catch(err => {
             return res.status(500).json({ error: err.message });

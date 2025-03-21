@@ -113,7 +113,7 @@
     }
 
     .project-index {
-        @apply text-4xl sm:text-3xl lg:text-5xl font-bold text-gray-600 leading-none;
+        @apply text-4xl sm:text-3xl lg:text-5xl font-bold text-gray-300 leading-none;
     }
 }
 

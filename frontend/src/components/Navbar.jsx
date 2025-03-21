@@ -1,16 +1,36 @@
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { Link, Outlet, useNavigate } from "react-router-dom";
 import { UserContext } from "../App";
 import UserNavigationPanel from "./UserNavigationPanel";
+import SubscribeModal from "./SubscribeModal";
+import axios from "axios";
 
 const Navbar = () => {
 
     const [searchBoxVisibility, setSearchBoxVisibility] = useState(false);
     const [userNavPanel, setUserNavPanel] = useState(false);
+    const [showSubscribeModal, setShowSubscribeModal] = useState(false);
 
     let navigate = useNavigate();
 
-    const { userAuth, userAuth: { access_token, profile_img } } = useContext(UserContext);
+    const { userAuth, userAuth: { access_token, profile_img, new_notification_available }, setUserAuth } = useContext(UserContext);
+
+    useEffect(() => {
+
+        if (access_token) {
+            axios.get(import.meta.env.VITE_SERVER_DOMAIN + "/api/notification/new", {
+                headers: {
+                    Authorization: `Bearer ${access_token}`
+                }
+            })
+                .then(({ data }) => {
+                    setUserAuth({ ...userAuth, ...data });
+                })
+                .catch(err => {
+                    console.log(err);
+                })
+        }
+    }, [access_token]);
 
     const handleUserNavPanel = () => {
         setUserNavPanel(currentVal => !currentVal);
@@ -30,12 +50,17 @@ const Navbar = () => {
         }, 200);
     }
 
+    const toggleSubscribeModal = () => {
+        setShowSubscribeModal(prev => !prev);
+    }
+
     return (
         <>
-            <nav className="navbar">
+            <nav className="navbar z-50">
                 <Link to="/" className="flex-none w-10">
-                    <img src="logo.png" alt="" className="w-full" />
+                    <img src="/logo.png" alt="" className="w-full" />
                 </Link>
+
                 <div className={"absolute bg-white w-full left-0 top-full mt-0.5 border-b border-gray-200 py-4 px-[5vw] md:border-0 md:relative md:inset-0 md:p-0 md:w-auto " + (searchBoxVisibility ? "show" : "hidden md:block")}
                 >
                     <input
@@ -60,9 +85,14 @@ const Navbar = () => {
                     {
                         access_token ?
                             <>
-                                <Link to="/dashboard/notification">
+                                <Link to="/dashboard/notifications">
                                     <button className="w-12 h-12 rounded-full bg-gray-200 relative hover:bg-black/10">
                                         <i className="fi fi-rr-bell text-2xl block mt-1"></i>
+                                        {
+                                            new_notification_available ?
+                                                <span className="bg-red-500 w-3 h-3 rounded-full absolute z-10 top-2 right-2"></span>
+                                                : ""
+                                        }
                                     </button>
                                 </Link>
 
@@ -80,6 +110,13 @@ const Navbar = () => {
                             </>
                             :
                             <>
+                                <button
+                                    onClick={toggleSubscribeModal}
+                                    className="text-gray-700 bg-gray-200 py-2 px-4 rounded-full transition cursor-pointer"
+                                >
+                                    <i className="fi fi-rr-envelope-plus text-xl"></i>
+                                </button>
+
                                 <Link className="bg-black text-white py-2 px-5 rounded-full hover:bg-gray-800 transition" to="/login">
                                     Login
                                 </Link>
@@ -90,6 +127,8 @@ const Navbar = () => {
                     }
                 </div>
             </nav>
+
+            {showSubscribeModal && <SubscribeModal onClose={toggleSubscribeModal} />}
 
             <Outlet />
         </>

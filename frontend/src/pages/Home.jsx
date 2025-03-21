@@ -18,7 +18,7 @@ const Home = () => {
     let categories = ["web", "data science", "game development", "automation", "cloud computing", "blockchain"]
 
     const fetchLatestProjects = ({ page = 1 }) => {
-        axios.post(import.meta.env.VITE_SERVER_DOMAIN + "/api/project/get", { page })
+        axios.post(import.meta.env.VITE_SERVER_DOMAIN + "/api/project/getall", { page })
             .then(async ({ data }) => {
 
                 let formattedData = await filterPaginationData({

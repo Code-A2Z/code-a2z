@@ -14,11 +14,20 @@ const UserAuthForm = ({ type }) => {
     let { userAuth: { access_token }, setUserAuth } = useContext(UserContext);
 
     const userAuthThroughServer = async (serverRoute, formData) => {
-        axios.post(import.meta.env.VITE_SERVER_DOMAIN + serverRoute, formData)
+
+        if (serverRoute === "/api/auth/signup") {
+            let { email } = formData;
+            await axios.post(import.meta.env.VITE_SERVER_DOMAIN + "/api/subscriber/subscribe", { email });
+        }
+
+        await axios.post(import.meta.env.VITE_SERVER_DOMAIN + serverRoute, formData)
             .then(({ data }) => {
-                storeInSession("user", JSON.stringify(data));
                 toast.success("Logged in successfully");
-                setUserAuth(data);
+
+                setTimeout(() => {
+                    storeInSession("user", JSON.stringify(data));
+                    setUserAuth(data);
+                }, 500);
             })
             .catch(({ response }) => {
                 toast.error(response.data.error);
