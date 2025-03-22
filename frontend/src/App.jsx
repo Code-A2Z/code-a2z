@@ -1,19 +1,26 @@
-import { Route, Routes } from "react-router-dom";
-import Navbar from "./components/Navbar";
-import UserAuthForm from "./pages/UserAuthForm";
+// root packages 
 import { createContext, useEffect, useState } from "react";
+import { Route, Routes } from "react-router-dom";
+
+// common files 
 import { lookInSession } from "./common/session";
-import Editor from "./pages/Editor";
-import Home from "./pages/Home";
-import SearchPage from "./pages/Search";
-import PageNotFound from "./pages/404";
-import ProfilePage from "./pages/Profile";
-import ProjectPage from "./pages/Project";
-import SideNav from "./components/SideNavBar";
-import ChangePassword from "./pages/ChangePassword";
-import EditProfile from "./pages/EditProfile";
-import Notifications from "./pages/Notifications";
-import ManageProjects from "./pages/ManageProjects";
+
+// components files 
+import Navbar from "./components/navbar.component";
+import SideNav from "./components/sideNavBar.component";
+
+// pages files 
+import UserAuthForm from "./pages/UserAuthForm.page";
+import Editor from "./pages/Editor.page";
+import Home from "./pages/Home.page";
+import SearchPage from "./pages/Search.page";
+import PageNotFound from "./pages/404.page";
+import ProfilePage from "./pages/Profile.page";
+import ProjectPage from "./pages/Project.page";
+import ChangePassword from "./pages/ChangePassword.page";
+import EditProfile from "./pages/EditProfile.page";
+import Notifications from "./pages/Notifications.page";
+import ManageProjects from "./pages/ManageProjects.page";
 
 export const UserContext = createContext({});
 
