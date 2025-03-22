@@ -13,7 +13,7 @@ import InPageNavigation from "../components/inPageNavigation.component";
 import Loader from "../components/loader.component";
 import NoDataMessage from "../components/noData.component";
 import { ManagePublishedProjectCard, ManageDraftProjectPost } from "../components/manageProjectCard.component";
-import LoadMoreDataBtn from "../components/LoadMoreData";
+import LoadMoreDataBtn from "../components/loadMoreData.component";
 
 // src files 
 import { UserContext } from "../App";

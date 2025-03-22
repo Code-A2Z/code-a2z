@@ -12,7 +12,7 @@ import InPageNavigation from "../components/inPageNavigation.component";
 import Loader from "../components/loader.component";
 import ProjectPostCard from "../components/projectPostCard.component";
 import NoDataMessage from "../components/noData.component";
-import LoadMoreDataBtn from "../components/LoadMoreData";
+import LoadMoreDataBtn from "../components/loadMoreData.component";
 import UserCard from "../components/userCard.component";
 
 const SearchPage = () => {

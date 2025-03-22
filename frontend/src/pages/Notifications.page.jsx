@@ -10,7 +10,7 @@ import AnimationWrapper from "../common/page-animation";
 import Loader from "../components/loader.component";
 import NoDataMessage from "../components/noData.component";
 import NotificationCard from "../components/notificationCard.component";
-import LoadMoreDataBtn from "../components/LoadMoreData";
+import LoadMoreDataBtn from "../components/loadMoreData.component";
 
 // src files 
 import { UserContext } from "../App";

@@ -12,7 +12,7 @@ import Loader from "../components/loader.component";
 import ProjectPostCard from "../components/projectPostCard.component";
 import MinimalProjectPost from "../components/noBannerProjectPost.component";
 import NoDataMessage from "../components/noData.component";
-import LoadMoreDataBtn from "../components/LoadMoreData";
+import LoadMoreDataBtn from "../components/loadMoreData.component";
 
 const Home = () => {
 
