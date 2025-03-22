@@ -10,17 +10,17 @@
     <a href="https://discord.gg/tSqtvHUJzE">
       <img src="https://img.shields.io/badge/Discord-%235865F2.svg?style=for-the-badge&logo=discord&logoColor=white" />
     </a><br /><br />
-    <img src="https://img.shields.io/github/repo-size/Avdhesh-Varshney/blog-script" />
-    <img src="https://img.shields.io/github/languages/count/Avdhesh-Varshney/blog-script" />
-    <img src="https://img.shields.io/github/stars/Avdhesh-Varshney/blog-script" />
-    <img src="https://img.shields.io/github/forks/Avdhesh-Varshney/blog-script" />
-    <img src="https://img.shields.io/github/last-commit/Avdhesh-Varshney/blog-script" />
-    <img src="https://img.shields.io/github/license/Avdhesh-Varshney/blog-script" />
+    <img src="https://img.shields.io/github/repo-size/Avdhesh-Varshney/pjt-blog" />
+    <img src="https://img.shields.io/github/languages/count/Avdhesh-Varshney/pjt-blog" />
+    <img src="https://img.shields.io/github/stars/Avdhesh-Varshney/pjt-blog" />
+    <img src="https://img.shields.io/github/forks/Avdhesh-Varshney/pjt-blog" />
+    <img src="https://img.shields.io/github/last-commit/Avdhesh-Varshney/pjt-blog" />
+    <img src="https://img.shields.io/github/license/Avdhesh-Varshney/pjt-blog" />
     <br />
-    <img src="https://img.shields.io/github/issues-raw/Avdhesh-Varshney/blog-script" />
-    <img src="https://img.shields.io/github/issues-closed-raw/Avdhesh-Varshney/blog-script" />
-    <img src="https://img.shields.io/github/issues-pr-raw/Avdhesh-Varshney/blog-script" />
-    <img src="https://img.shields.io/github/issues-pr-closed-raw/Avdhesh-Varshney/blog-script" />
+    <img src="https://img.shields.io/github/issues-raw/Avdhesh-Varshney/pjt-blog" />
+    <img src="https://img.shields.io/github/issues-closed-raw/Avdhesh-Varshney/pjt-blog" />
+    <img src="https://img.shields.io/github/issues-pr-raw/Avdhesh-Varshney/pjt-blog" />
+    <img src="https://img.shields.io/github/issues-pr-closed-raw/Avdhesh-Varshney/pjt-blog" />
   </p>
 
 ![React](https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB)
@@ -37,13 +37,13 @@
 
 #### :zap: About the Project ❤️
 
-Welcome to the **Blog Script Project**—a collaborative blogging platform designed to simplify content creation, management, and sharing. 
+Welcome to the **Project Blog Project**—a collaborative blogging platform designed to simplify content creation, management, and sharing. 
 It provides a structured environment where developers and writers can seamlessly integrate submodules, customize templates, and efficiently manage their projects. 
-With role-based access, built-in SEO optimization, and community discussions, **Blog Script** enhances collaboration and ensures global visibility for your work.
+With role-based access, built-in SEO optimization, and community discussions, **Project Blog** enhances collaboration and ensures global visibility for your work.
 
-#### :zap: Contribute to Blog Script! ✅
+#### :zap: Contribute to Project Blog! ✅
 
-Blog Script is an open-source platform where you can **submit your projects, update them anytime, and improve the platform itself**. 
+Project Blog is an open-source platform where you can **submit your projects, update them anytime, and improve the platform itself**. 
 It’s perfect for developers and writers who want to **showcase their work, collaborate with others, and gain global visibility**.  
 
 Join us, contribute, and grow together! 🌍✨
@@ -56,11 +56,11 @@ Join us, contribute, and grow together! 🌍✨
 | **Markdown Support**             | Easily write and format blog content using Markdown, making it clean and well-structured. Markdown helps in organizing text, adding headings, lists, links, and images without complex coding. |
 | **Submodule Integration**        | Allows you to add external repositories as submodules, making it easier to manage and link different projects inside your blog. This helps in organizing code and keeping everything in one place. |
 | **Customizable Templates**       | Choose from ready-made templates to design your blog the way you like. These templates help in quickly setting up a beautiful and professional-looking blog. |
-| **Project Contribution Workflow** | Submit your project to this repository and update it anytime. You can also contribute more by improving your project and raising pull requests (PRs) to update Blog Script itself. This helps in growing your project while also making Blog Script better. |
+| **Project Contribution Workflow** | Submit your project to this repository and update it anytime. You can also contribute more by improving your project and raising pull requests (PRs) to update Project Blog itself. This helps in growing your project while also making Project Blog better. |
 | **Global Visibility**            | Your blog and projects will be visible to a larger audience worldwide. This increases your chances of getting noticed, getting feedback, and collaborating with others. |
 | **Community Discussions**        | Connect with other contributors, discuss ideas, ask questions, and share knowledge. This makes learning and improving projects easier through teamwork. |
 | **Full Ownership**               | You have complete control over your projects and contributions. No one else can change your work without your permission. |
-| **SEO Optimization**             | Blog Script ensures your content is easily found on search engines like Google. This helps in reaching more people and increasing engagement. |
+| **SEO Optimization**             | Project Blog ensures your content is easily found on search engines like Google. This helps in reaching more people and increasing engagement. |
 | **Role-Based Dashboard**         | Different users have different levels of access. Admins can manage everything, collaborators can work on assigned projects, contributors can submit their work, and regular users can read and interact with blogs. |
 
 </details>
@@ -86,13 +86,13 @@ Join us, contribute, and grow together! 🌍✨
 <summary><h4>:zap: How to Contribute? 🤔</h4></summary>
 
 1. Star the repository on GitHub to show your support.
-2. Browse the [**Issues**](https://github.com/Avdhesh-Varshney/blog-script/issues) to find tasks that need attention.
+2. Browse the [**Issues**](https://github.com/Avdhesh-Varshney/pjt-blog/issues) to find tasks that need attention.
 3. Fork the repository to your own GitHub account to start working on your changes.
 4. Create a new branch for the issue you're working on.
 5. Make your changes, ensuring they align with the project's structure and standards.
 6. Add screenshots or screen captures of your changes to showcase their effects in the pull request.
-7. Submit a [**Pull Request**](https://github.com/Avdhesh-Varshney/blog-script/pulls), and it will be reviewed.
-8. Make sure to read and follow the [**Contributing Guidelines**](https://github.com/Avdhesh-Varshney/blog-script/blob/main/CONTRIBUTING.md) and [**Code of Conduct**](https://github.com/Avdhesh-Varshney/blog-script/blob/main/CODE_OF_CONDUCT.md).
+7. Submit a [**Pull Request**](https://github.com/Avdhesh-Varshney/pjt-blog/pulls), and it will be reviewed.
+8. Make sure to read and follow the [**Contributing Guidelines**](https://github.com/Avdhesh-Varshney/pjt-blog/blob/main/CONTRIBUTING.md) and [**Code of Conduct**](https://github.com/Avdhesh-Varshney/pjt-blog/blob/main/CODE_OF_CONDUCT.md).
 
 </details>
 
@@ -102,7 +102,7 @@ Join us, contribute, and grow together! 🌍✨
 > We want your work to be readable by others; therefore, we encourage you to note the following:
 
 <p align="center">
-  <img src="https://raw.githubusercontent.com/hack-boi/assets/main/blog-script-submodule-addition.gif" alt="" width="700" />
+  <img src="https://raw.githubusercontent.com/hack-boi/assets/main/pjt-blog-submodule-addition.gif" alt="" width="700" />
 </p>
 
 1. Project/Repository names should be in `kebab-case` letters (e.g., `to-do-list`, `joke-telling-application`).
@@ -118,7 +118,7 @@ Join us, contribute, and grow together! 🌍✨
 
 2. Run the following command to add your project as a submodule:
 
-    > Run this command from the root directory `/workspaces/blog-script`
+    > Run this command from the root directory `/workspaces/pjt-blog`
 
 ```bash
 git submodule add --depth 1 <your_project_repo_url> projects/<category>/<project_name>
@@ -240,13 +240,7 @@ git push -u origin <add/project_name>
   </tr>
 </table>
 
-### ✨ Our Valuable Contributors
-
-<a href="https://github.com/Avdhesh-Varshney/blog-script/graphs/contributors">
-  <img src="https://contrib.rocks/image?repo=Avdhesh-Varshney/WebMasterLog&&max=1000" />
-</a>
-
-![Line](https://github.com/Avdhesh-Varshney/blog-script/assets/114330097/4b78510f-a941-45f8-a9d5-80ed0705e847)
+![Line](https://github.com/Avdhesh-Varshney/pjt-blog/assets/114330097/4b78510f-a941-45f8-a9d5-80ed0705e847)
 
 # Tip from us 😇 
 ##### It always takes time to understand and learn. So, don't worry at all. We know <b>you have got this</b>! 💪 
