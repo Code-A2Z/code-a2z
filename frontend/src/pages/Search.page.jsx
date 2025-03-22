@@ -9,7 +9,7 @@ import { filterPaginationData } from "../common/filter-pagination-data";
 
 // components files 
 import InPageNavigation from "../components/inPageNavigation.component";
-import Loader from "../components/Loader";
+import Loader from "../components/loader.component";
 import ProjectPostCard from "../components/projectPostCard.component";
 import NoDataMessage from "../components/noData.component";
 import LoadMoreDataBtn from "../components/LoadMoreData";
