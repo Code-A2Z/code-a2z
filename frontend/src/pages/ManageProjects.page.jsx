@@ -10,7 +10,7 @@ import AnimationWrapper from "../common/page-animation";
 
 // components files 
 import InPageNavigation from "../components/inPageNavigation.component";
-import Loader from "../components/Loader";
+import Loader from "../components/loader.component";
 import NoDataMessage from "../components/noData.component";
 import { ManagePublishedProjectCard, ManageDraftProjectPost } from "../components/manageProjectCard.component";
 import LoadMoreDataBtn from "../components/LoadMoreData";

@@ -8,7 +8,7 @@ import AnimationWrapper from '../common/page-animation';
 import { filterPaginationData } from '../common/filter-pagination-data';
 
 // components files 
-import Loader from '../components/Loader';
+import Loader from '../components/loader.component';
 import AboutUser from '../components/aboutUser.component';
 import InPageNavigation from '../components/inPageNavigation.component';
 import ProjectPostCard from '../components/projectPostCard.component';

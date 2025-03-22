@@ -8,7 +8,7 @@ import AnimationWrapper from "../common/page-animation";
 import { getDay } from "../common/date";
 
 // components files 
-import Loader from "../components/Loader";
+import Loader from "../components/loader.component";
 import ProjectInteraction from "../components/projectInteraction.component";
 import ProjectPostCard from "../components/projectPostCard.component";
 import ProjectContent from "../components/projectContent.component";

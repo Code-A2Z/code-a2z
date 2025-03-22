@@ -7,7 +7,7 @@ import { filterPaginationData } from "../common/filter-pagination-data";
 import AnimationWrapper from "../common/page-animation";
 
 // components files 
-import Loader from "../components/Loader";
+import Loader from "../components/loader.component";
 import NoDataMessage from "../components/noData.component";
 import NotificationCard from "../components/notificationCard.component";
 import LoadMoreDataBtn from "../components/LoadMoreData";

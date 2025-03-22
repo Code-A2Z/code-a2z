@@ -6,7 +6,7 @@ import axios from "axios";
 // components files 
 import ProjectEditor from "../components/projectEditor.component";
 import PublishForm from "../components/publishForm.component";
-import Loader from "../components/Loader";
+import Loader from "../components/loader.component";
 
 // src files 
 import { UserContext } from "../App";

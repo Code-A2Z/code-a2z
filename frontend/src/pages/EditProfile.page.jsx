@@ -9,7 +9,7 @@ import { uploadImage } from "../common/cloudinary";
 import { storeInSession } from "../common/session";
 
 // components files 
-import Loader from "../components/Loader";
+import Loader from "../components/loader.component";
 import InputBox from "../components/inputBox.component";
 
 // pages files 
