@@ -21,7 +21,7 @@ const UserAuthForm = ({ type }) => {
 
     const userAuthThroughServer = async (serverRoute, formData) => {
 
-        if (serverRoute === "/api/auth/signup") {
+        if (serverRoute === "/api/auth/register") {
             let { email } = formData;
             await axios.post(import.meta.env.VITE_SERVER_DOMAIN + "/api/subscriber/subscribe", { email });
         }
@@ -42,7 +42,7 @@ const UserAuthForm = ({ type }) => {
     const handleSubmit = (e) => {
         e.preventDefault();
 
-        let serverRoute = type == "login" ? "/api/auth/login" : "/api/auth/signup";
+        let serverRoute = type == "login" ? "/api/auth/login" : "/api/auth/register";
 
         let emailRegex = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
         let passwordRegex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{6,20}$/;
@@ -79,7 +79,7 @@ const UserAuthForm = ({ type }) => {
 
         authWithGoogle()
             .then(user => {
-                let serverRoute = "/api/auth/google-auth";
+                let serverRoute = "/api/auth/oauth/google";
                 let formData = { access_token: user.accessToken };
                 userAuthThroughServer(serverRoute, formData);
             })
@@ -131,7 +131,7 @@ const UserAuthForm = ({ type }) => {
                             type="submit"
                             onClick={handleSubmit}
                         >
-                            {type === "login" ? "Login" : "Sign Up"}
+                            {type === "login" ? "Login" : "Register"}
                         </button>
 
                         <div className="relative w-full flex items-center gap-2 my-10 opacity-10 uppercase text-black font-bold">
@@ -152,7 +152,7 @@ const UserAuthForm = ({ type }) => {
                             type === "login" ?
                                 <p className="mt-6 text-gray-700 text-xl text-center">
                                     Don't have an account ?
-                                    <Link to="/signup" className="text-black text-xl ml-1 underline">
+                                    <Link to="/register" className="text-black text-xl ml-1 underline">
                                         Join us today
                                     </Link>
                                 </p>

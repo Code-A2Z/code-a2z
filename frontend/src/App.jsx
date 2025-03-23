@@ -49,7 +49,7 @@ function App() {
             <Route path="change-password" element={<ChangePassword />} />
           </Route>
           <Route path="login" element={<UserAuthForm type="login" />} />
-          <Route path="signup" element={<UserAuthForm type="signup" />} />
+          <Route path="register" element={<UserAuthForm type="register" />} />
           <Route path="search/:query" element={<SearchPage />} />
           <Route path="user/:id" element={<ProfilePage />} />
           <Route path="project/:project_id" element={<ProjectPage />} />

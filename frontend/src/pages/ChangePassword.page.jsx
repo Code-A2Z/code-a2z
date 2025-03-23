@@ -44,7 +44,7 @@ const ChangePassword = () => {
 
         let loadingToast = toast.loading("Changing password...");
 
-        axios.post(import.meta.env.VITE_SERVER_DOMAIN + "/api/auth/change-password", formData, {
+        axios.patch(import.meta.env.VITE_SERVER_DOMAIN + "/api/auth/password", formData, {
             headers: {
                 Authorization: `Bearer ${access_token}`
             }

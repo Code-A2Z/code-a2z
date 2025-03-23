@@ -8,7 +8,7 @@ const serviceAccountKey = JSON.parse(readFileSync("./firebase-adminsdk.json", "u
 import User from "../Models/user.model.js";
 import { formatDataToSend, generateUsername, emailRegex, passwordRegex } from "../utils/helpers.js";
 
-export const signup = async (req, res) => {
+export const register = async (req, res) => {
     let { fullname, email, password } = req.body;
 
     if (fullname.length < 3) return res.status(400).json({ error: "Full name should be at least 3 letters long" });
@@ -79,7 +79,7 @@ export const googleAuth = async (req, res) => {
                         return res.status(403).json({ "error": "This email was signed up without google. Please log in with password to access the account." });
                     }
                 } else {
-                    //signup
+                    // register
                     let username = await generateUsername(email);
                     user = new User({
                         personal_info: {
