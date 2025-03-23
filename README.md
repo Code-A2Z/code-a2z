@@ -163,9 +163,10 @@ git push -u origin <add/project_name>
 1. Fill out the ***PR template*** properly when submitting a pull request.
 2. Do not commit directly to the `main` branch, otherwise your PR will be instantly rejected.
 3. Ensure all work is original and not copied from other sources.
-4. Don't create more than 3-4 commits until not permitted by Admin and Mentors of the project.
+4. Don't create more than 3-4 commits unless permitted by Admin and Mentors in your PR.
 5. Add comments to your code wherever necessary for clarity.
-6. For frontend updates, share screenshots and work samples before submitting a PR.
+6. 🚀 **Before submitting a PR, you must publish a blog about your project on our website. PRs without a blog will not be accepted.**
+7. For frontend updates, share screenshots and work samples before submitting a PR.
 
 </details>
 
