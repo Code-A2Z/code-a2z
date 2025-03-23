@@ -17,11 +17,11 @@ export const formatDataToSend = (user) => {
         fullname: user.personal_info.fullname,
         role: user.role
     };
-};
+}
 
 export const generateUsername = async (email) => {
     let username = email.split("@")[0];
     let isUsernameNotUnique = await User.exists({ "personal_info.username": username });
     if (isUsernameNotUnique) username += nanoid().substring(0, 5);
     return username;
-};
+}

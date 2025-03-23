@@ -23,13 +23,13 @@ const SearchPage = () => {
     let [users, setUsers] = useState(null);
 
     const searchProjects = ({ page = 1, create_new_arr = false }) => {
-        axios.post(import.meta.env.VITE_SERVER_DOMAIN + "/api/project/search", { tag: query, page })
+        axios.get(import.meta.env.VITE_SERVER_DOMAIN + "/api/project/search", { tag: query, page })
             .then(async ({ data }) => {
                 let formattedData = await filterPaginationData({
                     state: projects,
                     data: data.projects,
                     page,
-                    countRoute: "/api/project/search-count",
+                    countRoute: "/api/project/stats/search-count",
                     data_to_send: { tag: query },
                     create_new_arr
                 })
@@ -42,7 +42,7 @@ const SearchPage = () => {
     }
 
     const fetchUsers = () => {
-        axios.post(import.meta.env.VITE_SERVER_DOMAIN + "/api/user/search", { query })
+        axios.get(import.meta.env.VITE_SERVER_DOMAIN + "/api/user/search", { query })
             .then(({ data: { users } }) => {
                 setUsers(users);
             })

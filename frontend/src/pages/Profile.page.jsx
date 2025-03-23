@@ -50,7 +50,7 @@ const ProfilePage = () => {
     let { userAuth: { username } } = useContext(UserContext);
 
     const fetchUserProfile = () => {
-        axios.post(import.meta.env.VITE_SERVER_DOMAIN + "/api/user/profile", {
+        axios.get(import.meta.env.VITE_SERVER_DOMAIN + "/api/user/profile", {
             username: profileId
         })
             .then(({ data: user }) => {
@@ -70,7 +70,7 @@ const ProfilePage = () => {
     const getProjects = ({ page = 1, user_id }) => {
         user_id = user_id == undefined ? projects.user_id : user_id;
 
-        axios.post(import.meta.env.VITE_SERVER_DOMAIN + "/api/project/search", {
+        axios.get(import.meta.env.VITE_SERVER_DOMAIN + "/api/project/search", {
             author: user_id,
             page
         })
@@ -79,7 +79,7 @@ const ProfilePage = () => {
                     state: projects,
                     data: data.projects,
                     page,
-                    countRoute: "/api/project/search-count",
+                    countRoute: "/api/project/stats/search-count",
                     data_to_send: { author: user_id }
                 })
 

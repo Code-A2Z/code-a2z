@@ -18,4 +18,4 @@ export const authenticateUser = (req, res, next) => {
     } catch (error) {
         res.status(500).json({ error: "Token not found" });
     }
-};
+}

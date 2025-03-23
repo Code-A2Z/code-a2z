@@ -41,14 +41,14 @@ const ProjectPage = () => {
     let { title, content, banner, author: { personal_info: { fullname, username: author_username, profile_img } }, publishedAt, projectUrl, repository } = project;
 
     const fetchProject = () => {
-        axios.post(import.meta.env.VITE_SERVER_DOMAIN + "/api/project/get", { project_id })
+        axios.get(import.meta.env.VITE_SERVER_DOMAIN + "/api/project/get", { project_id })
             .then(async ({ data: { project } }) => {
 
                 project.comments = await fetchComments({ project_id: project._id, setParentCommentCountFun: setTotalParentCommentsLoaded });
 
                 setProject(project);
 
-                axios.post(import.meta.env.VITE_SERVER_DOMAIN + "/api/project/search", { tag: project.tags[0], limit: 6, elminate_project: project_id })
+                axios.get(import.meta.env.VITE_SERVER_DOMAIN + "/api/project/search", { tag: project.tags[0], limit: 6, elminate_project: project_id })
                     .then(({ data }) => {
                         setSimilarProjects(data.projects);
                     })

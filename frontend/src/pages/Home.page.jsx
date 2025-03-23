@@ -23,14 +23,14 @@ const Home = () => {
     let categories = ["web", "data science", "game development", "automation", "cloud computing", "blockchain"]
 
     const fetchLatestProjects = ({ page = 1 }) => {
-        axios.post(import.meta.env.VITE_SERVER_DOMAIN + "/api/project/getall", { page })
+        axios.get(import.meta.env.VITE_SERVER_DOMAIN + "/api/project/all", { page })
             .then(async ({ data }) => {
 
                 let formattedData = await filterPaginationData({
                     state: projects,
                     data: data.projects,
                     page,
-                    countRoute: "/api/project/all-latest-count"
+                    countRoute: "/api/project/stats/latest-count"
                 })
                 setProjects(formattedData);
             })
@@ -40,14 +40,14 @@ const Home = () => {
     }
 
     const fetchProjectsByCategory = ({ page = 1 }) => {
-        axios.post(import.meta.env.VITE_SERVER_DOMAIN + "/api/project/search", { tag: pageState, page })
+        axios.get(import.meta.env.VITE_SERVER_DOMAIN + "/api/project/search", { tag: pageState, page })
             .then(async ({ data }) => {
 
                 let formattedData = await filterPaginationData({
                     state: projects,
                     data: data.projects,
                     page,
-                    countRoute: "/api/project/search-count",
+                    countRoute: "/api/project/stats/search-count",
                     data_to_send: { tag: pageState }
                 })
 

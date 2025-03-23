@@ -30,7 +30,7 @@ const ManageProjects = () => {
 
     const getProjects = ({ page, draft, deletedDocCount = 0 }) => {
 
-        axios.post(import.meta.env.VITE_SERVER_DOMAIN + "/api/project/user-written", {
+        axios.get(import.meta.env.VITE_SERVER_DOMAIN + "/api/project/user", {
             page, draft, query, deletedDocCount
         }, {
             headers: {
@@ -43,7 +43,7 @@ const ManageProjects = () => {
                     data: data.projects,
                     page,
                     user: access_token,
-                    countRoute: "/api/project/user-written-count",
+                    countRoute: "/api/project/user/stats/count",
                     data_to_send: { draft, query }
                 })
 

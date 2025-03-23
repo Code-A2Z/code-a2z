@@ -25,7 +25,7 @@ const CommentField = ({ action, index = undefined, replyingTo = undefined, setRe
             return toast.error("Write something to leave a comment...");
         }
 
-        axios.post(import.meta.env.VITE_SERVER_DOMAIN + "/api/notification/comment", {
+        axios.post(import.meta.env.VITE_SERVER_DOMAIN + "/api/comment/comment", {
             _id, comment, project_author, replying_to: replyingTo
         }, {
             headers: {

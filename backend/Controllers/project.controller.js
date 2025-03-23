@@ -2,6 +2,8 @@ import { nanoid } from 'nanoid';
 
 import Project from "../Models/project.model.js";
 import User from "../Models/user.model.js";
+import Notification from "../Models/notification.model.js";
+import Comment from "../Models/comment.model.js";
 
 export const createProject = async (req, res) => {
     let authorId = req.user;

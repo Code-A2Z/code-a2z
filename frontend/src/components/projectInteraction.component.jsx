@@ -18,7 +18,7 @@ const ProjectInteraction = () => {
 
     useEffect(() => {
         if (access_token) {
-            axios.post(import.meta.env.VITE_SERVER_DOMAIN + "/api/notification/like-status", { _id }, {
+            axios.get(import.meta.env.VITE_SERVER_DOMAIN + "/api/notification/like-status", { _id }, {
                 headers: {
                     Authorization: `Bearer ${access_token}`
                 }

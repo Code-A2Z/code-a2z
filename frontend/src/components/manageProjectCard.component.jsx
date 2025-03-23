@@ -40,7 +40,7 @@ const deleteProject = (project, access_token, target) => {
 
     target.setAttribute("disabled", true);
 
-    axios.post(import.meta.env.VITE_SERVER_DOMAIN + "/api/project/delete", { project_id }, {
+    axios.delete(import.meta.env.VITE_SERVER_DOMAIN + "/api/project/delete", { project_id }, {
         headers: {
             Authorization: `Bearer ${access_token}`
         }

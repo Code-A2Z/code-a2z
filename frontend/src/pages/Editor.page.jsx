@@ -40,7 +40,7 @@ const Editor = () => {
             return setLoading(false);
         }
 
-        axios.post(import.meta.env.VITE_SERVER_DOMAIN + "/api/project/get", { project_id, draft: true, mode: 'edit' })
+        axios.get(import.meta.env.VITE_SERVER_DOMAIN + "/api/project/get", { project_id, draft: true, mode: 'edit' })
             .then(({ data: { project } }) => {
                 setProject(project);
                 setLoading(false);

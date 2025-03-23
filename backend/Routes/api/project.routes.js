@@ -1,18 +1,39 @@
 import express from "express";
-import { allLatestProjectsCount, createProject, getProject, getAllProjects, searchProjects, searchProjectsCount, trendingProjects, userWrittenProjects, userWrittenProjectsCount, deleteProject } from "../../Controllers/project.controller.js";
-import { authenticateUser } from "../../Middlewares/auth.middleware.js";
+
+import {
+    authenticateUser
+} from "../../Middlewares/auth.middleware.js";
+
+import {
+    allLatestProjectsCount,
+    createProject,
+    getProject,
+    getAllProjects,
+    searchProjects,
+    searchProjectsCount,
+    trendingProjects,
+    userWrittenProjects,
+    userWrittenProjectsCount,
+    deleteProject
+} from "../../Controllers/project.controller.js";
+
 
 const projectRoutes = express.Router();
 
-projectRoutes.post("/create", authenticateUser, createProject);
-projectRoutes.post("/getall", getAllProjects);
+projectRoutes.get("/all", getAllProjects);
 projectRoutes.get("/trending", trendingProjects);
-projectRoutes.post("/search", searchProjects);
-projectRoutes.post("/all-latest-count", allLatestProjectsCount);
-projectRoutes.post("/search-count", searchProjectsCount);
-projectRoutes.post("/get", getProject);
-projectRoutes.post("/user-written", authenticateUser, userWrittenProjects);
-projectRoutes.post("/user-written-count", authenticateUser, userWrittenProjectsCount);
-projectRoutes.post("/delete", authenticateUser, deleteProject);
+projectRoutes.get("/search", searchProjects);
+projectRoutes.get("/stats/latest-count", allLatestProjectsCount);
+projectRoutes.get("/stats/search-count", searchProjectsCount);
+projectRoutes.get("/get", getProject);
+
+// User protected routes
+projectRoutes.post("/create", authenticateUser, createProject);
+projectRoutes.delete("/delete", authenticateUser, deleteProject);
+
+// User specific routes
+projectRoutes.get("/user", authenticateUser, userWrittenProjects);
+projectRoutes.get("/user/stats/count", authenticateUser, userWrittenProjectsCount);
+
 
 export default projectRoutes;

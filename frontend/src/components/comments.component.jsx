@@ -16,7 +16,7 @@ import { ProjectContext } from "../pages/Project.page";
 export const fetchComments = async ({ skip = 0, project_id, setParentCommentCountFun, comment_arry = null }) => {
     let res;
 
-    await axios.post(import.meta.env.VITE_SERVER_DOMAIN + "/api/notification/get-comments", { project_id, skip })
+    await axios.get(import.meta.env.VITE_SERVER_DOMAIN + "/api/comment/get", { project_id, skip })
         .then(({ data }) => {
             data.map(comment => {
                 comment.childrenLevel = 0;
