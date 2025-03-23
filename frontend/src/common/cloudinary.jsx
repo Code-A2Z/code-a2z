@@ -6,7 +6,7 @@ export const uploadImage = async (img) => {
         formData.append("image", img);
 
         const { data } = await axios.post(
-            `${import.meta.env.VITE_SERVER_DOMAIN}/api/media/get-upload-url`,
+            `${import.meta.env.VITE_SERVER_DOMAIN}/api/media/image`,
             formData,
             { headers: { "Content-Type": "multipart/form-data" } }
         );
