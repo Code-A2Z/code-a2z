@@ -1,7 +1,7 @@
 <h1 align="center">Contributors Guide⚡ </h1>
 <h3 align="center">Welcome to our open-source project! 😍<br> We appreciate your interest in contributing.😊 <br>This guide will help you get started with the project and make your first contribution.</h3>
 
-![Line](https://github.com/Avdhesh-Varshney/blog-script/assets/114330097/4b78510f-a941-45f8-a9d5-80ed0705e847)
+![Line](https://github.com/Avdhesh-Varshney/pjt-blog/assets/114330097/4b78510f-a941-45f8-a9d5-80ed0705e847)
 
 <h1 align="center">Creating first Pull Request 🌟</h1>
 
@@ -13,13 +13,13 @@
 > ***WARNING***: **Avoid cloning with GitHub Desktop or GitKraken; it downloads all submodules, consuming excessive data.**
 
 ```css
-git clone https://github.com/<your-github-username>/blog-script.git
+git clone https://github.com/<your-github-username>/pjt-blog.git
 ```
 
 4. Navigate to the project directory.
 
 ```py
-cd blog-script
+cd pjt-blog
 ```
 
 5. Create a new branch.
@@ -51,7 +51,7 @@ git push -u origin <your_branch_name>
 10. Congratulations! 🎉 you've made your contribution.
 
 
-![Line](https://github.com/Avdhesh-Varshney/blog-script/assets/114330097/4b78510f-a941-45f8-a9d5-80ed0705e847)
+![Line](https://github.com/Avdhesh-Varshney/pjt-blog/assets/114330097/4b78510f-a941-45f8-a9d5-80ed0705e847)
 
 
 ### :zap: Communication and Support 💬
@@ -75,7 +75,7 @@ You can refer to the following articles on basics of Git and Github and also con
 - [Learn GitHub from Scratch](https://lab.github.com/githubtraining/introduction-to-github)
 
 
-![Line](https://github.com/Avdhesh-Varshney/blog-script/assets/114330097/4b78510f-a941-45f8-a9d5-80ed0705e847)
+![Line](https://github.com/Avdhesh-Varshney/pjt-blog/assets/114330097/4b78510f-a941-45f8-a9d5-80ed0705e847)
 
 
 ### :zap: Note from Admin ❗
