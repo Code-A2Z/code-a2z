@@ -3,6 +3,7 @@ import { Link, Outlet, useNavigate } from "react-router-dom";
 import { UserContext } from "../App";
 import UserNavigationPanel from "./UserNavigationPanel";
 import SubscribeModal from "./SubscribeModal";
+import ThemeToggle from "./ThemeToggle";
 import axios from "axios";
 
 const Navbar = () => {
@@ -58,26 +59,30 @@ const Navbar = () => {
         <>
             <nav className="navbar z-50">
                 <Link to="/" className="flex-none w-10">
-                    <img src="/logo.png" alt="" className="w-full" />
+                    <img src="/logo.png" alt="" className="w-full dark:invert" />
                 </Link>
 
-                <div className={"absolute bg-white w-full left-0 top-full mt-0.5 border-b border-gray-200 py-4 px-[5vw] md:border-0 md:relative md:inset-0 md:p-0 md:w-auto " + (searchBoxVisibility ? "show" : "hidden md:block")}
+                <div
+                    className={"absolute bg-[#fafafa] dark:bg-[#09090b] w-full left-0 top-full mt-0.5 border-b border-gray-200 dark:border-[#27272a] py-4 px-[5vw] md:border-0 md:relative md:inset-0 md:p-0 md:w-auto " +
+                        (searchBoxVisibility ? "show" : "hidden md:block")}
                 >
                     <input
                         type="text"
                         placeholder="Search"
-                        className="w-full md:w-auto bg-gray-100 p-4 pl-6 pr-[12%] md:pr-6 rounded-full placeholder:text-dark-grey md:pl-12"
+                        className="w-full md:w-auto bg-[#ffffff] dark:bg-[#18181b] p-4 pl-6 pr-[12%] md:pr-6 rounded-full placeholder:text-dark-grey dark:placeholder:text-gray-400 md:pl-12"
                         onKeyDown={handleSearch}
                     />
-                    <i className="fi fi-rr-search absolute right-[10%] md:pointer-events-none md:left-5 top-1/2 -translate-y-1/2 text-xl text-dark-grey"></i>
+                    <i className="fi fi-rr-search absolute right-[10%] md:pointer-events-none md:left-5 top-1/2 -translate-y-1/2 text-xl text-dark-grey dark:text-gray-400"></i>
                 </div>
 
                 <div className="flex items-center gap-3 md:gap-6 ml-auto">
-                    <button className="md:hidden bg-gray-100 w-12 h-12 rounded-full flex items-center justify-center" onClick={() => setSearchBoxVisibility(!searchBoxVisibility)}>
-                        <i className="fi fi-rr-search text-xl"></i>
+                    <button className="md:hidden bg-[#ffffff] dark:bg-[#18181b] w-12 h-12 rounded-full flex items-center justify-center" onClick={() => setSearchBoxVisibility(!searchBoxVisibility)}>
+                        <i className="fi fi-rr-search text-xl text-dark-grey dark:text-gray-400"></i>
                     </button>
 
-                    <Link to="/editor" className="hidden md:flex items-center gap-2 text-gray-700 hover:text-black hover:bg-gray-200 p-3 px-4 rounded-lg transition">
+                    <ThemeToggle />
+
+                    <Link to="/editor" className="hidden md:flex items-center gap-2 text-gray-700 dark:text-gray-300 hover:text-black dark:hover:text-white hover:bg-gray-200 dark:hover:bg-[#27272a] p-3 px-4 rounded-lg transition">
                         <i className="fi fi-rr-file-edit"></i>
                         <p>Write</p>
                     </Link>
@@ -112,15 +117,15 @@ const Navbar = () => {
                             <>
                                 <button
                                     onClick={toggleSubscribeModal}
-                                    className="text-gray-700 bg-gray-200 py-2 px-4 rounded-full transition cursor-pointer"
+                                    className="text-gray-700 dark:text-gray-300 hover:text-black dark:hover:text-white hover:bg-gray-200 dark:hover:bg-[#27272a] py-2 px-4 rounded-full transition cursor-pointer"
                                 >
                                     <i className="fi fi-rr-envelope-plus text-xl"></i>
                                 </button>
 
-                                <Link className="bg-black text-white py-2 px-5 rounded-full hover:bg-gray-800 transition" to="/login">
+                                <Link className="bg-black dark:bg-gray-200 text-white dark:text-gray-800 py-2 px-5 rounded-full hover:bg-gray-800 dark:hover:bg-[#ffffff] transition" to="/login">
                                     Login
                                 </Link>
-                                <Link className="bg-gray-200 text-gray-800 py-2 px-5 rounded-full hidden md:block hover:bg-gray-300 transition" to="/signup">
+                                <Link className="bg-gray-200 dark:bg-black text-gray-800 dark:text-white py-2 px-5 rounded-full hidden md:block hover:bg-gray-300 dark:hover:bg-[#27272a] transition" to="/signup">
                                     Sign Up
                                 </Link>
                             </>
