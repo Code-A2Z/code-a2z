@@ -112,22 +112,15 @@ const UserAuthForm = ({ type }) => {
                             {type === "login" ? "Login" : "Sign Up"}
                         </button>
 
-                        {
-                            type === "login" ?
-                                <p className="mt-6 text-gray-700 text-xl text-center">
-                                    Don't have an account ?
-                                    <Link to="/signup" className="text-black text-xl ml-1 underline">
-                                        Join us today
-                                    </Link>
-                                </p>
-                                :
-                                <p className="mt-6 text-gray-700 text-xl text-center">
-                                    Already a member ?
-                                    <Link to="/login" className="text-black text-xl ml-1 underline">
-                                        Sign in here
-                                    </Link>
-                                </p>
-                        }
+                        <p className="mt-10 text-[#a3a3a3] text-xl text-center">
+                            {type === "login" ? "Don't have an account ?" : "Already a member ?"}
+                            <Link
+                                to={type === "login" ? "/signup" : "/login"}
+                                className="text-black dark:text-[#ededed] text-xl ml-1 underline"
+                            >
+                                {type === "login" ? "Join us today" : "Sign in here"}
+                            </Link>
+                        </p>
                     </form>
                 </section>
             </AnimationWrapper>
