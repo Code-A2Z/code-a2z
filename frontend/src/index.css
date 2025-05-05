@@ -1,6 +1,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Gelasio&family=Inter:wght@400;500&display=swap');
 @import "@flaticon/flaticon-uicons/css/all/all";
 @import "tailwindcss";
+@custom-variant dark (&:where(.dark, .dark *));
 
 .font-gelasio {
     font-family: 'Gelasio', serif;
