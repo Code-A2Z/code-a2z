@@ -50,7 +50,12 @@ const NotificationCard = ({ data, index, notificationState }) => {
                 <div className="w-full">
                     <h1 className="font-medium text-xl text-gray-500">
                         <span className="lg:inline-block hidden capitalize">{fullname}</span>
-                        <Link to={`/user/${username}`} className="mx-1 text-black underline">@{username}</Link>
+                        <Link
+                            to={`/user/${username}`}
+                            className="mx-1 text-black underline hover:text-blue-600 dark:text-white dark:hover:text-blue-400"
+                        >
+                            @{username}
+                        </Link>
                         <span className="font-normal">
                             {
                                 type === 'like' ? "liked your project" :
@@ -62,10 +67,13 @@ const NotificationCard = ({ data, index, notificationState }) => {
 
                     {
                         type === 'reply' ?
-                            <div className="p-4 mt-4 rounded-md bg-gray-100">
+                            <div className="p-4 mt-4 rounded-md bg-gray-100 dark:bg-gray-700">
                                 <p>{replied_on_comment.comment}</p>
                             </div> :
-                            <Link to={`/project/${project_id}`} className="font-medium text-gray-500 hover:underline line-clamp-1">
+                            <Link
+                                to={`/project/${project_id}`}
+                                className="font-medium text-gray-500 hover:underline line-clamp-1 dark:text-gray-300 dark:hover:text-blue-400"
+                            >
                                 {`"${title}"`}
                             </Link>
                     }
@@ -87,7 +95,7 @@ const NotificationCard = ({ data, index, notificationState }) => {
                             {
                                 !reply ?
                                     <button
-                                        className="underline hover:text-black"
+                                        className="underline hover:text-black dark:hover:text-white"
                                         onClick={handleReplyClick}
                                     >
                                         Reply
@@ -96,7 +104,7 @@ const NotificationCard = ({ data, index, notificationState }) => {
                             }
 
                             <button
-                                className="underline hover:text-black"
+                                className="underline hover:text-black dark:hover:text-white"
                                 onClick={(e) => handleDelete(comment._id, "comment", e.target)}
                             >
                                 Delete
@@ -116,17 +124,17 @@ const NotificationCard = ({ data, index, notificationState }) => {
 
             {
                 reply ?
-                    <div className="ml-20 p-5 bg-gray-100 mt-5 rounded-md">
+                    <div className="ml-20 p-5 bg-gray-100 dark:bg-gray-700 mt-5 rounded-md">
                         <div className="flex gap-3 mb-3">
                             <img src={author_profile_img} className="w-8 h-8 rounded-full" alt="" />
 
                             <div>
                                 <h1 className="font-medium text-xl text-gray-500">
-                                    <Link to={`/user/${author_username}`} className="mx-1 text-black underline">@{author_username}</Link>
+                                    <Link to={`/user/${author_username}`} className="mx-1 text-black dark:text-white underline">@{author_username}</Link>
 
                                     <span className="font-normal">replied to</span>
 
-                                    <Link to={`/user/${username}`} className="mx-1 text-black underline">@{username}</Link>
+                                    <Link to={`/user/${username}`} className="mx-1 text-black dark:text-white underline">@{username}</Link>
                                 </h1>
                             </div>
                         </div>
@@ -134,7 +142,7 @@ const NotificationCard = ({ data, index, notificationState }) => {
                         <p className="ml-14 font-gelasio text-xl my-2">{reply.comment}</p>
 
                         <button
-                            className="underline hover:text-black ml-14 mt-2"
+                            className="underline hover:text-black hover:dark:text-white ml-14 mt-2"
                             onClick={(e) => handleDelete(reply._id, "reply", e.target)}
                         >
                             Delete

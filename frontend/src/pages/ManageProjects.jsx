@@ -92,7 +92,7 @@ const ManageProjects = () => {
             <div className="relative max-md:mt-5 md:mt-8 mb-10">
                 <input
                     type="search"
-                    className="w-full bg-gray-100 p-4 pl-12 pr-6 rounded-full placeholder:text-gray-500"
+                    className="w-full bg-gray-100 dark:bg-[#1f1f1f] text-black dark:text-white p-4 pl-12 pr-6 rounded-full placeholder:text-gray-500 dark:placeholder:text-gray-400"
                     placeholder="Search Projects"
                     onChange={handleChange}
                     onKeyDown={handleSearch}

@@ -91,7 +91,7 @@ const Navbar = () => {
                         access_token ?
                             <>
                                 <Link to="/dashboard/notifications">
-                                    <button className="w-12 h-12 rounded-full bg-gray-200 relative hover:bg-black/10">
+                                    <button className="w-12 h-12 rounded-full relative text-gray-700 dark:text-gray-300 hover:text-black dark:hover:text-white hover:bg-gray-200 dark:hover:bg-[#27272a]">
                                         <i className="fi fi-rr-bell text-2xl block mt-1"></i>
                                         {
                                             new_notification_available ?

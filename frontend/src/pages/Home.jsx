@@ -139,7 +139,7 @@ const Home = () => {
                                 {
                                     categories.map((category, i) => {
                                         return (
-                                            <button key={i} className={"tag " + (pageState === category ? "bg-black text-white " : "")} onClick={loadProjectsByCategory}>
+                                            <button key={i} className={"tag " + (pageState === category ? "bg-[#f0f0f0] dark:bg-[#18181b] text-[#444444] dark:text-[#a3a3a3] " : "")} onClick={loadProjectsByCategory}>
                                                 {category}
                                             </button>
                                         )

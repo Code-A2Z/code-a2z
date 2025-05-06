@@ -68,11 +68,11 @@
     }
 
     .btn-dark {
-        @apply whitespace-nowrap rounded-full bg-black dark:bg-gray-200 text-white dark:text-gray-800 hover:opacity-80 py-3 px-6 text-xl capitalize;
+        @apply whitespace-nowrap rounded-full bg-[#1f1f1f] dark:bg-[#e4e4e7] text-[#f1f1f1] dark:text-[#1a1a1a] hover:opacity-80 py-3 px-6 text-xl capitalize;
     }
 
     .btn-light {
-        @apply whitespace-nowrap rounded-full bg-[#fafafa] dark:bg-[#09090b] text-[#111111] dark:text-[#ededed] hover:opacity-80 py-3 px-6 text-xl capitalize;
+        @apply whitespace-nowrap rounded-full bg-[#f4f4f5] dark:bg-[#1a1a1d] text-[#1a1a1a] dark:text-[#f4f4f5] hover:opacity-80 py-3 px-6 text-xl capitalize;
     }
 
     .input-box {
@@ -89,7 +89,7 @@
     }
 
     .link {
-        @apply text-[#2563eb] dark:text-[#3b82f6] hover:text-[#444444] hover:bg-[#f0f0f0f] p-3 px-4 block opacity-75;
+        @apply text-[#444444] dark:text-[#a3a3a3] hover:text-[#111111] hover:bg-[#ededed] p-3 px-4 block opacity-75;
     }
 
     .hide {
@@ -101,11 +101,11 @@
     }
 
     .sidebar-link {
-        @apply flex gap-4 items-center py-5 text-[#2563eb] dark:text-[#3b82f6] hover:text-[#444444];
+        @apply flex gap-4 items-center py-5 text-[#444444] dark:text-[#a3a3a3] hover:text-[#111111] hover:dark:text-[#ededed];
     }
 
     .sidebar-link.active {
-        @apply text-[#2563eb] dark:text-[#3b82f6] border-r-2 border-[#e5e7eb] dark:border-[#27272a] pl-6 bg-[#fafafa] dark:bg-[#09090b] -ml-6 md:rounded-tl-lg md:rounded-bl-lg max-md:border-none;
+        @apply text-[#111111] dark:text-[#ededed] border-r-2 border-[#e5e7eb] dark:border-[#27272a] pl-6 bg-[#f0f0f0] dark:bg-[#1f1f23] -ml-6 md:rounded-tl-lg md:rounded-bl-lg max-md:border-none;
     }
 
     #textEditor h2,
@@ -129,7 +129,7 @@
     }
 
     .tag {
-        @apply p-2 bg-[#fafafa] dark:bg-[#09090b] rounded-full px-4 capitalize;
+        @apply p-2 bg-[#09090b] dark:bg-[#fafafa] text-[#ededed] dark:text-[#111111] rounded-full px-4 capitalize;
     }
 
     .project-title {

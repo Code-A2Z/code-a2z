@@ -129,7 +129,7 @@ const PublishForm = () => {
                     <p className="font-gelasio line-clamp-2 text-xl leading-7 mt-4">{des}</p>
                 </div>
 
-                <div className="border-gray-200 lg:border-1 lg:pl-8">
+                <div>
                     <p className="text-dark-grey mb-2 mt-9">Project Title</p>
                     <input type="text" placeholder="Project Title" defaultValue={title} className="input-box pl-4" onChange={handleProjectTitleChange} />
 
@@ -149,7 +149,12 @@ const PublishForm = () => {
                     <p className="text-dark-grey mb-2 mt-9">Topics - (Helps in searching and ranking your project post)</p>
 
                     <div className="relative input-box pl-2 py-2 pb-4">
-                        <input type="text" placeholder="Add topics" className="sticky input-box bg-white top-0 left-0 pl-4 mb-3 focus:bg-white" onKeyDown={handleKeyDown} />
+                        <input
+                            type="text"
+                            placeholder="Add topics"
+                            className="sticky input-box top-0 left-0 pl-4 mb-3 bg-white dark:bg-black"
+                            onKeyDown={handleKeyDown}
+                        />
                         {
                             tags.map((tag, i) => {
                                 return <Tag tag={tag} tagIndex={i} key={i} />
@@ -158,9 +163,12 @@ const PublishForm = () => {
                     </div>
                     <p className="mt-1 mb-4 text-dark-grey text-right">{tagLimit - tags.length} Tags left</p>
 
-                    <button className="btn-dark px-8"
+                    <button
+                        className="btn-dark px-8"
                         onClick={publichProject}
-                    >Publish</button>
+                    >
+                        Publish
+                    </button>
                 </div>
             </section>
         </AnimationWrapper>

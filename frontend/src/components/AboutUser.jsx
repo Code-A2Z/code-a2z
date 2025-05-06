@@ -12,7 +12,13 @@ const AboutUser = ({ className, bio, social_links, joinedAt }) => {
                         let link = social_links[key];
                         return link ?
                             <Link to={link} key={key} target="_blank">
-                                <i className={"fi " + (key !== 'website' ? "fi-brands-" + key : "fi-rr-globe") + " text-2xl hover:text-black"} ></i>
+                                <i
+                                    className={
+                                        "fi " +
+                                        (key !== 'website' ? "fi-brands-" + key : "fi-rr-globe") +
+                                        " text-2xl text-gray-700 dark:text-gray-300 hover:text-black dark:hover:text-white transition-colors"
+                                    }
+                                ></i>
                             </Link> :
                             ""
                     })

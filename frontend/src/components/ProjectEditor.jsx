@@ -158,9 +158,9 @@ const ProjectEditor = () => {
         <>
             <nav className="navbar">
                 <Link to="/" className="flex-none w-10">
-                    <img src="logo.png" />
+                    <img src="logo.png" alt="" className="dark:invert" />
                 </Link>
-                <p className="max-md:hidden text-black line-clamp-1 w-full">
+                <p className="max-md:hidden text-black dark:text-white line-clamp-1 w-full">
                     {title.length ? title : "New Project"}
                 </p>
 

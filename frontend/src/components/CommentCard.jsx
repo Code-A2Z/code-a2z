@@ -122,7 +122,8 @@ const CommentCard = ({ index, leftVal, commentData }) => {
         let btn = (
             <button
                 onClick={() => loadReplies({ skip: index - parentIndex, currentIndex: getParentIndex() })}
-                className="text-gray-500 p-2 px-3 hover:bg-gray-50 rounded-md flex items-center gap-2">
+                className="text-[#555] dark:text-gray-300 p-2 px-3 hover:bg-[#f3f3f3] dark:hover:bg-[#1e1e1e] rounded-md flex items-center gap-2"
+            >
                 Load More Replies
             </button>
         );
@@ -159,13 +160,13 @@ const CommentCard = ({ index, leftVal, commentData }) => {
                         commentData.isReplyLoaded ?
                             <button
                                 onClick={hideReplies}
-                                className="text-gray-500 p-2 px-3 hover:bg-gray-50 rounded-md flex items-center gap-2"
+                                className="text-[#555] dark:text-gray-300 p-2 px-3 hover:bg-[#f3f3f3] dark:hover:bg-[#1e1e1e] rounded-md flex items-center gap-2"
                             >
                                 <i className="fi fi-rs-comment-dots"></i> Hide Reply
                             </button> :
                             <button
                                 onClick={loadReplies}
-                                className="text-gray-500 p-2 px-3 hover:bg-gray-50 rounded-md flex items-center gap-2"
+                                className="text-[#555] dark:text-gray-300 p-2 px-3 hover:bg-[#f3f3f3] dark:hover:bg-[#1e1e1e] rounded-md flex items-center gap-2"
                             >
                                 <i className="fi fi-rs-comment-dots"></i> {children.length} Reply
                             </button>

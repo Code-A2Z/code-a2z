@@ -59,19 +59,24 @@ const ProjectInteraction = () => {
                 <div className="flex gap-3 items-center">
                     <button
                         onClick={handleLike}
-                        className={"w-10 h-10 rounded-full flex items-center justify-center " + (islikedByUser ? "bg-red-100 text-red-500" : "bg-gray-100")}
+                        className={
+                            "w-10 h-10 rounded-full flex items-center justify-center transition-colors duration-200 " +
+                            (islikedByUser
+                                ? "bg-red-100 text-red-500 dark:bg-red-200 dark:text-red-600"
+                                : "bg-gray-100 text-gray-600 dark:bg-[#27272a] dark:text-gray-300")
+                        }
                     >
                         <i className={"fi " + (islikedByUser ? "fi-sr-heart" : "fi-rr-heart")}></i>
                     </button>
-                    <p className="text-xl text-gray-700">{total_likes}</p>
+                    <p className="text-xl text-gray-700 dark:text-gray-300">{total_likes}</p>
 
                     <button
                         onClick={() => setCommentsWrapper(preVal => !preVal)}
-                        className="w-10 h-10 rounded-full flex items-center justify-center bg-gray-100"
+                        className="w-10 h-10 rounded-full flex items-center justify-center transition-colors duration-200 bg-gray-100 text-gray-600 dark:bg-[#27272a] dark:text-gray-300"
                     >
                         <i className="fi fi-rr-comment-dots"></i>
                     </button>
-                    <p className="text-xl text-gray-700">{total_comments}</p>
+                    <p className="text-xl text-gray-700 dark:text-gray-300">{total_comments}</p>
                 </div>
 
                 <div className="flex gap-6 items-center">

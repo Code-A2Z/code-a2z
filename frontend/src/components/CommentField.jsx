@@ -70,7 +70,7 @@ const CommentField = ({ action, index = undefined, replyingTo = undefined, setRe
             >
             </textarea>
             <button
-                className="btn-dark mt-5 px-10"
+                className="btn-dark dark:btn-light mt-5 px-10"
                 onClick={handleComment}
             >
                 {action}

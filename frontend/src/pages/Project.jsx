@@ -84,11 +84,15 @@ const ProjectPage = () => {
 
                         <div className="max-w-[900px] center py-10 max-lg:px-[5vw]">
                             <div className="my-8 flex max-sm:flex-col justify-between">
-                                <h2>{title}</h2>
+                                <h2 className={`${projectUrl && repository ? "max-w-[60%]" : "max-w-[80%]"
+                                    } truncate whitespace-nowrap overflow-hidden`}
+                                >
+                                    {title}
+                                </h2>
                                 <div className="flex gap-4">
                                     {
                                         projectUrl ?
-                                            <Link to={projectUrl} className="btn-light rounded flex gap-2 items-center">
+                                            <Link to={projectUrl} className="btn-dark dark:btn-light rounded flex gap-2 items-center">
                                                 <i className="fi fi-rr-link"></i>
                                                 Live URL
                                             </Link>
@@ -96,7 +100,7 @@ const ProjectPage = () => {
                                     }
                                     {
                                         repository ?
-                                            <Link to={repository} className="btn-light rounded flex gap-2 items-center">
+                                            <Link to={repository} className="btn-dark dark:btn-light rounded flex gap-2 items-center">
                                                 <i className="fi fi-brands-github"></i>
                                                 GitHub
                                             </Link>
@@ -116,7 +120,7 @@ const ProjectPage = () => {
                                     </p>
                                 </div>
 
-                                <p className="text-gray-700 opacity-75 max-sm:mt-6 max-sm:ml-12 max-sm:pl-5">Published on {getDay(publishedAt)}</p>
+                                <p className="text-gray-700 dark:text-gray-200 opacity-75 max-sm:mt-6 max-sm:ml-12 max-sm:pl-5">Published on {getDay(publishedAt)}</p>
                             </div>
 
                             <ProjectInteraction />
