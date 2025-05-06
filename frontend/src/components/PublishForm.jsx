@@ -56,7 +56,7 @@ const PublishForm = () => {
         }
     }
 
-    const publichProject = (e) => {
+    const publishProject = (e) => {
 
         if (e.target.className.includes("disable")) {
             return;
@@ -165,7 +165,7 @@ const PublishForm = () => {
 
                     <button
                         className="btn-dark px-8"
-                        onClick={publichProject}
+                        onClick={publishProject}
                     >
                         Publish
                     </button>
