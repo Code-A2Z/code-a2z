@@ -13,13 +13,13 @@
 > ***WARNING***: **Avoid cloning with GitHub Desktop or GitKraken; it downloads all submodules, consuming excessive data.**
 
 ```css
-git clone https://github.com/<your-github-username>/pjt-blog.git
+git clone https://github.com/<your-github-username>/<this-project-name>.git
 ```
 
 4. Navigate to the project directory.
 
 ```py
-cd pjt-blog
+cd <this-project-name>
 ```
 
 5. Create a new branch.

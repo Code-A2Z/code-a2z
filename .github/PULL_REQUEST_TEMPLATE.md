@@ -1,8 +1,8 @@
 <!-- #issue_number  -->
 Closes: 
 
-### Project Published URL 🔗
-<!-- To approve your PR, You have to publish your project on https://pjt-blog.vercel.app/ -->
+<!-- ### Project Published URL 🔗 -->
+<!-- To approve your PR, You have to publish your project on Code A2Z - Project Blog website -->
 
 
 

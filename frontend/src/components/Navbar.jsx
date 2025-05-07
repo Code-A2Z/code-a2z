@@ -59,7 +59,7 @@ const Navbar = () => {
         <>
             <nav className="navbar z-50">
                 <Link to="/" className="flex-none w-10">
-                    <img src="/logo.png" alt="" className="w-full dark:invert" />
+                    <img src="/logo.png" alt="" className="w-full rounded-md" />
                 </Link>
 
                 <div
@@ -76,7 +76,7 @@ const Navbar = () => {
                 </div>
 
                 <div className="flex items-center gap-3 md:gap-6 ml-auto">
-                    <button className="md:hidden bg-[#ffffff] dark:bg-[#18181b] w-12 h-12 rounded-full flex items-center justify-center" onClick={() => setSearchBoxVisibility(!searchBoxVisibility)}>
+                    <button className="md:hidden hover:bg-gray-200 hover:dark:bg-[#27272a] w-12 h-12 rounded-full flex items-center justify-center" onClick={() => setSearchBoxVisibility(!searchBoxVisibility)}>
                         <i className="fi fi-rr-search text-xl text-dark-grey dark:text-gray-400"></i>
                     </button>
 

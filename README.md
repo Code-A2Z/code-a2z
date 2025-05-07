@@ -37,13 +37,13 @@
 
 #### :zap: About the Project ❤️
 
-Welcome to the **Project Blog**—a collaborative blogging platform designed to simplify content creation, management, and sharing. 
+Welcome to the **Code A2Z - Project Blog**—a collaborative blogging platform designed to simplify content creation, management, and sharing. 
 It provides a structured environment where developers and writers can seamlessly integrate submodules, customize templates, and efficiently manage their projects. 
-With role-based access, built-in SEO optimization, and community discussions, **Project Blog** enhances collaboration and ensures global visibility for your work.
+With role-based access, built-in SEO optimization, and community discussions, **Code A2Z - Project Blog** enhances collaboration and ensures global visibility for your work.
 
-#### :zap: Contribute to Project Blog! ✅
+#### :zap: Contribute to Code A2Z! ✅
 
-Project Blog is an open-source platform where you can **submit your projects, update them anytime, and improve the platform itself**. 
+Code A2Z is an open-source platform where you can **submit your projects, update them anytime, and improve the platform itself**. 
 It’s perfect for developers and writers who want to **showcase their work, collaborate with others, and gain global visibility**.  
 
 Join us, contribute, and grow together! 🌍✨
@@ -56,11 +56,11 @@ Join us, contribute, and grow together! 🌍✨
 | **Markdown Support**             | Easily write and format blog content using Markdown, making it clean and well-structured. Markdown helps in organizing text, adding headings, lists, links, and images without complex coding. |
 | **Submodule Integration**        | Allows you to add external repositories as submodules, making it easier to manage and link different projects inside your blog. This helps in organizing code and keeping everything in one place. |
 | **Customizable Templates**       | Choose from ready-made templates to design your blog the way you like. These templates help in quickly setting up a beautiful and professional-looking blog. |
-| **Project Contribution Workflow** | Submit your project to this repository and update it anytime. You can also contribute more by improving your project and raising pull requests (PRs) to update Project Blog itself. This helps in growing your project while also making Project Blog better. |
+| **Project Contribution Workflow** | Submit your project to this repository and update it anytime. You can also contribute more by improving your project and raising pull requests (PRs) to update Code A2Z itself. This helps in growing your project while also making Code A2Z - Project Blog better. |
 | **Global Visibility**            | Your blog and projects will be visible to a larger audience worldwide. This increases your chances of getting noticed, getting feedback, and collaborating with others. |
 | **Community Discussions**        | Connect with other contributors, discuss ideas, ask questions, and share knowledge. This makes learning and improving projects easier through teamwork. |
 | **Full Ownership**               | You have complete control over your projects and contributions. No one else can change your work without your permission. |
-| **SEO Optimization**             | Project Blog ensures your content is easily found on search engines like Google. This helps in reaching more people and increasing engagement. |
+| **SEO Optimization**             | Code A2Z - Project Blog ensures your content is easily found on search engines like Google. This helps in reaching more people and increasing engagement. |
 | **Role-Based Dashboard**         | Different users have different levels of access. Admins can manage everything, collaborators can work on assigned projects, contributors can submit their work, and regular users can read and interact with blogs. |
 
 </details>
@@ -118,7 +118,7 @@ Join us, contribute, and grow together! 🌍✨
 
 2. Run the following command to add your project as a submodule:
 
-    > Run this command from the root directory `/workspaces/pjt-blog`
+    > Run this command from the root directory `/workspaces/<this-project-name>`
 
 ```bash
 git submodule add --depth 1 <your_project_repo_url> projects/<category>/<project_name>
