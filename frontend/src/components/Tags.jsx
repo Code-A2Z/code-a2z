@@ -27,7 +27,7 @@ const Tag = ({ tag, tagIndex }) => {
     }
 
     return (
-        <div className="relative p-2 mt-2 mr-2 px-5 bg-white dark:bg-black rounded-full inline-block hover:bg-opacity-50 pr-10">
+        <div className="relative p-2 mt-2 mr-2 px-5 bg-[#fafafa] dark:bg-[#09090b] rounded-full inline-block hover:bg-opacity-50 pr-10">
             <p
                 className="outline-none cursor-pointer"
                 onKeyDown={handleTagEdit}

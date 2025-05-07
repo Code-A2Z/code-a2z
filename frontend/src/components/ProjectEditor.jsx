@@ -158,7 +158,7 @@ const ProjectEditor = () => {
         <>
             <nav className="navbar">
                 <Link to="/" className="flex-none w-10">
-                    <img src="logo.png" alt="" className="dark:invert" />
+                    <img src="/logo.png" alt="" className="w-full rounded-md" />
                 </Link>
                 <p className="max-md:hidden text-black dark:text-white line-clamp-1 w-full">
                     {title.length ? title : "New Project"}
@@ -183,7 +183,7 @@ const ProjectEditor = () => {
             <AnimationWrapper>
                 <section>
                     <div className="mx-auth max-w-[900px] w-full">
-                        <div className="relative aspect-video hover:opacity-80 bg-white border-4 border-gray-200">
+                        <div className="relative aspect-video hover:opacity-80 bg-[#fafafa] dark:bg-[#09090b] border-4 border-gray-200">
                             <label htmlFor="uploadBanner">
                                 <img
                                     src={banner ? banner : defaultBanner}

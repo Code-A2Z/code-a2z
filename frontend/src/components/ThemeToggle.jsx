@@ -40,7 +40,7 @@ const ThemeToggle = () => {
             </button>
 
             {isOpen && (
-                <div className="absolute right-0 mt-2 w-48 rounded-md shadow-lg bg-white dark:bg-[#27272a] z-50">
+                <div className="absolute right-0 mt-2 w-48 rounded-md shadow-lg bg-[#ffffff] dark:bg-[#18181b] z-50">
                     <div className="py-1">
                         {themes.map(({ name, value, icon }) => (
                             <button

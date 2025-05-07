@@ -152,7 +152,7 @@ const PublishForm = () => {
                         <input
                             type="text"
                             placeholder="Add topics"
-                            className="sticky input-box top-0 left-0 pl-4 mb-3 bg-white dark:bg-black"
+                            className="sticky input-box top-0 left-0 pl-4 mb-3 bg-[#fafafa] dark:bg-[#09090b]"
                             onKeyDown={handleKeyDown}
                         />
                         {

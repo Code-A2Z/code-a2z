@@ -43,7 +43,7 @@ const SubscribeModal = ({ onClose }) => {
         <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-100 p-4">
             <Toaster />
 
-            <form id="subscribeFormEle" className="bg-white dark:bg-black rounded-lg max-w-md w-full p-6 relative">
+            <form id="subscribeFormEle" className="bg-[#fafafa] dark:bg-[#09090b] rounded-lg max-w-md w-full p-6 relative">
                 <button
                     onClick={onClose}
                     className="absolute top-4 right-4 text-black dark:text-white py-3 px-4 rounded-full hover:bg-gray-100 hover:dark:bg-[#1f1f23] transition"

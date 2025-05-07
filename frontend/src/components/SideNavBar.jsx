@@ -40,7 +40,7 @@ const SideNav = () => {
                 <section className="relative flex gap-10 py-0 m-0 max-md:flex-col">
                     <div className="sticky top-[80px] z-30">
 
-                        <div className="md:hidden bg-white py-1 border-b border-gray-100 flex flex-nowrap overflow-x-auto">
+                        <div className="md:hidden bg-[#fafafa] dark:bg-[#09090b] py-1 border-b border-gray-100 flex flex-nowrap overflow-x-auto">
                             <button
                                 onClick={changePageState}
                                 ref={sideBarIconTab}

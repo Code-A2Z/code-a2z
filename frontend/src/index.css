@@ -129,7 +129,7 @@
     }
 
     .tag {
-        @apply p-2 bg-[#09090b] dark:bg-[#fafafa] text-[#ededed] dark:text-[#111111] rounded-full px-4 capitalize;
+        @apply p-2 bg-[#2a2a2e] dark:bg-[#d4d4d4] text-[#ededed] dark:text-[#111111] rounded-full px-4 capitalize;
     }
 
     .project-title {
