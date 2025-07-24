@@ -149,7 +149,8 @@ const Home = () => {
                                         <div key={temp} className="w-full p-4 bg-[#f5f5f5] dark:bg-[#151515] rounded-md animate-pulse space-y-4">
                                             {/* Header Section */}
                                             <div className="flex items-center space-x-4">
-                                                <div className="w-10 h-10 bg-[#d4d4d4] dark:bg-[#2a2a2a] rounded-full"></div>
+                                                <div className="size-10 bg-[#d4d4d4] dark:bg-[#2a2a2a] rounded-xl"></div>
+                                                <div className="size-10 bg-[#d4d4d4] dark:bg-[#2a2a2a] rounded-full"></div>
                                                 <div className="flex-1 flex items-center space-x-3">
                                                     <div className="w-32 h-4 bg-[#d4d4d4] dark:bg-[#2a2a2a] rounded"></div>
                                                     <div className="w-24 h-4 bg-[#d4d4d4] dark:bg-[#2a2a2a] rounded"></div>
@@ -157,22 +158,8 @@ const Home = () => {
                                             </div>
 
                                             {/* Body Section */}
-                                            <div className="flex justify-between items-start w-full max-w-3xl p-4 bg-[#f5f5f5] dark:bg-[#151515] rounded-md animate-pulse">
-                                                <div className="flex-1 pr-4 space-y-3">
-                                                    <div className="h-8 w-2/3 bg-[#d4d4d4] dark:bg-[#2a2a2a] rounded"></div>
-                                                    <div className="h-4 w-5/6 bg-[#d4d4d4] dark:bg-[#2a2a2a] rounded"></div>
-                                                    <div className="h-4 w-5/6 bg-[#d4d4d4] dark:bg-[#2a2a2a] rounded"></div>
-                                                </div>
-                                                <div className="w-28 h-24 bg-[#d4d4d4] dark:bg-[#2a2a2a] rounded-md flex-shrink-0"></div>
-                                            </div>
-
-                                            {/* Footer Section */}
-                                            <div className="flex items-center space-x-4">
-                                                <div className="w-12 h-8 bg-[#d4d4d4] dark:bg-[#2a2a2a] rounded-full"></div>
-                                                <div className="w-8 h-8 bg-[#d4d4d4] dark:bg-[#2a2a2a] rounded-full"></div>
-                                            </div>
+                                            <div className="h-8 w-2/3 ml-14 bg-[#d4d4d4] dark:bg-[#2a2a2a] rounded"></div>
                                         </div>
-
                                     ))}
                                 </div>
                             ) : (
@@ -214,7 +201,25 @@ const Home = () => {
 
                             {
                                 trendingProjects === null ? (
-                                    <Loader />
+                                    // <Loader />
+                                    <div className="flex flex-col space-y-2">
+                                        {[1, 2].map((temp) => (
+                                            <div key={temp} className="w-full p-4 bg-[#f5f5f5] dark:bg-[#151515] rounded-md animate-pulse space-y-4">
+                                                {/* Header Section */}
+                                                <div className="flex items-center space-x-4">
+                                                    <div className="size-10 bg-[#d4d4d4] dark:bg-[#2a2a2a] rounded-xl"></div>
+                                                    <div className="size-10 bg-[#d4d4d4] dark:bg-[#2a2a2a] rounded-full"></div>
+                                                    <div className="flex-1 flex items-center space-x-3">
+                                                        <div className="w-32 h-4 bg-[#d4d4d4] dark:bg-[#2a2a2a] rounded"></div>
+                                                        <div className="w-24 h-4 bg-[#d4d4d4] dark:bg-[#2a2a2a] rounded"></div>
+                                                    </div>
+                                                </div>
+
+                                                {/* Body Section */}
+                                                <div className="h-8 w-2/3 ml-14 bg-[#d4d4d4] dark:bg-[#2a2a2a] rounded"></div>
+                                            </div>
+                                        ))}
+                                    </div>
                                 ) : (
                                     trendingProjects.length ?
                                         trendingProjects.map((project, i) => {
