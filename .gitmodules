@@ -1,0 +1,3 @@
+[submodule "projects/nlp/film-sentiment-analyzer-nltk"]
+	path = projects/nlp/film-sentiment-analyzer-nltk
+	url = https://github.com/Code-A2Z/film-sentiment-analyzer-nltk.git
