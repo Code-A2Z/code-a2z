@@ -14,11 +14,11 @@ import ChangePassword from "./pages/ChangePassword";
 import EditProfile from "./pages/EditProfile";
 import Notifications from "./pages/Notifications";
 import ManageProjects from "./pages/ManageProjects";
+import LandingPage from "./landing-page/page";
 
 export const UserContext = createContext({});
 
 function App() {
-
   const [userAuth, setUserAuth] = useState({});
 
   useEffect(() => {
@@ -29,8 +29,14 @@ function App() {
   return (
     <UserContext.Provider value={{ userAuth, setUserAuth }}>
       <Routes>
+        {/* Landing Page Route - Standalone without Navbar */}
+        <Route path="/landing" element={<LandingPage />} />
+        
+        {/* Editor Routes - Standalone without Navbar */}
         <Route path="/editor" element={<Editor />} />
         <Route path="/editor/:project_id" element={<Editor />} />
+        
+        {/* All other routes with Navbar */}
         <Route path="/" element={<Navbar />}>
           <Route index element={<Home />} />
           <Route path="dashboard" element={<SideNav />}>
@@ -46,7 +52,6 @@ function App() {
           <Route path="search/:query" element={<SearchPage />} />
           <Route path="user/:id" element={<ProfilePage />} />
           <Route path="project/:project_id" element={<ProjectPage />} />
-
           <Route path="*" element={<PageNotFound />} />
         </Route>
       </Routes>
@@ -55,3 +60,4 @@ function App() {
 }
 
 export default App;
+
