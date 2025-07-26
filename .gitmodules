@@ -1,0 +1,3 @@
+[submodule "projects/web-development/text-extraction-ocr"]
+	path = projects/web-development/text-extraction-ocr
+	url = https://github.com/Vasita27/text-extraction.git
