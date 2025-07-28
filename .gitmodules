@@ -1,3 +1,6 @@
 [submodule "projects/web-development/backend/text-extraction-ocr"]
 	path = projects/web-development/backend/text-extraction-ocr
 	url = https://github.com/Code-A2Z/text-extraction-ocr.git
+[submodule "projects/web-development/backend/resume-analyzer"]
+	path = projects/web-development/backend/resume-analyzer
+	url = https://github.com/Code-A2Z/resume-analyzer.git
