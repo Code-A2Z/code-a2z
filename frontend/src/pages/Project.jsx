@@ -8,6 +8,7 @@ import ProjectInteraction from "../components/ProjectInteraction";
 import ProjectPostCard from "../components/ProjectPostCard";
 import ProjectContent from "../components/ProjectContent";
 import CommentsContainer, { fetchComments } from "../components/Comments";
+import ProjectLoadingSkeleton from "../components/skeletons/ProjectLoadingSkeleton";
 
 export const projectStructure = {
     title: '',
@@ -77,7 +78,11 @@ const ProjectPage = () => {
     return (
         <AnimationWrapper>
             {
-                loading ? <Loader /> :
+                loading ? (
+                    <>
+                        <ProjectLoadingSkeleton />
+                    </>
+                ) :
                     <ProjectContext.Provider value={{ project, setProject, islikedByUser, setLikedByUser, commentsWrapper, setCommentsWrapper, totalParentCommentsLoaded, setTotalParentCommentsLoaded }}>
 
                         <CommentsContainer />

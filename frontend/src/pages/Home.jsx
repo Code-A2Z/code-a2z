@@ -8,6 +8,8 @@ import MinimalProjectPost from "../components/NoBannerProjectPost";
 import NoDataMessage from "../components/NoData";
 import { filterPaginationData } from "../common/filter-pagination-data";
 import LoadMoreDataBtn from "../components/LoadMoreData";
+import LatestProjectsSkeleton from "../components/skeletons/LatestProjectsSkeleton";
+import TrendingProjectsSkeleton from "../components/skeletons/TrendingProjectsSkeleton";
 
 const Home = () => {
 
@@ -96,7 +98,7 @@ const Home = () => {
                         <>
                             {
                                 projects === null ? (
-                                    <Loader />
+                                    <LatestProjectsSkeleton />
                                 ) : (
                                     projects && projects.results.length ?
                                         projects.results.map((project, i) => {
@@ -113,7 +115,7 @@ const Home = () => {
                         </>
                         {
                             trendingProjects === null ? (
-                                <Loader />
+                                <TrendingProjectsSkeleton />
                             ) : (
                                 trendingProjects.length ?
                                     trendingProjects.map((project, i) => {
@@ -153,7 +155,7 @@ const Home = () => {
 
                             {
                                 trendingProjects === null ? (
-                                    <Loader />
+                                    <TrendingProjectsSkeleton />
                                 ) : (
                                     trendingProjects.length ?
                                         trendingProjects.map((project, i) => {
