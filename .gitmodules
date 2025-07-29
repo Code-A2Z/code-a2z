@@ -4,3 +4,6 @@
 [submodule "projects/web-development/backend/text-extraction-ocr"]
 	path = projects/web-development/backend/text-extraction-ocr
 	url = https://github.com/Code-A2Z/text-extraction-ocr.git
+[submodule "projects/projects/data-science/nlp-apps/film-sentiment-analyzer-nltk"]
+	path = projects/projects/data-science/nlp-apps/film-sentiment-analyzer-nltk
+	url = https://github.com/Code-A2Z/film-sentiment-analyzer-nltk.git
