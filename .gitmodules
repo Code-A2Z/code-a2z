@@ -1,0 +1,3 @@
+[submodule "projects/data-science/nlp-apps/resume-analyzer"]
+	path = projects/data-science/nlp-apps/resume-analyzer
+	url = https://github.com/Code-A2Z/resume-analyzer.git
