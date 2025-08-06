@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import { Link, Outlet, useNavigate } from "react-router-dom";
 import { UserContext } from "../App";
 import UserNavigationPanel from "./UserNavigationPanel";
@@ -11,6 +11,7 @@ const Navbar = () => {
     const [searchBoxVisibility, setSearchBoxVisibility] = useState(false);
     const [userNavPanel, setUserNavPanel] = useState(false);
     const [showSubscribeModal, setShowSubscribeModal] = useState(false);
+    const searchRef = useRef(null);
 
     let navigate = useNavigate();
 
@@ -45,6 +46,38 @@ const Navbar = () => {
         }
     }
 
+    useEffect(() => {
+        const handleKeyDown = (event) => {
+            if ((event.metaKey && event.key === 'k') || (event.ctrlKey && event.key === 'k')) {
+                event.preventDefault();
+                event.stopPropagation();
+
+                // Check screen width - show mobile-style search for tablet and below
+                if (window.innerWidth >= 1024) { // Desktop (lg screens)
+                    setTimeout(() => {
+                        if (searchRef.current) {
+                            searchRef.current.focus();
+                            searchRef.current.select();
+                        }
+                    }, 10);
+                } else { // Tablet and mobile 
+                    setSearchBoxVisibility(true);
+                    setTimeout(() => {
+                        if (searchRef.current) {
+                            searchRef.current.focus();
+                        }
+                    }, 100);
+                }
+            }
+        };
+
+        document.addEventListener('keydown', handleKeyDown, true);
+
+        return () => {
+            document.removeEventListener('keydown', handleKeyDown, true);
+        };
+    }, []);
+
     const handleBlur = () => {
         setTimeout(() => {
             setUserNavPanel(false);
@@ -61,22 +94,33 @@ const Navbar = () => {
                 <Link to="/" className="flex-none w-10">
                     <img src="/logo.png" alt="" className="w-full rounded-md" />
                 </Link>
-
                 <div
-                    className={"absolute bg-[#fafafa] dark:bg-[#09090b] w-full left-0 top-full mt-0.5 border-b border-gray-200 dark:border-[#27272a] py-4 px-[5vw] md:border-0 md:relative md:inset-0 md:p-0 md:w-auto " +
-                        (searchBoxVisibility ? "show" : "hidden md:block")}
+                    className={`absolute bg-[#fafafa] dark:bg-[#09090b] w-full left-0 top-full mt-0.5 border-b border-gray-200 dark:border-[#27272a] py-4 px-[5vw] lg:border-0 lg:relative lg:inset-0 lg:p-0 ${
+                        searchBoxVisibility ? "block" : "hidden lg:block"
+                    }`}
                 >
                     <input
                         type="text"
-                        placeholder="Search"
-                        className="w-full md:w-auto bg-[#ffffff] dark:bg-[#18181b] p-4 pl-6 pr-[12%] md:pr-6 rounded-full placeholder:text-dark-grey dark:placeholder:text-gray-400 md:pl-12"
+                        placeholder={searchBoxVisibility ? "Search" : "Press Ctrl+K"}
+                        id="search-bar"
+                        ref={searchRef}
+                        className="w-full lg:w-58 bg-[#ffffff] dark:bg-[#18181b] p-4 pl-6 pr-[12%] lg:pr-6 rounded-full placeholder:text-dark-grey dark:placeholder:text-gray-400 lg:pl-12 transition-all duration-300 focus:lg:w-96"
                         onKeyDown={handleSearch}
+                        onFocus={() => setSearchBoxVisibility(true)}
+                        onBlur={() => {
+                            if (window.innerWidth < 1024) {
+                                setSearchBoxVisibility(false);
+                            }
+                        }}
                     />
-                    <i className="fi fi-rr-search absolute right-[10%] md:pointer-events-none md:left-5 top-1/2 -translate-y-1/2 text-xl text-dark-grey dark:text-gray-400"></i>
+                    <i className="fi fi-rr-search absolute right-[10%] lg:pointer-events-none lg:left-5 top-1/2 -translate-y-1/2 text-xl text-dark-grey dark:text-gray-400"></i>
                 </div>
 
                 <div className="flex items-center gap-3 md:gap-6 ml-auto">
-                    <button className="md:hidden hover:bg-gray-200 hover:dark:bg-[#27272a] w-12 h-12 rounded-full flex items-center justify-center" onClick={() => setSearchBoxVisibility(!searchBoxVisibility)}>
+                    <button
+                        className="lg:hidden hover:bg-gray-200 hover:dark:bg-[#27272a] w-12 h-12 rounded-full flex items-center justify-center"
+                        onClick={() => setSearchBoxVisibility(!searchBoxVisibility)}
+                    >
                         <i className="fi fi-rr-search text-xl text-dark-grey dark:text-gray-400"></i>
                     </button>
 
