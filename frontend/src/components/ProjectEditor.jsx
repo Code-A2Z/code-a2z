@@ -208,7 +208,7 @@ const ProjectEditor = () => {
           <div className="project-editor">
             <button
               onClick={goBackToEditor}
-              className="px-4 py-2 text-white rounded-full mb-4 bg-transparent cursor-pointer hover:bg-gray-200 dark:hover:bg-gray-800 transition-colors"
+              className="btn-dark mb-4 cursor-pointer"
             >
               ← Back
             </button>

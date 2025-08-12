@@ -8,13 +8,4 @@ export default defineConfig({
     tailwindcss(),
     react()
   ],
-  erver: {
-    proxy: {
-      "/api": {
-        target: "https://pjt-blog.onrender.com",
-        changeOrigin: true,
-        secure: false
-      }
-    }
-  }
 })
