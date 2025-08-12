@@ -2,7 +2,7 @@ import mongoose from "mongoose";
 
 const connectDB = async () => {
     try {
-        await mongoose.connect(process.env.MONGODB_URL, { autoIndex: true });
+        await mongoose.connect(process.env.MONGODB_URI, { autoIndex: true });
         console.log("MongoDB Connected");
     } catch (error) {
         console.error("Database connection failed:", error.message);
@@ -11,3 +11,4 @@ const connectDB = async () => {
 };
 
 export default connectDB;
+
