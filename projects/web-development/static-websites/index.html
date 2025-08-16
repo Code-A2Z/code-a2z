@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Word & Letter Counter</title>
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        background: linear-gradient(135deg, #6dd5ed, #2193b0);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        margin: 0;
+    }
+
+    .container {
+        background: #fff;
+        padding: 20px 25px;
+        border-radius: 12px;
+        box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+        width: 100%;
+        max-width: 500px;
+        text-align: center;
+    }
+
+    h2 {
+        margin-bottom: 15px;
+        color: #333;
+    }
+
+    textarea {
+        width: 100%;
+        height: 120px;
+        padding: 12px;
+        border: 1px solid #ccc;
+        border-radius: 8px;
+        resize: none;
+        font-size: 14px;
+        margin-bottom: 15px;
+    }
+
+    button {
+        background-color: #2193b0;
+        color: white;
+        border: none;
+        padding: 10px 18px;
+        margin: 5px;
+        border-radius: 6px;
+        cursor: pointer;
+        font-size: 14px;
+        transition: background 0.3s;
+    }
+
+    button:hover {
+        background-color: #176d80;
+    }
+
+    .results {
+        margin-top: 15px;
+        display: flex;
+        justify-content: space-around;
+        font-weight: bold;
+        color: #444;
+    }
+
+    .result-box {
+        background: #f1f1f1;
+        padding: 10px 15px;
+        border-radius: 8px;
+        min-width: 100px;
+    }
+</style>
+</head>
+<body>
+
+<div class="container">
+    <h2>Word & Letter Counter</h2>
+    <textarea id="myText" placeholder="Type or paste your text here..."></textarea>
+    <br>
+    <button id="myBtn">Count</button>
+    <button id="clearBtn">Clear</button>
+
+    <div class="results">
+        <div class="result-box">Words: <span id="wordCount">0</span></div>
+        <div class="result-box">Letters: <span id="letterCount">0</span></div>
+    </div>
+</div>
+
+<script>
+document.getElementById("myBtn").addEventListener("click", function () {
+    const ele = document.getElementById('myText');
+    const trimmed = ele.value.trim();
+
+    let word = trimmed.split(/\s+/).filter(i => i.length > 0).length;
+
+    let letter = 0;
+    for (let i = 0; i < trimmed.length; i++) {
+        if (/[A-Za-z]/.test(trimmed.charAt(i))) {
+            letter++;
+        }
+    }
+
+    document.getElementById("wordCount").textContent = word;
+    document.getElementById("letterCount").textContent = letter;
+});
+
+document.getElementById("clearBtn").addEventListener("click", function () {
+    document.getElementById("myText").value = "";
+    document.getElementById("wordCount").textContent = "0";
+    document.getElementById("letterCount").textContent = "0";
+});
+</script>
+
+</body>
+</html>
