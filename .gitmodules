@@ -13,3 +13,6 @@
 [submodule "projects/data-science/vision-ai/image-describer"]
 	path = projects/data-science/vision-ai/image-describer
 	url = https://github.com/Code-A2Z/image-describer.git
+[submodule "projects/web-development/backend/random-quote-generator"]
+	path = projects/web-development/backend/random-quote-generator
+	url = https://github.com/Code-A2Z/random-quote-generator.git
