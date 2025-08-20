@@ -2,6 +2,7 @@ import bcrypt from "bcrypt";
 
 import User from "../Models/user.model.js";
 import { formatDataToSend, generateUsername, emailRegex, passwordRegex } from "../utils/helpers.js";
+import jwt from "jsonwebtoken";
 
 export const signup = async (req, res) => {
     let { fullname, email, password } = req.body;
@@ -21,7 +22,18 @@ export const signup = async (req, res) => {
         });
 
         const savedUser = await user.save();
-        return res.status(201).json(formatDataToSend(savedUser));
+
+        const payload = formatDataToSend(savedUser);
+        const { access_token } = payload;
+
+        res.cookie("access_token", access_token, {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === "production",
+            sameSite: "lax",
+            maxAge: 30 * 24 * 60 * 60 * 1000
+        });
+
+        return res.status(201).json(payload);
     } catch (err) {
         if (err.code === 11000) return res.status(409).json({ error: "User with this email already exists" });
         return res.status(500).json({ error: "Internal Server Error" });
@@ -40,7 +52,17 @@ export const login = async (req, res) => {
         const isMatch = await bcrypt.compare(password, user.personal_info.password);
         if (!isMatch) return res.status(401).json({ error: "Incorrect password" });
 
-        return res.status(200).json(formatDataToSend(user));
+        const payload = formatDataToSend(user);
+        const { access_token } = payload;
+
+        res.cookie("access_token", access_token, {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === "production",
+            sameSite: "lax",
+            maxAge: 30 * 24 * 60 * 60 * 1000
+        });
+
+        return res.status(200).json(payload);
     } catch (err) {
         return res.status(500).json({ error: "Internal Server Error" });
     }

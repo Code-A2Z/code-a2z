@@ -19,11 +19,7 @@ const Notifications = () => {
 
     const fetchNotifications = ({ page, deletedDocCount = 0 }) => {
 
-        axios.post(import.meta.env.VITE_SERVER_DOMAIN + "/api/notification/get", { page, filter, deletedDocCount }, {
-            headers: {
-                Authorization: `Bearer ${access_token}`
-            }
-        })
+        axios.post(import.meta.env.VITE_SERVER_DOMAIN + "/api/notification/get", { page, filter, deletedDocCount }, { withCredentials: true })
             .then(async ({ data: { notifications: data } }) => {
 
                 if (new_notification_available) {
@@ -35,8 +31,7 @@ const Notifications = () => {
                     data,
                     page,
                     countRoute: "/api/notification/all-count",
-                    data_to_send: { filter },
-                    user: access_token
+                    data_to_send: { filter }
                 })
 
                 setNotifications(formattedData);

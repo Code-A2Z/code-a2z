@@ -1,16 +1,10 @@
 import axios from "axios";
 
-export const filterPaginationData = async ({ create_new_arr = false, state, data, page, countRoute, data_to_send = {}, user = undefined }) => {
+export const filterPaginationData = async ({ create_new_arr = false, state, data, page, countRoute, data_to_send = {} }) => {
 
     let obj;
 
-    let headers = {};
-
-    if (user) {
-        headers.headers = {
-            Authorization: `Bearer ${user}`
-        }
-    }
+    let headers = { withCredentials: true };
 
     if (state !== null && !create_new_arr) {
         obj = { ...state, results: [...state.results, ...data], page: page }

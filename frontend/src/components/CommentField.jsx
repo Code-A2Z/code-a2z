@@ -22,11 +22,7 @@ const CommentField = ({ action, index = undefined, replyingTo = undefined, setRe
 
         axios.post(import.meta.env.VITE_SERVER_DOMAIN + "/api/notification/comment", {
             _id, comment, project_author, replying_to: replyingTo
-        }, {
-            headers: {
-                Authorization: `Bearer ${access_token}`
-            }
-        })
+        }, { withCredentials: true })
             .then(({ data }) => {
                 setComment('');
 

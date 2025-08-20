@@ -2,7 +2,7 @@ import { Route, Routes } from "react-router-dom";
 import Navbar from "./components/Navbar";
 import UserAuthForm from "./pages/UserAuthForm";
 import { createContext, useEffect, useState } from "react";
-import { lookInSession } from "./common/session";
+import axios from "axios";
 import Editor from "./pages/Editor";
 import Home from "./pages/Home";
 import SearchPage from "./pages/Search";
@@ -22,8 +22,14 @@ function App() {
   const [userAuth, setUserAuth] = useState({});
 
   useEffect(() => {
-    let userInSession = lookInSession("user");
-    userInSession ? setUserAuth(JSON.parse(userInSession)) : setUserAuth({ access_token: null });
+    axios.defaults.withCredentials = true;
+    axios.get(import.meta.env.VITE_SERVER_DOMAIN + "/api/auth/session")
+      .then(({ data }) => {
+        setUserAuth(data);
+      })
+      .catch(() => {
+        setUserAuth({ access_token: null });
+      });
   }, [])
 
   return (

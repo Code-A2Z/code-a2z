@@ -2,15 +2,17 @@ import { Link } from "react-router-dom";
 import AnimationWrapper from "../common/page-animation";
 import { useContext } from "react";
 import { UserContext } from "../App";
-import { removeFromSession } from "../common/session";
+import axios from "axios";
 
 const UserNavigationPanel = () => {
 
     const { userAuth: { username }, setUserAuth } = useContext(UserContext);
 
     const signOutUser = () => {
-        removeFromSession("user");
-        setUserAuth({ access_token: null });
+        axios.post(import.meta.env.VITE_SERVER_DOMAIN + "/api/auth/logout", {}, { withCredentials: true })
+            .finally(() => {
+                setUserAuth({ access_token: null });
+            });
     }
     return (
         <AnimationWrapper

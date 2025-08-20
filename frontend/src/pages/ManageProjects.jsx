@@ -25,17 +25,12 @@ const ManageProjects = () => {
 
         axios.post(import.meta.env.VITE_SERVER_DOMAIN + "/api/project/user-written", {
             page, draft, query, deletedDocCount
-        }, {
-            headers: {
-                Authorization: `Bearer ${access_token}`
-            }
-        })
+        }, { withCredentials: true })
             .then(async ({ data }) => {
                 let formattedData = await filterPaginationData({
                     state: draft ? drafts : projects,
                     data: data.projects,
                     page,
-                    user: access_token,
                     countRoute: "/api/project/user-written-count",
                     data_to_send: { draft, query }
                 })

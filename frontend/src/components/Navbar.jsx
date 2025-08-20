@@ -20,11 +20,7 @@ const Navbar = () => {
     useEffect(() => {
 
         if (access_token) {
-            axios.get(import.meta.env.VITE_SERVER_DOMAIN + "/api/notification/new", {
-                headers: {
-                    Authorization: `Bearer ${access_token}`
-                }
-            })
+            axios.get(import.meta.env.VITE_SERVER_DOMAIN + "/api/notification/new", { withCredentials: true })
                 .then(({ data }) => {
                     setUserAuth({ ...userAuth, ...data });
                 })

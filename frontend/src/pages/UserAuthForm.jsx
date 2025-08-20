@@ -5,7 +5,6 @@ import { Toaster, toast } from "react-hot-toast";
 
 import { UserContext } from "../App";
 import InputBox from "../components/InputBox";
-import { storeInSession } from "../common/session";
 import AnimationWrapper from "../common/page-animation";
 
 const UserAuthForm = ({ type }) => {
@@ -19,12 +18,11 @@ const UserAuthForm = ({ type }) => {
             await axios.post(import.meta.env.VITE_SERVER_DOMAIN + "/api/subscriber/subscribe", { email });
         }
 
-        await axios.post(import.meta.env.VITE_SERVER_DOMAIN + serverRoute, formData)
+        await axios.post(import.meta.env.VITE_SERVER_DOMAIN + serverRoute, formData, { withCredentials: true })
             .then(({ data }) => {
                 toast.success("Logged in successfully");
 
                 setTimeout(() => {
-                    storeInSession("user", JSON.stringify(data));
                     setUserAuth(data);
                 }, 500);
             })

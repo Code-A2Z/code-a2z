@@ -28,7 +28,7 @@ const EditProfile = () => {
     useEffect(() => {
 
         if (access_token) {
-            axios.post(import.meta.env.VITE_SERVER_DOMAIN + "/api/user/profile", { username: userAuth.username })
+            axios.post(import.meta.env.VITE_SERVER_DOMAIN + "/api/user/profile", { username: userAuth.username }, { withCredentials: true })
                 .then(({ data }) => {
                     setProfile(data);
                     setLoading(false);
@@ -65,11 +65,7 @@ const EditProfile = () => {
                 .then(url => {
 
                     if (url) {
-                        axios.post(import.meta.env.VITE_SERVER_DOMAIN + "/api/user/update-profile-img", { url: url }, {
-                            headers: {
-                                Authorization: `Bearer ${access_token}`
-                            }
-                        })
+                        axios.post(import.meta.env.VITE_SERVER_DOMAIN + "/api/user/update-profile-img", { url: url }, { withCredentials: true })
                             .then(({ data }) => {
                                 let newUserAuth = { ...userAuth, profile_img: data.profile_img };
                                 storeInSession("user", JSON.stringify(newUserAuth));
@@ -120,11 +116,7 @@ const EditProfile = () => {
             username,
             bio,
             social_links: { youtube, facebook, twitter, github, instagram, website }
-        }, {
-            headers: {
-                Authorization: `Bearer ${access_token}`
-            }
-        })
+        }, { withCredentials: true })
             .then(({ data }) => {
 
                 if (userAuth.username != data.username) {

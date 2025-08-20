@@ -37,11 +37,7 @@ const ChangePassword = () => {
 
         let loadingToast = toast.loading("Changing password...");
 
-        axios.post(import.meta.env.VITE_SERVER_DOMAIN + "/api/auth/change-password", formData, {
-            headers: {
-                Authorization: `Bearer ${access_token}`
-            }
-        })
+        axios.post(import.meta.env.VITE_SERVER_DOMAIN + "/api/auth/change-password", formData, { withCredentials: true })
             .then(() => {
                 toast.dismiss(loadingToast);
                 e.target.removeAttribute("disabled");

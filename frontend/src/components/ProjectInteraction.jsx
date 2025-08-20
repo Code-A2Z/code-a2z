@@ -13,11 +13,7 @@ const ProjectInteraction = () => {
 
     useEffect(() => {
         if (access_token) {
-            axios.post(import.meta.env.VITE_SERVER_DOMAIN + "/api/notification/like-status", { _id }, {
-                headers: {
-                    Authorization: `Bearer ${access_token}`
-                }
-            })
+            axios.post(import.meta.env.VITE_SERVER_DOMAIN + "/api/notification/like-status", { _id }, { withCredentials: true })
                 .then(({ data: { isLiked } }) => {
                     setLikedByUser(Boolean(isLiked));
                 })
@@ -33,11 +29,7 @@ const ProjectInteraction = () => {
             !islikedByUser ? total_likes++ : total_likes--;
             setProject({ ...project, activity: { ...activity, total_likes } });
 
-            axios.post(import.meta.env.VITE_SERVER_DOMAIN + "/api/notification/like", { _id, islikedByUser }, {
-                headers: {
-                    Authorization: `Bearer ${access_token}`
-                }
-            })
+            axios.post(import.meta.env.VITE_SERVER_DOMAIN + "/api/notification/like", { _id, islikedByUser }, { withCredentials: true })
                 .then(({ data }) => {
                     console.log(data);
                 })
