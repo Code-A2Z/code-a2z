@@ -92,7 +92,7 @@ cp .env.example .env
 ```
 Example frontend-only variables:
 ```env
-VITE_SERVER_DOMAIN=https://pjt-blog.onrender.com
+VITE_SERVER_DOMAIN=https://code-a2z.onrender.com
 ```
 
 You do not need to set `MONGODB_URL` or run the backend.
