@@ -7,34 +7,34 @@ import { defineConfig } from "eslint/config";
 
 export default defineConfig([
   {
+    ...js.configs.recommended,
     files: ["**/*.{js,mjs,cjs,jsx}"],
     plugins: { js },
-    extends: ["js/recommended"],
     languageOptions: { globals: { ...globals.browser, ...globals.node } },
   },
   pluginReact.configs.flat.recommended,
   {
+    ...json.configs.recommended,
     files: ["**/*.json"],
     plugins: { json },
     language: "json/json",
-    extends: ["json/recommended"],
   },
   {
+    ...json.configs.recommended,
     files: ["**/*.jsonc"],
     plugins: { json },
     language: "json/jsonc",
-    extends: ["json/recommended"],
   },
   {
+    ...json.configs.recommended,
     files: ["**/*.json5"],
     plugins: { json },
     language: "json/json5",
-    extends: ["json/recommended"],
   },
   {
+    ...css.configs.recommended,
     files: ["**/*.css"],
     plugins: { css },
     language: "css/css",
-    extends: ["css/recommended"],
   },
 ]);
