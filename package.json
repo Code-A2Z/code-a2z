@@ -26,10 +26,34 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "frontend": "cd frontend && npm run dev",
     "backend": "cd backend && npm run dev",
-    "dev": "concurrently -n \"FRONTEND,BACKEND\" -c \"bgBlue.bold,bgMagenta.bold\" \"npm run frontend\" \"npm run backend\""
+    "dev": "concurrently -n \"FRONTEND,BACKEND\" -c \"bgBlue.bold,bgMagenta.bold\" \"npm run frontend\" \"npm run backend\"",
+    "prepare": "husky install"
   },
   "devDependencies": {
+    "@eslint/css": "^0.10.0",
+    "@eslint/js": "^9.34.0",
+    "@eslint/json": "^0.13.1",
     "concurrently": "^9.2.0",
-    "eslint": "^9.34.0"
+    "eslint": "^9.34.0",
+    "eslint-plugin-react": "^7.37.5",
+    "globals": "^16.3.0",
+    "husky": "^9.1.7",
+    "lint-staged": "^16.1.5",
+    "prettier": "^3.6.2"
+  },
+  "lint-staged": {
+    "frontend/src/**/*.{html,ts,scss,js,jsx,tsx}": [
+      "prettier --write",
+      "eslint --fix"
+    ],
+    "backend/**/*.js": [
+      "prettier --write",
+      "eslint --fix"
+    ]
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
   }
 }
