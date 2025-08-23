@@ -54,24 +54,7 @@ export const invitationToCollaborate = async(req, res)=>{
    }
 }
 
-export const acceptInvitation = async(req, res)=>{
-    const {token} = req.params;
-    const userId = req.user;
 
-    try {
-        const collaborationData = await collaboration.finOne({token: token, author_id:userId, status: "pending"});
-        if(!collaborationData) return res.status(404).json({error: "Collaboration request not found!"});
-
-        collaborationData.status = "accepted";
-        
-        await collaborationData.save();
-        return res.status(200).json({message: "Collaboration request accepted!"});
-        
-    } catch (error) {
-        console.log(error);
-        return res.status(500).json({error: "Internal Server Error"});
-    }
-}
 
 
 
