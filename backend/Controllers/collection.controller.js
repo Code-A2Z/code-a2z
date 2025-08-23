@@ -33,6 +33,9 @@ export const saveProject = async (req, res) => {
     if (!existingUser) return res.status(404).json("User not found");
 
     const existingCollection = await Collection.find({ userID, collection_name });
+    
+    const existingProject = await Collection.findOne({userID,collection_name,project_id});
+    if(existingProject) return res.status(400).json("Project already exists in this collection");
 
     // Case 1: No collection exists → create new one
     if (existingCollection.length === 0) {
@@ -69,5 +72,6 @@ export const saveProject = async (req, res) => {
   } catch (err) {
     console.log(err);
     return res.status(400).json(err);
-  }
-};
+    }
+}
+
