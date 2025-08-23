@@ -30,7 +30,7 @@ body:
     validations:
       required: true
 
-  - type: input
+  - type: textarea
     id: screenshots
     attributes:
       label: "Screenshots"
@@ -78,17 +78,18 @@ body:
       label: "Open Source Program"
       description: "Which open-source program are you participating in?"
       options:
+        - "Hacktoberfest"
+        - "OnlyDust Waves"
+        - "24 Pull Requests"
         - "GSSoC"
-        - "GSSoC-Ext"
         - "SSOC"
         - "SWOC"
         - "JWOC"
-        - "Hacktoberfest"
         - "IWOC"
         - "KWOC"
-        - "24 Pull Requests"
         - "DWOC"
         - "VSOC"
+        - "Others"
 
   - type: dropdown
     id: on-work
