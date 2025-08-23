@@ -1,8 +1,7 @@
 import bcrypt from "bcrypt";
-
+import jwt from "jsonwebtoken";
 import User from "../Models/user.model.js";
 import { formatDataToSend, generateUsername, emailRegex, passwordRegex } from "../utils/helpers.js";
-import jwt from "jsonwebtoken";
 
 export const signup = async (req, res) => {
     let { fullname, email, password } = req.body;
@@ -106,3 +105,29 @@ export const changePassword = async (req, res) => {
             return res.status(500).json({ error: "User not found!" });
         })
 }
+
+export const session = async (req, res) => {
+    const token = req.cookies?.access_token;
+    if (!token) return res.status(401).json({ error: "No session" });
+    
+    jwt.verify(token, process.env.SECRET_ACCESS_KEY, async (err, decoded) => {
+        if (err) return res.status(403).json({ error: "Invalid session" });
+        try {
+            const user = await User.findById(decoded.id);
+            if (!user) return res.status(404).json({ error: "User not found" });
+            const payload = formatDataToSend(user);
+            return res.status(200).json(payload);
+        } catch (e) {
+            return res.status(500).json({ error: "Failed to load session" });
+        }
+    });
+};
+
+export const logout = (req, res) => {
+    res.clearCookie("access_token", {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === "production",
+        sameSite: "lax"
+    });
+    return res.status(200).json({ message: "Logged out" });
+};

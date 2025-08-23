@@ -33,6 +33,7 @@ server.use(cors({
 connectDB();
 
 // Routes
+server.get("/", (req, res) => res.send("Backend is running..."));
 server.get("/health", (req, res) => res.status(200).json({ ok: true }));
 server.use("/api", router);
 

@@ -7,16 +7,19 @@ import axios from "axios";
 const UserNavigationPanel = () => {
 
     const { userAuth: { username }, setUserAuth } = useContext(UserContext);
-
+    //console.log("ENV:", import.meta.env.VITE_SERVER_DOMAIN); //debug
     const signOutUser = () => {
+        //console.log("Sign out clicked"); // Debug log
+        //console.log(import.meta.env.VITE_SERVER_DOMAIN); // Check the value
         axios.post(import.meta.env.VITE_SERVER_DOMAIN + "/api/auth/logout", {}, { withCredentials: true })
             .finally(() => {
                 setUserAuth({ access_token: null });
             });
     }
+    //console.log("Rendering UserNavigationPanel"); //debug
     return (
         <AnimationWrapper
-            className="absolute right-0 z-50"
+            className="absolute right-0 z-[9999]" //previously z-50
             transition={{ duration: 0.2 }}
         >
             <div className="bg-[#fafafa] dark:bg-[#09090b] absolute right-0 border border-[#e5e7eb] dark:border-[#27272a] w-60 duration-200">
@@ -46,6 +49,7 @@ const UserNavigationPanel = () => {
                     <h1 className="font-bold text-xl mg-1">Sign Out</h1>
                     <p className="text-gray-600">@{username}</p>
                 </button>
+                
             </div>
         </AnimationWrapper>
     )
