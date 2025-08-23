@@ -1,6 +1,17 @@
 {
   "name": "backend",
-  "version": "1.0.0",
+  "author": "Avdhesh Varshney",
+  "license": "ISC",
+  "description": "Code A2Z is a collaborative blogging platform for developers and writers to create, manage, and share projects with markdown support, customizable templates, and community contributions.",
+  "version": "1.1.1",
+  "keywords": [
+    "code-a2z",
+    "code a2z",
+    "collaboration",
+    "platform",
+    "open-source",
+    "projects"
+  ],
   "type": "module",
   "main": "server.js",
   "scripts": {

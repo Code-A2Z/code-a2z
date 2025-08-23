@@ -1,7 +1,7 @@
-<!-- #issue_number  -->
+<!-- Closes: #issue_number  -->
 Closes: 
 
-<!-- ### Project Published URL 🔗 -->
+### Project Published URL 🔗
 <!-- To approve your PR, You have to publish your project on Code A2Z - Project Blog website -->
 
 
@@ -15,6 +15,11 @@ Closes:
 
 
 
+<!--
+Example how to mark a checkbox:-
+- [x] My code follows the code style of this project.
+-->
+
 ### Type of change ☑️
 What sort of change have you made:
 
@@ -25,10 +30,6 @@ What sort of change have you made:
 - [ ] Documentation update 
 - [ ] Database update 
 
-<!--
-Example how to mark a checkbox:-
-- [x] My code follows the code style of this project.
--->
 
 ### Note to reviewers 📄
 <!-- Add notes to reviewers if applicable -->
