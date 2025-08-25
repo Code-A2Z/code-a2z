@@ -21,7 +21,4 @@ connectDB();
 // Routes
 server.get("/", (req, res) => res.send("Backend is running..."));
 server.use("/api", router);
-
-server.listen(PORT, async () => {
-    console.log(`Server running on port ${PORT}`);
-});
+server.listen(PORT, () => console.log(`Server running on port ${PORT}`));
