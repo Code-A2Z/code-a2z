@@ -19,5 +19,4 @@ router.use('/notification', notificationRoutes);
 router.use('/subscriber', subscriberRoutes);
 router.use("/collection", collectionRoutes);
 router.use('/collaboration', collaborationRoutes);
-
 export default router;
