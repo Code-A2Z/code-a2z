@@ -3,6 +3,7 @@ import Project from "../Models/project.model.js";
 import crypto from "crypto";
 import User from "../Models/user.model.js";
 import transporter from "../config/nodemailer.js";
+import localtunnel from "localtunnel";
 
 
 export const invitationToCollaborate = async(req, res)=>{
@@ -17,10 +18,13 @@ export const invitationToCollaborate = async(req, res)=>{
 
         const authorEmail  = projectToCollaborate.author.personal_info.email;
         const token = crypto.randomBytes(16).toString('hex');
+ 
+        // const baseUrl = global.publicUrl || `http://localhost:${process.env.PORT || 8000}`;
+        const baseUrl = process.env.PUBLIC_URL;
 
-        const baseUrl = global.publicUrl || `http://localhost:${process.env.PORT || 8000}`;
         const acceptLink = `${baseUrl}/api/collaborate/accept/${token}`;
         const rejectLink = `${baseUrl}/api/collaborate/reject/${token}`;
+        console.log(acceptLink, rejectLink);
         const mailOptions = {
             from: process.env.EMAIL_USER,
             to: authorEmail,
