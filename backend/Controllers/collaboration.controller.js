@@ -20,7 +20,7 @@ export const invitationToCollaborate = async(req, res)=>{
         const token = crypto.randomBytes(16).toString('hex');
  
         // const baseUrl = global.publicUrl || `http://localhost:${process.env.PORT || 8000}`;
-        const baseUrl = process.env.PUBLIC_URL;
+        const baseUrl = process.env.COLLABORATION_PUBLIC_URL;
 
         const acceptLink = `${baseUrl}/api/collaborate/accept/${token}`;
         const rejectLink = `${baseUrl}/api/collaborate/reject/${token}`;
