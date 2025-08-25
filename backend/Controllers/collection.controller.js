@@ -1,7 +1,9 @@
 import Collection from "../Models/collection.model.js";
 import User from "../Models/user.model.js";
 
-//create a new collection
+/*create a new collection-
+ 1.in case of manula creation of collection, the project_id is set to null since nothing is saved */ 
+
 export const createNewCollection = async(req,res)=>{
     try{
         const userID = req.user;
@@ -37,17 +39,23 @@ export const saveProject = async (req, res) => {
     const existingProject = await Collection.findOne({userID,collection_name,project_id});
     if(existingProject) return res.status(400).json("Project already exists in this collection");
 
-    // Case 1: No collection exists → create new one
+    // Case 1: No collection exists → save in 'default-collection' and save the project 
     if (existingCollection.length === 0) {
-      const newCollection = new Collection({ userID, collection_name, project_id });
+      const newCollection = new Collection(
+        { 
+          userID, 
+          collection_name:"default-collection",
+          project_id 
+        }
+      );
       await newCollection.save();
 
       return res.status(201).json(
-        `New collection '${collection_name}' created and project saved for ${existingUser.personal_info.username}`
+        `Collection added to default collection and project saved for ${existingUser.personal_info.username}`
       );
     }
 
-    // Case 2: Try to update empty slot
+    // Case 2: Try to update empty project_id - in case of manula creation,we had project_is null, so here we try to update that id for that document, to use this document and avoid redudancy in the collection
     const emptySlot = await Collection.findOneAndUpdate(
       { userID, collection_name, project_id: null },
       { $set: { project_id } },
@@ -60,8 +68,13 @@ export const saveProject = async (req, res) => {
       );
     }
 
-    // Case 3: No empty slots → create new document
-    const newDoc = new Collection({ userID, collection_name, project_id });
+    // Case 3: No empty slots → create new document for the project being saved 
+    const newDoc = new Collection(
+      { 
+        userID, 
+        collection_name, 
+        project_id 
+      });
     await newDoc.save();
 
 
