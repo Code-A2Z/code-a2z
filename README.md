@@ -28,7 +28,6 @@
 ![Node.js](https://img.shields.io/badge/Node.js-43853D?style=for-the-badge&logo=node.js&logoColor=white)
 ![Express.js](https://img.shields.io/badge/Express.js-000000?style=for-the-badge&logo=express&logoColor=white)
 ![MongoDB](https://img.shields.io/badge/MongoDB-4EA94B?style=for-the-badge&logo=mongodb&logoColor=white)
-![Firebase](https://img.shields.io/badge/Firebase-FFCA28?style=for-the-badge&logo=firebase&logoColor=black)
 ![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white)
 
 </div>
@@ -162,11 +161,9 @@ git push -u origin <add/project_name>
 
 1. Fill out the ***PR template*** properly when submitting a pull request.
 2. Do not commit directly to the `main` branch, otherwise your PR will be instantly rejected.
-3. Ensure all work is original and not copied from other sources.
-4. Don't create more than 3-4 commits unless permitted by Admin and Mentors in your PR.
-5. Add comments to your code wherever necessary for clarity.
-6. 🚀 **Before submitting a PR, you must publish a blog about your project on our website. PRs without a blog will not be accepted.**
-7. For frontend updates, share screenshots and work samples before submitting a PR.
+3. Don't create more than 3-4 commits unless permitted by Admin and Mentors in your PR.
+4. Add comments to your code wherever necessary for clarity.
+5. 🚀 **Before submitting a PR, you must publish a blog about your project on our website. PRs without a blog will not be accepted.**
 
 </details>
 
@@ -191,7 +188,8 @@ git push -u origin <add/project_name>
         <img src="https://github.com/user-attachments/assets/c464f695-d0b9-4fc1-9c7c-add9e19d9167" height=100px />
         <p><sub><b>GSSoC</b></sub></p>
         <a href="https://gssoc.girlscript.tech/"><b>2024</b></a> |
-        <a href="https://gssoc.girlscript.tech/"><b>Ext 2024</b></a>
+        <a href="https://gssoc.girlscript.tech/"><b>Ext 2024</b></a></br>
+        <a href="https://gssoc.girlscript.tech/"><b>2025</b></a>
       </div>
     </td>
     <td align="center">
@@ -236,6 +234,13 @@ git push -u origin <add/project_name>
         <img src="https://github.com/user-attachments/assets/728db452-1ce6-42d7-9dd4-4d4ba8dad90c" height=100px />
         <p><sub><b>DWOC</b></sub></p>
         <a href="https://dwoc.io/"><b>2025</b></a>
+      </div>
+    </td>
+    <td align="center">
+      <div>
+        <img src="https://github.com/user-attachments/assets/e1c5f7db-0838-483b-9bd0-1d000ec2ce84" height=100px />
+        <p><sub><b>Only Dust</b></sub></p>
+        <a href="https://www.onlydust.com/"><b>2025</b></a>
       </div>
     </td>
   </tr>
