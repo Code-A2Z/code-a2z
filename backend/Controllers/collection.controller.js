@@ -1,5 +1,7 @@
 import Collection from "../Models/collection.model.js";
+import Project from "../Models/project.model.js";
 import User from "../Models/user.model.js";
+import mongoose from "mongoose";
 
 /*create a new collection-
  1.in case of manula creation of collection, the project_id is set to null since nothing is saved */ 
@@ -88,3 +90,26 @@ export const saveProject = async (req, res) => {
     }
 }
 
+export const deleteProject = async(req,res)=>{
+  try{
+    const userID = req.user;
+    const collectionID = req.params.cid;
+    const projectID = req.params.project_id;
+    console.log(userID , projectID, collectionID);
+    const existingUser = await User.findById(userID);
+    if(!existingUser)  return res.status(404).json("User not found");
+    const deletedProject = await Collection.findOne({
+      userID:userID,
+      _id:collectionID,
+      project_id:projectID
+    })
+
+    if(!deletedProject) return res.status(404).json("Project not found in this collection");
+
+    await Collection.deleteOne(deletedProject);
+    return res.status(200).json("Project deleted successfully");
+  }catch(err){
+    console.log(err);
+    return res.status(400).json(err);
+  }
+}
