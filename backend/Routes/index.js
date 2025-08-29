@@ -8,7 +8,6 @@ import subscriberRoutes from './api/subscriber.routes.js';
 import collectionRoutes from './api/collections.routes.js';
 import collaborationRoutes from './api/collaboration.routes.js';
 
-
 const router = express.Router();
 
 router.use('/auth', authRoutes);
