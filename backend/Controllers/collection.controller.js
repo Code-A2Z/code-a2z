@@ -3,9 +3,9 @@ import Project from "../Models/project.model.js";
 import User from "../Models/user.model.js";
 import mongoose from "mongoose";
 
-/*create a new collection-
- 1.in case of manula creation of collection, the project_id is set to null since nothing is saved */ 
 
+/*create a new collection-
+ 1.in case of manual creation of collection, the project_id is set to null since nothing is saved */ 
 export const createNewCollection = async(req,res)=>{
     try{
         const userID = req.user;
@@ -70,6 +70,7 @@ export const saveProject = async (req, res) => {
       );
     }
 
+
     // Case 3: No empty slots → create new document for the project being saved 
     const newDoc = new Collection(
       { 
@@ -77,6 +78,7 @@ export const saveProject = async (req, res) => {
         collection_name, 
         project_id 
       });
+
     await newDoc.save();
 
 

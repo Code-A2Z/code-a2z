@@ -8,3 +8,4 @@ collectionRoutes.delete("/delete/:cid/:project_id", authenticateUser, deleteProj
 
 
 export default collectionRoutes;
+
