@@ -27,7 +27,6 @@ export const invitationToCollaborate = async(req, res)=>{
 
         const acceptLink = `${baseUrl}/api/collaboration/accept/${token}`;
         const rejectLink = `${baseUrl}/api/collaboration/reject/${token}`;
-        console.log(acceptLink, rejectLink);
         const mailOptions = {
             from: process.env.EMAIL_USER,
             to: authorEmail,
@@ -66,13 +65,13 @@ export const acceptInvitation = async(req, res)=>{
     const token = req.params.token;
     const id = req.user;
     try {
-        const collaborationRequest = await collaboration.findOne({token: token, author_id: id, status:"pending"}).populate("project_id", "title author").populate("author_id", "personal_info.fullname personal_info.email");
+        const collaborationRequest = await collaboration.findOne({token: token, author_id: id, status:"pending"})
         if(!collaborationRequest) return res.status(404).json({error: "Invalid or expired token!"});
         if(collaborationRequest.status !== "pending") return res.status(400).json({error: "This invitation has already been responded to."});   
         collaborationRequest.status = "accepted";
         collaborationRequest.token = " " // Invalidate the token after use
         await collaborationRequest.save();  
-        return res.status(200).json({message: `You have accepted the collaboration invitation for project "${collaborationRequest.project_id.title}".`});   
+        return res.status(200).json({message: `You have accepted the collaboration invitation`});   
     }
     catch (error) {
         console.log(error);
@@ -85,13 +84,13 @@ export const rejectInvitation = async(req,res)=>{
     const id = req.user;
     try {
 
-        const collaborationRequest = await collaboration.findOne({token: token, author_id: id, status:"pending"}).populate("project_id", "title author")
+        const collaborationRequest = await collaboration.findOne({token: token, author_id: id, status:"pending"})
         if(!collaborationRequest) return res.status(404).json({error: "Invalid or expired token!"});
         if(collaborationRequest.status !== "pending") return res.status(400).json({error: "This invitation has already been responded to."});
         collaborationRequest.status = "rejected";
         collaborationRequest.token = " " // Invalidate the token after use
         await collaborationRequest.save();  
-        return res.status(200).json({message: `You have rejected the collaboration invitation for project "${collaborationRequest.project_id.title}".`});   
+        return res.status(200).json({message: `You have rejected the collaboration invitation`});   
     }
     catch (error) {
         console.log(error);
