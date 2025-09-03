@@ -19,6 +19,9 @@
     "start": "node server.js",
     "dev": "nodemon server.js"
   },
+  "keywords": [],
+  "author": "Avdhesh Varshney",
+  "license": "ISC",
   "dependencies": {
     "bcrypt": "^5.1.1",
     "cloudinary": "^2.5.1",
@@ -35,6 +38,7 @@
     "nodemailer": "^7.0.5"
   },
   "devDependencies": {
-    "nodemon": "^3.1.9"
-  }
+    "nodemon": "^3.1.10"
+  },
+  "description": ""
 }

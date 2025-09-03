@@ -17,16 +17,21 @@ export const invitationToCollaborate = async(req, res)=>{
         if(user._id.toString() === projectToCollaborate.author._id.toString()){
             return res.status(400).json({error: "You cannot invite yourself to collaborate on your own project."});
         }
+
+
         if(!projectToCollaborate) return res.status(404).json({error: "Project not found!"});
 
         const authorEmail  = projectToCollaborate.author.personal_info.email;
         const token = crypto.randomBytes(16).toString('hex');
  
+
         const baseUrl = `http://localhost:${process.env.PORT || 8000}`;
        
 
         const acceptLink = `${baseUrl}/api/collaboration/accept/${token}`;
         const rejectLink = `${baseUrl}/api/collaboration/reject/${token}`;
+
+
         const mailOptions = {
             from: process.env.EMAIL_USER,
             to: authorEmail,
@@ -59,6 +64,7 @@ export const invitationToCollaborate = async(req, res)=>{
     return res.status(500).json({error: "Internal Server Error"});
    }
 }
+
 
 
 export const acceptInvitation = async(req, res)=>{
@@ -97,3 +103,4 @@ export const rejectInvitation = async(req,res)=>{
         return res.status(500).json({error: "Internal Server Error"});
     }
 }
+
