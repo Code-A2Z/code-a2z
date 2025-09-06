@@ -97,7 +97,6 @@ bower_components
 # misc
 .sass-cache
 connect.lock
-typings
 
 # Optional npm cache directory
 .npm
