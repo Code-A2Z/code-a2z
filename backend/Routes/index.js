@@ -12,17 +12,8 @@ import { authMiddleware, generalMiddleware } from '../Middlewares/rateLimit/inde
 
 const router = express.Router();
 
-// router.use('/auth', authRoutes);
 
 router.use('/auth', authMiddleware, authRoutes);
-
-// router.use('/user', userRoutes);
-// router.use('/media', mediaRoutes);
-// router.use('/project', projectRoutes);
-// router.use('/notification', notificationRoutes);
-// router.use('/subscriber', subscriberRoutes);
-// router.use("/collection", collectionRoutes);
-// router.use('/collaboration', collaborationRoutes);
 
 router.use('/user', generalMiddleware, userRoutes);
 router.use('/media', generalMiddleware, mediaRoutes);
