@@ -1,5 +1,5 @@
 import axios from "axios";
-import { useContext } from "react";
+import { useContext, useRef, FormEvent } from "react";
 import { Link, Navigate } from "react-router-dom";
 import { Toaster, toast } from "react-hot-toast";
 
@@ -8,11 +8,23 @@ import InputBox from "../components/InputBox";
 import { storeInSession } from "../common/session";
 import AnimationWrapper from "../common/page-animation";
 
-const UserAuthForm = ({ type }) => {
+interface UserAuthFormProps {
+    type: "login" | "signup";
+}
+
+interface FormData {
+    fullname?: string;
+    email: string;
+    password: string;
+    confirmpassword?: string;
+    [key: string]: any;
+}
+
+const UserAuthForm = ({ type }: UserAuthFormProps) => {
 
     let { userAuth: { access_token }, setUserAuth } = useContext(UserContext);
 
-    const userAuthThroughServer = async (serverRoute, formData) => {
+    const userAuthThroughServer = async (serverRoute: string, formData: FormData) => {
 
         if (serverRoute === "/api/auth/signup") {
             let { email } = formData;
@@ -32,7 +44,10 @@ const UserAuthForm = ({ type }) => {
                 toast.error(response.data.error);
             })
     }
-    const handleSubmit = (e) => {
+    
+    let formElement = useRef<HTMLFormElement>(null);
+
+    const handleSubmit = (e: FormEvent) => {
         e.preventDefault();
 
         let serverRoute = type === "login" ? "/api/auth/login" : "/api/auth/signup";
@@ -40,11 +55,11 @@ const UserAuthForm = ({ type }) => {
         let emailRegex = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
         let passwordRegex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{6,20}$/;
 
-        let form = new FormData(formElement);
-        let formData = {};
+        let form = new FormData(formElement.current!);
+        let formData: { [key: string]: any } = {};
 
         for (let [key, value] of form.entries()) {
-            formData[key] = value;
+            formData[key] = value as string;
         }
 
         let { fullname, email, password, confirmpassword } = formData; // Added confirmpassword
@@ -80,10 +95,10 @@ const UserAuthForm = ({ type }) => {
         access_token ?
             <Navigate to="/" />
             :
-            <AnimationWrapper keyValue={type}>
+            <AnimationWrapper keyValue={type} className="">
                 <section className="py-4 px-[5vw] md:px-[7vw] lg:px-[10vw] h-cover flex items-center justify-center">
                     <Toaster />
-                    <form id="formElement" className="w-[80%] max-w-[400px]">
+                    <form ref={formElement} className="w-[80%] max-w-[400px]" onSubmit={handleSubmit}>
                         <h1 className="text-4xl font-gelasio capitalize text-center mb-24">
                             {type === "login" ? "Welcome back" : "Join us today"}
                         </h1>
@@ -93,6 +108,8 @@ const UserAuthForm = ({ type }) => {
                                 <InputBox
                                     name="fullname"
                                     type="text"
+                                    id="fullname"
+                                    value=""
                                     placeholder="Full Name"
                                     icon="fi-rr-user"
                                 />
@@ -102,6 +119,8 @@ const UserAuthForm = ({ type }) => {
                         <InputBox
                             name="email"
                             type="email"
+                            id="email"
+                            value=""
                             placeholder="Email"
                             icon="fi-rr-envelope"
                         />
@@ -109,6 +128,8 @@ const UserAuthForm = ({ type }) => {
                         <InputBox
                             name="password"
                             type="password"
+                            id="password"
+                            value=""
                             placeholder="Password"
                             icon="fi-rr-key"
                         />
@@ -119,6 +140,8 @@ const UserAuthForm = ({ type }) => {
                                 <InputBox
                                     name="confirmpassword"
                                     type="password"
+                                    id="confirmpassword"
+                                    value=""
                                     placeholder="Confirm Password"
                                     icon="fi-rr-key"
                                 />

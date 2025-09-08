@@ -3,14 +3,14 @@ import React, { ReactNode } from "react";
 
 interface AnimationWrapperProps {
     children: ReactNode;
-    keyValue: any;
+    keyValue?: any;
     initial?: { opacity: number };
     animate?: { opacity: number };
-    transition?: { duration: number };
-    className: any;
+    transition?: { duration: number; delay?: number };
+    className?: any;
 }
 
-const AnimationWrapper = ({ children, keyValue, initial = { opacity: 0 }, animate = { opacity: 1 }, transition = { duration: 1 }, className }: AnimationWrapperProps) => {
+const AnimationWrapper = ({ children, keyValue = "", initial = { opacity: 0 }, animate = { opacity: 1 }, transition = { duration: 1 }, className = "" }: AnimationWrapperProps) => {
     return (
         <AnimatePresence>
             <motion.div
