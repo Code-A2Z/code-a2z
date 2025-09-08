@@ -1,7 +1,7 @@
 import { Route, Routes } from "react-router-dom";
 import Navbar from "./components/Navbar";
 import UserAuthForm from "./pages/UserAuthForm";
-import { createContext, useEffect, useState } from "react";
+import { createContext, useEffect, useState, ReactNode } from "react";
 import { lookInSession } from "./common/session";
 import Editor from "./pages/Editor";
 import Home from "./pages/Home";
@@ -15,11 +15,28 @@ import EditProfile from "./pages/EditProfile";
 import Notifications from "./pages/Notifications";
 import ManageProjects from "./pages/ManageProjects";
 
-export const UserContext = createContext({});
+interface UserAuth {
+  access_token?: string | null;
+  username?: string;
+  profile_img?: string;
+  fullname?: string;
+  email?: string;
+  [key: string]: any;
+}
+
+interface UserContextType {
+  userAuth: UserAuth;
+  setUserAuth: (auth: UserAuth) => void;
+}
+
+export const UserContext = createContext<UserContextType>({
+  userAuth: { access_token: null },
+  setUserAuth: () => {}
+});
 
 function App() {
 
-  const [userAuth, setUserAuth] = useState({});
+  const [userAuth, setUserAuth] = useState<UserAuth>({ access_token: null });
 
   useEffect(() => {
     let userInSession = lookInSession("user");

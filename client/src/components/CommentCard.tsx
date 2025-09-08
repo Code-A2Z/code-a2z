@@ -165,7 +165,7 @@ const CommentCard = ({ index, leftVal, commentData }) => {
                                 <i className="fi fi-rs-comment-dots"></i> Hide Reply
                             </button> :
                             <button
-                                onClick={loadReplies}
+                                onClick={() => loadReplies({ skip: 0, currentIndex: index })}
                                 className="text-[#555] dark:text-gray-300 p-2 px-3 hover:bg-[#f3f3f3] dark:hover:bg-[#1e1e1e] rounded-md flex items-center gap-2"
                             >
                                 <i className="fi fi-rs-comment-dots"></i> {children.length} Reply

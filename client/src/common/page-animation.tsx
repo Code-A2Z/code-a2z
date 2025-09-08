@@ -1,7 +1,16 @@
 import { AnimatePresence, motion } from "framer-motion";
-import React from "react";
+import React, { ReactNode } from "react";
 
-const AnimationWrapper = ({ children, keyValue, initial = { opacity: 0 }, animate = { opacity: 1 }, transition = { duration: 1 }, className }) => {
+interface AnimationWrapperProps {
+    children: ReactNode;
+    keyValue: any;
+    initial?: { opacity: number };
+    animate?: { opacity: number };
+    transition?: { duration: number };
+    className: any;
+}
+
+const AnimationWrapper = ({ children, keyValue, initial = { opacity: 0 }, animate = { opacity: 1 }, transition = { duration: 1 }, className }: AnimationWrapperProps) => {
     return (
         <AnimatePresence>
             <motion.div

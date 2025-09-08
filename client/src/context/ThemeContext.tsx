@@ -1,9 +1,25 @@
-import { createContext, useContext, useEffect, useState } from 'react';
+import { createContext, useContext, useEffect, useState, ReactNode } from 'react';
 
-const ThemeContext = createContext();
-export const useTheme = () => useContext(ThemeContext);
+interface ThemeContextType {
+    theme: string;
+    setThemeMode: (newTheme: string) => void;
+    isDarkMode: boolean;
+}
 
-export const ThemeProvider = ({ children }) => {
+const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
+export const useTheme = () => {
+    const context = useContext(ThemeContext);
+    if (!context) {
+        throw new Error('useTheme must be used within a ThemeProvider');
+    }
+    return context;
+};
+
+interface ThemeProviderProps {
+    children: ReactNode;
+}
+
+export const ThemeProvider = ({ children }: ThemeProviderProps) => {
     const [theme, setTheme] = useState(() => localStorage.getItem('theme') || 'system');
 
     useEffect(() => {
@@ -25,8 +41,8 @@ export const ThemeProvider = ({ children }) => {
         applyTheme();
 
         // If using system theme, listen for changes
-        let mediaQuery;
-        const handleChange = (e) => {
+        let mediaQuery: MediaQueryList | undefined;
+        const handleChange = (e: MediaQueryListEvent) => {
             if (theme === 'system') {
                 applyTheme();
             }

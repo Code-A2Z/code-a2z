@@ -21,14 +21,69 @@ export const projectStructure = {
     repository: '',
 }
 
-export const ProjectContext = createContext({});
+interface ProjectStructure {
+    _id?: string;
+    title: string;
+    des: string;
+    content: any[];
+    author: {
+        _id?: string;
+        personal_info: {
+            fullname?: string;
+            username?: string;
+            profile_img?: string;
+            [key: string]: any;
+        };
+        [key: string]: any;
+    };
+    banner: string;
+    publishedAt: string;
+    projectUrl: string;
+    repository: string;
+    tags?: string[];
+    activity?: {
+        total_comments?: number;
+        total_parent_comments?: number;
+        [key: string]: any;
+    };
+    comments?: {
+        results?: any[];
+        [key: string]: any;
+    };
+    [key: string]: any;
+}
+
+interface ProjectContextType {
+    project: ProjectStructure;
+    setProject: (project: ProjectStructure) => void;
+    islikedByUser: boolean;
+    setLikedByUser: (liked: boolean) => void;
+    commentsWrapper: boolean;
+    setCommentsWrapper: (wrapper: boolean) => void;
+    totalParentCommentsLoaded: number;
+    setTotalParentCommentsLoaded: (count: number) => void;
+    textEditor?: any;
+    setTextEditor?: (editor: any) => void;
+    setEditorState?: (state: any) => void;
+}
+
+export const ProjectContext = createContext<ProjectContextType>({
+    project: projectStructure,
+    setProject: () => {},
+    islikedByUser: false,
+    setLikedByUser: () => {},
+    commentsWrapper: false,
+    setCommentsWrapper: () => {},
+    totalParentCommentsLoaded: 0,
+    setTotalParentCommentsLoaded: () => {},
+});
 
 const ProjectPage = () => {
 
     let { project_id } = useParams();
 
-    const [project, setProject] = useState(projectStructure);
-    const [similarProjects, setSimilarProjects] = useState(null);
+    const [project, setProject] = useState<ProjectStructure>(projectStructure);
+    const [similarProjects, setSimilarProjects] = useState<any>(null);
     const [loading, setLoading] = useState(true);
     const [islikedByUser, setLikedByUser] = useState(false);
     const [commentsWrapper, setCommentsWrapper] = useState(false);
