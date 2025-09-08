@@ -5,7 +5,6 @@ import mongoose from "mongoose";
 
 /*create a new collection-
  1.in case of manula creation of collection, the project_id is set to null since nothing is saved */ 
-
 export const createNewCollection = async(req,res)=>{
     try{
         const userID = req.user;
@@ -58,6 +57,7 @@ export const saveProject = async (req, res) => {
     }
 
     // Case 2: Try to update empty project_id - in case of manula creation,we had project_is null, so here we try to update that id for that document, to use this document and avoid redudancy in the collection
+
     const emptySlot = await Collection.findOneAndUpdate(
       { userID, collection_name, project_id: null },
       { $set: { project_id } },
@@ -70,6 +70,7 @@ export const saveProject = async (req, res) => {
       );
     }
 
+
     // Case 3: No empty slots → create new document for the project being saved 
     const newDoc = new Collection(
       { 
@@ -77,6 +78,7 @@ export const saveProject = async (req, res) => {
         collection_name, 
         project_id 
       });
+
     await newDoc.save();
 
 
@@ -89,6 +91,7 @@ export const saveProject = async (req, res) => {
     return res.status(400).json(err);
     }
 }
+
 
 export const deleteProject = async(req,res)=>{
   try{
@@ -112,3 +115,4 @@ export const deleteProject = async(req,res)=>{
     return res.status(400).json(err);
   }
 }
+
