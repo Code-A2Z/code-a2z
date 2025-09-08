@@ -1,5 +1,5 @@
 {
-  "name": "frontend",
+  "name": "client",
   "author": "Avdhesh Varshney",
   "license": "ISC",
   "description": "Code A2Z is a collaborative blogging platform for developers and writers to create, manage, and share projects with markdown support, customizable templates, and community contributions.",
@@ -56,6 +56,7 @@
     "eslint-plugin-react-hooks": "^5.1.0",
     "eslint-plugin-react-refresh": "^0.4.19",
     "globals": "^15.15.0",
+    "typescript": "^5.9.2",
     "vite": "^6.2.0"
   }
 }
