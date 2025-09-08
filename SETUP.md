@@ -56,12 +56,12 @@ Open two terminals:
 
 Backend:
 ```bash
-npm run server
+npm run backend
 ```
 
 Frontend:
 ```bash
-npm run dev
+npm run frontend
 ```
 
 ---
@@ -99,7 +99,7 @@ You do not need to set `MONGODB_URL` or run the backend.
 
 #### 4. Start the frontend
 ```bash
-npm run dev
+npm run frontend
 ```
 
 Your app will connect directly to the deployed backend.
