@@ -1,3 +1,4 @@
+
 ## Hey <𝚌𝚘𝚍𝚎𝚛𝚜/>! 👋
 
 [![Typing SVG](https://readme-typing-svg.demolab.com?font=Monoton&size=85&pause=12&speed=12&color=00FF00&center=true&vCenter=true&width=2000&height=200&lines=Hello+World!;Welcome+to+the+Blog+Script+project;Your+Next+Big+Commit+Starts+Here!;Let's+Code+Something+Awesome!;Collaborate.+Build.+Inspire!;Write+Code,+Build+Dreams!;Code.+Commit.+Conquer!;Build,+Learn,+and+Contribute!)](https://git.io/typing-svg)
