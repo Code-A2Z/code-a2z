@@ -9,15 +9,15 @@ const ChangePassword = () => {
 
     let { userAuth: { access_token } } = useContext(UserContext);
 
-    let changePasswordForm = useRef();
+    let changePasswordForm = useRef<HTMLFormElement>(null);
 
     let passwordRegex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{6,20}$/;
 
     const handleSubmit = (e) => {
         e.preventDefault();
 
-        let form = new FormData(changePasswordForm.current);
-        let formData = {};
+        let form = new FormData(changePasswordForm.current!);
+        let formData: { [key: string]: any } = {};
 
         for (let [key, value] of form.entries()) {
             formData[key] = value;
@@ -64,16 +64,18 @@ const ChangePassword = () => {
 
                 <div className="py-10 w-full md:max-w-[400px]">
                     <InputBox
+                        id="currentPassword"
                         name="currentPassword"
                         type="password"
-                        className="profile-edit-input"
+                        value=""
                         placeholder="Current Password"
                         icon="fi-rr-unlock"
                     />
                     <InputBox
+                        id="newPassword"
                         name="newPassword"
                         type="password"
-                        className="profile-edit-input"
+                        value=""
                         placeholder="New Password"
                         icon="fi-rr-unlock"
                     />

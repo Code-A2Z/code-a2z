@@ -98,7 +98,7 @@ const SearchPage = () => {
                                     : <NoDataMessage message="No projects published" />
                             )
                         }
-                        <LoadMoreDataBtn state={projects} fetchDataFun={searchProjects} />
+                        <LoadMoreDataBtn state={projects} fetchDataFun={searchProjects} additionalParam={{}} />
                     </>
 
                     <UserCardWrapper />

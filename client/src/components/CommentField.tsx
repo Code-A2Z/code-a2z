@@ -51,7 +51,7 @@ const CommentField = ({ action, index = undefined, replyingTo = undefined, setRe
 
                 setProject({ ...project, comments: { ...comments, results: newCommentArr }, activity: { ...activity, total_comments: total_comments + 1, total_parent_comments: total_parent_comments + parentCommentIncrementval } })
 
-                setTotalParentCommentsLoaded(preVal => preVal + parentCommentIncrementval);
+                setTotalParentCommentsLoaded(totalParentCommentsLoaded + parentCommentIncrementval);
             })
             .catch(err => {
                 console.log(err);

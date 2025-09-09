@@ -9,8 +9,9 @@ const SubscribeModal = ({ onClose }) => {
 
         let emailRegex = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
 
+        let subscribeFormEle = document.getElementById('subscribeFormEle') as HTMLFormElement;
         let form = new FormData(subscribeFormEle);
-        let formData = {};
+        let formData: { [key: string]: any } = {};
 
         for (let [key, value] of form.entries()) {
             formData[key] = value;
@@ -58,8 +59,10 @@ const SubscribeModal = ({ onClose }) => {
 
                 <div className="relative mb-6">
                     <InputBox
+                        id="email"
                         name="email"
                         type="email"
+                        value=""
                         placeholder="Your email address"
                         icon="fi-rr-envelope"
                     />

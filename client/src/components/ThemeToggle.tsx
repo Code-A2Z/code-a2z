@@ -4,7 +4,7 @@ import { useState, useEffect, useRef } from 'react';
 const ThemeToggle = () => {
     const { theme, setThemeMode } = useTheme();
     const [isOpen, setIsOpen] = useState(false);
-    const dropdownRef = useRef();
+    const dropdownRef = useRef<HTMLDivElement>(null);
 
     const themes = [
         { name: 'Light', value: 'light', icon: 'fi fi-rr-sun' },

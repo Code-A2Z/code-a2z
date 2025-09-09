@@ -111,7 +111,7 @@ const Home = () => {
                                         : <NoDataMessage message="No projects published" />
                                 )
                             }
-                            <LoadMoreDataBtn state={projects} fetchDataFun={(pageState === "home" ? fetchLatestProjects : fetchProjectsByCategory)} />
+                            <LoadMoreDataBtn state={projects} fetchDataFun={(pageState === "home" ? fetchLatestProjects : fetchProjectsByCategory)} additionalParam={{}} />
                         </>
                         {
                             trendingProjects === null ? (

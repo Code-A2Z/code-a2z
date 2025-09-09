@@ -10,7 +10,7 @@ const CommentCard = ({ index, leftVal, commentData }) => {
 
     let { commented_by: { personal_info: { profile_img, fullname, username: commented_by_username } }, commentedAt, comment, _id, children } = commentData;
 
-    let { project, project: { comments, comments: { results: commentsArr }, activity, activity: { total_parent_comments }, author: { personal_info: { username: project_author } } }, setProject, setTotalParentCommentsLoaded } = useContext(ProjectContext);
+    let { project, project: { comments, comments: { results: commentsArr }, activity, activity: { total_parent_comments }, author: { personal_info: { username: project_author } } }, setProject, totalParentCommentsLoaded, setTotalParentCommentsLoaded } = useContext(ProjectContext);
 
     let { userAuth: { access_token, username } } = useContext(UserContext);
 
@@ -55,7 +55,7 @@ const CommentCard = ({ index, leftVal, commentData }) => {
         }
 
         if (commentData.childrenLevel === 0 && isDelete) {
-            setTotalParentCommentsLoaded(preVal => preVal - 1);
+            setTotalParentCommentsLoaded(totalParentCommentsLoaded - 1);
         }
 
         setProject({ ...project, comments: { results: commentsArr }, activity: { ...activity, total_parent_comments: total_parent_comments - (commentData.childrenLevel === 0 && isDelete ? 1 : 0) } });

@@ -29,7 +29,7 @@ const ProjectInteraction = () => {
 
     const handleLike = () => {
         if (access_token) {
-            setLikedByUser(preVal => !preVal);
+             setLikedByUser(!islikedByUser);
             !islikedByUser ? total_likes++ : total_likes--;
             setProject({ ...project, activity: { ...activity, total_likes } });
 
@@ -71,7 +71,7 @@ const ProjectInteraction = () => {
                     <p className="text-xl text-gray-700 dark:text-gray-300">{total_likes}</p>
 
                     <button
-                        onClick={() => setCommentsWrapper(preVal => !preVal)}
+                        onClick={() => setCommentsWrapper(!commentsWrapper)}
                         className="w-10 h-10 rounded-full flex items-center justify-center transition-colors duration-200 bg-gray-100 text-gray-600 dark:bg-[#27272a] dark:text-gray-300"
                     >
                         <i className="fi fi-rr-comment-dots"></i>

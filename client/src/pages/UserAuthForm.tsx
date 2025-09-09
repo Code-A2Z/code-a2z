@@ -88,7 +88,7 @@ const UserAuthForm = ({ type }: UserAuthFormProps) => {
             }
         }
 
-        userAuthThroughServer(serverRoute, formData);
+        userAuthThroughServer(serverRoute, formData as FormData);
     }
 
     return (

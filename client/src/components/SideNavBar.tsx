@@ -11,16 +11,18 @@ const SideNav = () => {
     let [pageState, setPageState] = useState(page.replace('-', ' '));
     let [showSideNav, setShowSideNav] = useState(false);
 
-    let activeTabLine = useRef();
-    let sideBarIconTab = useRef();
-    let pageStateTab = useRef();
+    let activeTabLine = useRef<HTMLHRElement>(null);
+    let sideBarIconTab = useRef<HTMLButtonElement>(null);
+    let pageStateTab = useRef<HTMLButtonElement>(null);
 
     const changePageState = (e) => {
 
         let { offsetWidth, offsetLeft } = e.target;
 
-        activeTabLine.current.style.width = offsetWidth + "px";
-        activeTabLine.current.style.left = offsetLeft + "px";
+        if (activeTabLine.current) {
+            activeTabLine.current.style.width = offsetWidth + "px";
+            activeTabLine.current.style.left = offsetLeft + "px";
+        }
 
         if (e.target === sideBarIconTab.current) {
             setShowSideNav(true);
@@ -31,7 +33,9 @@ const SideNav = () => {
 
     useEffect(() => {
         setShowSideNav(false);
-        pageStateTab.current.click();
+        if (pageStateTab.current) {
+            pageStateTab.current.click();
+        }
     }, [pageState]);
 
     return (
@@ -70,7 +74,7 @@ const SideNav = () => {
 
                             <NavLink
                                 to="/dashboard/projects"
-                                onClick={(e) => setPageState(e.target.innerText)}
+                                onClick={(e) => setPageState((e.target as HTMLElement).innerText)}
                                 className="sidebar-link"
                             >
                                 <i className="fi fi-rr-document"></i>
@@ -78,7 +82,7 @@ const SideNav = () => {
                             </NavLink>
                             <NavLink
                                 to="/dashboard/notifications"
-                                onClick={(e) => setPageState(e.target.innerText)}
+                                onClick={(e) => setPageState((e.target as HTMLElement).innerText)}
                                 className="sidebar-link"
                             >
                                 <div className="relative">
@@ -93,7 +97,7 @@ const SideNav = () => {
                             </NavLink>
                             <NavLink
                                 to="/editor"
-                                onClick={(e) => setPageState(e.target.innerText)}
+                                onClick={(e) => setPageState((e.target as HTMLElement).innerText)}
                                 className="sidebar-link"
                             >
                                 <i className="fi fi-rr-file-edit"></i>
@@ -105,7 +109,7 @@ const SideNav = () => {
 
                             <NavLink
                                 to="/settings/edit-profile"
-                                onClick={(e) => setPageState(e.target.innerText)}
+                                onClick={(e) => setPageState((e.target as HTMLElement).innerText)}
                                 className="sidebar-link"
                             >
                                 <i className="fi fi-rr-user"></i>
@@ -113,7 +117,7 @@ const SideNav = () => {
                             </NavLink>
                             <NavLink
                                 to="/settings/change-password"
-                                onClick={(e) => setPageState(e.target.innerText)}
+                                onClick={(e) => setPageState((e.target as HTMLElement).innerText)}
                                 className="sidebar-link"
                             >
                                 <i className="fi fi-rr-lock"></i>

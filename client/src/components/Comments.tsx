@@ -55,7 +55,7 @@ const CommentsContainer = () => {
                 <p className="text-lg mt-2 w-[70%] text-gray-500 line-clamp-1">{title}</p>
 
                 <button
-                    onClick={() => setCommentsWrapper(preVal => !preVal)}
+                    onClick={() => setCommentsWrapper(!commentsWrapper)}
                     className="absolute top-0 right-0 flex justify-center items-center w-12 h-12 rounded-full bg-gray-100 dark:bg-[#09090b]"
                 >
                     <i className="fi fi-br-cross text-2xl mt-1"></i>
@@ -64,7 +64,7 @@ const CommentsContainer = () => {
 
             <hr className="border-gray-100 my-8 w-[120%] -ml-10" />
 
-            <CommentField action="comment" />
+            <CommentField action="comment" setReplying={() => {}} />
 
             {
                 commentsArr && commentsArr.length ?

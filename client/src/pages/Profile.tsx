@@ -145,10 +145,10 @@ const ProfilePage = () => {
                                                     : <NoDataMessage message="No projects published" />
                                             )
                                         }
-                                        <LoadMoreDataBtn state={projects} fetchDataFun={getProjects} />
+                                        <LoadMoreDataBtn state={projects} fetchDataFun={getProjects} additionalParam={{ user_id: profileId }} />
                                     </>
 
-                                    <AboutUser bio={bio} social_links={social_links} joinedAt={joinedAt} />
+                                    <AboutUser className="" bio={bio} social_links={social_links} joinedAt={joinedAt} />
                                 </InPageNavigation>
 
                             </div>

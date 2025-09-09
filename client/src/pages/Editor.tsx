@@ -17,7 +17,23 @@ const projectStructure = {
     author: { personal_info: {} }
 }
 
-export const EditorContext = createContext({});
+interface EditorContextType {
+    project: any;
+    setProject: (project: any) => void;
+    editorState: string;
+    setEditorState: (state: string) => void;
+    textEditor: any;
+    setTextEditor: (editor: any) => void;
+}
+
+export const EditorContext = createContext<EditorContextType>({
+    project: projectStructure,
+    setProject: () => {},
+    editorState: "editor",
+    setEditorState: () => {},
+    textEditor: { isReady: false },
+    setTextEditor: () => {},
+});
 
 const Editor = () => {
 

@@ -15,15 +15,16 @@ const EditProfile = () => {
 
     let bioLimit = 150;
 
-    let profileImgEle = useRef();
-    let editProfileForm = useRef();
+    let profileImgEle = useRef<HTMLImageElement>(null);
+    let editProfileForm = useRef<HTMLFormElement>(null);
 
     const [profile, setProfile] = useState(profileDataStructure);
     const [loading, setLoading] = useState(true);
     const [charactersLeft, setCharactersLeft] = useState(bioLimit);
     const [updatedProfileImg, setUpdatedProfileImg] = useState(null);
 
-    let { personal_info: { fullname, username: profile_username, profile_img, email, bio }, social_links } = profile;
+    let { personal_info: { fullname, username: profile_username, profile_img, bio }, social_links } = profile;
+    let { email } = userAuth;
 
     useEffect(() => {
 
@@ -96,8 +97,8 @@ const EditProfile = () => {
     const handleSubmit = (e) => {
         e.preventDefault();
 
-        let form = new FormData(editProfileForm.current);
-        let formData = {};
+        let form = new FormData(editProfileForm.current!);
+        let formData: { [key: string]: any } = {};
 
         for (let [key, value] of form.entries()) {
             formData[key] = value;
@@ -188,6 +189,7 @@ const EditProfile = () => {
                                 <div className="grid grid-cols-1 md:grid-cols-2 md:gap-5">
                                     <div>
                                         <InputBox
+                                            id="fullname"
                                             name="fullname"
                                             type="text"
                                             value={fullname}
@@ -198,6 +200,7 @@ const EditProfile = () => {
                                     </div>
                                     <div>
                                         <InputBox
+                                            id="email"
                                             name="email"
                                             type="email"
                                             value={email}
@@ -209,6 +212,7 @@ const EditProfile = () => {
                                 </div>
 
                                 <InputBox
+                                    id="username"
                                     type="text"
                                     name="username"
                                     value={profile_username}
@@ -240,6 +244,7 @@ const EditProfile = () => {
 
                                             return (
                                                 <InputBox
+                                                    id={key}
                                                     key={i}
                                                     name={key}
                                                     type="text"

@@ -27,7 +27,7 @@ const ProjectEditor = () => {
             setTextEditor(new EditorJS({
                 holder: "textEditor",
                 data: Array.isArray(content) ? content[0] : content,
-                tools: tools,
+                tools: tools as any,
                 placeholder: "Let's write an awesome story"
             }));
         }
