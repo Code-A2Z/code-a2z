@@ -1,5 +1,5 @@
+import { Response } from "express";
 import crypto from "crypto";
-import { Request, Response } from "express";
 
 import Collaborator from "../models/collaborator.model";
 import Project from "../models/project.model";
@@ -12,103 +12,126 @@ export const invitationToCollaborate = async (
   req: AuthenticatedRequest,
   res: Response,
 ) => {
-  const userid = req.user;
+  const user_id = req.user;
   const { project_id } = req.body;
 
   try {
-    const user = await User.findById(userid);
+    const user = await User.findById(user_id);
     if (!user) {
       return sendResponse(res, "error", "User not found!", null, 404);
     }
 
-    const projectToCollaborate = await Project.findOne({ project_id: project_id }).populate("author", "personal_info.email");
-    if (user._id.toString() === projectToCollaborate.author._id.toString()) {
-      return res.status(400).json({ error: "You cannot invite yourself to collaborate on your own project." });
+    const projectToCollaborate = await Project.findOne({ project_id: project_id })
+      .populate({ path: "author", select: "personal_info.email" });
+
+      if (!projectToCollaborate) {
+      return sendResponse(res, "error", "Project not found!", null, 404);
+    }
+    // Ensure author is populated and has _id and personal_info
+    const author = projectToCollaborate.author as { _id: any; personal_info?: { email?: string } };
+    if (!author || !author._id) {
+      return sendResponse(res, "error", "Project author not found!", null, 404);
+    }
+    if (user._id === author._id) {
+      return sendResponse(res, "error", "You cannot invite yourself to collaborate on your own project.", null, 400);
     }
 
+    const authorEmail = author.personal_info?.email;
 
-    if (!projectToCollaborate) return res.status(404).json({ error: "Project not found!" });
-
-    const authorEmail = projectToCollaborate.author.personal_info.email;
     const token = crypto.randomBytes(16).toString('hex');
-
-
-    const baseUrl = `http://localhost:${process.env.PORT || 8000}`;
-
+    const baseUrl = process.env.VITE_SERVER_DOMAIN || `http://localhost:${process.env.PORT || 8000}`;
 
     const acceptLink = `${baseUrl}/api/collaboration/accept/${token}`;
     const rejectLink = `${baseUrl}/api/collaboration/reject/${token}`;
-
 
     const mailOptions = {
       from: process.env.EMAIL_USER,
       to: authorEmail,
       subject: "Collaboration Invitation",
-      html: `<p>Hi,</p>
-                   <p>${user.personal_info.fullname} has requested to collaborate on your project "${projectToCollaborate.title}".</p>
-                   <p><a href="${acceptLink}">Accept Invitation</a> | <a href="${rejectLink}">Reject Invitation</a></p>
-                   <p>Thank you!</p>`
-
+      html: `
+        <p>Hi,</p>
+        <p><strong>${user?.personal_info?.fullname}</strong> has requested to collaborate on your project "${projectToCollaborate.title}".</p>
+        <p>If you’d like to join, please click below:</p>
+        <p>
+          <a href="${acceptLink}">Accept Invitation</a> &nbsp;|&nbsp;
+          <a href="${rejectLink}">Reject Invitation</a>
+        </p>
+        <p>Your response will help us update the project collaboration status accordingly.</p>
+        <p>Thanks for being part of the community,<br/>The Code A2Z Team</p>
+      `
     };
-    await transporter.sendMail(mailOptions, (error, info) => {
+
+    transporter.sendMail(mailOptions, async (error, info) => {
       if (error) {
         console.error("Error sending email:", error);
-        return res.status(500).json({ error: "Failed to send invitation email" });
+        return sendResponse(res, "error", "Failed to send invitation email", null, 500);
       }
       console.log("Email sent:", info.response);
-    })
-    const collaborationData = new collaboration({
-      user_id: userid,
-      project_id: project_id,
-      author_id: projectToCollaborate.author,
-      status: "pending",
-      token: token
-    })
-    await collaborationData.save();
-    return res.status(200).json({ message: "Invitation sent successfully!" });
-
+      const collaborationData = new Collaborator({
+        user_id: user_id,
+        project_id: project_id,
+        author_id: projectToCollaborate.author,
+        status: "pending",
+        token: token
+      });
+      await collaborationData.save();
+      return sendResponse(res, "success", "Invitation sent successfully!", null, 200);
+    });
   } catch (error) {
-    console.log(error);
-    return res.status(500).json({ error: "Internal Server Error" });
+    return sendResponse(res, "error", "Internal Server Error", null, 500);
   }
-}
+};
 
-
-
-export const acceptInvitation = async (req, res) => {
+export const acceptInvitation = async (
+  req: AuthenticatedRequest,
+  res: Response,
+) => {
   const token = req.params.token;
-  const id = req.user;
+  const user_id = req.user;
+
   try {
-    const collaborationRequest = await collaboration.findOne({ token: token, author_id: id, status: "pending" })
-    if (!collaborationRequest) return res.status(404).json({ error: "Invalid or expired token!" });
-    if (collaborationRequest.status !== "pending") return res.status(400).json({ error: "This invitation has already been responded to." });
+    const collaborationRequest = await Collaborator.findOne({ token: token, author_id: user_id, status: "pending" })
+    if (!collaborationRequest) {
+      return sendResponse(res, "error", "Invalid or expired token!", null, 404);
+    }
+
+    if (collaborationRequest.status !== "pending") {
+      return sendResponse(res, "error", "This invitation has already been responded.", null, 400);
+    }
+
     collaborationRequest.status = "accepted";
     collaborationRequest.token = " " // Invalidate the token after use
     await collaborationRequest.save();
-    return res.status(200).json({ message: `You have accepted the collaboration invitation` });
+    return sendResponse(res, "success", "You have accepted the collaboration invitation", null, 200);
   }
   catch (error) {
-    console.log(error);
-    return res.status(500).json({ error: "Internal Server Error" });
+    return sendResponse(res, "error", "Internal Server Error", null, 500);
   }
-}
+};
 
-export const rejectInvitation = async (req, res) => {
+export const rejectInvitation = async (
+  req: AuthenticatedRequest,
+  res: Response,
+) => {
   const token = req.params.token;
-  const id = req.user;
-  try {
+  const user_id = req.user;
 
-    const collaborationRequest = await collaboration.findOne({ token: token, author_id: id, status: "pending" })
-    if (!collaborationRequest) return res.status(404).json({ error: "Invalid or expired token!" });
-    if (collaborationRequest.status !== "pending") return res.status(400).json({ error: "This invitation has already been responded to." });
+  try {
+    const collaborationRequest = await Collaborator.findOne({ token: token, author_id: user_id, status: "pending" });
+    if (!collaborationRequest) {
+      return sendResponse(res, "error", "Invalid or expired token!", null, 404);
+    }
+
+    if (collaborationRequest.status !== "pending") {
+      return sendResponse(res, "error", "This invitation has already been responded.", null, 400);
+    }
+
     collaborationRequest.status = "rejected";
-    collaborationRequest.token = " " // Invalidate the token after use
+    collaborationRequest.token = " "; // Invalidate the token after use
     await collaborationRequest.save();
-    return res.status(200).json({ message: `You have rejected the collaboration invitation` });
+    return sendResponse(res, "success", "You have rejected the collaboration invitation", null, 200);
   }
   catch (error) {
-    console.log(error);
-    return res.status(500).json({ error: "Internal Server Error" });
+    return sendResponse(res, "error", "Internal Server Error", null, 500);
   }
-}
-
+};
