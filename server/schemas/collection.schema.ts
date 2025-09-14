@@ -13,7 +13,6 @@ const collectionSchema = new Schema(
     },
     project_id: {
       type: [Schema.Types.ObjectId],
-      default: null,
       ref: 'projects',
     },
   },
