@@ -94,7 +94,6 @@ export const deleteProject = async(req,res)=>{
   try{
     const userID = req.user;
     const {collectionID,projectID} = req.body;
-    console.log(userID , projectID, collectionID);
     const existingUser = await User.findById(userID);
     if(!existingUser)  return res.status(404).json("User not found");
     const deletedProject = await Collection.findOne({
