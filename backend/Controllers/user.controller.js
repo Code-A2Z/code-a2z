@@ -1,4 +1,5 @@
 import User from '../Models/user.model.js';
+import { body, validationResult } from 'express-validator';
 
 export const searchUser = async (req, res) => {
 
@@ -42,24 +43,34 @@ export const updateProfileImg = async (req, res) => {
         })
 }
 
+// Validators for updateProfile
+const updateProfileValidators = [
+    body("username").isString().trim().isLength({ min: 3 }).withMessage("Username should be atleast 3 characters long"),
+    body("bio").optional({ nullable: true }).isString().trim().isLength({ max: 150 }).withMessage("Bio should be less than 150 characters"),
+    body("social_links.website").optional({ nullable: true, checkFalsy: true }).isURL().withMessage("Website must be a valid URL"),
+];
+
+// Export single controller that runs validators imperatively
 export const updateProfile = async (req, res) => {
+    // Run validators
+    await Promise.all(updateProfileValidators.map(v => v.run(req)));
+
+    // Validate request
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+        const firstMsg = errors.array()[0]?.msg || 'Invalid input';
+        return res.status(403).json({ error: firstMsg });
+    }
 
     let { username, bio, social_links } = req.body;
 
     let bioLimit = 150;
 
-    if (username.length < 3) {
-        return res.status(403).json({ error: "Username should be atleast 3 characters long" });
-    }
+    // manual checks for username and bio are now handled by express-validator
 
-    if (bio.length > bioLimit) {
-        return res.status(403).json({ error: `Bio should be less than ${bioLimit} characters` });
-    }
-
-    let socialLinksArr = Object.keys(social_links);
+    let socialLinksArr = Object.keys(social_links || {});
 
     try {
-
         for (let i = 0; i < socialLinksArr.length; i++) {
             if (social_links[socialLinksArr[i]].length) {
                 let hostname = new URL(social_links[socialLinksArr[i]]).hostname;
