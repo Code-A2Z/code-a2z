@@ -11,7 +11,7 @@ import removeProject from './controllers/remove-project';
 const collectionRoutes = express.Router();
 
 collectionRoutes.post("/create-collection", authenticateUser, createCollection);
-collectionRoutes.post("/save-project/:id",  authenticateUser, saveProjectInCollection);
-collectionRoutes.post("/remove-project/:id", authenticateUser, removeProject);
+collectionRoutes.put("/save-project",  authenticateUser, saveProjectInCollection);
+collectionRoutes.put("/remove-project", authenticateUser, removeProject);
 
 export default collectionRoutes;

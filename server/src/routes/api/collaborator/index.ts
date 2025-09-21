@@ -11,7 +11,7 @@ import rejectInvitation from "./controllers/reject-invite";
 const collaboratorRoutes = express.Router();
 
 collaboratorRoutes.post("/invite", authenticateUser, invitationToCollaborate);
-collaboratorRoutes.post('/accept/:token', authenticateUser, acceptInvitation);
-collaboratorRoutes.post('/reject/:token', authenticateUser, rejectInvitation);
+collaboratorRoutes.put('/accept/:token', authenticateUser, acceptInvitation);
+collaboratorRoutes.put('/reject/:token', authenticateUser, rejectInvitation);
 
 export default collaboratorRoutes;
