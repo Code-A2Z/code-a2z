@@ -13,11 +13,11 @@
     "projects"
   ],
   "type": "module",
-  "main": "server.ts",
+  "main": "src/server.ts",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node server.ts",
-    "dev": "nodemon --exec ts-node server.ts",
+    "start": "node dist/server.js",
+    "dev": "tsx watch src/server.ts",
     "build": "tsc"
   },
   "dependencies": {
@@ -28,7 +28,7 @@
     "dotenv": "^17.2.2",
     "express": "^5.1.0",
     "jsonwebtoken": "^9.0.2",
-    "localtunnel": "^2.0.2",
+    "localtunnel": "^1.8.3",
     "mongoose": "^8.18.1",
     "multer": "^2.0.2",
     "nanoid": "^5.1.5",
@@ -41,10 +41,9 @@
     "@types/express": "^5.0.3",
     "@types/jsonwebtoken": "^9.0.10",
     "@types/multer": "^2.0.0",
-    "@types/node": "^24.3.3",
+    "@types/node": "^24.4.0",
     "@types/nodemailer": "^7.0.1",
-    "nodemon": "^3.1.10",
-    "ts-node": "^10.9.2",
+    "tsx": "^4.20.5",
     "typescript": "^5.9.2"
   }
 }
