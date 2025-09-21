@@ -26,6 +26,6 @@ projectRoutes.post("/search-count", searchProjectsCount);
 projectRoutes.post("/get", getProject);
 projectRoutes.post("/user-written", authenticateUser, userWrittenProjects);
 projectRoutes.post("/user-written-count", authenticateUser, userWrittenProjectsCount);
-projectRoutes.post("/delete", authenticateUser, deleteProject);
+projectRoutes.delete("/delete", authenticateUser, deleteProject);
 
 export default projectRoutes;
