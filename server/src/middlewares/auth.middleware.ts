@@ -1,8 +1,9 @@
 import { Response, NextFunction } from "express";
 import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
-import { sendResponse } from "../utils/response";
+
 import { AuthenticatedRequest, AuthenticatedUser } from "./typings";
+import { sendResponse } from "../utils/response";
 
 dotenv.config();
 

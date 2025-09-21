@@ -4,7 +4,7 @@ import dotenv from "dotenv";
 
 import connectDB from "./config/db";
 import router from "./routes";
-import { errorHandler } from "./middlewares/error.handler";
+import errorHandler from "./middlewares/error.handler";
 
 dotenv.config();
 
