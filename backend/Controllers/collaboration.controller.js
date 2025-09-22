@@ -20,7 +20,7 @@ export const invitationToCollaborate = async(req, res)=>{
         const token = crypto.randomBytes(16).toString('hex');
  
         // const baseUrl = global.publicUrl || `http://localhost:${process.env.PORT || 8000}`;
-        const baseUrl = process.env.PUBLIC_URL;
+        const baseUrl = process.env.COLLABORATION_PUBLIC_URL || `http://localhost:${process.env.PORT || 8000}`;
 
         const acceptLink = `${baseUrl}/api/collaborate/accept/${token}`;
         const rejectLink = `${baseUrl}/api/collaborate/reject/${token}`;
@@ -59,6 +59,18 @@ export const invitationToCollaborate = async(req, res)=>{
 }
 
 
+export const getListOfCollaborators = async(req, res)=>{
+    const userid = req.user;
+    const {project_id} = req.params;
+    try {
+        const existingCollaborators = await collaboration.find({project_id: project_id, author_id: userid});
+        if(!existingCollaborators) return res.status(404).json({error: "No collaborators found!"});
+        return res.status(200).json({collaborators: existingCollaborators});
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json({error: "Internal Server Error"});
+    }
+}
 
 
 
