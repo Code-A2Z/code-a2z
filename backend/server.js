@@ -5,6 +5,7 @@ import dotenv from "dotenv";
 import connectDB from "./config/db.js";
 import router from "./Routes/index.js";
 
+
 dotenv.config();
 
 const server = express();
@@ -20,5 +21,4 @@ connectDB();
 // Routes
 server.get("/", (req, res) => res.send("Backend is running..."));
 server.use("/api", router);
-
 server.listen(PORT, () => console.log(`Server running on port ${PORT}`));

@@ -1,3 +1,5 @@
+<a name="top"></a>
+
 ## Hey <𝚌𝚘𝚍𝚎𝚛𝚜/>! 👋
 
 [![Typing SVG](https://readme-typing-svg.demolab.com?font=Monoton&size=85&pause=12&speed=12&color=00FF00&center=true&vCenter=true&width=2000&height=200&lines=Hello+World!;Welcome+to+the+Blog+Script+project;Your+Next+Big+Commit+Starts+Here!;Let's+Code+Something+Awesome!;Collaborate.+Build.+Inspire!;Write+Code,+Build+Dreams!;Code.+Commit.+Conquer!;Build,+Learn,+and+Contribute!)](https://git.io/typing-svg)
@@ -47,8 +49,7 @@ It’s perfect for developers and writers who want to **showcase their work, col
 
 Join us, contribute, and grow together! 🌍✨
 
-<details>
-<summary><h4>:zap: Key Features 🏢</h4></summary>
+### :zap: Key Features 🏢 
 
 | **Feature**                     | **Description**  |
 |----------------------------------|----------------|
@@ -62,10 +63,7 @@ Join us, contribute, and grow together! 🌍✨
 | **SEO Optimization**             | Code A2Z - Project Blog ensures your content is easily found on search engines like Google. This helps in reaching more people and increasing engagement. |
 | **Role-Based Dashboard**         | Different users have different levels of access. Admins can manage everything, collaborators can work on assigned projects, contributors can submit their work, and regular users can read and interact with blogs. |
 
-</details>
-
-<details>
-<summary><h4>:zap: What Can You Contribute? 👩‍💻</h4></summary>
+### :zap: What Can You Contribute? 👩‍💻 
 
 > Choose a contribution area that suits your skills 
 
@@ -79,10 +77,7 @@ Join us, contribute, and grow together! 🌍✨
 | **Code Readability**              |
 | **Optimization**                  |
 
-</details>
-
-<details>
-<summary><h4>:zap: How to Contribute? 🤔</h4></summary>
+### :zap: How to Contribute? 🤔 
 
 1. Star the repository on GitHub to show your support.
 2. Browse the [**Issues**](https://github.com/Code-A2Z/code-a2z/issues) to find tasks that need attention.
@@ -93,79 +88,13 @@ Join us, contribute, and grow together! 🌍✨
 7. Submit a [**Pull Request**](https://github.com/Code-A2Z/code-a2z/pulls), and it will be reviewed.
 8. Make sure to read and follow the [**Contributing Guidelines**](https://github.com/Code-A2Z/code-a2z/blob/main/CONTRIBUTING.md) and [**Code of Conduct**](https://github.com/Code-A2Z/code-a2z/blob/main/CODE_OF_CONDUCT.md).
 
-</details>
-
-<details>
-<summary><h4>:zap: Add Your Project as a Submodule 🚀</h4></summary>
-
-> We want your work to be readable by others; therefore, we encourage you to note the following:
-
-<p align="center">
-  <img src="https://raw.githubusercontent.com/Code-A2Z/assets/main/blog-script-submodule-addition.gif" alt="https://github.com/Code-A2Z/assets/blob/main/blog-script-submodule-addition.gif" width="700" />
-</p>
-
-1. Project/Repository names should be in `kebab-case` letters (e.g., `to-do-list`, `joke-telling-application`).
-
-    > Ensure your repository contains the following files:
-
-    1. *README.md* → Briefly explain the project, its features, and use cases.
-    2. *SETUP.md* → Step-by-step guide to setting up the project locally.
-    3. *LICENSE* → Define the licensing terms for project usage.
-    4. *SCREENSHOT* → Add an image showcasing the project’s UI, if available.
-    5. *WORKING PROTOTYPE* → (Optional) Provide a live demo link or preview GIF/video.
-    6. *DEPLOYED URL* → Attach a deployed URL in your project repository.
-
-2. Run the following command to add your project as a submodule:
-
-    > Run this command from the root directory `/workspaces/<this-project-name>`
-
-```bash
-git submodule add --depth 1 <your_project_repo_url> projects/<category>/<project_name>
-```
-
-> Example for a web development project:
-> ```bash
-> git submodule add --depth 1 https://github.com/your-username/my-web-project.git projects/web-development/my-web-project
-> ```
-
-3. Create a new branch.
-
-```bash
-git checkout -b <add/project_name>
-```
-
-4. Stage the changes
-```bash
-git add .
-```
-
-5. Commit and Push changes
-
-    > Commit message should be clear. Never write un-necessary things in the commit messages.
-
-```bash
-git commit -m "Add <project_name> as a submodule under <category>"
-git push -u origin <add/project_name>
-```
-
-6. Create a Pull Request
-    1. Go to your forked repository on GitHub.
-    2. Click on Compare & pull request.
-    3. Provide a clear description of your project.
-    4. Submit the PR for review.
-
-</details>
-
-<details>
-<summary><h4>:zap: Pull Requests Review Criteria 🧲</h4></summary>
+### :zap: Pull Requests Review Criteria 🧲 
 
 1. Fill out the ***PR template*** properly when submitting a pull request.
 2. Do not commit directly to the `main` branch, otherwise your PR will be instantly rejected.
 3. Don't create more than 3-4 commits unless permitted by Admin and Mentors in your PR.
 4. Add comments to your code wherever necessary for clarity.
 5. 🚀 **Before submitting a PR, you must publish a blog about your project on our website. PRs without a blog will not be accepted.**
-
-</details>
 
 ---
 
