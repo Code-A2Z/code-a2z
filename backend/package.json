@@ -1,6 +1,17 @@
 {
   "name": "backend",
-  "version": "1.0.0",
+  "version": "1.1.1",
+  "author": "Avdhesh Varshney",
+  "license": "ISC",
+  "description": "Code A2Z is a collaborative blogging platform for developers and writers to create, manage, and share projects with markdown support, customizable templates, and community contributions.",
+  "keywords": [
+    "code-a2z",
+    "code a2z",
+    "collaboration",
+    "platform",
+    "open-source",
+    "projects"
+  ],
   "type": "module",
   "main": "server.js",
   "scripts": {
@@ -11,7 +22,6 @@
   "keywords": [],
   "author": "Avdhesh Varshney",
   "license": "ISC",
-  "description": "",
   "dependencies": {
     "bcrypt": "^5.1.1",
     "cloudinary": "^2.5.1",
@@ -25,9 +35,13 @@
     "mongoose": "^8.11.0",
     "multer": "^1.4.5-lts.1",
     "nanoid": "^5.1.2",
-    "nodemailer": "^7.0.5"
+    "nodemailer": "^7.0.5",
+    "rate-limiter-flexible": "^7.3.0"
+
   },
   "devDependencies": {
-    "nodemon": "^3.1.9"
+    "nodemon": "^3.1.10"
+  },
+  "description": ""
   }
 }
