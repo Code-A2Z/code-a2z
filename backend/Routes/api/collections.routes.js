@@ -7,6 +7,7 @@ collectionRoutes.post("/:id",  authenticateUser, saveProject);
 collectionRoutes.get("/sorted-project", authenticateUser, sortProject);
 collectionRoutes.delete("/saved-projects", authenticateUser, deleteProject);
 collectionRoutes.delete("/", authenticateUser, deleteCollection);
+collectionRoutes.delete("/saved-projects", authenticateUser, deleteProject);
 
 
 export default collectionRoutes;

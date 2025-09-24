@@ -1,9 +1,9 @@
 {
   "name": "backend",
+  "version": "1.1.1",
   "author": "Avdhesh Varshney",
   "license": "ISC",
   "description": "Code A2Z is a collaborative blogging platform for developers and writers to create, manage, and share projects with markdown support, customizable templates, and community contributions.",
-  "version": "1.1.1",
   "keywords": [
     "code-a2z",
     "code a2z",
@@ -26,16 +26,21 @@
     "bcrypt": "^5.1.1",
     "cloudinary": "^2.5.1",
     "cors": "^2.8.5",
+    "crypto": "^1.0.1",
     "dotenv": "^16.4.7",
     "express": "^4.21.2",
     "firebase-admin": "^13.1.0",
     "jsonwebtoken": "^9.0.2",
+    "localtunnel": "^2.0.2",
     "mongoose": "^8.11.0",
     "multer": "^1.4.5-lts.1",
-    "nanoid": "^5.1.2"
+    "nanoid": "^5.1.2",
+    "nodemailer": "^7.0.5",
+    "rate-limiter-flexible": "^7.3.0"
   },
   "devDependencies": {
     "nodemon": "^3.1.10"
   },
   "description": ""
+
 }
