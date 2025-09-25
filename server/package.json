@@ -29,11 +29,11 @@
     "express": "^5.1.0",
     "jsonwebtoken": "^9.0.2",
     "localtunnel": "^1.8.3",
-    "mongoose": "^8.18.1",
+    "mongoose": "^8.18.2",
     "multer": "^2.0.2",
-    "nanoid": "^5.1.5",
+    "nanoid": "^5.1.6",
     "nodemailer": "^7.0.6",
-    "rate-limiter-flexible": "^7.3.0"
+    "rate-limiter-flexible": "^7.4.0"
   },
   "devDependencies": {
     "@types/bcrypt": "^6.0.0",
