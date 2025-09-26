@@ -2,7 +2,7 @@ import jwt from "jsonwebtoken";
 import { nanoid } from "nanoid";
 import User from "../Models/user.model.js";
 
-export const emailRegex = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
+export const emailRegex = /^\w+([/.-]?\w+)*@\w+([/.-]?\w+)*(\.\w{2,3})+$/;
 export const passwordRegex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{6,20}$/;
 
 export const formatDataToSend = (user) => {
