@@ -6,6 +6,7 @@ import projectRoutes from './api/project.routes.js';
 import notificationRoutes from './api/notification.routes.js';
 import subscriberRoutes from './api/subscriber.routes.js';
 import collectionRoutes from './api/collections.routes.js';
+
 import collaborationRoutes from './api/collaboration.routes.js';
 import { authMiddleware, generalMiddleware } from '../Middlewares/rateLimit/index.js';
 
