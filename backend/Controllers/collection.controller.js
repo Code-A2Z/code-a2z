@@ -42,7 +42,7 @@ export const saveProject = async (req, res) => {
     if(existingProject) return res.status(400).json("Project already exists in this collection");
 
     // Case 1: No collection exists → save in 'default-collection' and save the project 
-    if (existingCollection.length === 0) {
+    if (!existingCollection) {
       const newCollection = new Collection(
         { 
           userID, 
@@ -58,7 +58,6 @@ export const saveProject = async (req, res) => {
     }
 
     // Case 2: Try to update empty project_id - in case of manula creation,we had project_is null, so here we try to update that id for that document, to use this document and avoid redudancy in the collection
-
     const emptySlot = await Collection.findOneAndUpdate(
       { userID, collection_name, project_id: null },
       { $set: { project_id } },
@@ -113,4 +112,77 @@ export const deleteProject = async(req,res)=>{
     return res.status(400).json(err);
   }
 }
+
+//delete an entire collection and all existing projects in it
+export const deleteCollection = async(req,res)=>{
+  try{
+    const userID =req.user;
+    const {collection_name} = req.body;
+
+    if (!collection_name) {
+      return res.status(400).json({ error: "Collection name is required" });
+    }
+
+    const existingUser = await  User.findById(userID);
+    if(!existingUser) return res.status(404).json("User not found");
+
+    await Collection.deleteMany(
+      {
+        userID:userID,
+        collection_name:collection_name
+      }
+    );
+    return res.status(200).json("Collection deleted successfully");
+  }catch(err){
+    return res.status(400).json(err);
+  }
+}
+
+//sorting by date and likes
+export const sortProject = async(req,res)=>{
+  try {
+    const userID = req.user;
+
+    if (!userID) return res.status(401).json({ message: "User not authenticated" });
+
+    const { sortBy } = req.query; //likes,newest,oldest
+
+    //for likes sorting
+    const savedProjects = await Collection.find({ userID });
+    const projectIds = savedProjects.map(p => p.project_id);
+
+    let objectIds = [];
+    let stringIds = [];
+
+    savedProjects.forEach(p => {
+      if (mongoose.Types.ObjectId.isValid(p.project_id)) objectIds.push(p.project_id);
+      else stringIds.push(p.project_id);
+    });
+
+    let query = Project.find({
+      $or: [
+        { _id: { $in: objectIds } },
+        { project_id: { $in: stringIds } }
+      ]
+    });
+
+    
+    //sorting
+    if (sortBy === "likes") {
+      query = query.sort({ "activity.total_likes": -1 });
+    } else if (sortBy === "newest") {
+      query = query.sort({ createdAt: -1 });
+    } else if (sortBy === "oldest") {
+      query = query.sort({ createdAt: 1 });
+    }
+
+     const projects = await query.lean();
+
+    return res.status(200).json(projects);
+  } catch (err) {
+    console.error(err);
+    return res.status(400).json(err);
+  }
+}
+
 
