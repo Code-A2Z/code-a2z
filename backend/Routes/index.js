@@ -5,6 +5,19 @@ import mediaRoutes from './api/media.routes.js';
 import projectRoutes from './api/project.routes.js';
 import notificationRoutes from './api/notification.routes.js';
 import subscriberRoutes from './api/subscriber.routes.js';
+
+import collaborationRoutes from './api/collaboration.routes.js';
+
+const router = express.Router();
+
+router.use('/auth', authRoutes);
+router.use('/user', userRoutes);
+router.use('/media', mediaRoutes);
+router.use('/project', projectRoutes);
+router.use('/notification', notificationRoutes);
+router.use('/subscriber', subscriberRoutes);
+router.use('/collaboration', collaborationRoutes);
+
 import collectionRoutes from './api/collections.routes.js';
 
 import collaborationRoutes from './api/collaboration.routes.js';
@@ -20,5 +33,6 @@ router.use('/notification', generalMiddleware, notificationRoutes);
 router.use('/subscriber', generalMiddleware, subscriberRoutes);
 router.use('/collection', generalMiddleware, collectionRoutes);
 router.use('/collaboration', generalMiddleware, collaborationRoutes);
+
 
 export default router;

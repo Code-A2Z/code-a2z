@@ -14,9 +14,11 @@ export const invitationToCollaborate = async(req, res)=>{
     const user = await User.findById(userid);
     if(!user) return res.status(404).json({error: "User not found!"});
         const projectToCollaborate = await Project.findOne({project_id: project_id}).populate("author", "personal_info.email");
+
         if(user._id.toString() === projectToCollaborate.author._id.toString()){
             return res.status(400).json({error: "You cannot invite yourself to collaborate on your own project."});
         }
+
 
 
         if(!projectToCollaborate) return res.status(404).json({error: "Project not found!"});
@@ -25,11 +27,13 @@ export const invitationToCollaborate = async(req, res)=>{
         const token = crypto.randomBytes(16).toString('hex');
  
 
+
         const baseUrl = `http://localhost:${process.env.PORT || 8000}`;
        
 
         const acceptLink = `${baseUrl}/api/collaboration/accept/${token}`;
         const rejectLink = `${baseUrl}/api/collaboration/reject/${token}`;
+
 
 
         const mailOptions = {
@@ -67,6 +71,16 @@ export const invitationToCollaborate = async(req, res)=>{
 
 
 
+export const getListOfCollaborators = async(req, res)=>{
+    const userid = req.user;
+    const {project_id} = req.params;
+    try {
+        const existingCollaborators = await collaboration.find({project_id: project_id, author_id: userid});
+        if(!existingCollaborators) return res.status(404).json({error: "No collaborators found!"});
+        return res.status(200).json({collaborators: existingCollaborators});
+    } catch (error) {
+
+
 export const acceptInvitation = async(req, res)=>{
     const token = req.params.token;
     const id = req.user;
@@ -84,6 +98,7 @@ export const acceptInvitation = async(req, res)=>{
         return res.status(500).json({error: "Internal Server Error"});
     }
 }
+
 
 export const rejectInvitation = async(req,res)=>{
     const token = req.params.token;
