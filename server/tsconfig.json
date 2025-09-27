@@ -1,17 +1,32 @@
 {
   "compilerOptions": {
-    "target": "ES2023",                       // Modern JS output
-    "module": "CommonJS",                     // Works with ESM in Node
-    "outDir": "dist",                         // Compiled JS goes here
-    "rootDir": "src",                         // TS source code location
-    "strict": true,                           // Enable strict type checking
-    "esModuleInterop": true,                  // Allow default imports for CJS
-    "forceConsistentCasingInFileNames": true, // Enforce consistent file naming
-    "skipLibCheck": true,                     // Faster builds, skip .d.ts checks
-    "resolveJsonModule": true,                // Allow importing JSON files
-    "allowSyntheticDefaultImports": true,     // Helps with mixed import styles
-    "noImplicitAny": false,                   // Allow implicit 'any' types
+    "module": "CommonJS",
+    "esModuleInterop": true,
+    "target": "ESNext",
+    "allowJs": false,
+    "strictNullChecks": true,
+    "noImplicitAny": true,
+    "strict": true,
+    "strictFunctionTypes": false,
+    "noImplicitThis": false,
+    "moduleResolution": "node",
+    "allowSyntheticDefaultImports": true,
+    "resolveJsonModule": true,
+    "sourceMap": true,
+    "outDir": "build",
+    "baseUrl": ".",
+    "paths": {
+      "*": ["node_modules/*", "src/types/*"]
+    },
+    "removeComments": true,
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "incremental": true,
+    "skipLibCheck": true,
+    "strictBindCallApply": true,
+    "forceConsistentCasingInFileNames": true,
+    "noFallthroughCasesInSwitch": true
   },
-  "include": ["src"],
-  "exclude": ["node_modules", "dist"]
+  "include": ["src/**/*"],
+  "exclude": ["node_modules"]
 }
