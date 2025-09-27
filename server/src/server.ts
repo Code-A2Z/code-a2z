@@ -22,4 +22,11 @@ connectDB();
 // Routes
 server.get("/", (_, res) => res.send("Backend is running..."));
 server.use("/api", router);
-server.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+
+// For local development
+if (process.env.NODE_ENV !== 'production') {
+  server.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+}
+
+// Export for Vercel
+export default server;
