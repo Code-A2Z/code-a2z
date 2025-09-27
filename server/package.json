@@ -20,7 +20,7 @@
     "build": "npm run clean && npm run build-ts",
     "watch": "npx concurrently -k -p \"[{name}]\" -n \"TypeScript,Node\" -c \"yellow.bold,cyan.bold,green.bold\" \"npm run watch-ts\" \"npm run watch-node\"",
     "watch-node": "nodemon -r dotenv/config build/server.js",
-    "clean": "rimraf ./build",
+    "clean": "rm -rf ./build",
     "build-ts": "tsc",
     "watch-ts": "tsc -w",
     "check": "tsc --noEmit",
@@ -67,7 +67,6 @@
     "eslint": "^9.36.0",
     "nodemon": "^3.1.10",
     "prettier": "^3.6.2",
-    "rimraf": "^6.0.1",
     "ts-jest": "^29.4.4",
     "ts-node": "^10.9.2",
     "typescript": "^5.9.2"
