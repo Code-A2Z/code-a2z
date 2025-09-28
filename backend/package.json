@@ -27,6 +27,8 @@
         "dotenv": "^16.4.7",
         "express": "^4.21.2",
         "firebase-admin": "^13.1.0",
+        "helmet": "^8.1.0",
+        "hpp": "^0.2.3",
         "jsonwebtoken": "^9.0.2",
         "localtunnel": "^2.0.2",
         "mongoose": "^8.11.0",
