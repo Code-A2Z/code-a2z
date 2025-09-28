@@ -7,6 +7,9 @@ import connectDB from "./config/db.js";
 import router from "./routes/index.js";
 import errorHandler from "./middlewares/error.handler.js";
 
+// Security
+import { securityMiddleware } from './middlewares/security.js'
+
 dotenv.config();
 
 const server = express();
@@ -16,6 +19,11 @@ server.use(express.json());
 server.use(cookieParser());
 server.use(cors());
 server.use(errorHandler);
+
+
+// securityMiddleware
+securityMiddleware(server);
+
 
 // Connect to Database
 connectDB();
