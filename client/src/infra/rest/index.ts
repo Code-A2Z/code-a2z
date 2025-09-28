@@ -1,4 +1,4 @@
-import axios from "axios";
+import axios from 'axios';
 
 enum Methods {
   POST = 'POST',
@@ -14,12 +14,12 @@ export async function makeRequest<T, D = undefined>(
   isAuthRequired: boolean,
   data?: D,
   hasFullURL?: boolean,
-  headers?: Record<string, string>,
+  headers?: Record<string, string>
 ): Promise<T> {
   let token: string | null = null;
 
   if (isAuthRequired) {
-    token = localStorage.getItem("token");
+    token = localStorage.getItem('token');
   }
   if (!hasFullURL) {
     url = import.meta.env.VITE_SERVER_DOMAIN + url;
@@ -42,7 +42,7 @@ export async function get<T, D = undefined>(
   isAuthRequired: boolean,
   body?: D,
   hasFullURL: boolean = false,
-  headers?: Record<string, string>,
+  headers?: Record<string, string>
 ): Promise<T> {
   return makeRequest<T, D>(
     url,
@@ -50,7 +50,7 @@ export async function get<T, D = undefined>(
     isAuthRequired,
     body,
     hasFullURL,
-    headers,
+    headers
   );
 }
 
@@ -59,7 +59,7 @@ export async function post<T, D = undefined>(
   isAuthRequired: boolean,
   body?: D,
   hasFullURL: boolean = false,
-  headers?: Record<string, string>,
+  headers?: Record<string, string>
 ): Promise<T> {
   return makeRequest<T, D>(
     url,
@@ -67,7 +67,7 @@ export async function post<T, D = undefined>(
     isAuthRequired,
     body,
     hasFullURL,
-    headers,
+    headers
   );
 }
 
@@ -76,7 +76,7 @@ export async function put<T, D = undefined>(
   isAuthRequired: boolean,
   body?: D,
   hasFullURL: boolean = false,
-  headers?: Record<string, string>,
+  headers?: Record<string, string>
 ): Promise<T> {
   return makeRequest<T, D>(
     url,
@@ -84,7 +84,7 @@ export async function put<T, D = undefined>(
     isAuthRequired,
     body,
     hasFullURL,
-    headers,
+    headers
   );
 }
 
@@ -93,7 +93,7 @@ export async function patch<T, D = undefined>(
   isAuthRequired: boolean,
   body?: D,
   hasFullURL: boolean = false,
-  headers?: Record<string, string>,
+  headers?: Record<string, string>
 ): Promise<T> {
   return makeRequest<T, D>(
     url,
@@ -101,7 +101,7 @@ export async function patch<T, D = undefined>(
     isAuthRequired,
     body,
     hasFullURL,
-    headers,
+    headers
   );
 }
 
@@ -110,7 +110,7 @@ export async function del<T, D = undefined>(
   isAuthRequired: boolean,
   body?: D,
   hasFullURL: boolean = false,
-  headers?: Record<string, string>,
+  headers?: Record<string, string>
 ): Promise<T> {
   return makeRequest<T, D>(
     url,
@@ -118,6 +118,6 @@ export async function del<T, D = undefined>(
     isAuthRequired,
     body,
     hasFullURL,
-    headers,
+    headers
   );
 }

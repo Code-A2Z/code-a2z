@@ -1,47 +1,46 @@
-import Embed from "@editorjs/embed";
-import List from "@editorjs/list";
-import Image from "@editorjs/image";
-import Header from "@editorjs/header";
-import Quote from "@editorjs/quote";
-import Marker from "@editorjs/marker";
-import InlineCode from "@editorjs/inline-code";
-import Code from "@editorjs/code";
-import Checklist from "@editorjs/checklist";
-import Delimiter from "@editorjs/delimiter";
-import Table from "@editorjs/table";
-import Warning from "@editorjs/warning";
-import Attaches from "@editorjs/attaches";
-import LinkTool from "@editorjs/link";
+import Embed from '@editorjs/embed';
+import List from '@editorjs/list';
+import Image from '@editorjs/image';
+import Header from '@editorjs/header';
+import Quote from '@editorjs/quote';
+import Marker from '@editorjs/marker';
+import InlineCode from '@editorjs/inline-code';
+import Code from '@editorjs/code';
+import Checklist from '@editorjs/checklist';
+import Delimiter from '@editorjs/delimiter';
+import Table from '@editorjs/table';
+import Warning from '@editorjs/warning';
+import Attaches from '@editorjs/attaches';
+import LinkTool from '@editorjs/link';
 
-import { uploadImage } from "../../../shared/hooks/upload-image";
+import { uploadImage } from '../../../shared/hooks/upload-image';
 
 const uploadImageByFile = async (e: File) => {
   return await uploadImage(e).then(url => {
     if (url) {
       return {
         success: 1,
-        file: { url }
-      }
+        file: { url },
+      };
     }
-  })
-}
+  });
+};
 
 const uploadImageByURL = async (e: string) => {
-  let link = new Promise((resolve, reject) => {
+  const link = new Promise((resolve, reject) => {
     try {
       resolve(e);
-    }
-    catch (err) {
+    } catch (err) {
       reject(err);
     }
-  })
+  });
   return link.then(url => {
     return {
       success: 1,
-      file: { url }
-    }
-  })
-}
+      file: { url },
+    };
+  });
+};
 
 export const tools = {
   embed: Embed,
@@ -54,17 +53,17 @@ export const tools = {
     config: {
       uploader: {
         uploadByUrl: uploadImageByURL,
-        uploadByFile: uploadImageByFile
-      }
-    }
+        uploadByFile: uploadImageByFile,
+      },
+    },
   },
   header: {
     class: Header,
     config: {
-      placeholder: "Type Heading....",
+      placeholder: 'Type Heading....',
       levels: [2, 3],
-      defaultLevel: 2
-    }
+      defaultLevel: 2,
+    },
   },
   quote: {
     class: Quote,
@@ -91,14 +90,14 @@ export const tools = {
     config: {
       uploader: {
         uploadByFile: uploadImageByFile,
-        uploadByUrl: uploadImageByURL
-      }
-    }
+        uploadByUrl: uploadImageByURL,
+      },
+    },
   },
   linkTool: {
     class: LinkTool,
     config: {
-      placeholder: "Type a link...",
-    }
+      placeholder: 'Type a link...',
+    },
   },
 };

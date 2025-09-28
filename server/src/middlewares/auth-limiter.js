@@ -8,9 +8,10 @@ const authLimit = new RateLimiterMemory({
 });
 
 const authLimiter = (req, res, next) => {
-  authLimit.consume(req.ip)
+  authLimit
+    .consume(req.ip)
     .then(() => next())
-    .catch(() => sendResponse(res, 429, "error", "Too many requests to /auth"));
+    .catch(() => sendResponse(res, 429, 'error', 'Too many requests to /auth'));
 };
 
 export default authLimiter;

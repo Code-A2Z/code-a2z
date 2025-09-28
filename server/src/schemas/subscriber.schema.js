@@ -1,4 +1,4 @@
-import { Schema } from "mongoose";
+import { Schema } from 'mongoose';
 
 const subscriberSchema = Schema(
   {
@@ -18,12 +18,12 @@ const subscriberSchema = Schema(
     unsubscribedAt: {
       type: Date,
       default: null,
-    }
+    },
   },
   {
     timestamps: {
-      createdAt: 'joinedAt'
-    }
+      createdAt: 'joinedAt',
+    },
   }
 );
 

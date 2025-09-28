@@ -15,7 +15,13 @@ const searchProjectsCount = async (req, res) => {
 
   Project.countDocuments(findQuery)
     .then(count => {
-      return sendResponse(res, 200, 'success', 'Search projects count fetched successfully', { totalDocs: count });
+      return sendResponse(
+        res,
+        200,
+        'success',
+        'Search projects count fetched successfully',
+        { totalDocs: count }
+      );
     })
     .catch(err => {
       return sendResponse(res, 500, 'error', err.message, null);

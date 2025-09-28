@@ -1,17 +1,19 @@
-import { Link } from "react-router-dom";
+import { Link } from 'react-router-dom';
 
 const UserCard = ({
-  user
+  user,
 }: {
   user: {
     personal_info: {
       fullname: string;
       username: string;
       profile_img: string;
-    }
-  }
+    };
+  };
 }) => {
-  const { personal_info: { fullname, username, profile_img } } = user;
+  const {
+    personal_info: { fullname, username, profile_img },
+  } = user;
 
   return (
     <Link to={`/user/${username}`} className="flex gap-5 items-center mb-5">
@@ -23,6 +25,6 @@ const UserCard = ({
       </div>
     </Link>
   );
-}
+};
 
 export default UserCard;

@@ -16,9 +16,15 @@ const userWrittenProjects = async (req, res) => {
     .skip(skipDocs)
     .limit(maxLimit)
     .sort({ publishedAt: -1 })
-    .select("title banner publishedAt project_id activity des draft -_id")
+    .select('title banner publishedAt project_id activity des draft -_id')
     .then(projects => {
-      return sendResponse(res, 200, 'success', 'User projects fetched successfully', { projects });
+      return sendResponse(
+        res,
+        200,
+        'success',
+        'User projects fetched successfully',
+        { projects }
+      );
     })
     .catch(err => {
       return sendResponse(res, 500, 'error', err.message, null);

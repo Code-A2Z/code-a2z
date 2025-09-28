@@ -1,5 +1,5 @@
 export interface SubscribeUserPayload {
-    email: string;
+  email: string;
 }
 
 export interface SubscribeUserResponse {

@@ -1,5 +1,5 @@
-import { Schema } from "mongoose";
-import { COLLECTION_NAMES } from "../constants/db.js";
+import { Schema } from 'mongoose';
+import { COLLECTION_NAMES } from '../constants/db.js';
 
 const commentSchema = Schema(
   {

@@ -1,11 +1,11 @@
-import { ReactNode } from "react";
+import { ReactNode } from 'react';
 import {
   AnimatePresence,
   motion,
   TargetAndTransition,
   Transition,
   VariantLabels,
-} from "framer-motion";
+} from 'framer-motion';
 
 interface AnimationWrapperProps {
   children: ReactNode;

@@ -1,4 +1,8 @@
-import { AllProjectsData, Project, TrendingProject } from "../../typings/project";
+import {
+  AllProjectsData,
+  Project,
+  TrendingProject,
+} from '../../typings/project';
 
 export const emptyProjectState: Project = {
   activity: {
@@ -7,29 +11,29 @@ export const emptyProjectState: Project = {
     total_reads: 0,
     total_parent_comments: 0,
   },
-  project_id: "",
-  title: "",
-  banner: "",
-  des: "",
+  project_id: '',
+  title: '',
+  banner: '',
+  des: '',
   content: [],
   tags: [],
   author: {
-    _id: "",
+    _id: '',
     personal_info: {
-      fullname: "",
-      username: "",
-      profile_img: "",
+      fullname: '',
+      username: '',
+      profile_img: '',
     },
   },
-  publishedAt: "",
+  publishedAt: '',
   comments: {
     results: [],
   },
-  _id: "",
+  _id: '',
 };
 
 export const emptyAllProjectsState: AllProjectsData = {
   results: [],
-}
+};
 
 export const emptyTrendingProjectsState: TrendingProject[] = [];

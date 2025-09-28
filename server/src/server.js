@@ -1,11 +1,11 @@
-import express from "express";
-import cookieParser from "cookie-parser";
-import cors from "cors";
-import dotenv from "dotenv";
+import express from 'express';
+import cookieParser from 'cookie-parser';
+import cors from 'cors';
+import dotenv from 'dotenv';
 
-import connectDB from "./config/db.js";
-import router from "./routes/index.js";
-import errorHandler from "./middlewares/error.handler.js";
+import connectDB from './config/db.js';
+import router from './routes/index.js';
+import errorHandler from './middlewares/error.handler.js';
 
 // Security
 import { securityMiddleware } from './middlewares/security.js'
@@ -29,8 +29,12 @@ securityMiddleware(server);
 connectDB();
 
 // Routes
-server.get("/", (req, res) => res.status(200).json({ status: "success", message: "Backend is running..." }));
-server.get("/health", (req, res) => res.status(200).json({ status: "OK", timestamp: new Date().toISOString() }));
-server.use("/api", router);
+server.get('/', (req, res) =>
+  res.status(200).json({ status: 'success', message: 'Backend is running...' })
+);
+server.get('/health', (req, res) =>
+  res.status(200).json({ status: 'OK', timestamp: new Date().toISOString() })
+);
+server.use('/api', router);
 
 export default server;

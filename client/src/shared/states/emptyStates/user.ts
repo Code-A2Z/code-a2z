@@ -1,12 +1,12 @@
-import { User } from "../../typings/user";
+import { User } from '../../typings/user';
 
 export const emptyUserState: User = {
-  access_token: "",
-  username: "",
-  email: "",
-  fullname: "",
-  profile_img: "",
-  name: "",
+  access_token: null,
+  username: '',
+  email: '',
+  fullname: '',
+  profile_img: '',
+  name: '',
   role: 0,
-  new_notification_available: false
-}
+  new_notification_available: false,
+};

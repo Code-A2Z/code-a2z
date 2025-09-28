@@ -1,24 +1,19 @@
-import { post } from "../../../infra/rest";
-import {
-  AuthorizeUserPayload,
-  AuthorizeUserResponse,
-} from "../typings";
+import { post } from '../../../infra/rest';
+import { AuthorizeUserPayload, AuthorizeUserResponse } from '../typings';
 
 export const authorizeUser = async (
   serverRoute: string,
-  formData: AuthorizeUserPayload,
+  formData: AuthorizeUserPayload
 ) => {
   return post<AuthorizeUserResponse, AuthorizeUserPayload>(
     serverRoute,
     false,
     formData,
-    false,
+    false
   );
 };
 
-export const changePassword = async (
-  formData: { [key: string]: string; },
-) => {
+export const changePassword = async (formData: { [key: string]: string }) => {
   return post<AuthorizeUserResponse, { [key: string]: string }>(
     `/api/auth/change-password`,
     true,

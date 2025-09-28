@@ -31,6 +31,7 @@
 ![Express.js](https://img.shields.io/badge/Express.js-000000?style=for-the-badge&logo=express&logoColor=white)
 ![MongoDB](https://img.shields.io/badge/MongoDB-4EA94B?style=for-the-badge&logo=mongodb&logoColor=white)
 ![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white)
+![Typescript](https://img.shields.io/badge/TypeScript-007ACC?style=for-the-badge&logo=typescript&logoColor=white)
 
 </div>
 
@@ -38,46 +39,46 @@
 
 #### :zap: About the Project ❤️
 
-Welcome to the **Code A2Z - Project Blog**—a collaborative blogging platform designed to simplify content creation, management, and sharing. 
-It provides a structured environment where developers and writers can seamlessly integrate submodules, customize templates, and efficiently manage their projects. 
+Welcome to the **Code A2Z - Project Blog**—a collaborative blogging platform designed to simplify content creation, management, and sharing.
+It provides a structured environment where developers and writers can seamlessly integrate submodules, customize templates, and efficiently manage their projects.
 With role-based access, built-in SEO optimization, and community discussions, **Code A2Z - Project Blog** enhances collaboration and ensures global visibility for your work.
 
 #### :zap: Contribute to Code A2Z! ✅
 
-Code A2Z is an open-source platform where you can **submit your projects, update them anytime, and improve the platform itself**. 
-It’s perfect for developers and writers who want to **showcase their work, collaborate with others, and gain global visibility**.  
+Code A2Z is an open-source platform where you can **submit your projects, update them anytime, and improve the platform itself**.
+It’s perfect for developers and writers who want to **showcase their work, collaborate with others, and gain global visibility**.
 
 Join us, contribute, and grow together! 🌍✨
 
-### :zap: Key Features 🏢 
+### :zap: Key Features 🏢
 
-| **Feature**                     | **Description**  |
-|----------------------------------|----------------|
-| **Markdown Support**             | Easily write and format blog content using Markdown, making it clean and well-structured. Markdown helps in organizing text, adding headings, lists, links, and images without complex coding. |
-| **Submodule Integration**        | Allows you to add external repositories as submodules, making it easier to manage and link different projects inside your blog. This helps in organizing code and keeping everything in one place. |
-| **Customizable Templates**       | Choose from ready-made templates to design your blog the way you like. These templates help in quickly setting up a beautiful and professional-looking blog. |
+| **Feature**                       | **Description**                                                                                                                                                                                                                                                      |
+| --------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Markdown Support**              | Easily write and format blog content using Markdown, making it clean and well-structured. Markdown helps in organizing text, adding headings, lists, links, and images without complex coding.                                                                       |
+| **Submodule Integration**         | Allows you to add external repositories as submodules, making it easier to manage and link different projects inside your blog. This helps in organizing code and keeping everything in one place.                                                                   |
+| **Customizable Templates**        | Choose from ready-made templates to design your blog the way you like. These templates help in quickly setting up a beautiful and professional-looking blog.                                                                                                         |
 | **Project Contribution Workflow** | Submit your project to this repository and update it anytime. You can also contribute more by improving your project and raising pull requests (PRs) to update Code A2Z itself. This helps in growing your project while also making Code A2Z - Project Blog better. |
-| **Global Visibility**            | Your blog and projects will be visible to a larger audience worldwide. This increases your chances of getting noticed, getting feedback, and collaborating with others. |
-| **Community Discussions**        | Connect with other contributors, discuss ideas, ask questions, and share knowledge. This makes learning and improving projects easier through teamwork. |
-| **Full Ownership**               | You have complete control over your projects and contributions. No one else can change your work without your permission. |
-| **SEO Optimization**             | Code A2Z - Project Blog ensures your content is easily found on search engines like Google. This helps in reaching more people and increasing engagement. |
-| **Role-Based Dashboard**         | Different users have different levels of access. Admins can manage everything, collaborators can work on assigned projects, contributors can submit their work, and regular users can read and interact with blogs. |
+| **Global Visibility**             | Your blog and projects will be visible to a larger audience worldwide. This increases your chances of getting noticed, getting feedback, and collaborating with others.                                                                                              |
+| **Community Discussions**         | Connect with other contributors, discuss ideas, ask questions, and share knowledge. This makes learning and improving projects easier through teamwork.                                                                                                              |
+| **Full Ownership**                | You have complete control over your projects and contributions. No one else can change your work without your permission.                                                                                                                                            |
+| **SEO Optimization**              | Code A2Z - Project Blog ensures your content is easily found on search engines like Google. This helps in reaching more people and increasing engagement.                                                                                                            |
+| **Role-Based Dashboard**          | Different users have different levels of access. Admins can manage everything, collaborators can work on assigned projects, contributors can submit their work, and regular users can read and interact with blogs.                                                  |
 
-### :zap: What Can You Contribute? 👩‍💻 
+### :zap: What Can You Contribute? 👩‍💻
 
-> Choose a contribution area that suits your skills 
+> Choose a contribution area that suits your skills
 
-| **Contribution Area**             |
-| --------------------------------- |
-| **Add New Projects**              |
-| **Improve Existing Projects**     |
-| **Documentation Updates**         |
-| **Bug Fixes**                     |
-| **Responsive Design**             |
-| **Code Readability**              |
-| **Optimization**                  |
+| **Contribution Area**         |
+| ----------------------------- |
+| **Add New Projects**          |
+| **Improve Existing Projects** |
+| **Documentation Updates**     |
+| **Bug Fixes**                 |
+| **Responsive Design**         |
+| **Code Readability**          |
+| **Optimization**              |
 
-### :zap: How to Contribute? 🤔 
+### :zap: How to Contribute? 🤔
 
 1. Star the repository on GitHub to show your support.
 2. Browse the [**Issues**](https://github.com/Code-A2Z/code-a2z/issues) to find tasks that need attention.
@@ -88,9 +89,9 @@ Join us, contribute, and grow together! 🌍✨
 7. Submit a [**Pull Request**](https://github.com/Code-A2Z/code-a2z/pulls), and it will be reviewed.
 8. Make sure to read and follow the [**Contributing Guidelines**](https://github.com/Code-A2Z/code-a2z/blob/main/CONTRIBUTING.md) and [**Code of Conduct**](https://github.com/Code-A2Z/code-a2z/blob/main/CODE_OF_CONDUCT.md).
 
-### :zap: Pull Requests Review Criteria 🧲 
+### :zap: Pull Requests Review Criteria 🧲
 
-1. Fill out the ***PR template*** properly when submitting a pull request.
+1. Fill out the **_PR template_** properly when submitting a pull request.
 2. Do not commit directly to the `main` branch, otherwise your PR will be instantly rejected.
 3. Don't create more than 3-4 commits unless permitted by Admin and Mentors in your PR.
 4. Add comments to your code wherever necessary for clarity.
@@ -177,9 +178,11 @@ Join us, contribute, and grow together! 🌍✨
 
 ![Line](https://user-images.githubusercontent.com/85225156/171937799-8fc9e255-9889-4642-9c92-6df85fb86e82.gif)
 
-# Tip from us 😇 
-##### It always takes time to understand and learn. So, don't worry at all. We know <b>you have got this</b>! 💪 
-### Show some &nbsp;❤️&nbsp; by &nbsp;🌟&nbsp; this repository! 
+# Tip from us 😇
+
+##### It always takes time to understand and learn. So, don't worry at all. We know <b>you have got this</b>! 💪
+
+### Show some &nbsp;❤️&nbsp; by &nbsp;🌟&nbsp; this repository!
 
 </div>
 

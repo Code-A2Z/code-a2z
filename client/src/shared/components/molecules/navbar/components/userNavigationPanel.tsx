@@ -1,14 +1,15 @@
-import { Link } from "react-router-dom";
-import AnimationWrapper from "../../../atoms/page-animation";
-import { removeFromSession } from "../../../../utils/session";
-import { useAtom } from "jotai";
-import { UserAtom } from "../../../../states/user";
+import { Link } from 'react-router-dom';
+import AnimationWrapper from '../../../atoms/page-animation';
+import { removeFromSession } from '../../../../utils/session';
+import { useAtom } from 'jotai';
+import { UserAtom } from '../../../../states/user';
+import { emptyUserState } from '../../../../states/emptyStates/user';
 
 const UserNavigationPanel = () => {
   const [user, setUser] = useAtom(UserAtom);
   const signOutUser = () => {
-    removeFromSession("user");
-    setUser({ access_token: null });
+    removeFromSession('user');
+    setUser(emptyUserState);
   };
 
   return (
@@ -17,7 +18,7 @@ const UserNavigationPanel = () => {
       transition={{ duration: 0.2 }}
     >
       <div className="bg-[#fafafa] dark:bg-[#09090b] absolute right-0 border border-[#e5e7eb] dark:border-[#27272a] w-60 duration-200">
-        <Link to={"/editor"} className="flex gap-2 link md:hidden pl-8 py-4">
+        <Link to={'/editor'} className="flex gap-2 link md:hidden pl-8 py-4">
           <i className="fi fi-rr-file-edit"></i>
           <p>Write</p>
         </Link>

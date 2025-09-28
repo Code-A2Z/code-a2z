@@ -1,34 +1,30 @@
-import { ProjectAtom } from "../../../shared/states/project";
-import { useAtom } from "jotai";
+import { ProjectAtom } from '../../../shared/states/project';
+import { useAtom } from 'jotai';
 
-const Tag = ({
-  tag,
-  tagIndex,
-}: {
-  tag: string;
-  tagIndex: number;
-}) => {
+const Tag = ({ tag, tagIndex }: { tag: string; tagIndex: number }) => {
   const [project, setProject] = useAtom(ProjectAtom);
   const { tags } = project ?? { tags: [] };
 
   const addEditable = (e: React.MouseEvent<HTMLParagraphElement>) => {
-    e.currentTarget.setAttribute("contentEditable", "true");
+    e.currentTarget.setAttribute('contentEditable', 'true');
     e.currentTarget.focus();
-  }
+  };
 
   const handleTagEdit = (e: React.KeyboardEvent<HTMLParagraphElement>) => {
     if (e.keyCode === 13 || e.keyCode === 188) {
       e.preventDefault();
-      let currentTag = e.currentTarget.innerText;
+      const currentTag = e.currentTarget.innerText;
       tags[tagIndex] = currentTag;
-      setProject((prev) => prev ? { ...prev, tags } : null);
-      e.currentTarget.setAttribute("contentEditable", "false");
+      setProject(prev => (prev ? { ...prev, tags } : null));
+      e.currentTarget.setAttribute('contentEditable', 'false');
     }
-  }
+  };
 
   const handleTagDelete = () => {
-    setProject((prev) => prev ? { ...prev, tags: prev.tags.filter(t => t !== tag) } : null);
-  }
+    setProject(prev =>
+      prev ? { ...prev, tags: prev.tags.filter(t => t !== tag) } : null
+    );
+  };
 
   return (
     <div className="relative p-2 mt-2 mr-2 px-5 bg-[#fafafa] dark:bg-[#09090b] rounded-full inline-block hover:bg-opacity-50 pr-10">
@@ -48,6 +44,6 @@ const Tag = ({
       </button>
     </div>
   );
-}
+};
 
 export default Tag;

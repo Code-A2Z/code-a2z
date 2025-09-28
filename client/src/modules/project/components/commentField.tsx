@@ -1,11 +1,11 @@
-import { useAtom, useAtomValue, useSetAtom } from "jotai";
-import { useState } from "react";
-import { UserAtom } from "../../../shared/states/user";
-import { useNotifications } from "../../../shared/hooks/use-notification";
-import { commentNotification } from "../requests";
-import { ProjectAtom } from "../../../shared/states/project";
-import { TotalParentCommentsLoadedAtom } from "../states";
-import { Comment } from "../../../shared/typings";
+import { useAtom, useAtomValue, useSetAtom } from 'jotai';
+import { useState } from 'react';
+import { UserAtom } from '../../../shared/states/user';
+import { useNotifications } from '../../../shared/hooks/use-notification';
+import { commentNotification } from '../requests';
+import { ProjectAtom } from '../../../shared/states/project';
+import { TotalParentCommentsLoadedAtom } from '../states';
+import { Comment } from '../../../shared/typings';
 
 const CommentField = ({
   action,
@@ -20,7 +20,9 @@ const CommentField = ({
 }) => {
   const user = useAtomValue(UserAtom);
   const [project, setProject] = useAtom(ProjectAtom);
-  const setTotalParentCommentsLoaded = useSetAtom(TotalParentCommentsLoadedAtom);
+  const setTotalParentCommentsLoaded = useSetAtom(
+    TotalParentCommentsLoadedAtom
+  );
   const { addNotification } = useNotifications();
 
   const [comment, setComment] = useState('');
@@ -28,20 +30,20 @@ const CommentField = ({
   const handleComment = async () => {
     if (!user?.access_token) {
       return addNotification({
-        message: "Please login to comment",
-        type: "error"
+        message: 'Please login to comment',
+        type: 'error',
       });
     }
     if (!comment.length) {
       return addNotification({
-        message: "Write something to leave a comment...",
-        type: "error"
+        message: 'Write something to leave a comment...',
+        type: 'error',
       });
     }
     if (!project || !project._id) {
       return addNotification({
-        message: "Project not found",
-        type: "error"
+        message: 'Project not found',
+        type: 'error',
       });
     }
 
@@ -55,17 +57,17 @@ const CommentField = ({
 
       if (response._id) {
         setComment('');
-        
+
         // Add user info to the response
         const commentWithUser = {
           ...response,
-          commented_by: { 
-            personal_info: { 
-              username: user.username || '', 
-              fullname: user.fullname || '', 
-              profile_img: user.profile_img || '' 
-            } 
-          }
+          commented_by: {
+            personal_info: {
+              username: user.username || '',
+              fullname: user.fullname || '',
+              profile_img: user.profile_img || '',
+            },
+          },
         };
 
         const currentComments = project.comments?.results || [];
@@ -76,10 +78,11 @@ const CommentField = ({
           const parentComment = currentComments[index];
           if (parentComment) {
             parentComment.children.push(response._id);
-            commentWithUser.childrenLevel = (parentComment.childrenLevel || 0) + 1;
+            commentWithUser.childrenLevel =
+              (parentComment.childrenLevel || 0) + 1;
             commentWithUser.parentIndex = index;
-            (parentComment as any).isReplyLoaded = true;
-            
+            (parentComment as Comment).isReplyLoaded = true;
+
             newCommentArr = [...currentComments];
             newCommentArr.splice(index + 1, 0, commentWithUser);
           } else {
@@ -96,22 +99,25 @@ const CommentField = ({
           ...project,
           comments: {
             ...project.comments,
-            results: newCommentArr
+            results: newCommentArr,
           },
           activity: {
             ...project.activity,
             total_comments: (project.activity.total_comments || 0) + 1,
-            total_parent_comments: (project.activity.total_parent_comments || 0) + (replyingTo ? 0 : 1)
-          }
+            total_parent_comments:
+              (project.activity.total_parent_comments || 0) +
+              (replyingTo ? 0 : 1),
+          },
         });
 
         setTotalParentCommentsLoaded(prevVal => prevVal + (replyingTo ? 0 : 1));
       }
     } catch (error) {
       addNotification({
-        message: "Failed to post comment",
-        type: "error"
+        message: 'Failed to post comment',
+        type: 'error',
       });
+      console.error('Comment error:', error);
     }
   };
 
@@ -119,7 +125,7 @@ const CommentField = ({
     <>
       <textarea
         value={comment}
-        onChange={(e) => setComment(e.target.value)}
+        onChange={e => setComment(e.target.value)}
         placeholder="Leave a comment..."
         className="input-box pl-5 placeholder:text-gray-500 resize-none h-[150px] overflow-auto"
       />

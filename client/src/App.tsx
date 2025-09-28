@@ -1,21 +1,21 @@
-import { useEffect } from "react";
-import { Route, Routes } from "react-router-dom";
-import { useAtom } from "jotai";
-import { UserAtom } from "./shared/states/user";
-import Navbar from "./shared/components/molecules/navbar";
-import CANotifications from "./shared/components/molecules/notifications";
-import Home from "./modules/home";
-import UserAuthForm from "./modules/user-auth-form";
-import PageNotFound from "./modules/404";
-import Search from "./modules/search";
-import Profile from "./modules/profile";
-import Project from "./modules/project";
-import Editor from "./modules/editor";
-import Sidebar from "./shared/components/molecules/sidebar";
-import ChangePassword from "./modules/user-auth-form/change-password";
-import EditProfile from "./modules/profile/edit-profile";
-import ManageProjects from "./modules/project/manage-projects";
-import Notifications from "./modules/notification";
+import { useEffect } from 'react';
+import { Route, Routes } from 'react-router-dom';
+import { useAtom } from 'jotai';
+import { UserAtom } from './shared/states/user';
+import Navbar from './shared/components/molecules/navbar';
+import CANotifications from './shared/components/molecules/notifications';
+import Home from './modules/home';
+import UserAuthForm from './modules/user-auth-form';
+import PageNotFound from './modules/404';
+import Search from './modules/search';
+import Profile from './modules/profile';
+import Project from './modules/project';
+import Editor from './modules/editor';
+import Sidebar from './shared/components/molecules/sidebar';
+import ChangePassword from './modules/user-auth-form/change-password';
+import EditProfile from './modules/profile/edit-profile';
+import ManageProjects from './modules/project/manage-projects';
+import Notifications from './modules/notification';
 
 function App() {
   const [userAuth, setUserAuth] = useAtom(UserAtom);
@@ -26,7 +26,7 @@ function App() {
       // User is authenticated, you can fetch user data or perform other actions
     } else {
       // User is not authenticated, redirect to login or show appropriate UI
-      setUserAuth((prev) => ({ ...prev, access_token: "" }));
+      setUserAuth(prev => ({ ...prev, access_token: '' }));
     }
   }, [userAuth, setUserAuth]);
 
@@ -49,7 +49,6 @@ function App() {
             <Route path="edit-profile" element={<EditProfile />} />
             <Route path="change-password" element={<ChangePassword />} />
           </Route>
-
         </Route>
 
         <Route path="/editor" element={<Editor />} />
@@ -60,7 +59,7 @@ function App() {
 
       <CANotifications />
     </>
-  )
+  );
 }
 
 export default App;

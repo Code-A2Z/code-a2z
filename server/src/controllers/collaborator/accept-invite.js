@@ -1,26 +1,48 @@
-import Collaborator from "../../models/collaborator.model.js";
-import { sendResponse } from "../../utils/response.js";
+import Collaborator from '../../models/collaborator.model.js';
+import { sendResponse } from '../../utils/response.js';
 
 const acceptInvitation = async (req, res) => {
   const token = req.params.token;
   const user_id = req.user;
 
   try {
-    const collaborationRequest = await Collaborator.findOne({ token: token, author_id: user_id, status: "pending" })
+    const collaborationRequest = await Collaborator.findOne({
+      token: token,
+      author_id: user_id,
+      status: 'pending',
+    });
     if (!collaborationRequest) {
-      return sendResponse(res, 404, "error", "Invalid or expired token!", null);
+      return sendResponse(res, 404, 'error', 'Invalid or expired token!', null);
     }
 
-    if (collaborationRequest.status !== "pending") {
-      return sendResponse(res, 400, "error", "This invitation has already been responded.", null);
+    if (collaborationRequest.status !== 'pending') {
+      return sendResponse(
+        res,
+        400,
+        'error',
+        'This invitation has already been responded.',
+        null
+      );
     }
 
-    collaborationRequest.status = "accepted";
-    collaborationRequest.token = " " // Invalidate the token after use
+    collaborationRequest.status = 'accepted';
+    collaborationRequest.token = ' '; // Invalidate the token after use
     await collaborationRequest.save();
-    return sendResponse(res, 200, "success", "You have accepted the collaboration invitation", null);
+    return sendResponse(
+      res,
+      200,
+      'success',
+      'You have accepted the collaboration invitation',
+      null
+    );
   } catch (error) {
-    return sendResponse(res, 500, "error", "Internal Server Error", null);
+    return sendResponse(
+      res,
+      500,
+      'error',
+      error.message || 'Internal Server Error',
+      null
+    );
   }
 };
 

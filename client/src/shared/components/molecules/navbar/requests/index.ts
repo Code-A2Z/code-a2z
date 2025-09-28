@@ -1,9 +1,9 @@
-import { get, post } from "../../../../../infra/rest";
+import { get, post } from '../../../../../infra/rest';
 import {
   CheckNewNotificationsResponse,
   SubscribeUserPayload,
   SubscribeUserResponse,
-} from "../typings";
+} from '../typings';
 
 export const checkNewNotifications = async () => {
   return get<CheckNewNotificationsResponse, null>(

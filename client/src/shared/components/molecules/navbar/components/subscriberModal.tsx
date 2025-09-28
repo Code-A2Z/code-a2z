@@ -1,12 +1,12 @@
 /** @jsxImportSource @emotion/react */
-import { css } from "@emotion/react";
-import { Box } from "@mui/material";
-import { Dispatch, SetStateAction, useState } from "react";
-import InputBox from "../../../atoms/input-box";
-import CAModal from "../../../atoms/modal";
-import { useNotifications } from "../../../../hooks/use-notification";
-import { emailRegex } from "../../../../utils/regex";
-import { subscribeUser } from "../requests";
+import { css } from '@emotion/react';
+import { Box } from '@mui/material';
+import { Dispatch, SetStateAction, useState } from 'react';
+import InputBox from '../../../atoms/input-box';
+import CAModal from '../../../atoms/modal';
+import { useNotifications } from '../../../../hooks/use-notification';
+import { emailRegex } from '../../../../utils/regex';
+import { subscribeUser } from '../requests';
 
 const SubscribeModal = ({
   showSubscribeModal,
@@ -16,21 +16,21 @@ const SubscribeModal = ({
   setShowSubscribeModal: Dispatch<SetStateAction<boolean>>;
 }) => {
   const { addNotification } = useNotifications();
-  const [email, setEmail] = useState("");
+  const [email, setEmail] = useState('');
 
   const handleSubscribe = async () => {
     if (!email.trim().length) {
       addNotification({
-        message: "Email is required",
-        type: "error",
+        message: 'Email is required',
+        type: 'error',
       });
       return;
     }
 
     if (!emailRegex.test(email)) {
       addNotification({
-        message: "Please enter a valid email",
-        type: "error",
+        message: 'Please enter a valid email',
+        type: 'error',
       });
       return;
     }
@@ -38,10 +38,10 @@ const SubscribeModal = ({
     const response = await subscribeUser(email);
     addNotification({
       message: response.message,
-      type: response.status === 200 ? "success" : "error",
+      type: response.status === 200 ? 'success' : 'error',
     });
     setShowSubscribeModal(false);
-    setEmail("");
+    setEmail('');
   };
 
   return (
@@ -49,7 +49,7 @@ const SubscribeModal = ({
       open={showSubscribeModal}
       onClose={() => {
         setShowSubscribeModal(false);
-        setEmail("");
+        setEmail('');
       }}
     >
       <Box

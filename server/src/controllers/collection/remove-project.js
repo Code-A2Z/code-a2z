@@ -1,5 +1,5 @@
-import Collection from "../../models/collection.model.js";
-import { sendResponse } from "../../utils/response.js";
+import Collection from '../../models/collection.model.js';
+import { sendResponse } from '../../utils/response.js';
 
 const removeProject = async (req, res) => {
   const user_id = req.user;
@@ -12,10 +12,22 @@ const removeProject = async (req, res) => {
   );
 
   if (!updatedCollection) {
-    return sendResponse(res, 404, "error", "Project not found in this collection", null);
+    return sendResponse(
+      res,
+      404,
+      'error',
+      'Project not found in this collection',
+      null
+    );
   }
 
-  return sendResponse(res, 200, "success", "Project removed from collection successfully", null);
+  return sendResponse(
+    res,
+    200,
+    'success',
+    'Project removed from collection successfully',
+    null
+  );
 };
 
 export default removeProject;

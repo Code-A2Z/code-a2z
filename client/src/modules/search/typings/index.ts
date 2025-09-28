@@ -3,7 +3,7 @@ export interface UserProfile {
     fullname: string;
     username: string;
     profile_img: string;
-  }
+  };
 }
 
 export interface SearchUserByNameResponse {

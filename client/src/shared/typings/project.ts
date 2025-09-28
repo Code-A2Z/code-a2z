@@ -1,3 +1,34 @@
+import { Comment } from './index';
+
+export interface EditorBlock {
+  type: string;
+  data: {
+    text?: string;
+    level?: number;
+    items?: string[];
+    code?: string;
+    caption?: string;
+    stretched?: boolean;
+    withBackground?: boolean;
+    withBorder?: boolean;
+    url?: string;
+    source?: string;
+    title?: string;
+    description?: string;
+    site_name?: string;
+    image?: {
+      url: string;
+    };
+    [key: string]:
+      | string
+      | number
+      | boolean
+      | string[]
+      | { url: string }
+      | undefined; // Allow other properties for extensibility
+  };
+}
+
 export interface Project {
   activity: {
     total_likes: number;
@@ -12,10 +43,7 @@ export interface Project {
   projectUrl?: string;
   repository?: string;
   content?: Array<{
-    blocks: Array<{
-      type: string;
-      data: any;
-    }>;
+    blocks: EditorBlock[];
   }>;
   tags: string[];
   author: {
@@ -31,7 +59,7 @@ export interface Project {
     results: Comment[];
   };
   _id?: string;
-};
+}
 
 export interface TrendingProject {
   project_id: string;
@@ -44,8 +72,11 @@ export interface TrendingProject {
     };
   };
   publishedAt: string;
-};
+}
 
 export interface AllProjectsData {
   results: Project[];
-};
+  page: number;
+  totalDocs: number;
+  deletedDocCount?: number;
+}
