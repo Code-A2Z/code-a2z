@@ -16,3 +16,6 @@
 [submodule "projects/web-development/backend/random-quote-generator"]
 	path = projects/web-development/backend/random-quote-generator
 	url = https://github.com/Code-A2Z/random-quote-generator.git
+[submodule "projects/web-development/department-hub"]
+	path = projects/web-development/department-hub
+	url = https://github.com/Code-A2Z/department-hub.git
