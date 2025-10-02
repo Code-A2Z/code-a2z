@@ -8,10 +8,10 @@ import router from './routes/index.js';
 import errorHandler from './middlewares/error.handler.js';
 
 // Security
-import { securityMiddleware } from './middlewares/security.js'
+import { securityMiddleware } from './middlewares/security.js';
 
 // sanitizeFields
-import { sanitizeInput } from "./middlewares/sanitizeMiddleware.js";
+import { sanitizeInput } from './middlewares/sanitizeMiddleware.js';
 
 dotenv.config();
 
