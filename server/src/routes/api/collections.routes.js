@@ -10,10 +10,14 @@ import deleteCollection from '../../controllers/collection/delete-collection.js'
 
 const collectionRoutes = express.Router();
 
-collectionRoutes.post("/create-collection", authenticateUser, createNewCollection);
-collectionRoutes.post("/:id",  authenticateUser, saveProject);
-collectionRoutes.get("/sorted-project", authenticateUser, sortProject);
-collectionRoutes.patch("/saved-projects", authenticateUser, removeProject);
-collectionRoutes.delete("/", authenticateUser, deleteCollection);
+collectionRoutes.post(
+  '/create-collection',
+  authenticateUser,
+  createNewCollection
+);
+collectionRoutes.post('/:id', authenticateUser, saveProject);
+collectionRoutes.get('/sorted-project', authenticateUser, sortProject);
+collectionRoutes.patch('/saved-projects', authenticateUser, removeProject);
+collectionRoutes.delete('/', authenticateUser, deleteCollection);
 
 export default collectionRoutes;

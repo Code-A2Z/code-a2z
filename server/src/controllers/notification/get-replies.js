@@ -1,5 +1,5 @@
-import Comment from "../../models/comment.model.js";
-import { sendResponse } from "../../utils/response.js";
+import Comment from '../../models/comment.model.js';
+import { sendResponse } from '../../utils/response.js';
 
 const getReplies = async (req, res) => {
   const { _id, skip } = req.body;
@@ -7,24 +7,27 @@ const getReplies = async (req, res) => {
 
   Comment.findOne({ _id })
     .populate({
-      path: "children",
+      path: 'children',
       options: {
         limit: maxLimit,
         skip: skip,
-        sort: { "commentedAt": -1 }
+        sort: { commentedAt: -1 },
       },
       populate: {
         path: 'commented_by',
-        select: 'personal_info.username personal_info.fullname personal_info.profile_img'
+        select:
+          'personal_info.username personal_info.fullname personal_info.profile_img',
       },
-      select: "-project_id -updatedAt"
+      select: '-project_id -updatedAt',
     })
-    .select("children")
+    .select('children')
     .then(doc => {
-      return sendResponse(res, 200, "success", "Replies fetched successfully", { replies: doc?.children });
+      return sendResponse(res, 200, 'success', 'Replies fetched successfully', {
+        replies: doc?.children,
+      });
     })
     .catch(err => {
-      return sendResponse(res, 500, "error", err.message, null);
+      return sendResponse(res, 500, 'error', err.message, null);
     });
 };
 

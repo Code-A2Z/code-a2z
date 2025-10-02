@@ -1,9 +1,9 @@
 /** @jsxImportSource @emotion/react */
-import { css } from "@emotion/react";
-import { useAtomValue } from "jotai";
-import { notificationsAtom } from "../../../states/notification";
-import { NotificationType } from "../../../typings/notification";
-import { Alert, Slide } from "@mui/material";
+import { css } from '@emotion/react';
+import { useAtomValue } from 'jotai';
+import { notificationsAtom } from '../../../states/notification';
+import { NotificationType } from '../../../typings/notification';
+import { Alert, Slide } from '@mui/material';
 
 function CANotifications() {
   const notifications = useAtomValue(notificationsAtom);
@@ -28,7 +28,7 @@ function CANotifications() {
             in={open}
             mountOnEnter
             unmountOnExit
-            style={{ marginBottom: "12px", pointerEvents: "auto" }}
+            style={{ marginBottom: '12px', pointerEvents: 'auto' }}
             onExited={() => {}}
           >
             <Alert severity={type}>{message}</Alert>

@@ -20,8 +20,8 @@ const collaboratorSchema = Schema(
     },
     status: {
       type: String,
-      enum: ["pending", "accepted", "rejected"],
-      default: "pending",
+      enum: ['pending', 'accepted', 'rejected'],
+      default: 'pending',
       required: true,
     },
     token: {

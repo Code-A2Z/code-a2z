@@ -1,9 +1,9 @@
-import { Schema } from "mongoose";
+import { Schema } from 'mongoose';
 import {
   profile_imgs_collections_list,
   profile_imgs_name_list,
-} from "../constants/index.js";
-import { COLLECTION_NAMES } from "../constants/db.js";
+} from '../constants/index.js';
+import { COLLECTION_NAMES } from '../constants/db.js';
 
 const userSchema = Schema(
   {
@@ -35,58 +35,58 @@ const userSchema = Schema(
       bio: {
         type: String,
         maxlength: [200, 'Bio should not be more than 200'],
-        default: "",
+        default: '',
       },
       profile_img: {
         type: String,
         default: () => {
-          return `https://api.dicebear.com/6.x/${profile_imgs_collections_list[Math.floor(Math.random() * profile_imgs_collections_list.length)]}/svg?seed=${profile_imgs_name_list[Math.floor(Math.random() * profile_imgs_name_list.length)]}`
-        }
+          return `https://api.dicebear.com/6.x/${profile_imgs_collections_list[Math.floor(Math.random() * profile_imgs_collections_list.length)]}/svg?seed=${profile_imgs_name_list[Math.floor(Math.random() * profile_imgs_name_list.length)]}`;
+        },
       },
     },
     social_links: {
       youtube: {
         type: String,
-        default: "",
+        default: '',
       },
       instagram: {
         type: String,
-        default: "",
+        default: '',
       },
       facebook: {
         type: String,
-        default: "",
+        default: '',
       },
       twitter: {
         type: String,
-        default: "",
+        default: '',
       },
       github: {
         type: String,
-        default: "",
+        default: '',
       },
       linkedin: {
         type: String,
-        default: "",
+        default: '',
       },
       website: {
         type: String,
-        default: "",
-      }
+        default: '',
+      },
     },
     account_info: {
       total_posts: {
         type: Number,
-        default: 0
+        default: 0,
       },
       total_reads: {
         type: Number,
-        default: 0
+        default: 0,
       },
     },
     role: {
       type: String,
-      enum: ['user', 'maintainer', 'admin'], 
+      enum: ['user', 'maintainer', 'admin'],
       default: 'user',
     },
     projects: {
@@ -107,8 +107,8 @@ const userSchema = Schema(
   },
   {
     timestamps: {
-      createdAt: 'joinedAt'
-    }
+      createdAt: 'joinedAt',
+    },
   }
 );
 

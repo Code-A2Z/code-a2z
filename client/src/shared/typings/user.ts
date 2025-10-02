@@ -1,5 +1,5 @@
 export interface User {
-  access_token: string;
+  access_token: string | null;
   username: string;
   name: string;
   email: string;
@@ -7,4 +7,4 @@ export interface User {
   fullname: string;
   role: number;
   new_notification_available: boolean;
-};
+}

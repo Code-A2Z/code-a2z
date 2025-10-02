@@ -15,16 +15,33 @@ const deleteProject = async (req, res) => {
       }
 
       Notification.deleteMany({ project: project._id })
-        .then(data => console.log("Notification deleted"))
+        .then(data =>
+          console.log('Notification deleted successfully', data.deletedCount)
+        )
         .catch(err => console.log(`Notification deletion error: ${err}`));
 
       Comment.deleteMany({ project: project._id })
-        .then(data => console.log("Comments deleted"))
+        .then(data =>
+          console.log('Comments deleted successfully', data.deletedCount)
+        )
         .catch(err => console.log(`Comment deletion error: ${err}`));
 
-      User.findOneAndUpdate({ _id: user_id }, { $pull: { projects: project._id }, $inc: { "account_info.total_posts": -1 } })
+      User.findOneAndUpdate(
+        { _id: user_id },
+        {
+          $pull: { projects: project._id },
+          $inc: { 'account_info.total_posts': -1 },
+        }
+      )
         .then(user => {
-          return sendResponse(res, 200, 'success', 'Project deleted successfully', null);
+          console.log('User updated successfully', user._id);
+          return sendResponse(
+            res,
+            200,
+            'success',
+            'Project deleted successfully',
+            null
+          );
         })
         .catch(err => {
           return sendResponse(res, 500, 'error', err.message, null);

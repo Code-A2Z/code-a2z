@@ -1,11 +1,11 @@
-import { Schema } from "mongoose";
-import { COLLECTION_NAMES } from "../constants/db.js";
+import { Schema } from 'mongoose';
+import { COLLECTION_NAMES } from '../constants/db.js';
 
 const notificationSchema = Schema(
   {
     type: {
       type: String,
-      enum: ["like", "comment", "reply"],
+      enum: ['like', 'comment', 'reply'],
       required: true,
     },
     seen: {
@@ -41,7 +41,7 @@ const notificationSchema = Schema(
     },
   },
   {
-    timestamps: true
+    timestamps: true,
   }
 );
 

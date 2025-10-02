@@ -1,4 +1,4 @@
-import { Project, Comment } from "../../../shared/typings";
+import { Project, Comment } from '../../../shared/typings';
 
 export interface GetProjectPayload {
   project_id: string;

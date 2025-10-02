@@ -1,5 +1,5 @@
-import { Schema } from "mongoose";
-import { COLLECTION_NAMES } from "../constants/db.js";
+import { Schema } from 'mongoose';
+import { COLLECTION_NAMES } from '../constants/db.js';
 
 const projectSchema = Schema(
   {
@@ -14,16 +14,17 @@ const projectSchema = Schema(
     },
     banner: {
       type: String,
-      default: "https://res.cloudinary.com/avdhesh-varshney/image/upload/v1741270498/project_banner_wpphwm.png",
+      default:
+        'https://res.cloudinary.com/avdhesh-varshney/image/upload/v1741270498/project_banner_wpphwm.png',
     },
     des: {
       type: String,
       maxlength: 200,
-      default: "",
+      default: '',
     },
     projectUrl: {
       type: String,
-      default: "",
+      default: '',
     },
     repository: {
       type: String,
@@ -73,12 +74,12 @@ const projectSchema = Schema(
     collaborators: {
       type: [Schema.Types.ObjectId],
       ref: COLLECTION_NAMES.USERS,
-    }
+    },
   },
   {
     timestamps: {
       createdAt: 'publishedAt',
-    }
+    },
   }
 );
 

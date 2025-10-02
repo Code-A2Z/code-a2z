@@ -1,11 +1,11 @@
-import express from "express";
-import cookieParser from "cookie-parser";
-import cors from "cors";
-import dotenv from "dotenv";
+import express from 'express';
+import cookieParser from 'cookie-parser';
+import cors from 'cors';
+import dotenv from 'dotenv';
 
-import connectDB from "./config/db.js";
-import router from "./routes/index.js";
-import errorHandler from "./middlewares/error.handler.js";
+import connectDB from './config/db.js';
+import router from './routes/index.js';
+import errorHandler from './middlewares/error.handler.js';
 
 // Security
 import { securityMiddleware } from './middlewares/security.js'
@@ -21,22 +21,26 @@ const server = express();
 server.use(express.json());
 server.use(cookieParser());
 server.use(cors());
-server.use(errorHandler);
-
 
 // securityMiddleware
 securityMiddleware(server);
 
-// sanitizationMiddleware
+// sanitizationMiddleware (global)
 server.use(sanitizeInput());
-
 
 // Connect to Database
 connectDB();
 
 // Routes
-server.get("/", (req, res) => res.status(200).json({ status: "success", message: "Backend is running..." }));
-server.get("/health", (req, res) => res.status(200).json({ status: "OK", timestamp: new Date().toISOString() }));
-server.use("/api", router);
+server.get('/', (req, res) =>
+  res.status(200).json({ status: 'success', message: 'Backend is running...' })
+);
+server.get('/health', (req, res) =>
+  res.status(200).json({ status: 'OK', timestamp: new Date().toISOString() })
+);
+server.use('/api', router);
+
+// Error handler (last middleware)
+server.use(errorHandler);
 
 export default server;

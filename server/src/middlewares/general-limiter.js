@@ -8,9 +8,10 @@ const generalLimit = new RateLimiterMemory({
 });
 
 const generalLimiter = (req, res, next) => {
-  generalLimit.consume(req.ip)
+  generalLimit
+    .consume(req.ip)
     .then(() => next())
-    .catch(() => sendResponse(res, 429, "error", "Too many requests"));
+    .catch(() => sendResponse(res, 429, 'error', 'Too many requests'));
 };
 
 export default generalLimiter;

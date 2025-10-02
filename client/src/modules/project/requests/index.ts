@@ -1,19 +1,19 @@
-import { post, del } from "../../../infra/rest";
-import { Comment } from "../../../shared/typings";
-import { Project } from "../../../shared/typings/project";
-import { 
-  CommentNotificationPayload, 
-  CommentNotificationResponse, 
-  GetProjectResponse, 
-  LikeStatusResponse, 
+import { post, del } from '../../../infra/rest';
+import { Comment } from '../../../shared/typings';
+import { Project } from '../../../shared/typings/project';
+import {
+  CommentNotificationPayload,
+  CommentNotificationResponse,
+  GetProjectResponse,
+  LikeStatusResponse,
   SearchSimilarProjectsResponse,
   GetCommentsPayload,
   GetRepliesPayload,
   GetRepliesResponse,
   DeleteCommentPayload,
   DeleteCommentResponse,
-  GetProjectPayload
-} from "../typings";
+  GetProjectPayload,
+} from '../typings';
 
 export const getProject = async ({
   project_id,
@@ -31,16 +31,23 @@ export const getProject = async ({
   );
 };
 
-export const searchSimilarProjects = async ({ tag, limit, elminate_project }: { tag: string, limit: number, elminate_project?: string }) => {
-  return post<SearchSimilarProjectsResponse, { tag: string, limit: number, eliminate_project?: string }>(
-    `/api/project/search`,
-    false,
-    {
-      tag,
-      limit,
-      eliminate_project: elminate_project
-    }
-  );
+export const searchSimilarProjects = async ({
+  tag,
+  limit,
+  elminate_project,
+}: {
+  tag: string;
+  limit: number;
+  elminate_project?: string;
+}) => {
+  return post<
+    SearchSimilarProjectsResponse,
+    { tag: string; limit: number; eliminate_project?: string }
+  >(`/api/project/search`, false, {
+    tag,
+    limit,
+    eliminate_project: elminate_project,
+  });
 };
 
 export const likeStatus = async ({ _id }: { _id: string }) => {
@@ -53,8 +60,14 @@ export const likeStatus = async ({ _id }: { _id: string }) => {
   );
 };
 
-export const likeNotification = async ({ _id, islikedByUser }: { _id: string, islikedByUser: boolean }) => {
-  return post<{ success: boolean }, { _id: string, islikedByUser: boolean }>(
+export const likeNotification = async ({
+  _id,
+  islikedByUser,
+}: {
+  _id: string;
+  islikedByUser: boolean;
+}) => {
+  return post<{ success: boolean }, { _id: string; islikedByUser: boolean }>(
     `/api/notification/like`,
     true,
     {
@@ -64,7 +77,17 @@ export const likeNotification = async ({ _id, islikedByUser }: { _id: string, is
   );
 };
 
-export const commentNotification = async ({ _id, comment, project_author, replying_to }: { _id: string, comment: string, project_author: string, replying_to?: string }) => {
+export const commentNotification = async ({
+  _id,
+  comment,
+  project_author,
+  replying_to,
+}: {
+  _id: string;
+  comment: string;
+  project_author: string;
+  replying_to?: string;
+}) => {
   return post<CommentNotificationResponse, CommentNotificationPayload>(
     `/api/notification/comment`,
     true,
@@ -72,18 +95,21 @@ export const commentNotification = async ({ _id, comment, project_author, replyi
       _id,
       comment,
       project_author,
-      replying_to
+      replying_to,
     }
   );
 };
 
-export const getComments = async ({ project_id, skip = 0 }: GetCommentsPayload) => {
+export const getComments = async ({
+  project_id,
+  skip = 0,
+}: GetCommentsPayload) => {
   return post<Comment[], GetCommentsPayload>(
     `/api/notification/get-comments`,
     false,
     {
       project_id,
-      skip
+      skip,
     }
   );
 };
@@ -94,7 +120,7 @@ export const getReplies = async ({ _id, skip = 0 }: GetRepliesPayload) => {
     false,
     {
       _id,
-      skip
+      skip,
     }
   );
 };
@@ -104,22 +130,31 @@ export const deleteComment = async ({ _id }: DeleteCommentPayload) => {
     `/api/notification/delete-comment`,
     true,
     {
-      _id
+      _id,
     }
   );
 };
 
-export const userWrittenProjects = async ({ page, draft, query = "", deletedDocCount = 0 }: { page: number, draft: boolean, query?: string, deletedDocCount?: number }) => {
-  return post<{ projects: Project[] }, { page: number, draft: boolean, query?: string, deletedDocCount?: number }>(
-    `/api/project/user-written`,
-    true,
-    {
-      page,
-      draft,
-      query,
-      deletedDocCount,
-    }
-  );
+export const userWrittenProjects = async ({
+  page,
+  draft,
+  query = '',
+  deletedDocCount = 0,
+}: {
+  page: number;
+  draft: boolean;
+  query?: string;
+  deletedDocCount?: number;
+}) => {
+  return post<
+    { projects: Project[] },
+    { page: number; draft: boolean; query?: string; deletedDocCount?: number }
+  >(`/api/project/user-written`, true, {
+    page,
+    draft,
+    query,
+    deletedDocCount,
+  });
 };
 
 export const deleteProject = async ({ project_id }: { project_id: string }) => {

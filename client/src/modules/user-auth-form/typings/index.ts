@@ -9,5 +9,6 @@ export interface AuthorizeUserResponse {
   profile_img: string;
   username: string;
   fullname: string;
+  email: string;
   role: number;
-};
+}

@@ -1,9 +1,10 @@
 {
   "name": "code-a2z",
+  "private": true,
   "author": "Avdhesh Varshney",
   "license": "ISC",
   "description": "Code A2Z is a collaborative blogging platform for developers and writers to create, manage, and share projects with markdown support, customizable templates, and community contributions.",
-  "version": "1.1.1",
+  "version": "2.1.1",
   "keywords": [
     "code-a2z",
     "code a2z",
@@ -24,10 +25,18 @@
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "frontend": "cd frontend && npm run dev",
-    "backend": "cd backend && npm run dev",
-    "dev": "concurrently -n \"FRONTEND,BACKEND\" -c \"bgBlue.bold,bgMagenta.bold\" \"npm run frontend\" \"npm run backend\"",
-    "prepare": "husky install"
+    "client": "cd client && npm run dev",
+    "server": "cd server && npm run dev",
+    "dev": "concurrently -n \"CLIENT,SERVER\" -c \"bgBlue.bold,bgMagenta.bold\" \"npm run client\" \"npm run server\"",
+    "prepare": "husky install",
+    "lint": "eslint client/src server/src --ext .js,.jsx,.ts,.tsx",
+    "lint:fix": "eslint client/src server/src --ext .js,.jsx,.ts,.tsx --fix",
+    "format": "prettier --write \"client/src/**/*.{ts,tsx,js,jsx,css,html}\" \"server/**/*.js\" \"*.{json,md,yml,yaml}\"",
+    "format:check": "prettier --check \"client/src/**/*.{ts,tsx,js,jsx,css,html}\" \"server/**/*.js\" \"*.{json,md,yml,yaml}\"",
+    "format:client": "prettier --write \"client/src/**/*.{ts,tsx,js,jsx,css,html}\"",
+    "format:server": "prettier --write \"server/**/*.js\"",
+    "format:docs": "prettier --write \"*.{json,md,yml,yaml}\"",
+    "precommit-check": "npm run lint && npm run format:check"
   },
   "devDependencies": {
     "@eslint/css": "^0.10.0",
@@ -42,18 +51,16 @@
     "prettier": "^3.6.2"
   },
   "lint-staged": {
-    "frontend/src/**/*.{html,ts,scss,js,jsx,tsx}": [
+    "client/src/**/*.{ts,tsx,js,jsx,css,html}": [
       "prettier --write",
       "eslint --fix"
     ],
-    "backend/**/*.js": [
+    "server/**/*.js": [
       "prettier --write",
       "eslint --fix"
+    ],
+    "*.{json,md,yml,yaml}": [
+      "prettier --write"
     ]
-  },
-  "husky": {
-    "hooks": {
-      "pre-commit": "lint-staged"
-    }
   }
 }

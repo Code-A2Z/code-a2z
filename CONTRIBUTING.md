@@ -10,7 +10,7 @@
 
 3. Clone the forked repository.
 
-> ***WARNING***: **Avoid cloning with GitHub Desktop or GitKraken; it downloads all submodules, consuming excessive data.**
+> **_WARNING_**: **Avoid cloning with GitHub Desktop or GitKraken; it downloads all submodules, consuming excessive data.**
 
 ```css
 git clone https://github.com/<your-github-username>/<this-project-name>.git
@@ -50,19 +50,20 @@ git push -u origin <your_branch_name>
 
 10. Congratulations! 🎉 you've made your contribution.
 
-
 ![Line](https://user-images.githubusercontent.com/85225156/171937799-8fc9e255-9889-4642-9c92-6df85fb86e82.gif)
 
-
 ### :zap: Communication and Support 💬
+
 - Join the project's communication channels to interact with other contributors and seek assistance.
 - If you have any questions or need help, don't hesitate to ask in the project's communication channels or comment on the relevant issue.
 
 ### :zap: Code of Conduct 😇
+
 Please follow our project's code of conduct while contributing.</br>Treat all contributors and users with respect and create a positive and inclusive environment for everyone.
 
 ### :zap: License 📄
-The project is licensed under ***MIT***. Make sure to review and comply with the license terms.</br>We hope this guide helps you get started with contributing to our open-source project. Thank you for your contribution!
+
+The project is licensed under **_MIT_**. Make sure to review and comply with the license terms.</br>We hope this guide helps you get started with contributing to our open-source project. Thank you for your contribution!
 
 ### :zap: Need more help?🤔
 
@@ -74,9 +75,7 @@ You can refer to the following articles on basics of Git and Github and also con
 - [Getting started with Git and GitHub](https://towardsdatascience.com/getting-started-with-git-and-github-6fcd0f2d4ac6)
 - [Learn GitHub from Scratch](https://lab.github.com/githubtraining/introduction-to-github)
 
-
 ![Line](https://user-images.githubusercontent.com/85225156/171937799-8fc9e255-9889-4642-9c92-6df85fb86e82.gif)
-
 
 ### :zap: Note from Admin ❗
 

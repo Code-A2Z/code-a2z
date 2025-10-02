@@ -1,9 +1,9 @@
-import { useRef } from "react";
-import AnimationWrapper from "../../../shared/components/atoms/page-animation";
-import InputBox from "../../../shared/components/atoms/input-box";
-import { passwordRegex } from "../../../shared/utils/regex";
-import { useNotifications } from "../../../shared/hooks/use-notification";
-import { changePassword } from "../requests";
+import { useRef } from 'react';
+import AnimationWrapper from '../../../shared/components/atoms/page-animation';
+import InputBox from '../../../shared/components/atoms/input-box';
+import { passwordRegex } from '../../../shared/utils/regex';
+import { useNotifications } from '../../../shared/hooks/use-notification';
+import { changePassword } from '../requests';
 
 const ChangePassword = () => {
   const changePasswordForm = useRef<HTMLFormElement>(null);
@@ -16,7 +16,7 @@ const ChangePassword = () => {
     const form = new FormData(changePasswordForm.current);
     const formData: { [key: string]: string } = {};
 
-    for (let [key, value] of form.entries()) {
+    for (const [key, value] of form.entries()) {
       formData[key] = value as string;
     }
 
@@ -24,38 +24,42 @@ const ChangePassword = () => {
 
     if (!currentPassword.length || !newPassword.length) {
       addNotification({
-        message: "Please fill all the fields",
-        type: "error"
+        message: 'Please fill all the fields',
+        type: 'error',
       });
       return;
     }
 
-    if (!passwordRegex.test(currentPassword) || !passwordRegex.test(newPassword)) {
+    if (
+      !passwordRegex.test(currentPassword) ||
+      !passwordRegex.test(newPassword)
+    ) {
       addNotification({
-        message: "Password should be atleast 6 characters long and contain atleast one uppercase letter, one lowercase letter and one number",
-        type: "error"
+        message:
+          'Password should be atleast 6 characters long and contain atleast one uppercase letter, one lowercase letter and one number',
+        type: 'error',
       });
       return;
     }
 
-    e.currentTarget.setAttribute("disabled", "true");
+    e.currentTarget.setAttribute('disabled', 'true');
 
     changePassword(formData)
       .then(() => {
-        e.currentTarget.removeAttribute("disabled");
+        e.currentTarget.removeAttribute('disabled');
         return addNotification({
-          message: "Password Updated!",
-          type: "success"
+          message: 'Password Updated!',
+          type: 'success',
         });
       })
       .catch(({ response }) => {
-        e.currentTarget.removeAttribute("disabled");
+        e.currentTarget.removeAttribute('disabled');
         return addNotification({
           message: response.data.error,
-          type: "error"
+          type: 'error',
         });
-      })
-  }
+      });
+  };
 
   return (
     <AnimationWrapper>
@@ -77,11 +81,13 @@ const ChangePassword = () => {
             placeholder="New Password"
             icon="fi-rr-unlock"
           />
-          <button type="submit" className="btn-dark px-10">Change Password</button>
+          <button type="submit" className="btn-dark px-10">
+            Change Password
+          </button>
         </div>
       </form>
     </AnimationWrapper>
-  )
-}
+  );
+};
 
 export default ChangePassword;

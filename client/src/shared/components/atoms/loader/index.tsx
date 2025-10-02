@@ -18,7 +18,7 @@ const Loader = () => {
       </svg>
       {/* <span className="sr-only">Loading...</span> */}
     </div>
-  )
-}
+  );
+};
 
 export default Loader;

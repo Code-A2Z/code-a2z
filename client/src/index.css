@@ -1,10 +1,10 @@
-@import url("https://fonts.googleapis.com/css2?family=Gelasio&family=Inter:wght@400;500&display=swap");
-@import "@flaticon/flaticon-uicons/css/all/all";
-@import "tailwindcss";
+@import url('https://fonts.googleapis.com/css2?family=Gelasio&family=Inter:wght@400;500&display=swap');
+@import '@flaticon/flaticon-uicons/css/all/all';
+@import 'tailwindcss';
 @custom-variant dark (&:where(.dark, .dark *));
 
 .font-gelasio {
-  font-family: "Gelasio", serif;
+  font-family: 'Gelasio', serif;
 }
 
 :root {
@@ -19,7 +19,7 @@
   --link-color: #2563eb;
 }
 
-[data-theme="dark"] {
+[data-theme='dark'] {
   --bg-color: #09090b;
   --bg-secondary-color: #1f1f23;
   --text-color: #ededed;
@@ -146,8 +146,8 @@
   max-width: 900px;
 }
 
-.cdx-settings-button[data-tune="withBorder"],
-.cdx-settings-button[data-tune="withBackground"],
-.cdx-settings-button[data-tune="stretched"] {
+.cdx-settings-button[data-tune='withBorder'],
+.cdx-settings-button[data-tune='withBackground'],
+.cdx-settings-button[data-tune='stretched'] {
   display: none;
 }

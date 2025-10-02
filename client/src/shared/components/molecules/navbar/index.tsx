@@ -1,11 +1,11 @@
-import { useEffect, useRef, useState } from "react";
-import { Link, Outlet, useNavigate } from "react-router-dom";
-import { useAtom } from "jotai";
-import UserNavigationPanel from "./components/userNavigationPanel";
-import SubscribeModal from "./components/subscriberModal";
-import ThemeToggle from "../theme-toggler";
-import { UserAtom } from "../../../states/user";
-import { checkNewNotifications } from "./requests";
+import { useEffect, useRef, useState } from 'react';
+import { Link, Outlet, useNavigate } from 'react-router-dom';
+import { useAtom } from 'jotai';
+import UserNavigationPanel from './components/userNavigationPanel';
+import SubscribeModal from './components/subscriberModal';
+import ThemeToggle from '../theme-toggler';
+import { UserAtom } from '../../../states/user';
+import { checkNewNotifications } from './requests';
 
 const Navbar = () => {
   const [user, setUser] = useAtom(UserAtom);
@@ -21,7 +21,11 @@ const Navbar = () => {
       if (user?.access_token) {
         const response = await checkNewNotifications();
         if (response.status === 200) {
-          setUser((prev) => ({ ...prev, ...(response as any).data }));
+          setUser(prev => ({
+            ...prev,
+            ...(response as { data: { new_notification_available: boolean } })
+              .data,
+          }));
         }
       }
     };
@@ -29,7 +33,7 @@ const Navbar = () => {
   }, [user?.access_token, setUser]);
 
   const handleUserNavPanel = () => {
-    setUserNavPanel((currentVal) => !currentVal);
+    setUserNavPanel(currentVal => !currentVal);
   };
 
   const handleSearch = (e: React.KeyboardEvent<HTMLInputElement>) => {
@@ -43,8 +47,8 @@ const Navbar = () => {
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
       if (
-        (event.metaKey && event.key === "k") ||
-        (event.ctrlKey && event.key === "k")
+        (event.metaKey && event.key === 'k') ||
+        (event.ctrlKey && event.key === 'k')
       ) {
         event.preventDefault();
         event.stopPropagation();
@@ -70,10 +74,10 @@ const Navbar = () => {
       }
     };
 
-    document.addEventListener("keydown", handleKeyDown, true);
+    document.addEventListener('keydown', handleKeyDown, true);
 
     return () => {
-      document.removeEventListener("keydown", handleKeyDown, true);
+      document.removeEventListener('keydown', handleKeyDown, true);
     };
   }, []);
 
@@ -91,12 +95,12 @@ const Navbar = () => {
         </Link>
         <div
           className={`absolute bg-[#fafafa] dark:bg-[#09090b] w-full left-0 top-full mt-0.5 border-b border-gray-200 dark:border-[#27272a] py-4 px-[5vw] lg:border-0 lg:relative lg:inset-0 lg:p-0 ${
-            searchBoxVisibility ? "block" : "hidden lg:block"
+            searchBoxVisibility ? 'block' : 'hidden lg:block'
           }`}
         >
           <input
             type="text"
-            placeholder={searchBoxVisibility ? "Search" : "Press Ctrl+K"}
+            placeholder={searchBoxVisibility ? 'Search' : 'Press Ctrl+K'}
             id="search-bar"
             ref={searchRef}
             className="w-full lg:w-58 bg-[#ffffff] dark:bg-[#18181b] p-4 pl-6 pr-[12%] lg:pr-6 rounded-full placeholder:text-dark-grey dark:placeholder:text-gray-400 lg:pl-12 transition-all duration-300 focus:lg:w-96"
@@ -137,7 +141,7 @@ const Navbar = () => {
                   {user?.new_notification_available ? (
                     <span className="bg-red-500 w-3 h-3 rounded-full absolute z-10 top-2 right-2"></span>
                   ) : (
-                    ""
+                    ''
                   )}
                 </button>
               </Link>

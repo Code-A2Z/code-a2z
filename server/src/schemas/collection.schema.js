@@ -1,5 +1,5 @@
-import { Schema } from "mongoose";
-import { COLLECTION_NAMES } from "../constants/db.js";
+import { Schema } from 'mongoose';
+import { COLLECTION_NAMES } from '../constants/db.js';
 
 const collectionSchema = Schema(
   {
@@ -10,7 +10,7 @@ const collectionSchema = Schema(
     },
     collection_name: {
       type: String,
-      required: true
+      required: true,
     },
     project_id: {
       type: String,

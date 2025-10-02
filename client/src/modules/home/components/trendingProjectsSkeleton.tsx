@@ -1,4 +1,4 @@
-const TrendingProjectsSkeleton = ({ count } : { count: number }) => {
+const TrendingProjectsSkeleton = ({ count }: { count: number }) => {
   return (
     <div className="flex flex-col space-y-2">
       {[...Array(count)].map((_, idx) => (

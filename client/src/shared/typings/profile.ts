@@ -21,4 +21,4 @@ export interface Profile {
   joinedAt: string;
   role: number;
   _id: string;
-};
+}

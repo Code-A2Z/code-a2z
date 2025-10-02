@@ -1,7 +1,4 @@
-import {
-  Project,
-  TrendingProject,
-} from "../../../shared/typings";
+import { Project, TrendingProject } from '../../../shared/typings';
 
 export interface GetAllProjectsPayload {
   page: number;
@@ -9,7 +6,7 @@ export interface GetAllProjectsPayload {
 
 export interface GetAllProjectsResponse {
   projects: Project[];
-};
+}
 
 export interface SearchProjectsByCategoryPayload {
   tag: string;
