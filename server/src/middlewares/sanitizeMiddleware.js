@@ -1,5 +1,5 @@
 import sanitizeHtml from 'sanitize-html';
-import { sendResponse } from '../utils/response';
+import { sendResponse } from '../utils/response.js';
 
 const sanitizeNested = (obj) => {
   for (const k in obj) {
