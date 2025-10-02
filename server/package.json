@@ -36,12 +36,13 @@
     "helmet": "^8.1.0",
     "hpp": "^0.2.3",
     "jsonwebtoken": "^9.0.2",
-    "localtunnel": "^2.0.2",
+    "localtunnel": "^1.8.3",
     "mongoose": "^8.11.0",
     "multer": "^1.4.5-lts.1",
     "nanoid": "^5.1.2",
     "nodemailer": "^7.0.5",
-    "rate-limiter-flexible": "^7.3.0"
+    "rate-limiter-flexible": "^7.3.0",
+    "sanitize-html": "^2.17.0"
   },
   "devDependencies": {
     "nodemon": "^3.1.10"

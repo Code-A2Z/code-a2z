@@ -10,6 +10,9 @@ import errorHandler from "./middlewares/error.handler.js";
 // Security
 import { securityMiddleware } from './middlewares/security.js'
 
+// sanitizeFields
+import { sanitizeInput } from "./middlewares/sanitizeMiddleware.js";
+
 dotenv.config();
 
 const server = express();
@@ -23,6 +26,9 @@ server.use(errorHandler);
 
 // securityMiddleware
 securityMiddleware(server);
+
+// sanitizationMiddleware
+server.use(sanitizeInput());
 
 
 // Connect to Database
