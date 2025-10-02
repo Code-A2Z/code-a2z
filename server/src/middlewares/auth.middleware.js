@@ -11,11 +11,11 @@ const authenticateUser = (req, res, next) => {
   }
 
   try {
-    jwt.verify(token, JWT_SECRET_ACCESS_KEY, (err, user) => {
+    jwt.verify(token, JWT_SECRET_ACCESS_KEY, (err, decoded) => {
       if (err) {
         return sendResponse(res, 403, 'error', 'Access token is invalid');
       }
-      req.user = user.id;
+      req.user = decoded.userId;
       next();
     });
   } catch (error) {
