@@ -1,4 +1,5 @@
 import sanitizeHtml from 'sanitize-html';
+import { sendResponse } from '../utils/response';
 
 const sanitizeNested = (obj) => {
   for (const k in obj) {
@@ -23,7 +24,7 @@ export const sanitizeInput = () => {
       next();
     } catch (e) {
       console.error("Sanitization Error:", e);
-      res.status(500).json({ message: "Failed to sanitize input fields" });
+      sendResponse(res, 500, 'error', 'Failed to sanitize input fields');
     }
   };
 };
