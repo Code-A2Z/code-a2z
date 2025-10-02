@@ -42,7 +42,7 @@ const login = async (req, res) => {
 
     const token = jwt.sign(payload, secret, options);
 
-    res.cookie('access_token', token, {
+    res.cookie('token', token, {
       httpOnly: true,
       secure: NODE_ENV === NodeEnv.PRODUCTION,
       sameSite: 'strict',
