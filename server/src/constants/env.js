@@ -14,7 +14,7 @@ export const MONGODB_URL =
 // JWT Configuration
 export const JWT_SECRET_ACCESS_KEY =
   process.env.JWT_SECRET_ACCESS_KEY || 'default_secret_key';
-export const JWT_EXPIRES_IN = process.env.JWT_EXPIRES_IN || 7;
+export const JWT_EXPIRES_IN = process.env.JWT_EXPIRES_IN || "7D";
 
 // Cloudinary Configuration (for media uploads)
 export const CLOUDINARY_CLOUD_NAME =

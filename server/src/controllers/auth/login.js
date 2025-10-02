@@ -38,7 +38,7 @@ const login = async (req, res) => {
 
     const payload = { userId: user._id, email: user?.personal_info?.email };
     const secret = JWT_SECRET_ACCESS_KEY;
-    const options = { expiresIn: Number(JWT_EXPIRES_IN) };
+    const options = { expiresIn: JWT_EXPIRES_IN };
 
     const token = jwt.sign(payload, secret, options);
 
