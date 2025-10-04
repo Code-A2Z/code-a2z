@@ -6,6 +6,7 @@ import User from '../../models/user.model.js';
 
 import transporter from '../../config/nodemailer.js';
 import { sendResponse } from '../../utils/response.js';
+import { VITE_SERVER_DOMAIN } from '../../config/env.js';
 
 const invitationToCollaborate = async (req, res) => {
   const user_id = req.user;
@@ -43,12 +44,8 @@ const invitationToCollaborate = async (req, res) => {
     const authorEmail = author.personal_info?.email;
 
     const token = crypto.randomBytes(16).toString('hex');
-    const baseUrl =
-      process.env.VITE_SERVER_DOMAIN ||
-      `http://localhost:${process.env.PORT || 8000}`;
-
-    const acceptLink = `${baseUrl}/api/collaboration/accept/${token}`;
-    const rejectLink = `${baseUrl}/api/collaboration/reject/${token}`;
+    const acceptLink = `${VITE_SERVER_DOMAIN}/api/collaboration/accept/${token}`;
+    const rejectLink = `${VITE_SERVER_DOMAIN}/api/collaboration/reject/${token}`;
 
     const mailOptions = {
       from: process.env.ADMIN_EMAIL,

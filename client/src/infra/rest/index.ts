@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { VITE_SERVER_DOMAIN } from '../../config/env';
 
 enum Methods {
   POST = 'POST',
@@ -22,7 +23,7 @@ export async function makeRequest<T, D = undefined>(
     token = localStorage.getItem('token');
   }
   if (!hasFullURL) {
-    url = import.meta.env.VITE_SERVER_DOMAIN + url;
+    url = VITE_SERVER_DOMAIN + url;
   }
 
   const response = await axios({

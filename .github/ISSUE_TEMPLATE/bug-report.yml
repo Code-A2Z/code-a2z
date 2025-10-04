@@ -14,13 +14,13 @@ body:
   - type: checkboxes
     id: terms
     attributes:
-      label: "Important Points to Note"
+      label: 'Important Points to Note'
       options:
         - label: "I agree to adhere to the project's Code of Conduct."
           required: true
         - label: "I have reviewed and understood the project's Contributing Guidelines."
           required: true
-        - label: "I have checked the existing issues and can confirm that this is not a duplicate."
+        - label: 'I have checked the existing issues and can confirm that this is not a duplicate.'
           required: true
         - label: "I have reviewed and understood the project's Issue Creation Guidelines."
           required: true
@@ -28,68 +28,58 @@ body:
   - type: textarea
     id: bug-description
     attributes:
-      label: "Bug Description"
-      description: "Provide a detailed description of the bug."
-      placeholder: "Describe the changes you want, including the expected and actual behavior."
-    validations:
-      required: true
-
-  - type: dropdown
-    id: related-to
-    attributes:
-      label: "Is this bug related to the main website or any sub-projects?"
-      options:
-        - "Main Website"
-        - "Sub Module/Project"
+      label: 'Bug Description'
+      description: 'Provide a detailed description of the bug.'
+      placeholder: 'Describe the changes you want, including the expected and actual behavior.'
     validations:
       required: true
 
   - type: textarea
     id: screenshots
     attributes:
-      label: "Screenshots or Logs"
-      placeholder: "Copy the image and just paste it to upload on github"
+      label: 'Screenshots or Logs'
+      placeholder: 'Copy the image and just paste it to upload on github'
     validations:
       required: true
-  
+
   - type: dropdown
     id: priority
     attributes:
-      label: "Priority"
-      description: "How urgent is this issue? Please select the priority."
+      label: 'Priority'
+      description: 'How urgent is this issue? Please select the priority.'
       options:
-        - "Up to 2 days"
-        - "Up to 5 days"
-        - "Up to 1 week"
+        - 'Up to 2 days'
+        - 'Up to 5 days'
+        - 'Up to 1 week'
     validations:
       required: true
 
   - type: dropdown
     id: open-source-programs
     attributes:
-      label: "Open Source Programs"
-      description: "Which open-source program are you participating in?"
+      label: 'Open Source Programs'
+      description: 'Which open-source program are you participating in?'
       options:
-        - "Hacktoberfest"
-        - "OnlyDust Waves"
-        - "24 Pull Requests"
-        - "GSSoC"
-        - "SSOC"
-        - "SWOC"
-        - "JWOC"
-        - "IWOC"
-        - "KWOC"
-        - "DWOC"
-        - "VSOC"
-        - "Others"
+        - 'Hacktoberfest'
+        - 'OnlyDust Waves'
+        - '24 Pull Requests'
+        - 'GSSoC'
+        - 'SSOC'
+        - 'SWOC'
+        - 'JWOC'
+        - 'IWOC'
+        - 'KWOC'
+        - 'DWOC'
+        - 'VSOC'
+        - 'Others'
 
   - type: dropdown
     id: on-work
     attributes:
-      label: "Would you like to work on this issue?"
+      label: 'Would you like to work on this issue?'
       options:
-        - "Yes"
-        - "No"
+        - 'Yes'
+        - 'No'
     validations:
       required: true
 

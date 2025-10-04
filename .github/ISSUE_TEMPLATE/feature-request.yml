@@ -1,15 +1,12 @@
-name: Enhancement Request 🧑‍💻
+name: Feature Request 📜
 
-description: Request to improve any existing feature, styling or documentation of the project.
-
-labels:
-  - enhancement
+description: Request for adding a new feature to the project.
 
 body:
   - type: markdown
     attributes:
       value: |
-        **Please fill in all the sections below to ensure the issue is well-documented and easy to understand.**
+        **Please ensure that all sections are filled out properly to help us evaluate the feature request effectively.**
 
   - type: checkboxes
     id: terms
@@ -25,42 +22,34 @@ body:
         - label: "I have reviewed and understood the project's Issue Creation Guidelines."
           required: true
 
-  - type: dropdown
-    id: category
-    attributes:
-      label: 'Category'
-      description: 'Select the category that best describes the enhancement.'
-      options:
-        - 'Behaviour Updating'
-        - 'Feature Addition'
-        - 'Code Refactoring'
-        - 'Documentation'
-        - 'Styling'
-        - 'Other'
-    validations:
-      required: true
-
   - type: textarea
-    id: enhancement-description
+    id: feature-description
     attributes:
-      label: 'Enhancement Description'
-      placeholder: 'Provide a detailed description of the proposed enhancement.'
+      label: 'Feature Description'
+      placeholder: 'Provide a detailed description of the feature, including its objectives and expected behaviour.'
     validations:
       required: true
 
   - type: textarea
     id: screenshots
     attributes:
-      label: 'Screenshots or Logs'
+      label: 'Screenshots'
       placeholder: 'Copy the image and just paste it to upload on github'
     validations:
       required: true
+
+  - type: input
+    id: tech-stacks
+    attributes:
+      label: 'Tech Stacks'
+      description: 'List the technologies used in the feature (comma-separated and in lowercase).'
+      placeholder: 'e.g., redis, kafka, etc.'
 
   - type: dropdown
     id: priority
     attributes:
       label: 'Priority'
-      description: 'How urgent is this enhancement request?'
+      description: 'How much time should be allocated to this issue?'
       options:
         - 'Up to 2 days'
         - 'Up to 5 days'

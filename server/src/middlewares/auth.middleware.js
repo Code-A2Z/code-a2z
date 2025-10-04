@@ -1,7 +1,7 @@
 import jwt from 'jsonwebtoken';
 
 import { sendResponse } from '../utils/response.js';
-import { JWT_SECRET_ACCESS_KEY } from '../constants/env.js';
+import { JWT_SECRET_ACCESS_KEY } from '../config/env.js';
 
 const authenticateUser = (req, res, next) => {
   const token = req.cookies.token;

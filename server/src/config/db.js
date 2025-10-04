@@ -1,6 +1,6 @@
 import mongoose from 'mongoose';
 
-import { MONGODB_URL } from '../constants/env.js';
+import { MONGODB_URL } from '../config/env.js';
 
 const connectDB = async () => {
   try {

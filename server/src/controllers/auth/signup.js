@@ -12,7 +12,7 @@ import {
   JWT_SECRET_ACCESS_KEY,
   JWT_EXPIRES_IN,
   NODE_ENV,
-} from '../../constants/env.js';
+} from '../../config/env.js';
 import { NodeEnv } from '../../typings/index.js';
 
 export const generateUsername = async email => {

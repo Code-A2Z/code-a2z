@@ -6,6 +6,8 @@ dotenv.config();
 // Server Configuration
 export const PORT = process.env.PORT || 8000;
 export const NODE_ENV = process.env.NODE_ENV || 'development';
+export const VITE_SERVER_DOMAIN =
+  process.env.VITE_SERVER_DOMAIN || 'https://code-a2z-server.vercel.app';
 
 // MongoDB Configuration
 export const MONGODB_URL =
@@ -14,7 +16,7 @@ export const MONGODB_URL =
 // JWT Configuration
 export const JWT_SECRET_ACCESS_KEY =
   process.env.JWT_SECRET_ACCESS_KEY || 'default_secret_key';
-export const JWT_EXPIRES_IN = process.env.JWT_EXPIRES_IN || "7D";
+export const JWT_EXPIRES_IN = process.env.JWT_EXPIRES_IN || '7D';
 
 // Cloudinary Configuration (for media uploads)
 export const CLOUDINARY_CLOUD_NAME =
