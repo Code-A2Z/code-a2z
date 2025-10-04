@@ -14,7 +14,7 @@ import { securityMiddleware } from './middlewares/security.js';
 import { sanitizeInput } from './middlewares/sanitizeMiddleware.js';
 
 // MonitorRoutes
-import monitorRoutes from './routes/api/monitor.js';
+import monitorRoutes from './routes/api/monitor.routes.js';
 
 dotenv.config();
 
