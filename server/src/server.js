@@ -36,17 +36,10 @@ connectDB();
 
 // Routes
 server.get('/', (req, res) =>
-    res.status(200).json({ status: 'success', message: 'Backend is running...' })
+  res.status(200).json({ status: 'success', message: 'Backend is running...' })
 );
 
-
-//  monitoring
-
-/* server.get('/health', (req, res) =>
-    res.status(200).json({ status: 'OK', timestamp: new Date().toISOString() })
-);
-*/
-
+// monitoring
 server.use('/monitor', monitorRoutes);
 
 server.use('/api', router);
