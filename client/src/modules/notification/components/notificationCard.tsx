@@ -22,12 +22,12 @@ import {
   Divider,
 } from '@mui/material';
 import {
-  Favorite as LikeIcon,
-  Comment as CommentIcon,
-  Reply as ReplyIcon,
-  Notifications as NotificationIcon,
-  Delete as DeleteIcon,
-  AccessTime as TimeIcon,
+  Favorite,
+  Comment,
+  Reply,
+  Notifications,
+  Delete,
+  AccessTime,
 } from '@mui/icons-material';
 
 interface NotificationCardProps {
@@ -116,18 +116,6 @@ const NotificationCard = ({
       });
   };
 
-  const getNotificationIcon = () => {
-    switch (type) {
-      case 'like':
-        return <LikeIcon color="error" />;
-      case 'comment':
-        return <CommentIcon color="primary" />;
-      case 'reply':
-        return <ReplyIcon color="success" />;
-      default:
-        return <NotificationIcon color="action" />;
-    }
-  };
 
   const getNotificationColor = () => {
     switch (type) {
@@ -202,7 +190,10 @@ const NotificationCard = ({
                   borderColor: 'divider',
                 }}
               >
-                {getNotificationIcon()}
+{type === 'like' ? <Favorite color="error" /> : 
+                 type === 'comment' ? <Comment color="primary" /> : 
+                 type === 'reply' ? <Reply color="success" /> : 
+                 <Notifications color="action" />}
               </Box>
             </Box>
           </ListItemAvatar>
@@ -300,7 +291,7 @@ const NotificationCard = ({
         <Box sx={{ p: 2, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
           <Box sx={{ display: 'flex', alignItems: 'center', gap: 3 }}>
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-              <TimeIcon sx={{ fontSize: 16, color: 'text.secondary' }} />
+              <AccessTime sx={{ fontSize: 16, color: 'text.secondary' }} />
               <Typography variant="caption" color="text.secondary">
                 {getDay(createdAt)}
               </Typography>
@@ -311,7 +302,7 @@ const NotificationCard = ({
                 {!reply && (
                   <Button
                     size="small"
-                    startIcon={<ReplyIcon />}
+                    startIcon={<Reply />}
                     onClick={handleReplyClick}
                     sx={{ textTransform: 'none' }}
                   >
@@ -324,7 +315,7 @@ const NotificationCard = ({
                   onClick={e => handleDelete(comment?._id || '', 'comment', e.target)}
                   color="error"
                 >
-                  <DeleteIcon />
+                  <Delete />
                 </IconButton>
               </Box>
             )}
@@ -410,7 +401,7 @@ const NotificationCard = ({
                   onClick={e => handleDelete(reply._id, 'reply', e.target)}
                   color="error"
                 >
-                  <DeleteIcon />
+                  <Delete />
                 </IconButton>
               </Box>
             </Box>

@@ -19,9 +19,9 @@ import {
 } from '@mui/material';
 import {
   Notifications as NotificationsIcon,
-  Favorite as LikeIcon,
-  Comment as CommentIcon,
-  Reply as ReplyIcon,
+  Favorite,
+  Comment,
+  Reply,
 } from '@mui/icons-material';
 
 interface PaginationState<T = unknown> {
@@ -103,20 +103,6 @@ const Notifications = () => {
     setNotifications(null);
   };
 
-  const getFilterIcon = (filterName: string) => {
-    switch (filterName) {
-      case 'all':
-        return <NotificationsIcon />;
-      case 'like':
-        return <LikeIcon />;
-      case 'comment':
-        return <CommentIcon />;
-      case 'reply':
-        return <ReplyIcon />;
-      default:
-        return <NotificationsIcon />;
-    }
-  };
 
   return (
     <Box sx={{ maxWidth: '4xl', mx: 'auto', p: 2 }}>
@@ -152,7 +138,11 @@ const Notifications = () => {
                 variant={isActive ? 'contained' : 'outlined'}
                 color={isActive ? 'primary' : 'inherit'}
                 onClick={handleFilter}
-                startIcon={getFilterIcon(filterName)}
+                startIcon={filterName === 'all' ? <NotificationsIcon /> : 
+                          filterName === 'like' ? <Favorite /> : 
+                          filterName === 'comment' ? <Comment /> : 
+                          filterName === 'reply' ? <Reply /> : 
+                          <NotificationsIcon />}
                 sx={{
                   borderRadius: '24px',
                   textTransform: 'capitalize',

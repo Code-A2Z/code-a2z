@@ -10,7 +10,7 @@ import {
   Typography,
 } from '@mui/material';
 import {
-  Reply as ReplyIcon,
+  Reply,
 } from '@mui/icons-material';
 
 interface NotificationCommentFieldProps {
@@ -141,7 +141,7 @@ const NotificationCommentField = ({
           onClick={handleComment}
           disabled={!comment.trim() || comment.length > 500}
           variant="contained"
-          startIcon={<ReplyIcon />}
+          startIcon={<Reply />}
           sx={{ textTransform: 'none' }}
         >
           Reply

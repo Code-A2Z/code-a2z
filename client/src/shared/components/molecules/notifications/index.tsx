@@ -15,19 +15,6 @@ function CANotifications() {
     setDismissedNotifications(prev => new Set([...prev, id]));
   };
 
-  const getNotificationIcon = (type: NotificationType) => {
-    switch (type) {
-      case NotificationType.SUCCESS:
-        return '✅';
-      case NotificationType.ERROR:
-        return '❌';
-      case NotificationType.WARNING:
-        return '⚠️';
-      case NotificationType.INFO:
-      default:
-        return 'ℹ️';
-    }
-  };
 
   return (
     <div
@@ -94,9 +81,6 @@ function CANotifications() {
                     </IconButton>
                   }
                 >
-                  <span style={{ marginRight: '8px' }}>
-                    {getNotificationIcon(type as NotificationType)}
-                  </span>
                   {message}
                 </Alert>
               </Slide>
