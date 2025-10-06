@@ -1,11 +1,34 @@
 import { Link } from 'react-router-dom';
 import { useState } from 'react';
 import { useAtom } from 'jotai';
+import { motion } from 'framer-motion';
 import { getDay } from '../../../shared/utils/date';
 import NotificationCommentField from './notificationCommentField';
 import { UserAtom } from '../../../shared/states/user';
 import { NotificationData, NotificationState } from '../../../shared/typings';
 import axios from 'axios';
+import {
+  ListItem,
+  ListItemAvatar,
+  ListItemText,
+  Avatar,
+  Typography,
+  Button,
+  Box,
+  Chip,
+  IconButton,
+  Collapse,
+  Paper,
+  Divider,
+} from '@mui/material';
+import {
+  Favorite as LikeIcon,
+  Comment as CommentIcon,
+  Reply as ReplyIcon,
+  Notifications as NotificationIcon,
+  Delete as DeleteIcon,
+  AccessTime as TimeIcon,
+} from '@mui/icons-material';
 
 interface NotificationCardProps {
   data: NotificationData;
@@ -93,151 +116,308 @@ const NotificationCard = ({
       });
   };
 
+  const getNotificationIcon = () => {
+    switch (type) {
+      case 'like':
+        return <LikeIcon color="error" />;
+      case 'comment':
+        return <CommentIcon color="primary" />;
+      case 'reply':
+        return <ReplyIcon color="success" />;
+      default:
+        return <NotificationIcon color="action" />;
+    }
+  };
+
+  const getNotificationColor = () => {
+    switch (type) {
+      case 'like':
+        return 'error';
+      case 'comment':
+        return 'primary';
+      case 'reply':
+        return 'success';
+      default:
+        return 'default';
+    }
+  };
+
   return (
-    <div
-      className={
-        'p-6 border-b border-gray-100 border-l-black ' +
-        (!seen ? 'border-l-2' : '')
-      }
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.3, delay: index * 0.05 }}
     >
-      <div className="flex gap-5 mb-3">
-        <img
-          src={profile_img}
-          alt=""
-          className="w-14 h-14 flex-none rounded-full"
-        />
-        <div className="w-full">
-          <h1 className="font-medium text-xl text-gray-500">
-            <span className="lg:inline-block hidden capitalize">
-              {fullname}
-            </span>
-            <Link
-              to={`/user/${username}`}
-              className="mx-1 text-black underline hover:text-blue-600 dark:text-white dark:hover:text-blue-400"
-            >
-              @{username}
-            </Link>
-            <span className="font-normal">
-              {type === 'like'
-                ? 'liked your project'
-                : type === 'comment'
-                  ? 'commented on'
-                  : 'replied on'}
-            </span>
-          </h1>
-
-          {type === 'reply' ? (
-            <div className="p-4 mt-4 rounded-md bg-gray-100 dark:bg-gray-700">
-              <p>{replied_on_comment?.comment || 'No comment'}</p>
-            </div>
-          ) : (
-            <Link
-              to={`/project/${project_id}`}
-              className="font-medium text-gray-500 hover:underline line-clamp-1 dark:text-gray-300 dark:hover:text-blue-400"
-            >
-              {`"${title}"`}
-            </Link>
-          )}
-        </div>
-      </div>
-
-      {type !== 'like' ? (
-        <p className="ml-14 pl-5 font-gelasio text-xl my-5">
-          {comment?.comment || 'No comment'}
-        </p>
-      ) : (
-        ''
-      )}
-
-      <div className="ml-14 pl-5 mt-3 text-gray-500 flex gap-8">
-        <p>{getDay(createdAt)}</p>
-
-        {type !== 'like' ? (
-          <>
-            {!reply ? (
-              <button
-                className="underline hover:text-black dark:hover:text-white"
-                onClick={handleReplyClick}
-              >
-                Reply
-              </button>
-            ) : (
-              ''
-            )}
-
-            <button
-              className="underline hover:text-black dark:hover:text-white"
-              onClick={e =>
-                handleDelete(comment?._id || '', 'comment', e.target)
-              }
-            >
-              Delete
-            </button>
-          </>
-        ) : (
-          ''
-        )}
-      </div>
-
-      {isReplying ? (
-        <div className="mt-8">
-          <NotificationCommentField
-            _id={_id}
-            project_author={{ _id: user?.personal_info?.username || '' }}
-            index={index}
-            replyingTo={comment?._id}
-            setReplying={setIsReplying}
-            notification_id={notification_id}
-            notificationData={notificationState}
+      <Paper
+        elevation={!seen ? 3 : 1}
+        sx={{
+          mb: 2,
+          borderLeft: !seen ? 4 : 2,
+          borderLeftColor: `${getNotificationColor()}.main`,
+          position: 'relative',
+          '&:hover': {
+            elevation: 4,
+            transform: 'scale(1.01)',
+            transition: 'all 0.2s ease-in-out',
+          },
+        }}
+      >
+        {/* Unread indicator */}
+        {!seen && (
+          <Box
+            sx={{
+              position: 'absolute',
+              top: 16,
+              right: 16,
+              width: 12,
+              height: 12,
+              bgcolor: 'primary.main',
+              borderRadius: '50%',
+              animation: 'pulse 2s infinite',
+            }}
           />
-        </div>
-      ) : (
-        ''
-      )}
+        )}
 
-      {reply ? (
-        <div className="ml-20 p-5 bg-gray-100 dark:bg-gray-700 mt-5 rounded-md">
-          <div className="flex gap-3 mb-3">
-            <img
-              src={author_profile_img}
-              className="w-8 h-8 rounded-full"
-              alt=""
+        <ListItem alignItems="flex-start" sx={{ p: 3 }}>
+          <ListItemAvatar>
+            <Box sx={{ position: 'relative' }}>
+              <Avatar
+                src={profile_img}
+                alt={`${fullname}'s profile`}
+                sx={{ width: 56, height: 56, border: 2, borderColor: 'background.paper' }}
+              />
+              <Box
+                sx={{
+                  position: 'absolute',
+                  bottom: -4,
+                  right: -4,
+                  width: 24,
+                  height: 24,
+                  bgcolor: 'background.paper',
+                  borderRadius: '50%',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  border: 1,
+                  borderColor: 'divider',
+                }}
+              >
+                {getNotificationIcon()}
+              </Box>
+            </Box>
+          </ListItemAvatar>
+
+          <ListItemText
+            primary={
+              <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 1 }}>
+                <Typography variant="h6" component="span" sx={{ fontWeight: 600 }}>
+                  <Box component="span" sx={{ display: { xs: 'none', lg: 'inline' } }}>
+                    {fullname}
+                  </Box>
+                  <Link
+                    to={`/user/${username}`}
+                    style={{ textDecoration: 'none', color: 'inherit' }}
+                  >
+                    <Typography
+                      component="span"
+                      sx={{
+                        color: 'primary.main',
+                        fontWeight: 500,
+                        '&:hover': { color: 'primary.dark' },
+                      }}
+                    >
+                      @{username}
+                    </Typography>
+                  </Link>
+                </Typography>
+              </Box>
+            }
+            secondary={
+              <Box>
+                <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
+                  <Typography component="span" sx={{ fontWeight: 500 }}>
+                    {type === 'like'
+                      ? 'liked your project'
+                      : type === 'comment'
+                        ? 'commented on'
+                        : 'replied to your comment'}
+                  </Typography>
+                </Typography>
+
+                {type === 'reply' ? (
+                  <Paper
+                    variant="outlined"
+                    sx={{
+                      p: 2,
+                      bgcolor: 'grey.100',
+                      borderColor: 'grey.300',
+                    }}
+                  >
+                    <Typography variant="body2" sx={{ fontStyle: 'italic' }}>
+                      "{replied_on_comment?.comment || 'No comment'}"
+                    </Typography>
+                  </Paper>
+                ) : (
+                  <Link
+                    to={`/project/${project_id}`}
+                    style={{ textDecoration: 'none' }}
+                  >
+                    <Chip
+                      label={`"${title}"`}
+                      color="primary"
+                      variant="outlined"
+                      size="small"
+                      sx={{
+                        '&:hover': { bgcolor: 'primary.light', color: 'primary.contrastText' },
+                      }}
+                    />
+                  </Link>
+                )}
+              </Box>
+            }
+          />
+        </ListItem>
+
+        {type !== 'like' && comment?.comment && (
+          <Box sx={{ ml: 9, mr: 3, mb: 2 }}>
+            <Paper
+              variant="outlined"
+              sx={{
+                p: 2,
+                bgcolor: 'grey.50',
+                borderColor: 'grey.300',
+              }}
+            >
+              <Typography variant="body1" sx={{ fontFamily: 'Gelasio, serif' }}>
+                "{comment.comment}"
+              </Typography>
+            </Paper>
+          </Box>
+        )}
+
+        <Divider />
+
+        <Box sx={{ p: 2, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 3 }}>
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+              <TimeIcon sx={{ fontSize: 16, color: 'text.secondary' }} />
+              <Typography variant="caption" color="text.secondary">
+                {getDay(createdAt)}
+              </Typography>
+            </Box>
+
+            {type !== 'like' && (
+              <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                {!reply && (
+                  <Button
+                    size="small"
+                    startIcon={<ReplyIcon />}
+                    onClick={handleReplyClick}
+                    sx={{ textTransform: 'none' }}
+                  >
+                    Reply
+                  </Button>
+                )}
+
+                <IconButton
+                  size="small"
+                  onClick={e => handleDelete(comment?._id || '', 'comment', e.target)}
+                  color="error"
+                >
+                  <DeleteIcon />
+                </IconButton>
+              </Box>
+            )}
+          </Box>
+        </Box>
+
+        <Collapse in={isReplying} timeout="auto" unmountOnExit>
+          <Box sx={{ p: 2, bgcolor: 'grey.50' }}>
+            <NotificationCommentField
+              _id={_id}
+              project_author={{ _id: user?.personal_info?.username || '' }}
+              index={index}
+              replyingTo={comment?._id}
+              setReplying={setIsReplying}
+              notification_id={notification_id}
+              notificationData={notificationState}
             />
+          </Box>
+        </Collapse>
 
-            <div>
-              <h1 className="font-medium text-xl text-gray-500">
-                <Link
-                  to={`/user/${author_username}`}
-                  className="mx-1 text-black dark:text-white underline"
-                >
-                  @{author_username}
-                </Link>
-
-                <span className="font-normal">replied to</span>
-
-                <Link
-                  to={`/user/${username}`}
-                  className="mx-1 text-black dark:text-white underline"
-                >
-                  @{username}
-                </Link>
-              </h1>
-            </div>
-          </div>
-
-          <p className="ml-14 font-gelasio text-xl my-2">{reply.comment}</p>
-
-          <button
-            className="underline hover:text-black hover:dark:text-white ml-14 mt-2"
-            onClick={e => handleDelete(reply._id, 'reply', e.target)}
+        {reply && (
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.3 }}
           >
-            Delete
-          </button>
-        </div>
-      ) : (
-        ''
-      )}
-    </div>
+            <Box sx={{ ml: 9, mr: 3, p: 2, bgcolor: 'grey.50' }}>
+              <Box sx={{ display: 'flex', gap: 2, mb: 2 }}>
+                <Avatar
+                  src={author_profile_img}
+                  sx={{ width: 32, height: 32 }}
+                  alt={`${author_username}'s profile`}
+                />
+                <Box sx={{ flex: 1 }}>
+                  <Typography variant="body2">
+                    <Link
+                      to={`/user/${author_username}`}
+                      style={{ textDecoration: 'none', color: 'inherit' }}
+                    >
+                      <Typography
+                        component="span"
+                        sx={{
+                          color: 'primary.main',
+                          fontWeight: 600,
+                          '&:hover': { color: 'primary.dark' },
+                        }}
+                      >
+                        @{author_username}
+                      </Typography>
+                    </Link>
+                    <Typography component="span" color="text.secondary" sx={{ mx: 1 }}>
+                      replied to
+                    </Typography>
+                    <Link
+                      to={`/user/${username}`}
+                      style={{ textDecoration: 'none', color: 'inherit' }}
+                    >
+                      <Typography
+                        component="span"
+                        sx={{
+                          color: 'primary.main',
+                          fontWeight: 600,
+                          '&:hover': { color: 'primary.dark' },
+                        }}
+                      >
+                        @{username}
+                      </Typography>
+                    </Link>
+                  </Typography>
+                </Box>
+              </Box>
+
+              <Box sx={{ ml: 5 }}>
+                <Typography
+                  variant="body1"
+                  sx={{ fontFamily: 'Gelasio, serif', mb: 2 }}
+                >
+                  "{reply.comment}"
+                </Typography>
+
+                <IconButton
+                  size="small"
+                  onClick={e => handleDelete(reply._id, 'reply', e.target)}
+                  color="error"
+                >
+                  <DeleteIcon />
+                </IconButton>
+              </Box>
+            </Box>
+          </motion.div>
+        )}
+      </Paper>
+    </motion.div>
   );
 };
 

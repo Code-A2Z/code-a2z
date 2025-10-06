@@ -227,12 +227,46 @@ const Navbar = () => {
                     aria-label={`show notifications`}
                     component={Link}
                     to="/dashboard/notifications"
+                    sx={{
+                      position: 'relative',
+                      '&:hover': {
+                        backgroundColor: 'rgba(0, 0, 0, 0.04)',
+                      },
+                    }}
                   >
                     <Badge
                       badgeContent={user?.new_notification_available ? 1 : 0}
                       color="error"
+                      sx={{
+                        '& .MuiBadge-badge': {
+                          animation: user?.new_notification_available 
+                            ? 'pulse 2s infinite' 
+                            : 'none',
+                          '@keyframes pulse': {
+                            '0%': {
+                              transform: 'scale(1)',
+                              opacity: 1,
+                            },
+                            '50%': {
+                              transform: 'scale(1.2)',
+                              opacity: 0.8,
+                            },
+                            '100%': {
+                              transform: 'scale(1)',
+                              opacity: 1,
+                            },
+                          },
+                        },
+                      }}
                     >
-                      <NotificationsIcon />
+                      <NotificationsIcon 
+                        sx={{
+                          color: user?.new_notification_available 
+                            ? 'primary.main' 
+                            : 'inherit',
+                          transition: 'color 0.3s ease',
+                        }}
+                      />
                     </Badge>
                   </IconButton>
 
