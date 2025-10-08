@@ -9,6 +9,39 @@ import { authorizeUser } from './requests';
 import { useNotifications } from '../../shared/hooks/use-notification';
 import React from 'react';
 import { AuthorizeUserPayload } from './typings';
+import { Button, Typography } from '@mui/material';
+import { styled } from '@mui/material/styles';
+
+const StyledSection = styled('section')(({ theme }) => ({
+  paddingTop: theme.spacing(4),
+  paddingBottom: theme.spacing(4),
+  paddingLeft: '5vw',
+  paddingRight: '5vw',
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+  minHeight: `calc(100vh - 80px)`,
+}));
+
+const StyledForm = styled('form')(() => ({
+  width: '80%',
+  maxWidth: 400,
+}));
+
+const StyledTitle = styled(Typography)(({ theme }) => ({
+  fontSize: '2.5rem',
+  fontFamily: 'Gelasio, serif',
+  textTransform: 'capitalize',
+  textAlign: 'center',
+  marginBottom: theme.spacing(6),
+}));
+
+const StyledFooter = styled('p')(({ theme }) => ({
+  marginTop: theme.spacing(2.5),
+  color: theme.palette.text.secondary,
+  fontSize: '1.125rem',
+  textAlign: 'center',
+}));
 
 const UserAuthForm = ({ type }: { type: string }) => {
   const [userAuth, setUserAuth] = useAtom(UserAtom);
@@ -43,7 +76,7 @@ const UserAuthForm = ({ type }: { type: string }) => {
 
   const formRef = React.useRef<HTMLFormElement>(null);
 
-  const handleSubmit = (e: React.MouseEvent<HTMLElement, MouseEvent>) => {
+  const handleSubmit = (e: React.FormEvent<HTMLElement>) => {
     e.preventDefault();
 
     const serverRoute =
@@ -101,11 +134,11 @@ const UserAuthForm = ({ type }: { type: string }) => {
     <Navigate to="/" />
   ) : (
     <AnimationWrapper keyValue={type}>
-      <section className="py-4 px-[5vw] md:px-[7vw] lg:px-[10vw] h-cover flex items-center justify-center">
-        <form id="formElement" className="w-[80%] max-w-[400px]" ref={formRef}>
-          <h1 className="text-4xl font-gelasio capitalize text-center mb-24">
+      <StyledSection>
+        <StyledForm id="formElement" onSubmit={handleSubmit}>
+          <StyledTitle>
             {type === 'login' ? 'Welcome back' : 'Join us today'}
-          </h1>
+          </StyledTitle>
 
           {type !== 'login' ? (
             <InputBox
@@ -132,27 +165,44 @@ const UserAuthForm = ({ type }: { type: string }) => {
             icon="fi-rr-key"
           />
 
-          <button
-            className="btn-dark center mt-14"
+          <Button
             type="submit"
-            onClick={handleSubmit}
+            variant="contained"
+            sx={theme => ({
+              borderRadius: '999px',
+              bgcolor: theme.palette.mode === 'dark' ? '#e4e4e7' : '#1f1f1f',
+              color: theme.palette.mode === 'dark' ? '#1a1a1a' : '#f1f1f1',
+              padding: theme.spacing(1.5, 3),
+              fontSize: '1.125rem',
+              textTransform: 'none',
+              '&:hover': {
+                opacity: 0.9,
+              },
+              mt: 3.5,
+              mx: 'auto',
+              display: 'block',
+            })}
           >
             {type === 'login' ? 'Login' : 'Sign Up'}
-          </button>
+          </Button>
 
-          <p className="mt-10 text-[#a3a3a3] text-xl text-center">
+          <StyledFooter>
             {type === 'login'
               ? "Don't have an account ?"
               : 'Already a member ?'}
             <Link
               to={type === 'login' ? '/signup' : '/login'}
-              className="text-black dark:text-[#ededed] text-xl ml-1 underline"
+              style={{
+                marginLeft: 8,
+                textDecoration: 'underline',
+                color: 'inherit',
+              }}
             >
               {type === 'login' ? 'Join us today' : 'Sign in here'}
             </Link>
-          </p>
-        </form>
-      </section>
+          </StyledFooter>
+        </StyledForm>
+      </StyledSection>
     </AnimationWrapper>
   );
 };
