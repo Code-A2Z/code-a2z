@@ -8,6 +8,12 @@ const stream = {
   write: (msg) => logger.info(msg.trim()),
 }
 
+/*
+ * Skip function for test environments
+ * (Currently not used since we only have 'development' and 'production')
+ * Kept for future scalability — useful if automated tests are added later.
+ */
+
 const skip = () => process.env.NODE_ENV === 'test'
 
 const morganMiddleware = morgan(
