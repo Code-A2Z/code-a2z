@@ -43,13 +43,11 @@ import { VITE_SERVER_DOMAIN } from '../../config/env.js';
 //             );
 //         }
 
-//         const authorEmail = author.personal_info ? .email;
+//         const authorEmail = author.personal_info?.email;
 
 //         const token = crypto.randomBytes(16).toString('hex');
 //         const acceptLink = `${VITE_SERVER_DOMAIN}/api/collaboration/accept/${token}`;
 //         const rejectLink = `${VITE_SERVER_DOMAIN}/api/collaboration/reject/${token}`;
-
-
 
 //         const mailOptions = {
 //             from: process.env.ADMIN_EMAIL,
@@ -88,7 +86,6 @@ import { VITE_SERVER_DOMAIN } from '../../config/env.js';
 //                 token: token,
 //             });
 
-
 //             await collaborationData.save();
 //             return sendResponse(
 //                 res,
@@ -111,59 +108,63 @@ import { VITE_SERVER_DOMAIN } from '../../config/env.js';
 
 // export default invitationToCollaborate;
 
+const invitationToCollaborate = async (req, res) => {
+  const user_id = req.user;
+  const { project_id } = req.body;
 
+  try {
+    const user = await User.findById(user_id);
+    if (!user) {
+      return sendResponse(res, 404, 'error', 'User not found!', null);
+    }
 
-const invitationToCollaborate = async(req, res) => {
-    const user_id = req.user;
-    const { project_id } = req.body;
+    const projectToCollaborate = await Project.findOne({
+      project_id: project_id,
+    }).populate({ path: 'author', select: 'personal_info.email' });
 
-    try {
-        const user = await User.findById(user_id);
-        if (!user) {
-            return sendResponse(res, 404, 'error', 'User not found!', null);
-        }
+    if (!projectToCollaborate) {
+      return sendResponse(res, 404, 'error', 'Project not found!', null);
+    }
 
-        const projectToCollaborate = await Project.findOne({
-            project_id: project_id,
-        }).populate({ path: 'author', select: 'personal_info.email' });
+    const author = projectToCollaborate.author;
+    if (!author || !author._id) {
+      return sendResponse(res, 404, 'error', 'Project author not found!', null);
+    }
 
-        if (!projectToCollaborate) {
-            return sendResponse(res, 404, 'error', 'Project not found!', null);
-        }
+    // This logic correctly prevents self-invitation
+    if (String(user._id) === String(author._id)) {
+      return sendResponse(
+        res,
+        400,
+        'error',
+        'You cannot invite yourself to collaborate on your own project.',
+        null
+      );
+    }
 
-        const author = projectToCollaborate.author;
-        if (!author || !author._id) {
-            return sendResponse(res, 404, 'error', 'Project author not found!', null);
-        }
+    const authorEmail = author.personal_info?.email;
+    const token = crypto.randomBytes(16).toString('hex');
+    const acceptLink = `${VITE_SERVER_DOMAIN}/api/collaboration/accept/${token}`;
+    const rejectLink = `${VITE_SERVER_DOMAIN}/api/collaboration/reject/${token}`;
 
-        // This logic correctly prevents self-invitation
-        if (String(user._id) === String(author._id)) {
-            return sendResponse(
-                res,
-                400,
-                'error',
-                'You cannot invite yourself to collaborate on your own project.',
-                null
-            );
-        }
+    if (!authorEmail) {
+      return sendResponse(
+        res,
+        400,
+        'error',
+        'Project author does not have an email address.',
+        null
+      );
+    }
 
-        const authorEmail = author.personal_info ? .email;
-        const token = crypto.randomBytes(16).toString('hex');
-        const acceptLink = `${VITE_SERVER_DOMAIN}/api/collaboration/accept/${token}`;
-        const rejectLink = `${VITE_SERVER_DOMAIN}/api/collaboration/reject/${token}`;
-
-        if (!authorEmail) {
-            return sendResponse(res, 400, 'error', 'Project author does not have an email address.', null);
-        }
-
-        // 2. CHANGED: Swapped transporter.sendMail for resend.emails.send
-        await resend.emails.send({
-            // 3. UPDATED: Use an email from your verified domain
-            from: `The Code A2Z Team <${process.env.ADMIN_EMAIL}>`,
-            // 4. UPDATED: 'to' must be an array
-            to: [authorEmail],
-            subject: 'Collaboration Invitation',
-            html: `
+    // 2. CHANGED: Swapped transporter.sendMail for resend.emails.send
+    await resend.emails.send({
+      // 3. UPDATED: Use an email from your verified domain
+      from: `The Code A2Z Team <${process.env.ADMIN_EMAIL}>`,
+      // 4. UPDATED: 'to' must be an array
+      to: [authorEmail],
+      subject: 'Collaboration Invitation',
+      html: `
         <p>Hi,</p>
         <p><strong>${user?.personal_info?.fullname}</strong> has requested to collaborate on your project "${projectToCollaborate.title}".</p>
         <p>If you’d like to join, please click below:</p>
@@ -174,38 +175,26 @@ const invitationToCollaborate = async(req, res) => {
         <p>Your response will help us update the project collaboration status accordingly.</p>
         <p>Thanks for being part of the community,<br/>The Code A2Z Team</p>
       `,
-        });
+    });
 
-        // 5. CHANGED: Success logic now runs sequentially after the email is sent
-        console.log('Invitation email sent to:', authorEmail);
+    // 5. CHANGED: Success logic now runs sequentially after the email is sent
+    console.log('Invitation email sent to:', authorEmail);
 
-        const collaborationData = new Collaborator({
-            user_id: user_id,
-            project_id: project_id,
-            author_id: projectToCollaborate.author,
-            status: 'pending',
-            token: token,
-        });
-        await collaborationData.save();
+    const collaborationData = new Collaborator({
+      user_id: user_id,
+      project_id: project_id,
+      author_id: projectToCollaborate.author,
+      status: 'pending',
+      token: token,
+    });
+    await collaborationData.save();
 
-        return sendResponse(
-            res,
-            200,
-            'success',
-            'Invitation sent successfully!',
-            null
-        );
-    } catch (error) {
-        // This single catch block now handles errors from the database AND email sending
-        console.error('Error in invitation process:', error);
-        return sendResponse(
-            res,
-            500,
-            'error',
-            'Failed to send invitation',
-            null
-        );
-    }
+    return sendResponse(res, 200, 'success', 'Invitation sent successfully!', null);
+  } catch (error) {
+    // This single catch block now handles errors from the database AND email sending
+    console.error('Error in invitation process:', error);
+    return sendResponse(res, 500, 'error', 'Failed to send invitation', null);
+  }
 };
 
 export default invitationToCollaborate;
