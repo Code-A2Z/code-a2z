@@ -1,5 +1,5 @@
 import morganMiddleware from '../logger/morgan'
-import logger from '../logger/winston'
+import logger from '../logger/winston.js'
 
 export const loggingMiddleware = (app) => {
   app.use(morganMiddleware)
