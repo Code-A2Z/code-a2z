@@ -1,0 +1,935 @@
+{
+  "info": {
+    "name": "Code-A2Z API Collection",
+    "description": "Complete API collection for Code-A2Z platform including authentication, user management, projects, notifications, and more.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:8000/api",
+      "type": "string"
+    },
+    {
+      "key": "token",
+      "value": "",
+      "type": "string"
+    }
+  ],
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{token}}",
+        "type": "string"
+      }
+    ]
+  },
+  "item": [
+    {
+      "name": "Authentication",
+      "item": [
+        {
+          "name": "Sign Up",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"user@example.com\",\n  \"password\": \"password123\",\n  \"confirmPassword\": \"password123\",\n  \"username\": \"testuser\",\n  \"fullName\": \"Test User\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/auth/signup",
+              "host": ["{{baseUrl}}"],
+              "path": ["auth", "signup"]
+            }
+          }
+        },
+        {
+          "name": "Login",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"user@example.com\",\n  \"password\": \"password123\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/auth/login",
+              "host": ["{{baseUrl}}"],
+              "path": ["auth", "login"]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 200) {",
+                  "    const responseJson = pm.response.json();",
+                  "    if (responseJson.token) {",
+                  "        pm.collectionVariables.set('token', responseJson.token);",
+                  "    }",
+                  "}"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Change Password",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"currentPassword\": \"oldPassword123\",\n  \"newPassword\": \"newPassword123\",\n  \"confirmNewPassword\": \"newPassword123\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/auth/change-password",
+              "host": ["{{baseUrl}}"],
+              "path": ["auth", "change-password"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "User Management",
+      "item": [
+        {
+          "name": "Search User",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"query\": \"test\",\n  \"page\": 1,\n  \"limit\": 10\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/user/search",
+              "host": ["{{baseUrl}}"],
+              "path": ["user", "search"]
+            }
+          }
+        },
+        {
+          "name": "Get Profile",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"userId\": \"user_id_here\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/user/profile",
+              "host": ["{{baseUrl}}"],
+              "path": ["user", "profile"]
+            }
+          }
+        },
+        {
+          "name": "Update Profile Image",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "profileImage",
+                  "type": "file",
+                  "src": []
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/user/update-profile-img",
+              "host": ["{{baseUrl}}"],
+              "path": ["user", "update-profile-img"]
+            }
+          }
+        },
+        {
+          "name": "Update Profile",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"fullName\": \"Updated Name\",\n  \"username\": \"updatedusername\",\n  \"bio\": \"Updated bio\",\n  \"location\": \"Updated location\",\n  \"website\": \"https://example.com\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/user/update-profile",
+              "host": ["{{baseUrl}}"],
+              "path": ["user", "update-profile"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Projects",
+      "item": [
+        {
+          "name": "Create Project",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"My New Project\",\n  \"description\": \"This is a sample project description\",\n  \"category\": \"web-development\",\n  \"subcategory\": \"frontend\",\n  \"tags\": [\"javascript\", \"react\", \"css\"],\n  \"difficulty\": \"beginner\",\n  \"githubUrl\": \"https://github.com/user/project\",\n  \"liveUrl\": \"https://project.example.com\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/project/create",
+              "host": ["{{baseUrl}}"],
+              "path": ["project", "create"]
+            }
+          }
+        },
+        {
+          "name": "Get All Projects",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"page\": 1,\n  \"limit\": 10,\n  \"category\": \"web-development\",\n  \"subcategory\": \"frontend\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/project/getall",
+              "host": ["{{baseUrl}}"],
+              "path": ["project", "getall"]
+            }
+          }
+        },
+        {
+          "name": "Get Trending Projects",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/project/trending",
+              "host": ["{{baseUrl}}"],
+              "path": ["project", "trending"]
+            }
+          }
+        },
+        {
+          "name": "Search Projects",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"query\": \"react\",\n  \"page\": 1,\n  \"limit\": 10,\n  \"category\": \"web-development\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/project/search",
+              "host": ["{{baseUrl}}"],
+              "path": ["project", "search"]
+            }
+          }
+        },
+        {
+          "name": "Get All Latest Projects Count",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"category\": \"web-development\",\n  \"subcategory\": \"frontend\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/project/all-latest-count",
+              "host": ["{{baseUrl}}"],
+              "path": ["project", "all-latest-count"]
+            }
+          }
+        },
+        {
+          "name": "Get Search Projects Count",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"query\": \"react\",\n  \"category\": \"web-development\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/project/search-count",
+              "host": ["{{baseUrl}}"],
+              "path": ["project", "search-count"]
+            }
+          }
+        },
+        {
+          "name": "Get Single Project",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"projectId\": \"project_id_here\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/project/get",
+              "host": ["{{baseUrl}}"],
+              "path": ["project", "get"]
+            }
+          }
+        },
+        {
+          "name": "Get User Written Projects",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"page\": 1,\n  \"limit\": 10\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/project/user-written",
+              "host": ["{{baseUrl}}"],
+              "path": ["project", "user-written"]
+            }
+          }
+        },
+        {
+          "name": "Get User Written Projects Count",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/project/user-written-count",
+              "host": ["{{baseUrl}}"],
+              "path": ["project", "user-written-count"]
+            }
+          }
+        },
+        {
+          "name": "Delete Project",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"projectId\": \"project_id_here\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/project/delete",
+              "host": ["{{baseUrl}}"],
+              "path": ["project", "delete"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Media",
+      "item": [
+        {
+          "name": "Get Upload URL",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "image",
+                  "type": "file",
+                  "src": []
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/media/get-upload-url",
+              "host": ["{{baseUrl}}"],
+              "path": ["media", "get-upload-url"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Notifications",
+      "item": [
+        {
+          "name": "Like Project",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"projectId\": \"project_id_here\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/notification/like",
+              "host": ["{{baseUrl}}"],
+              "path": ["notification", "like"]
+            }
+          }
+        },
+        {
+          "name": "Get Like Status",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"projectId\": \"project_id_here\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/notification/like-status",
+              "host": ["{{baseUrl}}"],
+              "path": ["notification", "like-status"]
+            }
+          }
+        },
+        {
+          "name": "Add Comment",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"projectId\": \"project_id_here\",\n  \"comment\": \"This is a great project!\",\n  \"parentCommentId\": null\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/notification/comment",
+              "host": ["{{baseUrl}}"],
+              "path": ["notification", "comment"]
+            }
+          }
+        },
+        {
+          "name": "Get Comments",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"projectId\": \"project_id_here\",\n  \"page\": 1,\n  \"limit\": 10\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/notification/get-comments",
+              "host": ["{{baseUrl}}"],
+              "path": ["notification", "get-comments"]
+            }
+          }
+        },
+        {
+          "name": "Get Replies",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"commentId\": \"comment_id_here\",\n  \"page\": 1,\n  \"limit\": 10\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/notification/get-replies",
+              "host": ["{{baseUrl}}"],
+              "path": ["notification", "get-replies"]
+            }
+          }
+        },
+        {
+          "name": "Delete Comment",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"commentId\": \"comment_id_here\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/notification/delete-comment",
+              "host": ["{{baseUrl}}"],
+              "path": ["notification", "delete-comment"]
+            }
+          }
+        },
+        {
+          "name": "Get New Notifications",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/notification/new",
+              "host": ["{{baseUrl}}"],
+              "path": ["notification", "new"]
+            }
+          }
+        },
+        {
+          "name": "Get All Notifications",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"page\": 1,\n  \"limit\": 10\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/notification/get",
+              "host": ["{{baseUrl}}"],
+              "path": ["notification", "get"]
+            }
+          }
+        },
+        {
+          "name": "Get All Notifications Count",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/notification/all-count",
+              "host": ["{{baseUrl}}"],
+              "path": ["notification", "all-count"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Subscribers",
+      "item": [
+        {
+          "name": "Subscribe Email",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"subscriber@example.com\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/subscriber/subscribe",
+              "host": ["{{baseUrl}}"],
+              "path": ["subscriber", "subscribe"]
+            }
+          }
+        },
+        {
+          "name": "Unsubscribe Email",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"subscriber@example.com\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/subscriber/unsubscribe",
+              "host": ["{{baseUrl}}"],
+              "path": ["subscriber", "unsubscribe"]
+            }
+          }
+        },
+        {
+          "name": "Get All Subscribers",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/subscriber/all",
+              "host": ["{{baseUrl}}"],
+              "path": ["subscriber", "all"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Collections",
+      "item": [
+        {
+          "name": "Create Collection",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"My Favorite Projects\",\n  \"description\": \"A collection of my favorite web development projects\",\n  \"isPublic\": true\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/collection/create-collection",
+              "host": ["{{baseUrl}}"],
+              "path": ["collection", "create-collection"]
+            }
+          }
+        },
+        {
+          "name": "Save Project to Collection",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"projectId\": \"project_id_here\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/collection/:id",
+              "host": ["{{baseUrl}}"],
+              "path": ["collection", ":id"]
+            }
+          }
+        },
+        {
+          "name": "Get Sorted Projects",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/collection/sorted-project",
+              "host": ["{{baseUrl}}"],
+              "path": ["collection", "sorted-project"]
+            }
+          }
+        },
+        {
+          "name": "Remove Project from Collection",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"collectionId\": \"collection_id_here\",\n  \"projectId\": \"project_id_here\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/collection/saved-projects",
+              "host": ["{{baseUrl}}"],
+              "path": ["collection", "saved-projects"]
+            }
+          }
+        },
+        {
+          "name": "Delete Collection",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"collectionId\": \"collection_id_here\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/collection/",
+              "host": ["{{baseUrl}}"],
+              "path": ["collection", ""]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Collaborator",
+      "item": [
+        {
+          "name": "Invite Collaborator",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"collaborator@example.com\",\n  \"projectId\": \"project_id_here\",\n  \"role\": \"contributor\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/collaborator/invite",
+              "host": ["{{baseUrl}}"],
+              "path": ["collaborator", "invite"]
+            }
+          }
+        },
+        {
+          "name": "Accept Invitation",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/collaborator/accept/:token",
+              "host": ["{{baseUrl}}"],
+              "path": ["collaborator", "accept", ":token"]
+            }
+          }
+        },
+        {
+          "name": "Reject Invitation",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/collaborator/reject/:token",
+              "host": ["{{baseUrl}}"],
+              "path": ["collaborator", "reject", ":token"]
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "// This script runs before every request",
+          "// You can add global pre-request logic here"
+        ]
+      }
+    },
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "// This script runs after every request",
+          "// You can add global test logic here"
+        ]
+      }
+    }
+  ]
+}
