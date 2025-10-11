@@ -25,10 +25,8 @@ export const CLOUDINARY_API_KEY = process.env.CLOUDINARY_API_KEY || 'admin';
 export const CLOUDINARY_API_SECRET =
     process.env.CLOUDINARY_API_SECRET || 'admin';
 
-// Admin Credentials (for nodemailer & localtunnel)
-// export const ADMIN_EMAIL = process.env.ADMIN_EMAIL || 'admin@example.com';
-// export const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || 'admin123';
-
-// Resend Configuration
-export const ADMIN_EMAIL = process.env.ADMIN_EMAIL || 'admin@example.com';
-export const RESEND_API_KEY = process.env.RESEND_API_KEY;
+//  Resend / Email Configuration
+export const ADMIN_EMAIL =
+  process.env.ADMIN_EMAIL || "dev.admin@example.com";
+export const RESEND_API_KEY =
+  process.env.RESEND_API_KEY || "dev_resend_key_abc123";
