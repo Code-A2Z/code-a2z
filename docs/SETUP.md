@@ -126,10 +126,59 @@ Your app will connect directly to the deployed backend.
 
 ---
 
-### Common Pitfalls
+### Troubleshooting Guide
 
-- If you try to run backend code without MongoDB running, you’ll get connection errors.
-- Check the respective PORTS are free to use in your machine.
-- Keep `.env` variables separate for each mode (local backend vs deployed backend).
-- The `.env.example` file already contains both modes — just uncomment the one you need.
-- If switching between modes, update `VITE_SERVER_DOMAIN` and restart the dev server.
+#### Common Issues and Solutions
+
+1. **MongoDB Connection Issues**
+   - Error: `MongoNetworkError: connect ECONNREFUSED 127.0.0.1:27017`
+     - Solution: Ensure MongoDB is running locally (`mongod` service)
+     - Check if MongoDB is installed correctly using `mongo --version`
+     - Verify MongoDB service status: `brew services list` (macOS) or `systemctl status mongodb` (Linux)
+
+2. **Port Conflicts**
+   - Error: `EADDRINUSE: address already in use :::8000`
+     - Solution: Either kill the process using the port: `lsof -i :8000` then `kill -9 PID`
+     - Or change the port in `.env` file to an unused port
+
+3. **Environment Variables**
+   - Error: "Configuration error" or "Missing environment variables"
+     - Solution: Compare your `.env` with `.env.example`
+     - Ensure no trailing spaces in variable values
+     - Restart the server after changing environment variables
+
+4. **Frontend Build Issues**
+   - Error: Module not found or TypeScript errors
+     - Solution: 
+       ```bash
+       rm -rf node_modules
+       npm install
+       npm run dev
+       ```
+   - Clear browser cache and reload
+
+5. **Authentication Issues**
+   - Error: JWT verification failed
+     - Solution: Check if `JWT_SECRET_ACCESS_KEY` matches in your `.env`
+     - Ensure your token hasn't expired (check `JWT_EXPIRES_IN` value)
+
+6. **File Upload Issues**
+   - Error: "Failed to upload to Cloudinary"
+     - Verify Cloudinary credentials in `.env`
+     - Check file size (max 10MB)
+     - Ensure supported file format
+
+#### Mode Switching Tips
+- When switching between local and deployed backend:
+  1. Update `VITE_SERVER_DOMAIN` in `.env`
+  2. Stop the dev server (`Ctrl + C`)
+  3. Run `npm run dev` again
+  4. Clear browser cache and storage
+
+#### Development Best Practices
+- Use `npm run dev` for hot-reload during development
+- Keep your Node.js version aligned with the project's requirements
+- Run `npm run lint` before committing changes
+- Check console for warnings and errors frequently
+
+Need more help? Feel free to open an issue on GitHub.
