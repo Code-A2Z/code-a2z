@@ -1,19 +1,21 @@
 import { Schema } from 'mongoose';
 import { COLLECTION_NAMES } from '../constants/db.js';
 
-const collaboratorSchema = Schema(
+const collabSchema = Schema(
   {
     user_id: {
+      // The collaborator sending the invite
       type: Schema.Types.ObjectId,
       ref: COLLECTION_NAMES.USERS,
       required: true,
     },
     project_id: {
-      type: String,
+      type: Schema.Types.ObjectId,
       ref: COLLECTION_NAMES.PROJECTS,
       required: true,
     },
     author_id: {
+      // The author of the project who accept/reject the invite
       type: Schema.Types.ObjectId,
       ref: COLLECTION_NAMES.USERS,
       required: true,
@@ -35,4 +37,4 @@ const collaboratorSchema = Schema(
   }
 );
 
-export default collaboratorSchema;
+export default collabSchema;

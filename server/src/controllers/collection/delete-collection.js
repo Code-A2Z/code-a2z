@@ -1,27 +1,28 @@
+import { Types } from 'mongoose';
 import Collection from '../../models/collection.model.js';
 import { sendResponse } from '../../utils/response.js';
 
 const deleteCollection = async (req, res) => {
   try {
     const user_id = req.user;
-    const { collection_name } = req.body;
+    const { collection_id } = req.body;
 
-    if (!collection_name) {
+    if (!collection_id || !Types.ObjectId.isValid(collection_id)) {
       return sendResponse(
         res,
         400,
         'error',
-        'Collection name is required',
+        'Invalid or missing collection_id',
         null
       );
     }
 
-    const deleted = await Collection.findOneAndDelete({
+    const deletedCollection = await Collection.findOneAndDelete({
       user_id,
-      collection_name,
+      _id: collection_id,
     });
 
-    if (!deleted) {
+    if (!deletedCollection) {
       return sendResponse(res, 404, 'error', 'Collection not found', null);
     }
 
@@ -29,11 +30,16 @@ const deleteCollection = async (req, res) => {
       res,
       200,
       'success',
-      'Collection deleted successfully',
-      { deleted }
+      `${deletedCollection.collection_name} collection deleted successfully!`
     );
   } catch (err) {
-    return sendResponse(res, 500, 'error', err.message, null);
+    return sendResponse(
+      res,
+      500,
+      'error',
+      err.message || 'Internal Server Error',
+      null
+    );
   }
 };
 

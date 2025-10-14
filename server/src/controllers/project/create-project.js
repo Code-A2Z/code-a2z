@@ -6,66 +6,73 @@ import { sendResponse } from '../../utils/response.js';
 
 const createProject = async (req, res) => {
   const authorId = req.user;
-  let { title, des, banner, projectUrl, repository, tags, content, draft, id } =
-    req.body;
+  let {
+    title,
+    des,
+    banner,
+    project_url,
+    repository,
+    tags,
+    content,
+    draft,
+    id,
+  } = req.body;
 
-  if (!title.length) {
-    return sendResponse(res, 403, 'error', 'You must provide a title', null);
+  if (!title || !title.trim().length) {
+    return sendResponse(res, 403, 'error', 'You must provide a title');
   }
 
   if (!draft) {
-    if (!des.length || des.length > 200) {
+    if (!des || !des.trim().length || des.length > 200) {
       return sendResponse(
         res,
         403,
         'error',
-        'You must provide project description under 200 characters',
-        null
+        'You must provide project description under 200 characters'
       );
     }
 
-    if (!banner.length) {
+    if (!banner || !banner.trim().length) {
       return sendResponse(
         res,
         403,
         'error',
-        'You must provide project banner to publish it',
-        null
+        'You must provide project banner to publish it'
       );
     }
 
-    if (!repository.length) {
+    if (!repository || !repository.trim().length) {
       return sendResponse(
         res,
         403,
         'error',
-        'You must provide project repository to publish it',
-        null
+        'You must provide project repository to publish it'
       );
     }
 
-    if (!content.blocks.length) {
+    if (!tags?.length || tags.length > 10) {
       return sendResponse(
         res,
         403,
         'error',
-        'There must be some project content to publish it',
-        null
+        'Provide tags in order to publish the project, Maximum 10'
       );
     }
 
-    if (!tags.length || tags.length > 10) {
+    if (!content?.[0]?.blocks?.length) {
       return sendResponse(
         res,
         403,
         'error',
-        'Provide tags in order to publish the project, Maximum 10',
-        null
+        'There must be some project content to publish it'
       );
     }
   }
 
-  tags = tags.map(tag => tag.toLowerCase());
+  // Normalize tags
+  tags = tags?.map(tag => tag.toLowerCase()) || [];
+
+  // Generate project ID
   const project_id =
     id ||
     title
@@ -73,81 +80,75 @@ const createProject = async (req, res) => {
       .replace(/\s+/g, '-')
       .trim() + nanoid();
 
-  if (id) {
-    Project.findOneAndUpdate(
-      { project_id },
-      {
+  try {
+    if (id) {
+      // Update existing project
+      const updatedProject = await Project.findOneAndUpdate(
+        { project_id },
+        {
+          title,
+          des,
+          banner,
+          project_url,
+          repository,
+          content,
+          tags,
+          draft: Boolean(draft),
+        },
+        { new: true }
+      );
+
+      if (!updatedProject) {
+        return sendResponse(res, 404, 'error', 'Project not found to update');
+      }
+
+      return sendResponse(res, 200, 'success', 'Project updated successfully', {
+        id: project_id,
+      });
+    } else {
+      // Create new project
+      const project = new Project({
+        project_id,
         title,
-        des,
         banner,
-        projectUrl,
+        des,
+        project_url,
         repository,
         content,
         tags,
-        draft: draft ? draft : false,
-      }
-    )
-      .then(project => {
-        console.log('Project updated successfully', project._id);
-        return sendResponse(
-          res,
-          200,
-          'success',
-          'Project updated successfully',
-          { id: project_id }
-        );
-      })
-      .catch(err => {
-        return sendResponse(res, 500, 'error', err.message, null);
+        author: authorId,
+        draft: Boolean(draft),
       });
-  } else {
-    const project = new Project({
-      title,
-      des,
-      banner,
-      projectUrl,
-      repository,
-      tags,
-      content,
-      author: authorId,
-      project_id,
-      draft: Boolean(draft),
-    });
 
-    project
-      .save()
-      .then(project => {
-        const incrementVal = draft ? 0 : 1;
-        User.findOneAndUpdate(
+      const savedProject = await project.save();
+
+      // Update user's total posts and project list
+      if (!draft) {
+        await User.findOneAndUpdate(
           { _id: authorId },
           {
-            $inc: { 'account_info.total_posts': incrementVal },
-            $push: { projects: project._id },
+            $inc: { 'account_info.total_posts': 1 },
+            $push: { projects: savedProject._id },
           }
-        )
-          .then(user => {
-            console.log('Project created successfully', user._id);
-            return sendResponse(
-              res,
-              200,
-              'success',
-              'Project created successfully',
-              { id: project.project_id }
-            );
-          })
-          .catch(err => {
-            return sendResponse(
-              res,
-              500,
-              'error',
-              err.message || 'Failed to update total posts number',
-              null
-            );
-          });
-      })
-      .catch(err => {
-        return sendResponse(res, 500, 'error', err.message, null);
+        );
+      } else {
+        await User.findOneAndUpdate(
+          { _id: authorId },
+          { $push: { projects: savedProject._id } }
+        );
+      }
+
+      return sendResponse(res, 200, 'success', 'Project created successfully', {
+        id: savedProject.project_id,
       });
+    }
+  } catch (err) {
+    return sendResponse(
+      res,
+      500,
+      'error',
+      err.message || 'Internal server error'
+    );
   }
 };
 

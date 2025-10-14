@@ -9,7 +9,7 @@ import unsubscribeEmail from '../../controllers/subscriber/unsubscribe-email.js'
 const subscriberRoutes = express.Router();
 
 subscriberRoutes.post('/subscribe', subscribeEmail);
-subscriberRoutes.post('/unsubscribe', unsubscribeEmail);
+subscriberRoutes.patch('/unsubscribe', authenticateUser, unsubscribeEmail);
 subscriberRoutes.get('/all', authenticateUser, getAllSubscribers);
 
 export default subscriberRoutes;

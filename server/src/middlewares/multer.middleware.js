@@ -1,11 +1,11 @@
 import multer from 'multer';
 
-const storage = multer.diskStorage({
+const multerStorage = multer.diskStorage({
   filename: (req, file, cb) => {
     cb(null, file.originalname + '-' + Date.now());
   },
 });
 
-const upload = multer({ storage: storage });
+const multerUpload = multer({ storage: multerStorage });
 
-export default upload;
+export default multerUpload;

@@ -5,51 +5,42 @@ import Comment from '../../models/comment.model.js';
 import { sendResponse } from '../../utils/response.js';
 
 const deleteProject = async (req, res) => {
-  const user_id = req.user;
-  const { project_id } = req.body;
+  try {
+    const user_id = req.user;
+    const { project_id } = req.params;
 
-  Project.findOneAndDelete({ project_id })
-    .then(project => {
-      if (!project) {
-        return sendResponse(res, 404, 'error', 'Project not found', null);
+    if (!project_id)
+      return sendResponse(res, 400, 'error', 'Project ID is required');
+
+    const project = await Project.findOneAndDelete({ project_id });
+    if (!project) return sendResponse(res, 404, 'error', 'Project not found');
+
+    // Clean up related data asynchronously (non-blocking)
+    Notification.deleteMany({ project: project._id }).catch(err =>
+      console.error(`Notification deletion error: ${err}`)
+    );
+    Comment.deleteMany({ project: project._id }).catch(err =>
+      console.error(`Comment deletion error: ${err}`)
+    );
+
+    // Update user stats
+    await User.findOneAndUpdate(
+      { _id: user_id },
+      {
+        $pull: { projects: project._id },
+        $inc: { 'account_info.total_posts': -1 },
       }
+    );
 
-      Notification.deleteMany({ project: project._id })
-        .then(data =>
-          console.log('Notification deleted successfully', data.deletedCount)
-        )
-        .catch(err => console.log(`Notification deletion error: ${err}`));
-
-      Comment.deleteMany({ project: project._id })
-        .then(data =>
-          console.log('Comments deleted successfully', data.deletedCount)
-        )
-        .catch(err => console.log(`Comment deletion error: ${err}`));
-
-      User.findOneAndUpdate(
-        { _id: user_id },
-        {
-          $pull: { projects: project._id },
-          $inc: { 'account_info.total_posts': -1 },
-        }
-      )
-        .then(user => {
-          console.log('User updated successfully', user._id);
-          return sendResponse(
-            res,
-            200,
-            'success',
-            'Project deleted successfully',
-            null
-          );
-        })
-        .catch(err => {
-          return sendResponse(res, 500, 'error', err.message, null);
-        });
-    })
-    .catch(err => {
-      return sendResponse(res, 500, 'error', err.message, null);
-    });
+    return sendResponse(res, 200, 'success', 'Project deleted successfully');
+  } catch (err) {
+    return sendResponse(
+      res,
+      500,
+      'error',
+      err.message || 'Internal server error'
+    );
+  }
 };
 
 export default deleteProject;

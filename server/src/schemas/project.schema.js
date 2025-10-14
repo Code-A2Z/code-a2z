@@ -22,7 +22,7 @@ const projectSchema = Schema(
       maxlength: 200,
       default: '',
     },
-    projectUrl: {
+    project_url: {
       type: String,
       default: '',
     },

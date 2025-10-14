@@ -1,11 +1,17 @@
 import express from 'express';
 
-import upload from '../../middlewares/multer.middleware.js';
+import multerUpload from '../../middlewares/multer.middleware.js';
+import authenticateUser from '../../middlewares/auth.middleware.js';
 
-import getUploadUrl from '../../controllers/media/get-upload-url.js';
+import uploadImage from '../../controllers/media/upload.image.js';
 
 const mediaRoutes = express.Router();
 
-mediaRoutes.post('/get-upload-url', upload.single('image'), getUploadUrl);
+mediaRoutes.post(
+  '/upload-image',
+  authenticateUser,
+  multerUpload.single('image'),
+  uploadImage
+);
 
 export default mediaRoutes;

@@ -10,11 +10,12 @@ const collectionSchema = Schema(
     },
     collection_name: {
       type: String,
+      lowercase: true,
       required: true,
     },
-    project_id: {
-      type: String,
-      default: null,
+    projects: {
+      type: [Schema.Types.ObjectId],
+      default: [],
       ref: COLLECTION_NAMES.PROJECTS,
     },
   },

@@ -2,30 +2,35 @@ import Project from '../../models/project.model.js';
 import { sendResponse } from '../../utils/response.js';
 
 const searchProjectsCount = async (req, res) => {
-  const { tag, author, query } = req.body;
-  let findQuery;
+  try {
+    const { tag, author, query } = req.query;
 
-  if (tag) {
-    findQuery = { tags: tag, draft: false };
-  } else if (query) {
-    findQuery = { draft: false, title: new RegExp(query, 'i') };
-  } else if (author) {
-    findQuery = { draft: false, author: author };
+    let findQuery = { draft: false };
+
+    if (tag) {
+      findQuery.tags = tag;
+    } else if (query) {
+      findQuery.title = new RegExp(query, 'i');
+    } else if (author) {
+      findQuery.author = author;
+    }
+
+    const count = await Project.countDocuments(findQuery);
+    return sendResponse(
+      res,
+      200,
+      'success',
+      'Search projects count fetched successfully',
+      { totalDocs: count }
+    );
+  } catch (err) {
+    return sendResponse(
+      res,
+      500,
+      'error',
+      err.message || 'Internal server error'
+    );
   }
-
-  Project.countDocuments(findQuery)
-    .then(count => {
-      return sendResponse(
-        res,
-        200,
-        'success',
-        'Search projects count fetched successfully',
-        { totalDocs: count }
-      );
-    })
-    .catch(err => {
-      return sendResponse(res, 500, 'error', err.message, null);
-    });
 };
 
 export default searchProjectsCount;
