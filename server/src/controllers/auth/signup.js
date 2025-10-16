@@ -67,7 +67,12 @@ const signup = async (req, res) => {
     let subscribeUser = await Subscriber.findOne({ email });
     if (subscribeUser) {
       if (await User.exists({ 'personal_info.email': subscribeUser._id })) {
-        return sendResponse(res, 400, 'error', 'Email is already registered');
+        return sendResponse(
+          res,
+          400,
+          'error',
+          'Email is already registered, please login instead'
+        );
       }
       if (!subscribeUser.isSubscribed) {
         subscribeUser.isSubscribed = true;
@@ -99,17 +104,18 @@ const signup = async (req, res) => {
     };
     const { accessToken, refreshToken } = generateTokens(payload);
 
-    // Set cookies securely
+    // Set cookies correctly
+    const isProd = NODE_ENV === NodeEnv.PRODUCTION;
     res.cookie(CookieToken.ACCESS_TOKEN, accessToken, {
       httpOnly: true,
-      secure: NODE_ENV === NodeEnv.PRODUCTION,
-      sameSite: 'strict',
+      secure: isProd,
+      sameSite: isProd ? 'none' : 'lax',
       maxAge: JWT_ACCESS_EXPIRES_IN_NUM,
     });
     res.cookie(CookieToken.REFRESH_TOKEN, refreshToken, {
       httpOnly: true,
-      secure: NODE_ENV === NodeEnv.PRODUCTION,
-      sameSite: 'strict',
+      secure: isProd,
+      sameSite: isProd ? 'none' : 'lax',
       maxAge: JWT_REFRESH_EXPIRES_IN_NUM,
     });
 

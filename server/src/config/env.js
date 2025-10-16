@@ -1,7 +1,10 @@
 // Load environment variables from .env file
 import dotenv from 'dotenv';
 
-dotenv.config();
+// dotenv.config();
+
+import path from 'path';
+dotenv.config({ path: path.resolve('./.env') });
 
 // Server Configuration
 export const PORT = process.env.PORT || 8000;
@@ -10,9 +13,10 @@ export const VITE_SERVER_DOMAIN =
   process.env.VITE_SERVER_DOMAIN || 'https://code-a2z-server.vercel.app';
 
 // MongoDB Configuration
-export const MONGODB_URL =
-  process.env.MONGODB_URL || 'mongodb://localhost:27017/code-a2z';
-
+export const MONGODB_URL = process.env.MONGODB_URL;
+if (!MONGODB_URL) {
+  throw new Error('MONGODB_URL is not defined in .env');
+}
 // JWT Configuration
 export const JWT_SECRET_ACCESS_KEY =
   process.env.JWT_SECRET_ACCESS_KEY || 'default_secret_key';

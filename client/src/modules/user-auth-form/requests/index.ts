@@ -9,7 +9,9 @@ export const authorizeUser = async (
     serverRoute,
     false,
     formData,
-    false
+    false,
+    undefined,
+    true // include cookies
   );
 };
 
@@ -17,6 +19,9 @@ export const changePassword = async (formData: { [key: string]: string }) => {
   return post<AuthorizeUserResponse, { [key: string]: string }>(
     `/api/auth/change-password`,
     true,
-    formData
+    formData,
+    false,
+    undefined,
+    true // include cookies
   );
 };
