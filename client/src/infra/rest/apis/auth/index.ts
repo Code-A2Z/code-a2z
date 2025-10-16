@@ -1,7 +1,7 @@
-import { post } from '../..';
+import { patch, post } from '../..';
 import { UserDBState } from '../../../../shared/typings';
 import ApiResponse, { BaseApiResponse } from '../../typing';
-import { signUpPayload, loginPayload } from './typing';
+import { signUpPayload, loginPayload, changePasswordPayload } from './typing';
 
 export const signUp = async (signUpPayload: signUpPayload) => {
   return post<signUpPayload, ApiResponse<UserDBState>>(
@@ -35,6 +35,17 @@ export const logout = async () => {
     `/api/auth/logout`,
     true,
     undefined,
+    false
+  );
+};
+
+export const changePassword = async (
+  changePasswordPayload: changePasswordPayload
+) => {
+  return patch<changePasswordPayload, BaseApiResponse>(
+    `/api/auth/change-password`,
+    true,
+    changePasswordPayload,
     false
   );
 };
