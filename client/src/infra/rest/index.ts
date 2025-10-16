@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { VITE_SERVER_DOMAIN } from '../../config/env';
 
-enum Methods {
+export enum Methods {
   GET = 'GET',
   POST = 'POST',
   PUT = 'PUT',
