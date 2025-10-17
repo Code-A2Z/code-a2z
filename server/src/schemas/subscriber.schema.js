@@ -1,21 +1,21 @@
 import { Schema } from 'mongoose';
 
-const subscriberSchema = Schema(
+const SUBSCRIBER_SCHEMA = Schema(
   {
     email: {
       type: String,
       required: true,
       unique: true,
     },
-    isSubscribed: {
+    is_subscribed: {
       type: Boolean,
       default: true,
     },
-    subscribedAt: {
+    subscribed_at: {
       type: Date,
       default: Date.now,
     },
-    unsubscribedAt: {
+    unsubscribed_at: {
       type: Date,
       default: null,
     },
@@ -27,4 +27,4 @@ const subscriberSchema = Schema(
   }
 );
 
-export default subscriberSchema;
+export default SUBSCRIBER_SCHEMA;

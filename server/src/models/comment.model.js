@@ -1,7 +1,7 @@
 import { model } from 'mongoose';
-import commentSchema from '../schemas/comment.schema.js';
+import COMMENT_SCHEMA from '../schemas/comment.schema.js';
 import { COLLECTION_NAMES } from '../constants/db.js';
 
-const Comment = model(COLLECTION_NAMES.COMMENTS, commentSchema);
+const COMMENT = model(COLLECTION_NAMES.COMMENTS, COMMENT_SCHEMA);
 
-export default Comment;
+export default COMMENT;

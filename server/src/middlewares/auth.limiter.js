@@ -2,7 +2,7 @@ import { RateLimiterMemory } from 'rate-limiter-flexible';
 import { sendResponse } from '../utils/response.js';
 
 const authLimit = new RateLimiterMemory({
-  points: 5,
+  points: 10,
   duration: 15 * 60,
   blockDuration: 15 * 60,
 });

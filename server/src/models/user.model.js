@@ -1,7 +1,7 @@
 import { model } from 'mongoose';
-import userSchema from '../schemas/user.schema.js';
+import USER_SCHEMA from '../schemas/user.schema.js';
 import { COLLECTION_NAMES } from '../constants/db.js';
 
-const User = model(COLLECTION_NAMES.USERS, userSchema);
+const USER = model(COLLECTION_NAMES.USERS, USER_SCHEMA);
 
-export default User;
+export default USER;

@@ -4,6 +4,6 @@ export const COLLECTION_NAMES = {
   PROJECTS: 'projects',
   COMMENTS: 'comments',
   NOTIFICATIONS: 'notifications',
-  COLLABS: 'collabs',
+  COLLABORATION: 'collaborations',
   COLLECTIONS: 'collections',
 };

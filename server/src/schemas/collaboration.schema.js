@@ -1,7 +1,8 @@
 import { Schema } from 'mongoose';
 import { COLLECTION_NAMES } from '../constants/db.js';
+import { COLLABORATION_STATUS } from '../typings/index.js';
 
-const collabSchema = Schema(
+const COLLABORATION_SCHEMA = Schema(
   {
     user_id: {
       // The collaborator sending the invite
@@ -22,8 +23,8 @@ const collabSchema = Schema(
     },
     status: {
       type: String,
-      enum: ['pending', 'accepted', 'rejected'],
-      default: 'pending',
+      enum: Object.values(COLLABORATION_STATUS),
+      default: COLLABORATION_STATUS.PENDING,
       required: true,
     },
     token: {
@@ -37,4 +38,4 @@ const collabSchema = Schema(
   }
 );
 
-export default collabSchema;
+export default COLLABORATION_SCHEMA;

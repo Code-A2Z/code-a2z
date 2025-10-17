@@ -1,7 +1,7 @@
 import { Schema } from 'mongoose';
 import { COLLECTION_NAMES } from '../constants/db.js';
 
-const collectionSchema = Schema(
+const COLLECTION_SCHEMA = Schema(
   {
     user_id: {
       type: Schema.Types.ObjectId,
@@ -13,7 +13,7 @@ const collectionSchema = Schema(
       lowercase: true,
       required: true,
     },
-    projects: {
+    project_ids: {
       type: [Schema.Types.ObjectId],
       default: [],
       ref: COLLECTION_NAMES.PROJECTS,
@@ -24,4 +24,4 @@ const collectionSchema = Schema(
   }
 );
 
-export default collectionSchema;
+export default COLLECTION_SCHEMA;

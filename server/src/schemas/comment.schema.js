@@ -1,14 +1,9 @@
 import { Schema } from 'mongoose';
 import { COLLECTION_NAMES } from '../constants/db.js';
 
-const commentSchema = Schema(
+const COMMENT_SCHEMA = Schema(
   {
     project_id: {
-      type: Schema.Types.ObjectId,
-      required: true,
-      ref: COLLECTION_NAMES.PROJECTS,
-    },
-    project_author: {
       type: Schema.Types.ObjectId,
       required: true,
       ref: COLLECTION_NAMES.PROJECTS,
@@ -16,22 +11,23 @@ const commentSchema = Schema(
     comment: {
       type: String,
       required: true,
-      maxlength: 1000,
+      maxlength: [1000, 'Comment should not be more than 1000 characters'],
     },
-    children: {
+    children_comment_ids: {
       type: [Schema.Types.ObjectId],
       ref: COLLECTION_NAMES.COMMENTS,
     },
-    commented_by: {
+    user_id: {
+      // The user who made the comment
       type: Schema.Types.ObjectId,
       required: true,
       ref: COLLECTION_NAMES.USERS,
     },
-    isReply: {
+    is_reply: {
       type: Boolean,
       default: false,
     },
-    parent: {
+    parent_comment_id: {
       type: Schema.Types.ObjectId,
       ref: COLLECTION_NAMES.COMMENTS,
     },
@@ -41,4 +37,4 @@ const commentSchema = Schema(
   }
 );
 
-export default commentSchema;
+export default COMMENT_SCHEMA;

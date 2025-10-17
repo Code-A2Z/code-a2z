@@ -1,41 +1,38 @@
 import { Schema } from 'mongoose';
 import { COLLECTION_NAMES } from '../constants/db.js';
+import { NOTIFICATION_TYPES } from '../typings/index.js';
 
-const notificationSchema = Schema(
+const NOTIFICATION_SCHEMA = Schema(
   {
     type: {
       type: String,
-      enum: ['like', 'comment', 'reply'],
+      enum: Object.values(NOTIFICATION_TYPES),
       required: true,
     },
     seen: {
       type: Boolean,
       default: false,
     },
-    project: {
+    project_id: {
       type: Schema.Types.ObjectId,
       required: true,
       ref: COLLECTION_NAMES.PROJECTS,
     },
-    notification_for: {
+    user_id: {
+      // The user who performed the action
       type: Schema.Types.ObjectId,
       required: true,
       ref: COLLECTION_NAMES.USERS,
     },
-    user: {
-      type: Schema.Types.ObjectId,
-      required: true,
-      ref: COLLECTION_NAMES.USERS,
-    },
-    comment: {
+    comment_id: {
       type: Schema.Types.ObjectId,
       ref: COLLECTION_NAMES.COMMENTS,
     },
-    reply: {
+    reply_id: {
       type: Schema.Types.ObjectId,
       ref: COLLECTION_NAMES.COMMENTS,
     },
-    replied_on_comment: {
+    replied_on_comment_id: {
       type: Schema.Types.ObjectId,
       ref: COLLECTION_NAMES.COMMENTS,
     },
@@ -45,4 +42,4 @@ const notificationSchema = Schema(
   }
 );
 
-export default notificationSchema;
+export default NOTIFICATION_SCHEMA;

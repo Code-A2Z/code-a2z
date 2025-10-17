@@ -4,17 +4,18 @@ import {
   profile_imgs_name_list,
 } from '../constants/index.js';
 import { COLLECTION_NAMES } from '../constants/db.js';
+import { USER_ROLES } from '../typings/index.js';
 
-const userSchema = Schema(
+const USER_SCHEMA = Schema(
   {
     personal_info: {
       fullname: {
         type: String,
         lowercase: true,
         required: true,
-        minlength: [3, 'fullname must be 3 letters long'],
+        minlength: [3, 'Fullname must be 3 letters long'],
       },
-      email: {
+      subscriber_id: {
         type: Schema.Types.ObjectId,
         ref: COLLECTION_NAMES.SUBSCRIBERS,
         required: true,
@@ -86,20 +87,21 @@ const userSchema = Schema(
     },
     role: {
       type: String,
-      enum: ['user', 'maintainer', 'admin'],
-      default: 'user',
+      enum: Object.values(USER_ROLES),
+      default: USER_ROLES.USER,
+      required: true,
     },
-    projects: {
+    project_ids: {
       type: [Schema.Types.ObjectId],
       ref: COLLECTION_NAMES.PROJECTS,
       default: [],
     },
-    collaborated_projects: {
+    collaborated_project_ids: {
       type: [Schema.Types.ObjectId],
       ref: COLLECTION_NAMES.PROJECTS,
       default: [],
     },
-    collections: {
+    collection_ids: {
       type: [Schema.Types.ObjectId],
       ref: COLLECTION_NAMES.COLLECTIONS,
       default: [],
@@ -112,4 +114,4 @@ const userSchema = Schema(
   }
 );
 
-export default userSchema;
+export default USER_SCHEMA;

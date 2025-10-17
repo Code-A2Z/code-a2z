@@ -1,46 +1,41 @@
 import { Schema } from 'mongoose';
 import { COLLECTION_NAMES } from '../constants/db.js';
 
-const projectSchema = Schema(
+const PROJECT_SCHEMA = Schema(
   {
-    project_id: {
-      type: String,
-      required: true,
-      unique: true,
-    },
     title: {
       type: String,
       required: true,
     },
-    banner: {
+    banner_url: {
       type: String,
       default:
         'https://res.cloudinary.com/avdhesh-varshney/image/upload/v1741270498/project_banner_wpphwm.png',
     },
-    des: {
+    description: {
       type: String,
-      maxlength: 200,
-      default: '',
+      maxlength: [200, 'Bio should not be more than 200'],
+      required: true,
     },
-    project_url: {
-      type: String,
-      default: '',
-    },
-    repository: {
+    repository_url: {
       type: String,
       required: true,
       unique: true,
     },
-    content: {
-      type: [],
-      required: true,
+    live_url: {
+      type: String,
+      default: '',
     },
     tags: {
       type: [String],
       lowercase: true,
       required: true,
     },
-    author: {
+    content_blocks: {
+      type: [],
+      required: true,
+    },
+    user_id: {
       type: Schema.Types.ObjectId,
       required: true,
       ref: COLLECTION_NAMES.USERS,
@@ -63,15 +58,15 @@ const projectSchema = Schema(
         default: 0,
       },
     },
-    draft: {
+    is_draft: {
       type: Boolean,
-      default: false,
+      default: false, // false means published
     },
-    comments: {
+    comment_ids: {
       type: [Schema.Types.ObjectId],
       ref: COLLECTION_NAMES.COMMENTS,
     },
-    collaborators: {
+    collaborator_ids: {
       type: [Schema.Types.ObjectId],
       ref: COLLECTION_NAMES.USERS,
     },
@@ -83,4 +78,4 @@ const projectSchema = Schema(
   }
 );
 
-export default projectSchema;
+export default PROJECT_SCHEMA;
