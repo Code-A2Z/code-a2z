@@ -5,13 +5,7 @@ const errorHandler = (err, _req, res, _next) => {
   if (res.headersSent) {
     return _next(err);
   }
-  return sendResponse(
-    res,
-    500,
-    'error',
-    err.message || 'Internal Server Error',
-    null
-  );
+  return sendResponse(res, 500, err.message || 'Internal Server Error');
 };
 
 export default errorHandler;

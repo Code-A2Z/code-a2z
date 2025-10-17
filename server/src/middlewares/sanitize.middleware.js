@@ -24,7 +24,7 @@ const sanitizeInput = () => {
       next();
     } catch (e) {
       console.error('Sanitization Error:', e);
-      sendResponse(res, 500, 'error', 'Failed to sanitize input fields');
+      sendResponse(res, 500, 'Failed to sanitize input fields');
     }
   };
 };
