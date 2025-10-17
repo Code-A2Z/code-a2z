@@ -1,10 +1,11 @@
 import { useEffect } from 'react';
 import { Route, Routes } from 'react-router-dom';
 import { useAtom } from 'jotai';
-import { UserAtom } from './shared/states/user';
+import { UserAtom } from './shared/states/user'; 
 import Navbar from './shared/components/molecules/navbar';
 import CANotifications from './shared/components/molecules/notifications';
 import Home from './modules/home';
+import FeedbackForm from './feedbackForm/feedbackForm';
 import UserAuthForm from './modules/user-auth-form';
 import PageNotFound from './modules/404';
 import Search from './modules/search';
@@ -41,25 +42,40 @@ function App() {
           <Route path="user/:id" element={<Profile />} />
           <Route path="project/:project_id" element={<Project />} />
 
+        <Route />
+      
+      
+       
+      
+
+
           <Route path="dashboard" element={<Sidebar />}>
             <Route path="projects" element={<ManageProjects />} />
             <Route path="notifications" element={<Notifications />} />
+            <Route path="feedback" element={<FeedbackForm />} /> 
           </Route>
           <Route path="settings" element={<Sidebar />}>
             <Route path="edit-profile" element={<EditProfile />} />
             <Route path="change-password" element={<ChangePassword />} />
           </Route>
         </Route>
-
+        
         <Route path="/editor" element={<Editor />} />
         <Route path="/editor/:project_id" element={<Editor />} />
 
+
         <Route path="*" element={<PageNotFound />} />
       </Routes>
+       
 
       <CANotifications />
     </>
+
   );
+
+ 
+
+
 }
 
 export default App;
