@@ -1,26 +1,20 @@
-import Subscriber from '../../models/subscriber.model.js';
+/**
+ * GET /api/subscriber - Get all active subscribers
+ * @returns {Object[]} Array of subscribers
+ */
+
+import SUBSCRIBER from '../../models/subscriber.model.js';
 import { sendResponse } from '../../utils/response.js';
 
 const getAllSubscribers = async (req, res) => {
   try {
-    const subscribers = await Subscriber.find({ isSubscribed: true })
-      .select('email subscribedAt')
-      .sort({ subscribedAt: -1 });
+    const subscribers = await SUBSCRIBER.find({ is_subscribed: true })
+      .select('email subscribed_at')
+      .sort({ subscribed_at: -1 });
 
-    return sendResponse(
-      res,
-      200,
-      'success',
-      'Fetched all subscribers',
-      subscribers
-    );
+    return sendResponse(res, 200, 'Fetched all subscribers', subscribers);
   } catch (error) {
-    return sendResponse(
-      res,
-      500,
-      'error',
-      error.message || 'Internal Server Error'
-    );
+    return sendResponse(res, 500, error.message || 'Internal Server Error');
   }
 };
 

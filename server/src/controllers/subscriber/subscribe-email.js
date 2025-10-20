@@ -1,57 +1,55 @@
-import Subscriber from '../../models/subscriber.model.js';
+/**
+ * POST /api/subscriber/subscribe - Subscribe an email to newsletter
+ * @param {string} email - Email address (body param)
+ * @returns {Object} Success message
+ */
+
+import SUBSCRIBER from '../../models/subscriber.model.js';
 import { sendResponse } from '../../utils/response.js';
-import { emailRegex } from '../../utils/regex.js';
+import { EMAIL_REGEX } from '../../utils/regex.js';
 
 const subscribeEmail = async (req, res) => {
   const { email } = req.body;
   if (!email) {
-    return sendResponse(res, 400, 'error', 'Email is required');
+    return sendResponse(res, 400, 'Email is required');
   }
-  if (!emailRegex.test(email)) {
-    return sendResponse(res, 400, 'error', 'Invalid email');
+  if (!EMAIL_REGEX.test(email)) {
+    return sendResponse(res, 400, 'Invalid email');
   }
 
   try {
-    let subscriber = await Subscriber.findOne({ email });
+    let subscriber = await SUBSCRIBER.findOne({ email });
     if (subscriber) {
-      if (subscriber.isSubscribed) {
+      if (subscriber.is_subscribed) {
         return sendResponse(
           res,
           200,
-          'success',
           'You are already subscribed to our newsletter'
         );
       }
 
       // Resubscribe the existing subscriber
-      subscriber.isSubscribed = true;
-      subscriber.unsubscribedAt = null;
+      subscriber.is_subscribed = true;
+      subscriber.unsubscribed_at = null;
 
       await subscriber.save();
       return sendResponse(
         res,
         200,
-        'success',
         'You have been resubscribed to our newsletter'
       );
     }
 
     // New subscriber
-    subscriber = new Subscriber({ email });
+    subscriber = new SUBSCRIBER({ email });
     await subscriber.save();
     return sendResponse(
       res,
       201,
-      'success',
       'Thank you for subscribing to our newsletter'
     );
   } catch (error) {
-    return sendResponse(
-      res,
-      500,
-      'error',
-      error.message || 'Internal Server Error'
-    );
+    return sendResponse(res, 500, error.message || 'Internal Server Error');
   }
 };
 

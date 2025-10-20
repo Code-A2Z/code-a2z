@@ -10,6 +10,6 @@ const subscriberRoutes = express.Router();
 
 subscriberRoutes.post('/subscribe', subscribeEmail);
 subscriberRoutes.patch('/unsubscribe', authenticateUser, unsubscribeEmail);
-subscriberRoutes.get('/all', authenticateUser, getAllSubscribers);
+subscriberRoutes.get('/', authenticateUser, getAllSubscribers);
 
 export default subscriberRoutes;

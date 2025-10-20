@@ -1,56 +1,62 @@
-import Notification from '../../models/notification.model.js';
-import { NotificationTypes } from '../../typings/index.js';
+/**
+ * GET /api/notification/list?page=&filter=&deletedDocCount= - Get notifications for user
+ * @param {number} [page=1] - Page number (query param)
+ * @param {string} [filter] - Notification type filter (query param)
+ * @param {number} [deletedDocCount=0] - Number of deleted docs in session (query param)
+ * @returns {Object[]} Array of notifications
+ */
+
+import NOTIFICATION from '../../models/notification.model.js';
+import { NOTIFICATION_TYPES } from '../../typings/index.js';
 import { sendResponse } from '../../utils/response.js';
 
 const getNotifications = async (req, res) => {
+  const user_id = req.user;
+  const page = parseInt(req.query.page) || 1;
+  const filter = req.query.filter || NOTIFICATION_TYPES.ALL;
+  const deletedDocCount = parseInt(req.query.deletedDocCount) || 0;
+  const maxLimit = 10;
+
+  const findQuery = { author_id: user_id, user_id: { $ne: user_id } };
+  if (filter !== NOTIFICATION_TYPES.ALL) {
+    findQuery.type = filter;
+  }
+
+  let skipDocs = (page - 1) * maxLimit;
+  if (deletedDocCount) {
+    skipDocs -= deletedDocCount;
+  }
+
   try {
-    const user_id = req.user;
-    const page = parseInt(req.query.page) || 1;
-    const filter = req.query.filter || NotificationTypes.ALL;
-    const deletedDocCount = parseInt(req.query.deletedDocCount) || 0;
-    const maxLimit = 10;
-
-    const findQuery = { notification_for: user_id, user: { $ne: user_id } };
-    if (filter !== NotificationTypes.ALL) findQuery.type = filter;
-
-    let skipDocs = (page - 1) * maxLimit;
-    if (deletedDocCount) skipDocs -= deletedDocCount;
-
-    const notifications = await Notification.find(findQuery)
+    const notifications = await NOTIFICATION.find(findQuery)
       .skip(skipDocs)
       .limit(maxLimit)
-      .populate('project', 'title project_id')
+      .populate('project_id', 'title _id')
       .populate(
-        'user',
+        'user_id',
         'personal_info.username personal_info.fullname personal_info.profile_img'
       )
-      .populate('comment', 'comment')
-      .populate('replied_on_comment', 'comment')
-      .populate('reply', 'comment')
+      .populate('comment_id', 'comment')
+      .populate('replied_on_comment_id', 'comment')
+      .populate('reply_id', 'comment')
       .sort({ createdAt: -1 })
-      .select('createdAt type seen reply')
+      .select('createdAt type seen reply_id')
       .lean();
 
     // Mark these notifications as seen
-    Notification.updateMany(
+    NOTIFICATION.updateMany(
       { _id: { $in: notifications.map(n => n._id) } },
       { seen: true }
-    ).catch(err => console.log('Failed to mark notifications seen:', err));
+    ).catch(() => {});
 
     return sendResponse(
       res,
       200,
-      'success',
       'Notifications fetched successfully',
       notifications
     );
   } catch (err) {
-    return sendResponse(
-      res,
-      500,
-      'error',
-      err.message || 'Internal Server Error'
-    );
+    return sendResponse(res, 500, err.message || 'Internal Server Error');
   }
 };
 

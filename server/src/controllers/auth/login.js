@@ -6,12 +6,11 @@
  */
 
 import bcrypt from 'bcrypt';
-
 import USER from '../../models/user.model.js';
 import SUBSCRIBER from '../../models/subscriber.model.js';
 import { COOKIE_TOKEN, NODE_ENV } from '../../typings/index.js';
 import { sendResponse } from '../../utils/response.js';
-import { generateTokens } from './signup.js';
+import { generateTokens } from './utils/index.js';
 import {
   JWT_ACCESS_EXPIRES_IN_NUM,
   JWT_REFRESH_EXPIRES_IN_NUM,
@@ -41,7 +40,7 @@ const login = async (req, res) => {
     }
 
     if (!user.personal_info?.password) {
-      return sendResponse(res, 500, 'User data is incomplete');
+      return sendResponse(res, 500, 'User password is not set');
     }
 
     const is_password_match = await bcrypt.compare(
@@ -74,13 +73,7 @@ const login = async (req, res) => {
       maxAge: JWT_REFRESH_EXPIRES_IN_NUM,
     });
 
-    return sendResponse(res, 200, 'Login successful', {
-      user_id: user._id,
-      username: user.personal_info.username,
-      fullname: user.personal_info.fullname,
-      profile_img: user.personal_info.profile_img,
-      role: user.role,
-    });
+    return sendResponse(res, 200, 'Login successful', user);
   } catch (err) {
     return sendResponse(res, 500, err.message || 'Internal Server Error');
   }

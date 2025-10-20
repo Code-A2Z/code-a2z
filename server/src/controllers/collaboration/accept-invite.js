@@ -1,4 +1,10 @@
-import Collab from '../../models/collab.model.js';
+/**
+ * POST /api/collab/accept/:token - Accept a collaboration invitation
+ * @param {string} token - Invitation token (URL param)
+ * @returns {Object} Success message
+ */
+
+import COLLABORATION from '../../models/collaboration.model.js';
 import { COLLABORATION_STATUS } from '../../typings/index.js';
 import { sendResponse } from '../../utils/response.js';
 
@@ -8,14 +14,14 @@ const acceptInvitation = async (req, res) => {
     const token = req.params.token;
 
     // Find pending collaboration request for this user
-    const collaboration = await Collab.findOne({
+    const collaboration = await COLLABORATION.findOne({
       token,
       author_id: user_id,
       status: COLLABORATION_STATUS.PENDING,
     });
 
     if (!collaboration) {
-      return sendResponse(res, 404, 'error', 'Invalid or expired token!');
+      return sendResponse(res, 404, 'Invalid or expired token!');
     }
 
     collaboration.status = COLLABORATION_STATUS.ACCEPTED;
@@ -25,16 +31,10 @@ const acceptInvitation = async (req, res) => {
     return sendResponse(
       res,
       200,
-      'success',
       'Collaboration invitation accepted successfully'
     );
   } catch (err) {
-    return sendResponse(
-      res,
-      500,
-      'error',
-      err.message || 'Internal Server Error'
-    );
+    return sendResponse(res, 500, err.message || 'Internal Server Error');
   }
 };
 

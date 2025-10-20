@@ -16,14 +16,14 @@ import {
 
 const refresh = async (req, res) => {
   try {
-    const refreshToken = req.cookies?.[COOKIE_TOKEN.REFRESH_TOKEN];
+    const refresh_token = req.cookies?.[COOKIE_TOKEN.REFRESH_TOKEN];
 
-    if (!refreshToken) {
+    if (!refresh_token) {
       return sendResponse(res, 401, 'No refresh token provided');
     }
 
     // Verify the refresh token
-    jwt.verify(refreshToken, JWT_SECRET_REFRESH_KEY, (err, decoded) => {
+    jwt.verify(refresh_token, JWT_SECRET_REFRESH_KEY, (err, decoded) => {
       if (err) {
         return sendResponse(res, 401, 'Invalid or expired refresh token');
       }
@@ -34,12 +34,12 @@ const refresh = async (req, res) => {
       };
 
       // Generate a new access token
-      const newAccessToken = jwt.sign(payload, JWT_SECRET_ACCESS_KEY, {
+      const new_access_token = jwt.sign(payload, JWT_SECRET_ACCESS_KEY, {
         expiresIn: JWT_ACCESS_EXPIRES_IN,
       });
 
       // Replace old access token cookie
-      res.cookie(COOKIE_TOKEN.ACCESS_TOKEN, newAccessToken, {
+      res.cookie(COOKIE_TOKEN.ACCESS_TOKEN, new_access_token, {
         httpOnly: true,
         secure: SERVER_ENV === NODE_ENV.PRODUCTION,
         sameSite: 'strict',

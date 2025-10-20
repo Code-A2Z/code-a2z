@@ -1,44 +1,48 @@
-import Project from '../../models/project.model.js';
-import Notification from '../../models/notification.model.js';
-import Comment from '../../models/comment.model.js';
+/**
+ * DELETE /api/comment/:comment_id - Delete a comment
+ * @param {string} comment_id - Comment ID (URL param)
+ * @returns {Object} Success message
+ */
+
+import PROJECT from '../../models/project.model.js';
+import NOTIFICATION from '../../models/notification.model.js';
+import COMMENT from '../../models/comment.model.js';
 import { sendResponse } from '../../utils/response.js';
 
-const deleteComments = async _id => {
-  const comment = await Comment.findOneAndDelete({ _id });
+export const deleteComments = async _id => {
+  const comment = await COMMENT.findOneAndDelete({ _id });
   if (!comment) return null;
 
   // Remove from parent comment if exists
-  if (comment.parent) {
-    await Comment.findOneAndUpdate(
-      { _id: comment.parent },
-      { $pull: { children: _id } }
-    ).catch(err => console.log(err));
+  if (comment.parent_comment_id) {
+    await COMMENT.findOneAndUpdate(
+      { _id: comment.parent_comment_id },
+      { $pull: { children_comment_ids: _id } }
+    ).catch(() => {});
   }
 
   // Remove notifications
-  await Notification.findOneAndDelete({ comment: _id }).catch(err =>
-    console.log(err)
-  );
-  await Notification.findOneAndUpdate(
-    { reply: _id },
-    { $unset: { reply: 1 } }
-  ).catch(err => console.log(err));
+  await NOTIFICATION.findOneAndDelete({ comment_id: _id }).catch(() => {});
+  await NOTIFICATION.findOneAndUpdate(
+    { reply_id: _id },
+    { $unset: { reply_id: 1 } }
+  ).catch(() => {});
 
   // Update project
-  await Project.findOneAndUpdate(
+  await PROJECT.findOneAndUpdate(
     { _id: comment.project_id },
     {
-      $pull: { comments: _id },
+      $pull: { comment_ids: _id },
       $inc: {
         'activity.total_comments': -1,
-        'activity.total_parent_comments': comment.parent ? 0 : -1,
+        'activity.total_parent_comments': comment.parent_comment_id ? 0 : -1,
       },
     }
-  ).catch(err => console.log(err));
+  ).catch(() => {});
 
   // Recursively delete children
-  if (comment.children.length) {
-    for (const childId of comment.children) {
+  if (comment.children_comment_ids.length) {
+    for (const childId of comment.children_comment_ids) {
       await deleteComments(childId);
     }
   }
@@ -51,34 +55,31 @@ const deleteComment = async (req, res) => {
     const user_id = req.user;
     const { comment_id } = req.params;
 
-    if (!comment_id)
-      return sendResponse(res, 400, 'error', 'Comment ID is required');
+    if (!comment_id) return sendResponse(res, 400, 'Comment ID is required');
 
-    const comment = await Comment.findOne({ _id: comment_id });
+    const comment = await COMMENT.findOne({ _id: comment_id });
 
-    if (!comment) return sendResponse(res, 404, 'error', 'Comment not found');
+    if (!comment) return sendResponse(res, 404, 'Comment not found');
+
+    const project = await PROJECT.findById(comment.project_id).select(
+      'user_id'
+    );
 
     if (
-      user_id.toString() === comment.commented_by?.toString() ||
-      user_id.toString() === comment.project_author?.toString()
+      user_id.toString() === comment.user_id?.toString() ||
+      user_id.toString() === project?.user_id?.toString()
     ) {
       await deleteComments(comment_id);
-      return sendResponse(res, 200, 'success', 'Comment deleted successfully');
+      return sendResponse(res, 200, 'Comment deleted successfully');
     } else {
       return sendResponse(
         res,
         403,
-        'error',
         'You are not authorized to delete this comment'
       );
     }
   } catch (err) {
-    return sendResponse(
-      res,
-      500,
-      'error',
-      err.message || 'Internal Server Error'
-    );
+    return sendResponse(res, 500, err.message || 'Internal Server Error');
   }
 };
 

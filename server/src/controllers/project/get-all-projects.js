@@ -1,4 +1,10 @@
-import Project from '../../models/project.model.js';
+/**
+ * GET /api/project/all?page=1 - Get all published projects (paginated)
+ * @param {number} [page=1] - Page number (query param)
+ * @returns {Object[]} Array of projects
+ */
+
+import PROJECT from '../../models/project.model.js';
 import { sendResponse } from '../../utils/response.js';
 
 const getAllProjects = async (req, res) => {
@@ -8,31 +14,20 @@ const getAllProjects = async (req, res) => {
   if (page < 1) page = 1;
 
   try {
-    const projects = await Project.find({ draft: false })
+    const projects = await PROJECT.find({ is_draft: false })
       .populate(
-        'author',
+        'user_id',
         'personal_info.profile_img personal_info.username personal_info.fullname -_id'
       )
       .sort({ publishedAt: -1 })
-      .select('project_id title des banner tags activity publishedAt -_id')
+      .select('title banner_url description tags activity publishedAt -_id')
       .skip((page - 1) * maxLimit)
       .limit(maxLimit)
       .lean();
 
-    return sendResponse(
-      res,
-      200,
-      'success',
-      'Projects fetched successfully',
-      projects
-    );
+    return sendResponse(res, 200, 'Projects fetched successfully', projects);
   } catch (err) {
-    return sendResponse(
-      res,
-      500,
-      'error',
-      err.message || 'Internal server error'
-    );
+    return sendResponse(res, 500, err.message || 'Internal server error');
   }
 };
 

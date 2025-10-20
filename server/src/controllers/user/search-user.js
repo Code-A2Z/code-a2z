@@ -1,15 +1,21 @@
-import User from '../../models/user.model.js';
+/**
+ * GET /api/user/search?q= - Search users by username
+ * @param {string} query - Search query (query param)
+ * @returns {Object[]} Array of users
+ */
+
+import USER from '../../models/user.model.js';
 import { sendResponse } from '../../utils/response.js';
 
 const searchUser = async (req, res) => {
-  const query = req.query.q;
-
+  const query = req.query.query;
   if (!query) {
-    return sendResponse(res, 400, 'error', 'Search query is required');
+    return sendResponse(res, 400, 'Search query is required');
   }
 
   try {
-    const users = await User.find({
+    // TODO: Implement pagination for large result sets
+    const users = await USER.find({
       'personal_info.username': new RegExp(query, 'i'),
     })
       .limit(50)
@@ -17,20 +23,9 @@ const searchUser = async (req, res) => {
         'personal_info.fullname personal_info.username personal_info.profile_img -_id'
       );
 
-    return sendResponse(
-      res,
-      200,
-      'success',
-      'Users fetched successfully',
-      users
-    );
+    return sendResponse(res, 200, 'Users fetched successfully', users);
   } catch (error) {
-    return sendResponse(
-      res,
-      500,
-      'error',
-      error.message || 'Internal Server Error'
-    );
+    return sendResponse(res, 500, error.message || 'Internal Server Error');
   }
 };
 

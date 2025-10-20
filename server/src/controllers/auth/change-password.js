@@ -6,7 +6,6 @@
  */
 
 import bcrypt from 'bcrypt';
-
 import USER from '../../models/user.model.js';
 import { SALT_ROUNDS } from '../../constants/index.js';
 import { PASSWORD_REGEX } from '../../utils/regex.js';
@@ -39,7 +38,7 @@ const changePassword = async (req, res) => {
     const user = await USER.findById(user_id).select('personal_info.password');
 
     if (!user || !user.personal_info?.password) {
-      return sendResponse(res, 404, 'User not found or incomplete user data');
+      return sendResponse(res, 404, 'User not found or password not set');
     }
 
     const is_password_match = await bcrypt.compare(

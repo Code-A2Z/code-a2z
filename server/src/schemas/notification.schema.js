@@ -24,6 +24,12 @@ const NOTIFICATION_SCHEMA = Schema(
       required: true,
       ref: COLLECTION_NAMES.USERS,
     },
+    author_id: {
+      // The user who should receive this notification
+      type: Schema.Types.ObjectId,
+      required: true,
+      ref: COLLECTION_NAMES.USERS,
+    },
     comment_id: {
       type: Schema.Types.ObjectId,
       ref: COLLECTION_NAMES.COMMENTS,

@@ -6,56 +6,19 @@
  * @returns {Object} User object with account details
  */
 
-import { nanoid } from 'nanoid';
 import bcrypt from 'bcrypt';
-import jwt from 'jsonwebtoken';
-
 import USER from '../../models/user.model.js';
 import SUBSCRIBER from '../../models/subscriber.model.js';
 import { EMAIL_REGEX, PASSWORD_REGEX } from '../../utils/regex.js';
 import { SALT_ROUNDS } from '../../constants/index.js';
 import { COOKIE_TOKEN, NODE_ENV } from '../../typings/index.js';
 import { sendResponse } from '../../utils/response.js';
+import { generateTokens, generateUsername } from './utils/index.js';
 import {
-  JWT_SECRET_ACCESS_KEY,
-  JWT_SECRET_REFRESH_KEY,
-  JWT_ACCESS_EXPIRES_IN,
-  JWT_REFRESH_EXPIRES_IN,
   JWT_ACCESS_EXPIRES_IN_NUM,
   JWT_REFRESH_EXPIRES_IN_NUM,
   SERVER_ENV,
 } from '../../config/env.js';
-
-/**
- * Generate a unique username from email
- * @param {string} email - User's email address
- * @returns {Promise<string>} - Unique username
- */
-export const generateUsername = async email => {
-  let username = email.split('@')[0];
-  const isUsernameNotUnique = await USER.exists({
-    'personal_info.username': username,
-  });
-  if (isUsernameNotUnique) {
-    username += nanoid().substring(0, 5);
-  }
-  return username;
-};
-
-/**
- * Generate access and refresh JWT tokens
- * @param {Object} payload - JWT payload data
- * @returns {Object} - Object containing accessToken and refreshToken
- */
-export const generateTokens = payload => {
-  const accessToken = jwt.sign(payload, JWT_SECRET_ACCESS_KEY, {
-    expiresIn: JWT_ACCESS_EXPIRES_IN,
-  });
-  const refreshToken = jwt.sign(payload, JWT_SECRET_REFRESH_KEY, {
-    expiresIn: JWT_REFRESH_EXPIRES_IN,
-  });
-  return { accessToken, refreshToken };
-};
 
 const signup = async (req, res) => {
   const { fullname, email, password } = req.body;
@@ -73,11 +36,7 @@ const signup = async (req, res) => {
   }
 
   if (!password || !PASSWORD_REGEX.test(password)) {
-    return sendResponse(
-      res,
-      400,
-      'Password must be 6-20 characters long and contain at least one uppercase letter, one lowercase letter, and one number'
-    );
+    return sendResponse(res, 400, 'Invalid password format');
   }
 
   try {
@@ -142,13 +101,7 @@ const signup = async (req, res) => {
       maxAge: JWT_REFRESH_EXPIRES_IN_NUM,
     });
 
-    return sendResponse(res, 201, 'User registered successfully', {
-      user_id: saved_user._id,
-      username: saved_user.personal_info.username,
-      fullname: saved_user.personal_info.fullname,
-      profile_img: saved_user.personal_info.profile_img,
-      role: saved_user.role,
-    });
+    return sendResponse(res, 201, 'User registered successfully', saved_user);
   } catch (err) {
     return sendResponse(res, 500, err.message || 'Internal Server Error');
   }

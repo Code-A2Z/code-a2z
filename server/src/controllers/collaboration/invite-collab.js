@@ -1,8 +1,14 @@
+/**
+ * POST /api/collab/invite - Invite a user to collaborate on a project
+ * @param {string} project_id - Project ID (body param)
+ * @returns {Object} Success message and collaboration data
+ */
+
 import crypto from 'crypto';
-import Collab from '../../models/collab.model.js';
-import Project from '../../models/project.model.js';
-import User from '../../models/user.model.js';
-import Subscriber from '../../models/subscriber.model.js';
+import COLLABORATION from '../../models/collaboration.model.js';
+import PROJECT from '../../models/project.model.js';
+import USER from '../../models/user.model.js';
+import SUBSCRIBER from '../../models/subscriber.model.js';
 import resend from '../../config/resend.js';
 import { sendResponse } from '../../utils/response.js';
 import { ADMIN_EMAIL, VITE_SERVER_DOMAIN } from '../../config/env.js';
@@ -13,44 +19,42 @@ const invitationToCollaborate = async (req, res) => {
     const user_id = req.user;
     const { project_id } = req.body;
 
+    if (!project_id) {
+      return sendResponse(res, 400, 'Project ID is required');
+    }
+
     // Validate user
-    const user = await User.findById(user_id).select('personal_info.fullname');
-    if (!user) return sendResponse(res, 404, 'error', 'User not found', null);
+    const user = await USER.findById(user_id).select('personal_info.fullname');
+    if (!user) return sendResponse(res, 404, 'User not found');
 
     // Validate project and populate author email
-    const project = await Project.findOne({ _id: project_id }).populate({
-      path: 'author',
-      select: 'personal_info.email',
+    const project = await PROJECT.findOne({ _id: project_id }).populate({
+      path: 'user_id',
+      select: 'personal_info.subscriber_id',
     });
-    if (!project)
-      return sendResponse(res, 404, 'error', 'Project not found', null);
+    if (!project) return sendResponse(res, 404, 'Project not found');
 
-    const author = project.author;
-    if (!author)
-      return sendResponse(res, 404, 'error', 'Project author not found', null);
+    const author = project.user_id;
+    if (!author) return sendResponse(res, 404, 'Project author not found');
 
     if (String(user._id) === String(author._id)) {
       return sendResponse(
         res,
         400,
-        'error',
-        'You cannot invite yourself to collaborate on your own project',
-        null
+        'You cannot invite yourself to collaborate on your own project'
       );
     }
 
-    const subscriber = await Subscriber.findOne({
-      _id: author.personal_info.email,
+    const subscriber = await SUBSCRIBER.findOne({
+      _id: author.personal_info.subscriber_id,
     }).select('email');
-    const authorEmail = subscriber?.email;
+    const author_email = subscriber?.email;
 
-    if (!authorEmail) {
+    if (!author_email) {
       return sendResponse(
         res,
         400,
-        'error',
-        'Project author does not have an email address',
-        null
+        'Project author does not have an email address'
       );
     }
 
@@ -63,7 +67,7 @@ const invitationToCollaborate = async (req, res) => {
     try {
       const response = await resend.emails.send({
         from: ADMIN_EMAIL,
-        to: authorEmail,
+        to: author_email,
         subject: `Collaboration Invitation on "${project.title}"`,
         html: `
           <p>Hi,</p>
@@ -88,16 +92,14 @@ const invitationToCollaborate = async (req, res) => {
       return sendResponse(
         res,
         500,
-        'error',
-        emailError || 'Failed to send invitation email',
-        null
+        emailError || 'Failed to send invitation email'
       );
     }
 
     if (emailSent) {
-      const collaborationData = await Collab.create({
+      const collaboration_data = await COLLABORATION.create({
         user_id: user._id,
-        project_id: project._id,
+        project_id,
         author_id: author._id,
         status: COLLABORATION_STATUS.PENDING,
         token,
@@ -106,19 +108,12 @@ const invitationToCollaborate = async (req, res) => {
       return sendResponse(
         res,
         200,
-        'success',
         'Invitation sent successfully',
-        collaborationData
+        collaboration_data
       );
     }
   } catch (err) {
-    return sendResponse(
-      res,
-      500,
-      'error',
-      err.message || 'Failed to send invitation',
-      null
-    );
+    return sendResponse(res, 500, err.message || 'Failed to send invitation');
   }
 };
 

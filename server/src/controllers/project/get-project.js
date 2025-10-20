@@ -1,60 +1,56 @@
-import Project from '../../models/project.model.js';
-import User from '../../models/user.model.js';
-import { ProjectVisibilityModes } from '../../typings/index.js';
+/**
+ * GET /api/project/:project_id - Get a project by ID
+ * @param {string} project_id - Project ID (URL param)
+ * @param {string} [mode] - Mode ('edit' or 'read')
+ * @returns {Object} Project data
+ */
+
+import PROJECT from '../../models/project.model.js';
+import USER from '../../models/user.model.js';
+import { PROJECT_PERMISSION_MODES } from '../../typings/index.js';
 import { sendResponse } from '../../utils/response.js';
 
 const getProject = async (req, res) => {
+  const { project_id } = req.params;
+  const { mode } = req.query; // mode can be 'edit' or 'read' & removed 'is_draft = false' boolean param
+  const increment_val = mode !== PROJECT_PERMISSION_MODES.EDIT ? 1 : 0;
+  if (!project_id) {
+    return sendResponse(res, 400, 'Project ID is required');
+  }
+
   try {
-    const { project_id } = req.params;
-    const { mode } = req.query; // mode can be 'edit' or 'read' & removed 'draft = false' boolean param
-    if (!project_id)
-      return sendResponse(res, 400, 'error', 'Project ID is required');
-
-    const incrementVal = mode !== ProjectVisibilityModes.EDIT ? 1 : 0;
-
-    const project = await Project.findOneAndUpdate(
-      { project_id },
-      { $inc: { 'activity.total_reads': incrementVal } },
+    const project = await PROJECT.findOneAndUpdate(
+      { _id: project_id },
+      { $inc: { 'activity.total_reads': increment_val } },
       { new: true }
     )
       .populate(
-        'author',
+        'user_id',
         'personal_info.fullname personal_info.username personal_info.profile_img'
       )
       .select(
-        'title des content banner activity publishedAt project_id tags project_url repository draft'
+        'title banner_url description content_blocks activity publishedAt tags live_url repository_url is_draft'
       )
       .lean();
 
-    console.log('calling from get project');
-    if (!project) return sendResponse(res, 404, 'error', 'Project not found');
-
-    if (project.draft && mode !== ProjectVisibilityModes.EDIT) {
-      return sendResponse(res, 403, 'error', "You can't access draft project");
+    if (!project) {
+      return sendResponse(res, 404, 'Project not found');
+    }
+    if (project.is_draft && mode !== PROJECT_PERMISSION_MODES.EDIT) {
+      return sendResponse(res, 403, "You can't access draft project");
     }
 
-    // Increment author's total_reads asynchronously, no need to block response
-    if (project.author && project.author.personal_info?.username) {
-      User.findOneAndUpdate(
-        { 'personal_info.username': project.author.personal_info.username },
-        { $inc: { 'account_info.total_reads': incrementVal } }
-      ).catch(() => {}); // ignore errors here
+    // Increment author's total_reads asynchronously
+    if (project.user_id && project.user_id.personal_info?.username) {
+      USER.findOneAndUpdate(
+        { 'personal_info.username': project.user_id.personal_info.username },
+        { $inc: { 'account_info.total_reads': increment_val } }
+      ).catch(() => {});
     }
 
-    return sendResponse(
-      res,
-      200,
-      'success',
-      'Project fetched successfully',
-      project
-    );
+    return sendResponse(res, 200, 'Project fetched successfully', project);
   } catch (err) {
-    return sendResponse(
-      res,
-      500,
-      'error',
-      err.message || 'Internal server error'
-    );
+    return sendResponse(res, 500, err.message || 'Internal server error');
   }
 };
 

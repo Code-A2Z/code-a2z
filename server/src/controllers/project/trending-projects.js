@@ -1,11 +1,16 @@
-import Project from '../../models/project.model.js';
+/**
+ * GET /api/project/trending - Get trending projects
+ * @returns {Object[]} Array of trending projects
+ */
+
+import PROJECT from '../../models/project.model.js';
 import { sendResponse } from '../../utils/response.js';
 
 const trendingProjects = async (req, res) => {
   try {
-    const projects = await Project.find({ draft: false })
+    const projects = await PROJECT.find({ is_draft: false })
       .populate(
-        'author',
+        'user_id',
         'personal_info.profile_img personal_info.username personal_info.fullname -_id'
       )
       .sort({
@@ -13,24 +18,18 @@ const trendingProjects = async (req, res) => {
         'activity.total_likes': -1,
         publishedAt: -1,
       })
-      .select('project_id title publishedAt -_id')
+      .select('title publishedAt -_id')
       .limit(5)
       .lean();
 
     return sendResponse(
       res,
       200,
-      'success',
       'Trending projects fetched successfully',
       projects
     );
   } catch (err) {
-    return sendResponse(
-      res,
-      500,
-      'error',
-      err.message || 'Internal server error'
-    );
+    return sendResponse(res, 500, err.message || 'Internal server error');
   }
 };
 

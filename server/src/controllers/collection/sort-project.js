@@ -1,6 +1,13 @@
+/**
+ * GET /api/collection/sort-project - Sort projects in a collection
+ * @param {string} collection_id - Collection ID (query param)
+ * @param {string} [sortBy=newest] - Sort criteria ('likes', 'newest', 'oldest')
+ * @returns {Object[]} Array of sorted projects
+ */
+
 import { Types } from 'mongoose';
-import Collection from '../../models/collection.model.js';
-import Project from '../../models/project.model.js';
+import COLLECTION from '../../models/collection.model.js';
+import PROJECT from '../../models/project.model.js';
 import { sendResponse } from '../../utils/response.js';
 
 const sortProject = async (req, res) => {
@@ -10,33 +17,21 @@ const sortProject = async (req, res) => {
     const sortBy = req.query.sortBy || 'newest';
 
     if (!collection_id || !Types.ObjectId.isValid(collection_id)) {
-      return sendResponse(
-        res,
-        400,
-        'error',
-        'Invalid or missing collection_id',
-        null
-      );
+      return sendResponse(res, 400, 'Invalid or missing collection_id');
     }
 
     // Fetch the collection for this user
-    const collection = await Collection.findOne({ user_id, _id: collection_id })
-      .select('projects')
+    const collection = await COLLECTION.findOne({ user_id, _id: collection_id })
+      .select('project_ids')
       .lean();
 
     if (!collection) {
-      return sendResponse(res, 404, 'error', 'Collection not found', null);
+      return sendResponse(res, 404, 'Collection not found');
     }
 
-    const projectIds = collection.projects || [];
+    const projectIds = collection.project_ids || [];
     if (!projectIds.length) {
-      return sendResponse(
-        res,
-        200,
-        'success',
-        'No projects found in this collection',
-        []
-      );
+      return sendResponse(res, 200, 'No projects found in this collection', []);
     }
 
     // Define sorting criteria
@@ -48,29 +43,17 @@ const sortProject = async (req, res) => {
     const sortCriteria = sortOptions[sortBy] || sortOptions.newest;
 
     // Fetch projects with sorting and populate author
-    const projects = await Project.find({ _id: { $in: projectIds } })
+    const projects = await PROJECT.find({ _id: { $in: projectIds } })
       .sort(sortCriteria)
       .populate(
-        'author',
+        'user_id',
         'personal_info.fullname personal_info.username personal_info.profile_img'
       )
       .lean();
 
-    return sendResponse(
-      res,
-      200,
-      'success',
-      'Projects fetched successfully',
-      projects
-    );
+    return sendResponse(res, 200, 'Projects fetched successfully', projects);
   } catch (err) {
-    return sendResponse(
-      res,
-      500,
-      'error',
-      err.message || 'Internal Server Error',
-      null
-    );
+    return sendResponse(res, 500, err.message || 'Internal Server Error');
   }
 };
 

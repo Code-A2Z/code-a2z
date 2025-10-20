@@ -1,16 +1,22 @@
-import User from '../../models/user.model.js';
+/**
+ * PATCH /api/user/profile - Update user profile
+ * @param {string} username - Username (body param)
+ * @param {string} bio - Bio (body param)
+ * @param {object} [social_links] - Social links (body param)
+ * @returns {Object} Updated username
+ */
+
+import USER from '../../models/user.model.js';
 import { sendResponse } from '../../utils/response.js';
 import { PROFILE_BIO_LIMIT } from '../../constants/index.js';
-import { URLRegex } from '../../utils/regex.js';
+import { URL_REGEX } from '../../utils/regex.js';
 
 const updateProfile = async (req, res) => {
   const { username, bio, social_links } = req.body;
-
   if (!username || username.length < 3) {
     return sendResponse(
       res,
       403,
-      'error',
       'Username should be at least 3 characters long'
     );
   }
@@ -19,12 +25,11 @@ const updateProfile = async (req, res) => {
     return sendResponse(
       res,
       403,
-      'error',
       `Bio should be less than ${PROFILE_BIO_LIMIT} characters`
     );
   }
 
-  // Validate social links
+  // TODO: Validate social links
   try {
     const socialLinksArr = Object.keys(social_links || {});
     for (let i = 0; i < socialLinksArr.length; i++) {
@@ -34,12 +39,11 @@ const updateProfile = async (req, res) => {
         if (
           !hostname.includes(`${socialLinksArr[i]}.com`) &&
           socialLinksArr[i] !== 'website' &&
-          !URLRegex.test(link)
+          !URL_REGEX.test(link)
         ) {
           return sendResponse(
             res,
             403,
-            'error',
             `${socialLinksArr[i]} link is invalid. You must enter a full link with http(s)`
           );
         }
@@ -49,7 +53,6 @@ const updateProfile = async (req, res) => {
     return sendResponse(
       res,
       500,
-      'error',
       `You must provide full social links with http(s) included - ${err.message}`
     );
   }
@@ -61,30 +64,25 @@ const updateProfile = async (req, res) => {
   };
 
   try {
-    const updatedUser = await User.findOneAndUpdate(
+    const updated_user = await USER.findOneAndUpdate(
       { _id: req.user },
       updateObj,
       { runValidators: true, new: true, context: 'query' }
     );
 
-    if (!updatedUser) {
-      return sendResponse(res, 404, 'error', 'User not found');
+    if (!updated_user) {
+      return sendResponse(res, 404, 'User not found');
     }
 
-    return sendResponse(res, 200, 'success', 'Profile updated successfully', {
-      username: updatedUser.personal_info.username,
+    return sendResponse(res, 200, 'Profile updated successfully', {
+      username: updated_user.personal_info.username,
     });
   } catch (err) {
     if (err.code === 11000) {
       // Duplicate key error (username already taken)
-      return sendResponse(res, 409, 'error', 'Username is already taken');
+      return sendResponse(res, 409, 'Username is already taken');
     }
-    return sendResponse(
-      res,
-      500,
-      'error',
-      err.message || 'Internal Server Error'
-    );
+    return sendResponse(res, 500, err.message || 'Internal Server Error');
   }
 };
 
