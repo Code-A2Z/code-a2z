@@ -5,8 +5,6 @@ export interface BaseApiResponse {
   message: string;
 }
 
-interface ApiResponse<T> extends BaseApiResponse {
+export interface ApiResponse<T> extends BaseApiResponse {
   data?: T;
 }
-
-export default ApiResponse;

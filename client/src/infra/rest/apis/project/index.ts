@@ -1,5 +1,5 @@
 import { del, get, post } from '../..';
-import ApiResponse, { BaseApiResponse } from '../../typing';
+import { ApiResponse, BaseApiResponse } from '../../typing';
 import {
   createProjectPayload,
   getAllProjectsResponse,

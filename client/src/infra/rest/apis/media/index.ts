@@ -1,5 +1,5 @@
 import { post } from '../..';
-import ApiResponse from '../../typing';
+import { ApiResponse } from '../../typing';
 import { UploadResponse } from './typing';
 
 export const uploadImage = async (img: File) => {

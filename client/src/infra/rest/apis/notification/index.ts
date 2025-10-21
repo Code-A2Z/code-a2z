@@ -1,5 +1,5 @@
 import { get } from '../..';
-import ApiResponse, { BaseApiResponse } from '../../typing';
+import { ApiResponse, BaseApiResponse } from '../../typing';
 import {
   AllNotificationsCountPayload,
   GetNotificationsPayload,

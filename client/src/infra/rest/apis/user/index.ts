@@ -1,5 +1,5 @@
 import { get, patch } from '../..';
-import ApiResponse from '../../typing';
+import { ApiResponse } from '../../typing';
 import {
   getUserProfileResponse,
   searchUserResponse,
