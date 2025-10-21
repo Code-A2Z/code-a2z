@@ -22,10 +22,23 @@ dotenv.config();
 
 const server = express();
 
+// Frontend origin
+const FRONTEND_URL = 'http://localhost:5173';
+
 // Middleware
 server.use(express.json());
 server.use(cookieParser());
-server.use(cors());
+
+server.use(
+  cors({
+    origin: FRONTEND_URL, // allow requests only from frontend
+    credentials: true, // allow cookies to be sent cross-origin
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  })
+);
+
+// Handle preflight requests for all routes
+server.options('*', cors());
 
 // securityMiddleware
 securityMiddleware(server);
@@ -44,13 +57,10 @@ server.get('/', (req, res) =>
     res.status(200).json({ status: 'success', message: 'Backend is running...' })
 );
 
-// Monitoring Route
 server.use('/monitor', monitorRoutes);
 
-// API Routes
 server.use('/api', router);
 
-// Error handler (last middleware)
 server.use(errorHandler);
 
 export default server;

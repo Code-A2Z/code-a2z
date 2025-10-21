@@ -43,53 +43,60 @@ const StyledFooter = styled('p')(({ theme }) => ({
   textAlign: 'center',
 }));
 
-const UserAuthForm = ({ type }: { type: string }) => {
+const UserAuthForm = ({ type }: { type: 'login' | 'signup' }) => {
   const [userAuth, setUserAuth] = useAtom(UserAtom);
   const { addNotification } = useNotifications();
+
+  const formRef = React.useRef<HTMLFormElement>(null);
 
   const userAuthThroughServer = async (
     serverRoute: string,
     formData: AuthorizeUserPayload
   ) => {
-    if (serverRoute === '/api/auth/signup') {
-      const { email } = formData;
-      await subscribeUser(email);
-    }
-    const response = await authorizeUser(serverRoute, formData);
-    if (response.access_token) {
-      setUserAuth({
-        access_token: response.access_token,
-        profile_img: response.profile_img,
-        username: response.username,
-        fullname: response.fullname,
-        name: response.fullname, // Use fullname as name
-        email: response.email,
-        role: response.role,
-        new_notification_available: false,
-      });
+    try {
+      // Subscribe user only on signup
+      if (serverRoute === '/api/auth/signup') {
+        await subscribeUser(formData.email);
+      }
+
+      // Send request to backend
+      const response = await authorizeUser(serverRoute, formData);
+
+      if (response.access_token) {
+        setUserAuth({
+          access_token: response.access_token,
+          profile_img: response.profile_img,
+          username: response.username,
+          fullname: response.fullname,
+          name: response.fullname,
+          email: response.email,
+          role: response.role,
+          new_notification_available: false,
+        });
+
+        addNotification({
+          message: 'Logged in successfully!',
+          type: 'success',
+        });
+      }
+    } catch (err: any) {
       addNotification({
-        message: 'Logged in successfully!',
-        type: 'success',
+        message: err?.message || 'Server error',
+        type: 'error',
       });
     }
   };
 
-  const formRef = React.useRef<HTMLFormElement>(null);
-
-  const handleSubmit = (e: React.FormEvent<HTMLElement>) => {
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-
-    const serverRoute =
-      type == 'login' ? '/api/auth/login' : '/api/auth/signup';
-
     if (!formRef.current) return;
 
-    const form = new FormData(formRef.current);
     const formData: AuthorizeUserPayload = {
       email: '',
       password: '',
       fullname: '',
     };
+    const form = new FormData(formRef.current);
 
     for (const [key, value] of form.entries()) {
       if (key === 'email' || key === 'password' || key === 'fullname') {
@@ -99,65 +106,58 @@ const UserAuthForm = ({ type }: { type: string }) => {
 
     const { fullname, email, password } = formData;
 
-    if (fullname) {
-      if (fullname.length < 3) {
-        return addNotification({
-          message: 'Full name should be atleast 3 letters long',
-          type: 'error',
-        });
-      }
-    }
-    if (!email.length) {
+    // Validations
+    if (type === 'signup' && (!fullname || fullname.length < 3)) {
       return addNotification({
-        message: 'Email is required',
+        message: 'Full name should be at least 3 letters long',
         type: 'error',
       });
     }
 
-    if (!emailRegex.test(email)) {
-      return addNotification({
-        message: 'Invalid email',
-        type: 'error',
-      });
-    }
+    if (!email)
+      return addNotification({ message: 'Email is required', type: 'error' });
+    if (!emailRegex.test(email))
+      return addNotification({ message: 'Invalid email', type: 'error' });
     if (!passwordRegex.test(password)) {
       return addNotification({
         message:
-          'Password should be atleast 6 characters long and contain atleast one uppercase letter, one lowercase letter and one number',
+          'Password should be at least 6 characters long and contain at least one uppercase letter, one lowercase letter and one number',
         type: 'error',
       });
     }
+
+    // Remove fullname for login
+    if (type === 'login') delete formData.fullname;
+
+    const serverRoute =
+      type === 'login' ? '/api/auth/login' : '/api/auth/signup';
     userAuthThroughServer(serverRoute, formData);
   };
 
-  return userAuth?.access_token ? (
-    <Navigate to="/" />
-  ) : (
+  if (userAuth?.access_token) return <Navigate to="/" />;
+
+  return (
     <AnimationWrapper keyValue={type}>
       <StyledSection>
-        <StyledForm id="formElement" onSubmit={handleSubmit}>
+        <StyledForm ref={formRef} id="formElement" onSubmit={handleSubmit}>
           <StyledTitle>
             {type === 'login' ? 'Welcome back' : 'Join us today'}
           </StyledTitle>
 
-          {type !== 'login' ? (
+          {type === 'signup' && (
             <InputBox
               name="fullname"
               type="text"
               placeholder="Full Name"
               icon="fi-rr-user"
             />
-          ) : (
-            ''
           )}
-
           <InputBox
             name="email"
             type="email"
             placeholder="Email"
             icon="fi-rr-envelope"
           />
-
           <InputBox
             name="password"
             type="password"
@@ -175,9 +175,7 @@ const UserAuthForm = ({ type }: { type: string }) => {
               padding: theme.spacing(1.5, 3),
               fontSize: '1.125rem',
               textTransform: 'none',
-              '&:hover': {
-                opacity: 0.9,
-              },
+              '&:hover': { opacity: 0.9 },
               mt: 3.5,
               mx: 'auto',
               display: 'block',
@@ -187,9 +185,7 @@ const UserAuthForm = ({ type }: { type: string }) => {
           </Button>
 
           <StyledFooter>
-            {type === 'login'
-              ? "Don't have an account ?"
-              : 'Already a member ?'}
+            {type === 'login' ? "Don't have an account?" : 'Already a member?'}
             <Link
               to={type === 'login' ? '/signup' : '/login'}
               style={{
