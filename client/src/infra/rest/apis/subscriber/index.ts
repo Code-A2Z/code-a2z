@@ -22,7 +22,7 @@ export const unsubscribeAPI = async (email: string) => {
 
 export const getAllSubscribers = async () => {
   return get<undefined, ApiResponse<getAllSubscribersResponse[]>>(
-    `/api/subscriber/all`,
+    `/api/subscriber`,
     true,
     undefined,
     false
