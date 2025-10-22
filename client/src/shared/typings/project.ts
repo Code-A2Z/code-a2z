@@ -30,6 +30,7 @@ export interface EditorBlock {
 }
 
 export interface Project {
+  description: any;
   activity: {
     total_likes: number;
     total_comments: number;

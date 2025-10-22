@@ -42,7 +42,7 @@
     "@eslint/css": "^0.10.0",
     "@eslint/js": "^9.34.0",
     "@eslint/json": "^0.13.1",
-    "concurrently": "^9.2.0",
+    "concurrently": "^9.2.1",
     "eslint": "^9.34.0",
     "eslint-plugin-react": "^7.37.5",
     "globals": "^16.3.0",

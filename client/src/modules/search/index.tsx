@@ -1,15 +1,23 @@
 import { useParams } from 'react-router-dom';
-import InPageNavigation from '../../shared/components/molecules/page-navigation';
 import { useEffect, useState, useCallback } from 'react';
-import Loader from '../../shared/components/atoms/loader';
-import AnimationWrapper from '../../shared/components/atoms/page-animation';
-import ProjectPostCard from '../../shared/components/molecules/project-card';
-import NoDataMessage from '../../shared/components/atoms/no-data-msg';
-import LoadMoreDataBtn from '../../shared/components/molecules/load-more-data';
-import { filterPaginationData } from '../../shared/requests/filter-pagination-data';
-import UserCard from '../../shared/components/molecules/user-card';
 import { useAtom } from 'jotai';
+import {
+  Box,
+  Tabs,
+  Tab,
+  Typography,
+  Card,
+  CardContent,
+  CircularProgress,
+  Button,
+  Alert,
+  Avatar,
+  TextField,
+  Grid,
+} from '@mui/material';
+import { motion } from 'framer-motion';
 import { AllProjectsAtom } from '../../shared/states/project';
+import { filterPaginationData } from '../../shared/requests/filter-pagination-data';
 import { searchProjectByCategory } from '../home/requests';
 import { searchUserByName } from './requests';
 import { UserProfile } from './typings';
@@ -17,9 +25,9 @@ import { AllProjectsData } from '../../shared/typings';
 
 const Search = () => {
   const { query } = useParams();
-
   const [projects, setProjects] = useAtom(AllProjectsAtom);
   const [users, setUsers] = useState<UserProfile[] | null>(null);
+  const [tab, setTab] = useState(0);
 
   const resetState = useCallback(() => {
     setProjects(null);
@@ -55,78 +63,172 @@ const Search = () => {
     }
   }, [query]);
 
+  // 🔹 Fetch data on query change
   useEffect(() => {
     resetState();
     searchProjects({ page: 1, create_new_arr: true });
     fetchUsers();
   }, [query, resetState, searchProjects, fetchUsers]);
 
-  const UserCardWrapper = () => {
+  // 🔹 Keyboard shortcuts
+  useEffect(() => {
+    const handleKey = (e: KeyboardEvent) => {
+      if (e.ctrlKey && e.key.toLowerCase() === 'k') {
+        e.preventDefault();
+        const el = document.getElementById('search-input') as HTMLInputElement;
+        if (el) el.focus();
+      } else if (e.key === 'Escape') {
+        const el = document.getElementById('search-input') as HTMLInputElement;
+        if (el) el.value = '';
+      }
+    };
+    window.addEventListener('keydown', handleKey);
+    return () => window.removeEventListener('keydown', handleKey);
+  }, []);
+
+  const handleTabChange = (_event: React.SyntheticEvent, newValue: number) => {
+    setTab(newValue);
+  };
+
+  // 🔹 UI for Users
+  const renderUsers = () => {
+    if (!users)
+      return (
+        <Box textAlign="center" mt={4}>
+          <CircularProgress />
+        </Box>
+      );
+
+    if (users.length === 0)
+      return (
+        <Alert severity="info" sx={{ mt: 3 }}>
+          No users found.
+        </Alert>
+      );
+
+    return (
+      <Grid container spacing={2} mt={1}>
+        {users.map((user, i) => (
+          <Grid item xs={12} sm={6} md={4} key={i}>
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: i * 0.05 }}
+            >
+              <Card variant="outlined">
+                <CardContent>
+                  <Box display="flex" alignItems="center" gap={2}>
+                    <Avatar src={user.personal_info?.profile_img} />
+                    <Box>
+                      <Typography fontWeight="bold">
+                        {user.personal_info?.fullname || 'Unknown User'}
+                      </Typography>
+                      <Typography variant="body2" color="text.secondary">
+                        @{user.personal_info?.username}
+                      </Typography>
+                    </Box>
+                  </Box>
+                </CardContent>
+              </Card>
+            </motion.div>
+          </Grid>
+        ))}
+      </Grid>
+    );
+  };
+
+  // 🔹 UI for Projects
+  const renderProjects = () => {
+    if (projects === null)
+      return (
+        <Box textAlign="center" mt={4}>
+          <CircularProgress />
+        </Box>
+      );
+
+    if (!projects.results?.length)
+      return (
+        <Alert severity="info" sx={{ mt: 3 }}>
+          No projects published.
+        </Alert>
+      );
+
     return (
       <>
-        {!users ? (
-          <Loader />
-        ) : users?.length ? (
-          users.map((user: UserProfile, i: number) => {
-            return (
-              <AnimationWrapper
-                key={i}
-                transition={{ duration: 1, delay: i * 0.08 }}
+        <Grid container spacing={2} mt={1}>
+          {projects.results.map((project, i) => (
+            <Grid item xs={12} md={6} key={i}>
+              <motion.div
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, delay: i * 0.05 }}
               >
-                <UserCard user={user} />
-              </AnimationWrapper>
-            );
-          })
-        ) : (
-          <NoDataMessage message="No user found" />
-        )}
+                <Card>
+                  <CardContent>
+                    <Typography variant="h6" fontWeight="bold">
+                      {project.title}
+                    </Typography>
+                    <Typography variant="body2" color="text.secondary" mt={1}>
+                      {project.description?.slice(0, 100) || 'No description'}
+                    </Typography>
+                    <Typography
+                      variant="caption"
+                      color="text.secondary"
+                      display="block"
+                      mt={1}
+                    >
+                      Author: {project.author?.personal_info?.fullname || 'N/A'}
+                    </Typography>
+                  </CardContent>
+                </Card>
+              </motion.div>
+            </Grid>
+          ))}
+        </Grid>
+
+        <Box textAlign="center" mt={4}>
+          <Button
+            variant="contained"
+            onClick={() => searchProjects({ page: projects.page + 1 })}
+          >
+            Load More
+          </Button>
+        </Box>
       </>
     );
   };
 
   return (
-    <section className="h-cover flex justify-center gap-10">
-      <div className="w-full">
-        <InPageNavigation
-          routes={[`Search Results from "${query}"`, 'Accounts Matched']}
-          defaultHidden={['Accounts Matched']}
-        >
-          <>
-            {projects === null ? (
-              <Loader />
-            ) : projects && projects.results.length ? (
-              projects.results.map((project, i) => {
-                return (
-                  <AnimationWrapper
-                    key={i}
-                    transition={{ duration: 1, delay: i * 0.1 }}
-                  >
-                    <ProjectPostCard
-                      project={project}
-                      author={project.author.personal_info}
-                    />
-                  </AnimationWrapper>
-                );
-              })
-            ) : (
-              <NoDataMessage message="No projects published" />
-            )}
-            <LoadMoreDataBtn state={projects} fetchDataFun={searchProjects} />
-          </>
+    <Box sx={{ p: 3 }}>
+      {/* 🔍 Search bar */}
+      <Box mb={4} display="flex" justifyContent="center">
+        <TextField
+          id="search-input"
+          variant="outlined"
+          placeholder='Press "Ctrl + K" to focus'
+          defaultValue={query}
+          sx={{ width: '60%' }}
+        />
+      </Box>
 
-          <UserCardWrapper />
-        </InPageNavigation>
-      </div>
+      {/* 🔹 Tabs Navigation */}
+      <Tabs
+        value={tab}
+        onChange={handleTabChange}
+        centered
+        textColor="primary"
+        indicatorColor="primary"
+      >
+        <Tab label={`Search Results for "${query}"`} />
+        <Tab label="Accounts Matched" />
+      </Tabs>
 
-      <div className="min-w-[40%] lg:min-w-[350px] max-w-min border-l border-gray-50 pl-8 pt-3 max-md:hidden">
-        <h1 className="font-medium text-xl mb-8">
-          User related to search
-          <i className="fi fi-rr-user mt-1"></i>
-        </h1>
-
-        <UserCardWrapper />
-      </div>
-    </section>
+      {/* 🔹 Tabs Content */}
+      <Box mt={3}>
+        {tab === 0 && renderProjects()}
+        {tab === 1 && renderUsers()}
+      </Box>
+    </Box>
   );
 };
 
