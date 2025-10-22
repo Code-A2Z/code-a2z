@@ -65,7 +65,7 @@ const updateProfile = async (req, res) => {
 
   try {
     const updated_user = await USER.findOneAndUpdate(
-      { _id: req.user },
+      { _id: req.user.user_id },
       updateObj,
       { runValidators: true, new: true, context: 'query' }
     );

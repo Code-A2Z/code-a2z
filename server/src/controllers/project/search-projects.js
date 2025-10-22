@@ -42,12 +42,24 @@ const searchProjects = async (req, res) => {
         'personal_info.profile_img personal_info.username personal_info.fullname -_id'
       )
       .sort({ publishedAt: -1 })
-      .select('title banner_url description tags activity publishedAt -_id')
+      .select('title banner_url description tags activity publishedAt _id')
       .skip((currentPage - 1) * maxLimit)
       .limit(maxLimit)
       .lean();
 
-    return sendResponse(res, 200, 'Projects fetched successfully', projects);
+    // Remove user_id and add personal_info in the response
+    const projectsWithAuthor = projects.map(project => ({
+      ...project,
+      personal_info: project.user_id.personal_info,
+      user_id: undefined,
+    }));
+
+    return sendResponse(
+      res,
+      200,
+      'Projects fetched successfully',
+      projectsWithAuthor
+    );
   } catch (err) {
     return sendResponse(res, 500, err.message || 'Internal server error');
   }

@@ -1,5 +1,5 @@
 import { get, patch } from '../..';
-import { ApiResponse } from '../../typing';
+import { ApiResponse } from '../../typings';
 import {
   getUserProfileResponse,
   searchUserResponse,
@@ -7,22 +7,14 @@ import {
 } from './typing';
 
 export const searchUser = async (query: string) => {
-  return get<string, ApiResponse<searchUserResponse[]>>(
-    `/api/user/search`,
-    false,
-    undefined,
-    false,
-    { q: query }
+  return get<undefined, ApiResponse<searchUserResponse[]>>(
+    `/api/user/search?query=${query}`
   );
 };
 
 export const userProfile = async (username: string) => {
-  return get<string, ApiResponse<getUserProfileResponse>>(
-    `/api/user/profile`,
-    true,
-    undefined,
-    false,
-    { username }
+  return get<undefined, ApiResponse<getUserProfileResponse>>(
+    `/api/user/profile?username=${username}`
   );
 };
 
@@ -30,8 +22,7 @@ export const updateProfileImg = async (imageUrl: string) => {
   return patch<{ url: string }, ApiResponse<{ profile_img: string }>>(
     `/api/user/update-profile-img`,
     true,
-    { url: imageUrl },
-    false
+    { url: imageUrl }
   );
 };
 
@@ -39,7 +30,6 @@ export const updateProfile = async (profileData: updateProfilePayload) => {
   return patch<updateProfilePayload, ApiResponse<{ username: string }>>(
     `/api/user/update-profile`,
     true,
-    profileData,
-    false
+    profileData
   );
 };

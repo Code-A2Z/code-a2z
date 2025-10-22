@@ -12,10 +12,9 @@ export enum Methods {
 export async function makeRequest<Payload, Response>(
   url: string,
   method: Methods,
-  isAuthRequired: boolean,
-  data: Payload | undefined,
+  isAuthRequired?: boolean,
+  data?: Payload | undefined,
   hasFullURL?: boolean,
-  params?: Record<string, Payload>,
   headers?: Record<string, string>
 ): Promise<Response> {
   let token: string | null = null;
@@ -31,7 +30,6 @@ export async function makeRequest<Payload, Response>(
     url,
     method,
     data,
-    params,
     headers: {
       Authorization: token ? `Bearer ${token}` : undefined,
       ...headers,
@@ -42,10 +40,9 @@ export async function makeRequest<Payload, Response>(
 
 export async function get<Payload, Response>(
   url: string,
-  isAuthRequired: boolean,
+  isAuthRequired: boolean = false,
   body: Payload | undefined = undefined,
   hasFullURL: boolean = false,
-  params?: Record<string, Payload>,
   headers?: Record<string, string>
 ): Promise<Response> {
   return makeRequest<Payload, Response>(
@@ -54,17 +51,15 @@ export async function get<Payload, Response>(
     isAuthRequired,
     body,
     hasFullURL,
-    params,
     headers
   );
 }
 
 export async function post<Payload, Response>(
   url: string,
-  isAuthRequired: boolean,
+  isAuthRequired: boolean = false,
   body: Payload | undefined = undefined,
   hasFullURL: boolean = false,
-  params?: Record<string, Payload>,
   headers?: Record<string, string>
 ): Promise<Response> {
   return makeRequest<Payload, Response>(
@@ -73,17 +68,15 @@ export async function post<Payload, Response>(
     isAuthRequired,
     body,
     hasFullURL,
-    params,
     headers
   );
 }
 
 export async function put<Payload, Response>(
   url: string,
-  isAuthRequired: boolean,
+  isAuthRequired: boolean = false,
   body: Payload | undefined = undefined,
   hasFullURL: boolean = false,
-  params?: Record<string, Payload>,
   headers?: Record<string, string>
 ): Promise<Response> {
   return makeRequest<Payload, Response>(
@@ -92,17 +85,15 @@ export async function put<Payload, Response>(
     isAuthRequired,
     body,
     hasFullURL,
-    params,
     headers
   );
 }
 
 export async function patch<Payload, Response>(
   url: string,
-  isAuthRequired: boolean,
+  isAuthRequired: boolean = false,
   body: Payload | undefined = undefined,
   hasFullURL: boolean = false,
-  params?: Record<string, Payload>,
   headers?: Record<string, string>
 ): Promise<Response> {
   return makeRequest<Payload, Response>(
@@ -111,17 +102,15 @@ export async function patch<Payload, Response>(
     isAuthRequired,
     body,
     hasFullURL,
-    params,
     headers
   );
 }
 
 export async function del<Payload, Response>(
   url: string,
-  isAuthRequired: boolean,
+  isAuthRequired: boolean = false,
   body: Payload | undefined = undefined,
   hasFullURL: boolean = false,
-  params?: Record<string, Payload>,
   headers?: Record<string, string>
 ): Promise<Response> {
   return makeRequest<Payload, Response>(
@@ -130,7 +119,6 @@ export async function del<Payload, Response>(
     isAuthRequired,
     body,
     hasFullURL,
-    params,
     headers
   );
 }

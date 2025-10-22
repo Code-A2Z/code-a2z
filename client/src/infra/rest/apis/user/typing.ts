@@ -1,3 +1,9 @@
+import {
+  USER_ACCOUNT_INFO,
+  USER_PERSONAL_INFO,
+  USER_SOCIAL_LINKS,
+} from '../../typings';
+
 export interface searchUserResponse {
   personal_info: {
     fullname: string;
@@ -8,26 +14,9 @@ export interface searchUserResponse {
 
 export interface getUserProfileResponse {
   _id: string;
-  personal_info: {
-    fullname: string;
-    email: string;
-    username: string;
-    bio: string;
-    profile_img: string;
-  };
-  social_links: {
-    youtube: string;
-    instagram: string;
-    facebook: string;
-    twitter: string;
-    github: string;
-    linkedin: string;
-    website: string;
-  };
-  account_info: {
-    total_posts: number;
-    total_reads: number;
-  };
+  personal_info: USER_PERSONAL_INFO;
+  social_links: USER_SOCIAL_LINKS;
+  account_info: USER_ACCOUNT_INFO;
   role: string;
   joinedAt: string;
 }
@@ -35,13 +24,5 @@ export interface getUserProfileResponse {
 export interface updateProfilePayload {
   username: string;
   bio: string;
-  social_links: {
-    youtube: string;
-    instagram: string;
-    facebook: string;
-    twitter: string;
-    github: string;
-    linkedin: string;
-    website: string;
-  };
+  social_links: USER_SOCIAL_LINKS;
 }

@@ -19,7 +19,7 @@ const updateProfileImg = async (req, res) => {
 
   try {
     const updated_user = await USER.findOneAndUpdate(
-      { _id: req.user },
+      { _id: req.user.user_id },
       { 'personal_info.profile_img': url },
       { new: true }
     ).select('personal_info.profile_img');

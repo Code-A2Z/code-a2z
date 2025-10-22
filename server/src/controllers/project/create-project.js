@@ -17,7 +17,7 @@ import USER from '../../models/user.model.js';
 import { sendResponse } from '../../utils/response.js';
 
 const createProject = async (req, res) => {
-  const user_id = req.user;
+  const user_id = req.user.user_id;
   let {
     title,
     banner_url,

@@ -28,9 +28,10 @@ const getProfile = async (req, res) => {
       return sendResponse(res, 404, 'User not found');
     }
 
-    // Flatten email object to string
+    // Extract email and remove subscriber_id
     if (user.personal_info?.subscriber_id?.email) {
-      user.personal_info.subscriber_id = user.personal_info.subscriber_id.email;
+      user.personal_info.email = user.personal_info.subscriber_id.email;
+      delete user.personal_info.subscriber_id;
     }
 
     return sendResponse(res, 200, 'User fetched successfully', user);

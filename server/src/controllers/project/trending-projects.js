@@ -18,15 +18,22 @@ const trendingProjects = async (req, res) => {
         'activity.total_likes': -1,
         publishedAt: -1,
       })
-      .select('title publishedAt -_id')
+      .select('title publishedAt _id')
       .limit(5)
       .lean();
+
+    // Rename user_id to personal_info in the response
+    const projectsWithAuthor = projects.map(project => ({
+      ...project,
+      personal_info: project.user_id.personal_info,
+      user_id: undefined,
+    }));
 
     return sendResponse(
       res,
       200,
       'Trending projects fetched successfully',
-      projects
+      projectsWithAuthor
     );
   } catch (err) {
     return sendResponse(res, 500, err.message || 'Internal server error');

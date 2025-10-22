@@ -13,6 +13,11 @@ const COLLECTION_SCHEMA = Schema(
       lowercase: true,
       required: true,
     },
+    description: {
+      type: String,
+      maxlength: [200, 'Description should not be more than 200 characters'],
+      default: '',
+    },
     project_ids: {
       type: [Schema.Types.ObjectId],
       default: [],

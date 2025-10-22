@@ -11,7 +11,7 @@ import { sendResponse } from '../../utils/response.js';
 
 const deleteProject = async (req, res) => {
   try {
-    const user_id = req.user;
+    const user_id = req.user.user_id;
     const { project_id } = req.params;
 
     if (!project_id) {

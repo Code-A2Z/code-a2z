@@ -1,5 +1,5 @@
 /**
- * GET /api/project/user-projects - Get projects for current user
+ * GET /api/project/user - Get projects for current user
  * @param {number} [page=1] - Page number
  * @param {boolean} [is_draft] - Draft status
  * @param {string} [query] - Title search
@@ -12,7 +12,7 @@ import { sendResponse } from '../../utils/response.js';
 
 const userProjects = async (req, res) => {
   try {
-    const user_id = req.user;
+    const user_id = req.user.user_id;
     const { page = 1, is_draft, query = '', deletedDocCount = 0 } = req.query;
 
     const maxLimit = 5;

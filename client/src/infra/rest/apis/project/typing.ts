@@ -1,69 +1,37 @@
+import {
+  PROJECT_ACTIVITY,
+  PROJECT_CONTENT_BLOCKS,
+  USER_PERSONAL_LIMITED_INFO,
+} from '../../typings';
+
 export interface createProjectPayload {
+  _id?: string;
   title: string;
-  des: string;
-  banner: boolean;
-  project_url?: string;
-  repository: string;
+  description?: string;
+  banner_url?: string;
+  live_url?: string;
+  repository_url?: string;
   tags: Array<string>;
-  content: [
-    {
-      blocks: [
-        {
-          type: string;
-          data: {
-            text: string;
-            level?: number;
-            items?: Array<string>;
-            style?: string;
-            file?: {
-              url: string;
-            };
-            caption?: string;
-            withBorder?: boolean;
-            withBackground?: boolean;
-            stretched?: boolean;
-          };
-        },
-      ];
-    },
-  ];
-  draft: boolean;
-  id?: string;
+  content_blocks?: PROJECT_CONTENT_BLOCKS;
+  is_draft: boolean;
 }
 
 export interface getAllProjectsResponse {
-  project_id: string;
+  _id: string;
   title: string;
-  banner: string;
-  des: string;
+  banner_url: string;
+  description: string;
   tags: Array<string>;
-  author: {
-    personal_info: {
-      fullname: string;
-      username: string;
-      profile_img: string;
-    };
-  };
-  activity: {
-    total_likes: number;
-    total_comments: number;
-    total_reads: number;
-    total_parent_comments: number;
-  };
-  publishedAt: string;
+  activity: PROJECT_ACTIVITY;
+  publishedAt: Date;
+  personal_info: USER_PERSONAL_LIMITED_INFO;
 }
 
 export interface getTrendingProjectsResponse {
-  project_id: string;
+  _id: string;
   title: string;
-  author: {
-    personal_info: {
-      fullname: string;
-      username: string;
-      profile_img: string;
-    };
-  };
-  publishedAt: string;
+  personal_info: USER_PERSONAL_LIMITED_INFO;
+  publishedAt: Date;
 }
 
 export interface searchProjectsPayload {
@@ -74,78 +42,42 @@ export interface searchProjectsPayload {
   limit?: number;
 }
 
+export enum PROJECT_OPEN_MODE {
+  READ = 'read',
+  EDIT = 'edit',
+}
+
 export interface ProjectData {
   _id: string;
-  project_id: string;
   title: string;
-  banner: string;
-  des: string;
-  project_url?: string;
-  repository: string;
-  content: [
-    {
-      blocks: [
-        {
-          type: string;
-          data: {
-            text: string;
-            level?: number;
-            items?: Array<string>;
-            style?: string;
-            file?: {
-              url: string;
-            };
-            caption?: string;
-            withBorder?: boolean;
-            withBackground?: boolean;
-            stretched?: boolean;
-          };
-        },
-      ];
-    },
-  ];
+  banner_url: string;
+  description: string;
+  repository_url: string;
+  live_url: string | null;
   tags: Array<string>;
-  author: {
+  content_blocks: Array<PROJECT_CONTENT_BLOCKS>;
+  user_id: {
     _id: string;
-    personal_info: {
-      fullname: string;
-      username: string;
-      profile_img: string;
-    };
+    personal_info: USER_PERSONAL_LIMITED_INFO;
   };
-  activity: {
-    total_likes: number;
-    total_comments: number;
-    total_reads: number;
-    total_parent_comments: number;
-  };
-  draft: boolean;
-  publishedAt: string;
+  activity: PROJECT_ACTIVITY;
+  is_draft: boolean;
+  publishedAt: Date;
 }
 
 export interface userProjectsPayload {
-  draft: boolean;
+  is_draft: boolean;
   page: number;
-  deletedDocCount: number;
+  query?: string;
+  deletedDocCount?: number;
 }
 
 export interface userProjectsResponse {
-  project_id: string;
+  _id: string;
   title: string;
-  banner: string;
-  des: string;
-  tags: Array<string>;
-  activity: {
-    total_likes: number;
-    total_comments: number;
-    total_reads: number;
-    total_parent_comments: number;
-  };
-  draft: boolean;
-  publishedAt: string;
-}
-
-export interface userProjectsCountPayload {
-  query?: string;
-  draft?: boolean;
+  banner_url: string;
+  description: string;
+  activity: PROJECT_ACTIVITY;
+  is_draft: boolean;
+  publishedAt: Date;
 }

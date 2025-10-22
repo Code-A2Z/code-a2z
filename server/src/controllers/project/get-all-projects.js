@@ -1,5 +1,5 @@
 /**
- * GET /api/project/all?page=1 - Get all published projects (paginated)
+ * GET /api/project?page=1 - Get all published projects (paginated)
  * @param {number} [page=1] - Page number (query param)
  * @returns {Object[]} Array of projects
  */
@@ -15,17 +15,30 @@ const getAllProjects = async (req, res) => {
 
   try {
     const projects = await PROJECT.find({ is_draft: false })
-      .populate(
-        'user_id',
-        'personal_info.profile_img personal_info.username personal_info.fullname -_id'
-      )
+      .populate({
+        path: 'user_id',
+        select:
+          'personal_info.profile_img personal_info.username personal_info.fullname -_id',
+      })
       .sort({ publishedAt: -1 })
-      .select('title banner_url description tags activity publishedAt -_id')
+      .select('title banner_url description tags activity publishedAt _id')
       .skip((page - 1) * maxLimit)
       .limit(maxLimit)
       .lean();
 
-    return sendResponse(res, 200, 'Projects fetched successfully', projects);
+    // Rename user_id to personal_info in the response
+    const projectsWithAuthor = projects.map(project => ({
+      ...project,
+      personal_info: project.user_id.personal_info,
+      user_id: undefined,
+    }));
+
+    return sendResponse(
+      res,
+      200,
+      'Projects fetched successfully',
+      projectsWithAuthor
+    );
   } catch (err) {
     return sendResponse(res, 500, err.message || 'Internal server error');
   }

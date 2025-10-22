@@ -1,5 +1,5 @@
 /**
- * GET /api/project/user-projects-count - Get count of user's projects
+ * GET /api/project/user/count - Get count of user's projects
  * @param {boolean} [draft] - Draft status
  * @param {string} [query] - Title search
  * @returns {Object} Total count
@@ -9,7 +9,7 @@ import PROJECT from '../../models/project.model.js';
 import { sendResponse } from '../../utils/response.js';
 
 const userProjectsCount = async (req, res) => {
-  const user_id = req.user;
+  const user_id = req.user.user_id;
   const { is_draft, query = '' } = req.query;
   const titleFilter = new RegExp(query, 'i');
 

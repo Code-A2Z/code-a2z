@@ -1,5 +1,5 @@
 export interface getAllSubscribersResponse {
   _id: string;
   email: string;
-  subscribedAt: string;
+  subscribed_at: Date;
 }

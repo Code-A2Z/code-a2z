@@ -13,7 +13,7 @@ import { sendResponse } from '../../utils/response.js';
 
 const changePassword = async (req, res) => {
   try {
-    const user_id = req.user;
+    const user_id = req.user.user_id;
     const { current_password, new_password } = req.body;
 
     if (!current_password || !new_password) {

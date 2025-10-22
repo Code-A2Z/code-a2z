@@ -20,7 +20,7 @@ const authenticateUser = (req, res, next) => {
           'Access token invalid or expired. Please refresh.'
         );
       }
-      req.user = decoded.userId;
+      req.user = decoded;
       next();
     });
   } catch (error) {
