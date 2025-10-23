@@ -1,10 +1,17 @@
 import { sendResponse } from '../utils/response.js';
+import logger from '../logger/winston.js';
 
-const errorHandler = (err, _req, res, _next) => {
-  console.error(err.stack);
-  if (res.headersSent) {
-    return _next(err);
+const errorHandler = (err, req, res, next) => {
+  if (req?.logger) {
+    req.logger.error(err.stack || err.message);
+  } else {
+    logger.error(err.stack || err.message);
   }
+
+  if (res.headersSent) {
+    return next(err);
+  }
+
   return sendResponse(res, 500, err.message || 'Internal Server Error');
 };
 

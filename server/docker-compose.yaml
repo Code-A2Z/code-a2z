@@ -1,0 +1,26 @@
+services:
+  server:
+    image: server:latest
+    ports:
+      - '8000:8000'
+    depends_on:
+      - mongo
+    environment:
+      - PORT=${PORT}
+      - NODE_ENV=${NODE_ENV} # Change to 'development' for development environment
+      - VITE_SERVER_DOMAIN=${VITE_SERVER_DOMAIN}
+      - MONGODB_URL=mongodb://mongo:27017
+      - JWT_ACCESS_EXPIRES_IN=${JWT_ACCESS_EXPIRES_IN}
+      - JWT_ACCESS_EXPIRES_IN_NUM=${JWT_ACCESS_EXPIRES_IN_NUM}
+      - JWT_REFRESH_EXPIRES_IN=${JWT_REFRESH_EXPIRES_IN}
+      - JWT_REFRESH_EXPIRES_IN_NUM=${JWT_REFRESH_EXPIRES_IN_NUM}
+      - CLOUDINARY_CLOUD_NAME=${CLOUDINARY_CLOUD_NAME}
+      - CLOUDINARY_API_KEY=${CLOUDINARY_API_KEY}
+      - CLOUDINARY_API_SECRET=${CLOUDINARY_API_SECRET}
+      - ADMIN_EMAIL=${ADMIN_EMAIL}
+      - RESEND_API_KEY=${RESEND_API_KEY}
+
+  mongo:
+    image: mongo
+    ports:
+      - '27017:27017'
