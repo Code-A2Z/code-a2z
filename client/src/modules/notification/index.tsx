@@ -7,7 +7,7 @@ import NotificationCard from './components/notificationCard';
 import { notificationFilters } from './constants';
 import { useAtom } from 'jotai';
 import { UserAtom } from '../../shared/states/user';
-import { NotificationData } from '../../shared/typings';
+import { NotificationData } from '../../infra/rest/typings';
 import {
   Box,
   Typography,
@@ -103,11 +103,14 @@ const Notifications = () => {
     setNotifications(null);
   };
 
-
   return (
     <Box sx={{ maxWidth: '4xl', mx: 'auto', p: 2 }}>
       <Box sx={{ mb: 4 }}>
-        <Typography variant="h3" component="h1" sx={{ fontWeight: 'bold', mb: 1 }}>
+        <Typography
+          variant="h3"
+          component="h1"
+          sx={{ fontWeight: 'bold', mb: 1 }}
+        >
           Notifications
         </Typography>
         <Typography variant="body1" color="text.secondary">
@@ -138,11 +141,19 @@ const Notifications = () => {
                 variant={isActive ? 'contained' : 'outlined'}
                 color={isActive ? 'primary' : 'inherit'}
                 onClick={handleFilter}
-                startIcon={filterName === 'all' ? <NotificationsIcon /> : 
-                          filterName === 'like' ? <Favorite /> : 
-                          filterName === 'comment' ? <Comment /> : 
-                          filterName === 'reply' ? <Reply /> : 
-                          <NotificationsIcon />}
+                startIcon={
+                  filterName === 'all' ? (
+                    <NotificationsIcon />
+                  ) : filterName === 'like' ? (
+                    <Favorite />
+                  ) : filterName === 'comment' ? (
+                    <Comment />
+                  ) : filterName === 'reply' ? (
+                    <Reply />
+                  ) : (
+                    <NotificationsIcon />
+                  )
+                }
                 sx={{
                   borderRadius: '24px',
                   textTransform: 'capitalize',
@@ -162,7 +173,14 @@ const Notifications = () => {
       </Box>
 
       {notifications === null ? (
-        <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', py: 6 }}>
+        <Box
+          sx={{
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+            py: 6,
+          }}
+        >
           <CircularProgress />
         </Box>
       ) : (
@@ -204,10 +222,9 @@ const Notifications = () => {
                 No notifications yet
               </Typography>
               <Typography variant="body2" color="text.secondary">
-                {filter === 'all' 
+                {filter === 'all'
                   ? "You're all caught up! Check back later for new notifications."
-                  : `No ${filter} notifications found.`
-                }
+                  : `No ${filter} notifications found.`}
               </Typography>
             </Alert>
           )}

@@ -10,7 +10,7 @@ import { fetchComments } from './utils/fetchComments';
 import ProjectLoadingSkeleton from './components/projectLoadingSkeleton';
 import { useAtom, useSetAtom } from 'jotai';
 import { ProjectAtom } from '../../shared/states/project';
-import { Project } from '../../shared/typings';
+import { Project } from '../../infra/rest/typings';
 import {
   CommentsWrapperAtom,
   LikedByUserAtom,

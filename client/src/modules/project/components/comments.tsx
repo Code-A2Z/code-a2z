@@ -5,7 +5,7 @@ import NoDataMessage from '../../../shared/components/atoms/no-data-msg';
 import AnimationWrapper from '../../../shared/components/atoms/page-animation';
 import { ProjectAtom } from '../../../shared/states/project';
 import { CommentsWrapperAtom, TotalParentCommentsLoadedAtom } from '../states';
-import { Comment } from '../../../shared/typings';
+import { Comment } from '../../../infra/rest/typings';
 import { fetchComments } from '../utils/fetchComments';
 
 const CommentsContainer = () => {

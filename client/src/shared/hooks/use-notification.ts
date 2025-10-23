@@ -1,6 +1,6 @@
 import { useSetAtom } from 'jotai';
 import { notificationsAtom } from '../states/notification';
-import { Notification } from '../typings/notification';
+import { Notification } from '../../infra/rest/typings/notification';
 
 export function useNotifications() {
   const setNotifications = useSetAtom(notificationsAtom);

@@ -13,7 +13,7 @@ import { AllProjectsAtom } from '../../shared/states/project';
 import { searchProjectByCategory } from '../home/requests';
 import { searchUserByName } from './requests';
 import { UserProfile } from './typings';
-import { AllProjectsData } from '../../shared/typings';
+import { AllProjectsData } from '../../infra/rest/typings';
 
 const Search = () => {
   const { query } = useParams();

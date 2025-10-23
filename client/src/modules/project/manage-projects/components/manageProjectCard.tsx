@@ -6,7 +6,7 @@ import { UserAtom } from '../../../../shared/states/user';
 import axios from 'axios';
 
 import { SetStateAction } from 'react';
-import { AllProjectsData } from '../../../../shared/typings';
+import { AllProjectsData } from '../../../../infra/rest/typings';
 
 interface ProjectStats {
   total_likes: number;

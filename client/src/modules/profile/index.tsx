@@ -13,7 +13,7 @@ import { useAtom, useAtomValue } from 'jotai';
 import { ProfileAtom } from '../../shared/states/profile';
 import { UserAtom } from '../../shared/states/user';
 import { AllProjectsAtom } from '../../shared/states/project';
-import { AllProjectsData } from '../../shared/typings/project';
+import { AllProjectsData } from '../../infra/rest/typings/project';
 import { emptyProfileState } from '../../shared/states/emptyStates/profile';
 import { searchProjectByCategory } from '../home/requests';
 import { getUserProfile } from './requests';

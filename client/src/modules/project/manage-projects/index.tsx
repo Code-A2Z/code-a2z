@@ -17,7 +17,7 @@ import {
 } from '../../../shared/states/project';
 import { UserAtom } from '../../../shared/states/user';
 import { userWrittenProjects } from '../requests';
-import { AllProjectsData } from '../../../shared/typings';
+import { AllProjectsData } from '../../../infra/rest/typings';
 
 const ManageProjects = () => {
   const [projects, setProjects] = useAtom(AllProjectsAtom);

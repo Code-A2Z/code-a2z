@@ -1,106 +1,33 @@
-import { useEffect, useState, useCallback } from 'react';
+import { useEffect, useState } from 'react';
+import { Box, Typography, Stack } from '@mui/material';
 import ProjectPostCard from '../../shared/components/molecules/project-card';
 import MinimalProjectPost from './components/noBannerProject';
 import NoDataMessage from '../../shared/components/atoms/no-data-msg';
 import LoadMoreDataBtn from '../../shared/components/molecules/load-more-data';
 import AnimationWrapper from '../../shared/components/atoms/page-animation';
-import { filterPaginationData } from '../../shared/requests/filter-pagination-data';
 import InPageNavigation from '../../shared/components/molecules/page-navigation';
 import { activeTabRef } from '../../shared/components/molecules/page-navigation/refs';
 import LatestProjectsSkeleton from './components/latestProjectsSkeleton';
 import TrendingProjectsSkeleton from './components/trendingProjectsSkeleton';
-import type { Project, AllProjectsData } from '../../shared/typings';
-import {
-  getAllLatestProjects,
-  getTrendingProjects,
-  searchProjectByCategory,
-} from './requests';
-import { useAtom } from 'jotai';
-import {
-  AllProjectsAtom,
-  TrendingProjectAtom,
-} from '../../shared/states/project';
-import { useNotifications } from '../../shared/hooks/use-notification';
-
-const categories = [
-  'web',
-  'data science',
-  'game development',
-  'automation',
-  'cloud computing',
-  'blockchain',
-];
+import { CategoryButton } from './components/CategoryButton';
+import { categories } from './constants';
+import { useHomeProjects } from './hooks/useHomeProjects';
+import { loadProjectsByCategory as loadProjectsByCategoryUtil } from './utils';
 
 const Home = () => {
-  const [projects, setProjects] = useAtom(AllProjectsAtom);
-  const [trendingProjects, setTrendingProjects] = useAtom(TrendingProjectAtom);
-  const { addNotification } = useNotifications();
-
   const [pageState, setPageState] = useState('home');
 
-  const fetchLatestProjects = useCallback(
-    async ({ page = 1 }) => {
-      const response = await getAllLatestProjects(page);
-      if (response.projects.length > 0) {
-        const formattedData = await filterPaginationData<Project>({
-          state: projects,
-          data: response.projects,
-          page,
-          countRoute: '/api/project/all-latest-count',
-        });
-        if (formattedData?.results) {
-          setProjects(formattedData as AllProjectsData);
-        } else {
-          addNotification({
-            message: 'No Project Found!',
-            type: 'error',
-          });
-        }
-      } else {
-        addNotification({
-          message: 'No Projects Found!',
-          type: 'error',
-        });
-      }
-    },
-    [projects, addNotification, setProjects]
-  );
+  const {
+    projects,
+    trendingProjects,
+    setProjects,
+    fetchLatestProjects,
+    fetchProjectsByCategory,
+    fetchTrendingProjects,
+  } = useHomeProjects(pageState);
 
-  const fetchProjectsByCategory = useCallback(
-    async ({ page = 1 }) => {
-      const response = await searchProjectByCategory(pageState, page);
-      if (response.projects.length > 0) {
-        const formattedData = await filterPaginationData<Project>({
-          state: projects,
-          data: response.projects,
-          page,
-          countRoute: '/api/project/search-count',
-          data_to_send: { tag: pageState },
-        });
-        if (formattedData) {
-          setProjects(formattedData as AllProjectsData);
-        }
-      }
-    },
-    [projects, pageState, setProjects]
-  );
-
-  const fetchTrendingProjects = useCallback(async () => {
-    const response = await getTrendingProjects();
-    if (response.projects.length > 0) {
-      setTrendingProjects(response.projects);
-    }
-  }, [setTrendingProjects]);
-
-  const loadProjectsByCategory = (e: React.MouseEvent<HTMLButtonElement>) => {
-    const category = (e.target as HTMLButtonElement).innerText.toLowerCase();
-    setProjects(null);
-
-    if (pageState === category) {
-      setPageState('home');
-      return;
-    }
-    setPageState(category);
+  const handleCategoryChange = (e: React.MouseEvent<HTMLButtonElement>) => {
+    loadProjectsByCategoryUtil(e, pageState, setPageState, setProjects);
   };
 
   useEffect(() => {
@@ -126,9 +53,19 @@ const Home = () => {
 
   return (
     <AnimationWrapper>
-      <section className="h-cover flex justify-center gap-10">
+      <Box
+        component="section"
+        sx={{
+          minHeight: 'calc(100vh - 80px)',
+          display: 'flex',
+          justifyContent: 'center',
+          gap: { xs: 0, md: 5 },
+          px: { xs: 2, sm: 3, md: 4 },
+          py: 3,
+        }}
+      >
         {/* Latest projects */}
-        <div className="w-full">
+        <Box sx={{ width: '100%', maxWidth: '800px' }}>
           <InPageNavigation
             routes={[pageState, 'trending projects']}
             defaultHidden={['trending projects']}
@@ -179,38 +116,44 @@ const Home = () => {
               <NoDataMessage message="No trending projects" />
             )}
           </InPageNavigation>
-        </div>
+        </Box>
 
         {/* filters and trending projects */}
-        <div className="min-w-[40%] lg:min-w-[400px] max-w-min border-l border-gray-200 pl-8 pt-3 max-md:hidden">
-          <div className="flex flex-col gap-10">
-            <div>
-              <h1 className="font-medium text-xl mb-8">Recommended topics</h1>
+        <Box
+          sx={{
+            minWidth: { lg: '400px' },
+            maxWidth: '400px',
+            borderLeft: theme => `1px solid ${theme.palette.divider}`,
+            pl: 4,
+            pt: 1,
+            display: { xs: 'none', md: 'block' },
+          }}
+        >
+          <Stack spacing={5}>
+            <Box>
+              <Typography variant="h6" sx={{ fontWeight: 500, mb: 3 }}>
+                Recommended topics
+              </Typography>
 
-              <div className="flex gap-3 flex-wrap">
+              <Box sx={{ display: 'flex', gap: 1.5, flexWrap: 'wrap' }}>
                 {categories.map((category, i) => {
                   return (
-                    <button
+                    <CategoryButton
                       key={i}
-                      className={
-                        'tag ' +
-                        (pageState === category
-                          ? 'bg-[#f0f0f0] dark:bg-[#18181b] text-[#444444] dark:text-[#a3a3a3] '
-                          : '')
-                      }
-                      onClick={loadProjectsByCategory}
+                      className={pageState === category ? 'active' : ''}
+                      onClick={handleCategoryChange}
                     >
                       {category}
-                    </button>
+                    </CategoryButton>
                   );
                 })}
-              </div>
-            </div>
+              </Box>
+            </Box>
 
-            <div>
-              <h1 className="font-medium text-xl mb-8">
+            <Box>
+              <Typography variant="h6" sx={{ fontWeight: 500, mb: 3 }}>
                 Trending <i className="fi fi-rr-arrow-trend-up"></i>
-              </h1>
+              </Typography>
 
               {trendingProjects === null ? (
                 <TrendingProjectsSkeleton count={3} />
@@ -228,10 +171,10 @@ const Home = () => {
               ) : (
                 <NoDataMessage message="No trending projects" />
               )}
-            </div>
-          </div>
-        </div>
-      </section>
+            </Box>
+          </Stack>
+        </Box>
+      </Box>
     </AnimationWrapper>
   );
 };
