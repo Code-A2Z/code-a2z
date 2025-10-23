@@ -1,17 +1,19 @@
 import { get } from '../..';
-import { ApiResponse, BaseApiResponse } from '../../typing';
+import { ApiResponse } from '../../typings';
 import {
   AllNotificationsCountPayload,
   GetNotificationsPayload,
+  GetNotificationsResponse,
 } from './typing';
 
-export const getNotifications = async (data: GetNotificationsPayload) => {
-  return get<GetNotificationsPayload, BaseApiResponse>(
-    `/api/notification`,
-    true,
-    undefined,
-    false,
-    { data }
+export const getNotifications = async ({
+  page,
+  filter,
+  deletedDocCount,
+}: GetNotificationsPayload) => {
+  return get<GetNotificationsPayload, ApiResponse<GetNotificationsResponse[]>>(
+    `/api/notification?page=${page || 1}&filter=${filter || 'all'}&deletedDocCount=${deletedDocCount || 0}`,
+    true
   );
 };
 
@@ -22,14 +24,11 @@ export const notificationStatus = async () => {
   );
 };
 
-export const allNotificationCounts = async (
-  data: AllNotificationsCountPayload
-) => {
+export const allNotificationCounts = async ({
+  filter,
+}: AllNotificationsCountPayload) => {
   return get<AllNotificationsCountPayload, ApiResponse<{ totalDocs: number }>>(
-    `/api/notification/count`,
-    true,
-    undefined,
-    false,
-    { data }
+    `/api/notification/count?filter=${filter || 'all'}`,
+    true
   );
 };

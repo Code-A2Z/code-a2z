@@ -12,9 +12,9 @@ import { sendResponse } from '../../utils/response.js';
 
 const sortProject = async (req, res) => {
   try {
-    const user_id = req.user;
+    const user_id = req.user.user_id;
     const collection_id = req.query.collection_id;
-    const sortBy = req.query.sortBy || 'newest';
+    const sort_by = req.query.sort_by || 'newest';
 
     if (!collection_id || !Types.ObjectId.isValid(collection_id)) {
       return sendResponse(res, 400, 'Invalid or missing collection_id');
@@ -40,7 +40,7 @@ const sortProject = async (req, res) => {
       newest: { createdAt: -1 },
       oldest: { createdAt: 1 },
     };
-    const sortCriteria = sortOptions[sortBy] || sortOptions.newest;
+    const sortCriteria = sortOptions[sort_by] || sortOptions.newest;
 
     // Fetch projects with sorting and populate author
     const projects = await PROJECT.find({ _id: { $in: projectIds } })

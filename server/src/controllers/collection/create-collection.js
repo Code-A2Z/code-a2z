@@ -1,6 +1,7 @@
 /**
  * POST /api/collection/create - Create a new collection
  * @param {string} collection_name - Name of the collection (body param)
+ * @param {string} description - Description of the collection (body param)
  * @returns {Object} Created collection
  */
 
@@ -10,14 +11,22 @@ import { sendResponse } from '../../utils/response.js';
 
 const createCollection = async (req, res) => {
   try {
-    const user_id = req.user;
-    const { collection_name } = req.body;
+    const user_id = req.user.user_id;
+    const { collection_name, description } = req.body;
 
     if (collection_name.trim().length < 2) {
       return sendResponse(
         res,
         400,
         'Collection name must be at least 2 characters long'
+      );
+    }
+
+    if (description && description.length > 200) {
+      return sendResponse(
+        res,
+        400,
+        'Description must be at most 200 characters long'
       );
     }
 
@@ -38,12 +47,13 @@ const createCollection = async (req, res) => {
     const new_collection = await COLLECTION.create({
       user_id,
       collection_name,
+      description,
     });
 
     // Push the collection into user's collections array
     const user = await USER.findByIdAndUpdate(
       user_id,
-      { $push: { collections: new_collection._id } },
+      { $push: { collection_ids: new_collection._id } },
       { new: true }
     ).select('personal_info.fullname');
 

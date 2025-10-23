@@ -1,5 +1,5 @@
 /**
- * GET /api/notification/list?page=&filter=&deletedDocCount= - Get notifications for user
+ * GET /api/notification?page=&filter=&deletedDocCount= - Get notifications for user
  * @param {number} [page=1] - Page number (query param)
  * @param {string} [filter] - Notification type filter (query param)
  * @param {number} [deletedDocCount=0] - Number of deleted docs in session (query param)
@@ -11,7 +11,7 @@ import { NOTIFICATION_TYPES } from '../../typings/index.js';
 import { sendResponse } from '../../utils/response.js';
 
 const getNotifications = async (req, res) => {
-  const user_id = req.user;
+  const user_id = req.user.user_id;
   const page = parseInt(req.query.page) || 1;
   const filter = req.query.filter || NOTIFICATION_TYPES.ALL;
   const deletedDocCount = parseInt(req.query.deletedDocCount) || 0;
@@ -48,6 +48,14 @@ const getNotifications = async (req, res) => {
       { _id: { $in: notifications.map(n => n._id) } },
       { seen: true }
     ).catch(() => {});
+
+    // Replace user_id with personal_info object
+    notifications.forEach(notification => {
+      if (notification.user_id) {
+        notification.personal_info = notification.user_id.personal_info;
+        delete notification.user_id;
+      }
+    });
 
     return sendResponse(
       res,

@@ -1,16 +1,19 @@
 import { del, get, patch, post } from '../..';
-import { ApiResponse, BaseApiResponse } from '../../typing';
+import { ApiResponse, BaseApiResponse } from '../../typings';
 import {
+  CreateCollectionPayload,
   CreateCollectionResponse,
   SaveProjectPayload,
   SortProjectPayload,
+  SortProjectResponse,
 } from './typing';
 
-export const createCollection = async (collection_name: string) => {
-  return post<
-    { collection_name: string },
-    ApiResponse<CreateCollectionResponse>
-  >(`/api/collection`, true, { collection_name });
+export const createCollection = async (data: CreateCollectionPayload) => {
+  return post<CreateCollectionPayload, ApiResponse<CreateCollectionResponse>>(
+    `/api/collection`,
+    true,
+    data
+  );
 };
 
 export const saveProject = async (data: SaveProjectPayload) => {
@@ -21,13 +24,13 @@ export const saveProject = async (data: SaveProjectPayload) => {
   );
 };
 
-export const sortProject = async (data: SortProjectPayload) => {
-  return get<SortProjectPayload, BaseApiResponse>(
-    `/api/collection/sort-projects`,
-    true,
-    undefined,
-    false,
-    { data }
+export const sortProject = async ({
+  collection_id,
+  sort_by,
+}: SortProjectPayload) => {
+  return get<SortProjectPayload, ApiResponse<SortProjectResponse[]>>(
+    `/api/collection/sort-projects?collection_id=${collection_id}&sort_by=${sort_by}`,
+    true
   );
 };
 
@@ -35,16 +38,13 @@ export const removeProject = async (data: SaveProjectPayload) => {
   return patch<SaveProjectPayload, BaseApiResponse>(
     `/api/collection/remove-project`,
     true,
-    undefined,
-    false,
-    { data }
+    data
   );
 };
 
 export const deleteCollection = async (collection_id: string) => {
   return del<{ collection_id: string }, BaseApiResponse>(
-    `/api/collection`,
-    true,
-    { collection_id }
+    `/api/collection/${collection_id}`,
+    true
   );
 };

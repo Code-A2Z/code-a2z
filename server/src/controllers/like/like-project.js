@@ -1,5 +1,5 @@
 /**
- * POST /api/like/project - Like or unlike a project
+ * POST /api/like - Like or unlike a project
  * @param {string} project_id - Project ID (body param)
  * @param {boolean} is_liked_by_user - Like status (body param)
  * @returns {Object} Like status and total likes
@@ -12,7 +12,7 @@ import { NOTIFICATION_TYPES } from '../../typings/index.js';
 
 const likeProject = async (req, res) => {
   try {
-    const user_id = req.user;
+    const user_id = req.user.user_id;
     const { project_id, is_liked_by_user } = req.body;
 
     if (!project_id) {

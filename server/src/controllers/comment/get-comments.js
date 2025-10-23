@@ -27,6 +27,14 @@ const getComments = async (req, res) => {
       .sort({ createdAt: -1 })
       .lean();
 
+    // Replace user_id with personal_info
+    comments.forEach(comment => {
+      if (comment.user_id) {
+        comment.personal_info = comment.user_id.personal_info;
+        delete comment.user_id;
+      }
+    });
+
     return sendResponse(res, 200, 'Comments fetched successfully', comments);
   } catch (err) {
     return sendResponse(res, 500, err.message || 'Internal Server Error');

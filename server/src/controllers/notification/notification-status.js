@@ -7,7 +7,7 @@ import NOTIFICATION from '../../models/notification.model.js';
 import { sendResponse } from '../../utils/response.js';
 
 const notificationStatus = async (req, res) => {
-  const user_id = req.user;
+  const user_id = req.user.user_id;
 
   try {
     const result = await NOTIFICATION.exists({

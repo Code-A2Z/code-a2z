@@ -12,7 +12,7 @@ import { sendResponse } from '../../utils/response.js';
 
 const saveProjectInCollection = async (req, res) => {
   try {
-    const user_id = req.user;
+    const user_id = req.user.user_id;
     const { collection_id, project_id } = req.body;
 
     if (!collection_id || !Types.ObjectId.isValid(collection_id)) {

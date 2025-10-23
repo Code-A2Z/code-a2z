@@ -10,11 +10,8 @@ export const likeProject = async (data: LikeProjectPayload) => {
 };
 
 export const likeStatus = async (project_id: string) => {
-  return get<string, { isLiked: boolean }>(
-    `/api/like`,
-    true,
-    undefined,
-    false,
-    { project_id }
+  return get<undefined, { is_liked: boolean | null }>(
+    `/api/like?project_id=${project_id}`,
+    true
   );
 };

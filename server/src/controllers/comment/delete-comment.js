@@ -52,13 +52,11 @@ export const deleteComments = async _id => {
 
 const deleteComment = async (req, res) => {
   try {
-    const user_id = req.user;
+    const user_id = req.user.user_id;
     const { comment_id } = req.params;
-
     if (!comment_id) return sendResponse(res, 400, 'Comment ID is required');
 
     const comment = await COMMENT.findOne({ _id: comment_id });
-
     if (!comment) return sendResponse(res, 404, 'Comment not found');
 
     const project = await PROJECT.findById(comment.project_id).select(

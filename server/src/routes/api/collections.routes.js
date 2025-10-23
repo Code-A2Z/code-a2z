@@ -14,6 +14,6 @@ collectionRoutes.post('/', authenticateUser, createCollection);
 collectionRoutes.post('/save-project', authenticateUser, saveProject);
 collectionRoutes.get('/sort-projects', authenticateUser, sortProject);
 collectionRoutes.patch('/remove-project', authenticateUser, removeProject);
-collectionRoutes.delete('/', authenticateUser, deleteCollection);
+collectionRoutes.delete('/:collection_id', authenticateUser, deleteCollection);
 
 export default collectionRoutes;

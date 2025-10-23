@@ -13,7 +13,7 @@ export interface Notification {
   autoHideDuration?: number;
 }
 
-export enum NOTIFICATION_ACTION_TYPE {
+export enum NOTIFICATION_FILTER_TYPE {
   ALL = 'all',
   LIKE = 'like',
   COMMENT = 'comment',
@@ -22,7 +22,7 @@ export enum NOTIFICATION_ACTION_TYPE {
 
 export interface NOTIFICATION_DB_STATE {
   _id: string;
-  type: NOTIFICATION_ACTION_TYPE;
+  type: NOTIFICATION_FILTER_TYPE;
   seen: boolean;
   project_id: string;
   user_id: string; // The user who performed the action

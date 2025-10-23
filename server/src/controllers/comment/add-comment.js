@@ -14,7 +14,7 @@ import { sendResponse } from '../../utils/response.js';
 import { NOTIFICATION_TYPES } from '../../typings/index.js';
 
 const addComment = async (req, res) => {
-  const user_id = req.user;
+  const user_id = req.user.user_id;
   const { project_id, comment, replying_to, notification_id } = req.body;
 
   if (!comment?.trim()?.length) {
@@ -80,7 +80,6 @@ const addComment = async (req, res) => {
       replied_on_comment_id: replying_to || undefined,
     });
 
-    // Save notification
     await notificationObj.save();
 
     return sendResponse(res, 200, 'Comment added successfully', {

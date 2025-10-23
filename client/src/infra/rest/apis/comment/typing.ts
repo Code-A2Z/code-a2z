@@ -1,9 +1,10 @@
+import { USER_PERSONAL_LIMITED_INFO } from '../../typings';
+
 export interface AddCommentPayload {
-  _id: string;
+  project_id: string;
   comment: string;
-  project_author: string;
-  replying_to: string;
-  notification_id: string;
+  replying_to?: string;
+  notification_id?: string;
 }
 
 export interface AddCommentResponse {
@@ -11,34 +12,37 @@ export interface AddCommentResponse {
   comment: string;
   createdAt: Date;
   user_id: string;
-  children: [];
+  children_comment_ids: string[];
 }
 
 export interface GetCommentsPayload {
-  project_id?: string;
+  project_id: string;
   skip?: number;
 }
 
 export interface GetCommentsResponse {
   _id: string;
   project_id: string;
-  project_author: string;
   comment: string;
-  children: [];
-  commented_by: {
-    personal_info: {
-      fullname: string;
-      username: string;
-      profile_img: string;
-    };
-  };
-  isReply: boolean;
-  parent: string | null;
+  children_comment_ids: string[];
+  is_reply: boolean;
+  parent_comment_id: string | null;
+  personal_info: USER_PERSONAL_LIMITED_INFO;
   createdAt: Date;
   updatedAt: Date;
 }
 
 export interface GetRepliesPayload {
-  comment_id?: string;
+  comment_id: string;
   skip?: number;
+}
+
+export interface GetRepliesResponse {
+  _id: string;
+  comment: string;
+  children_comment_ids: string[];
+  is_reply: boolean;
+  parent_comment_id: string | null;
+  personal_info: USER_PERSONAL_LIMITED_INFO;
+  createdAt: Date;
 }

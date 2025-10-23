@@ -35,6 +35,14 @@ const getReplies = async (req, res) => {
       .select('children_comment_ids')
       .lean();
 
+    // Replace user_id with personal_info in each reply
+    commentDoc?.children_comment_ids.forEach(reply => {
+      if (reply.user_id) {
+        reply.personal_info = reply.user_id.personal_info;
+        delete reply.user_id;
+      }
+    });
+
     return sendResponse(
       res,
       200,

@@ -1,19 +1,16 @@
 import { get, post } from '../..';
-import { BaseApiResponse } from '../../typing';
+import { BaseApiResponse } from '../../typings';
 
 export const inviteCollaboration = async (project_id: string) => {
   return post<{ project_id: string }, BaseApiResponse>(
-    `/api/collaboration/invite`,
-    true,
-    { project_id }
+    `/api/collaboration/${project_id}`,
+    true
   );
 };
 
 export const projectCollaborators = async (project_id: string) => {
   return get<{ project_id: string }, BaseApiResponse>(
-    `/api/collaboration`,
-    true,
-    { project_id },
-    false
+    `/api/collaboration/${project_id}`,
+    true
   );
 };

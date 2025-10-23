@@ -1,6 +1,6 @@
 /**
- * POST /api/collab/invite - Invite a user to collaborate on a project
- * @param {string} project_id - Project ID (body param)
+ * POST /api/collab/:project_id - Invite a user to collaborate on a project
+ * @param {string} project_id - Project ID (URL param)
  * @returns {Object} Success message and collaboration data
  */
 
@@ -16,8 +16,8 @@ import { COLLABORATION_STATUS } from '../../typings/index.js';
 
 const invitationToCollaborate = async (req, res) => {
   try {
-    const user_id = req.user;
-    const { project_id } = req.body;
+    const user_id = req.user.user_id;
+    const { project_id } = req.params;
 
     if (!project_id) {
       return sendResponse(res, 400, 'Project ID is required');

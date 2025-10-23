@@ -9,7 +9,11 @@ import getListOfCollaborators from '../../controllers/collaboration/list-collab.
 
 const collaborationRoutes = express.Router();
 
-collaborationRoutes.post('/invite', authenticateUser, invitationToCollaborate);
+collaborationRoutes.post(
+  '/:project_id',
+  authenticateUser,
+  invitationToCollaborate
+);
 collaborationRoutes.post('/accept/:token', authenticateUser, acceptInvitation);
 collaborationRoutes.post('/reject/:token', authenticateUser, rejectInvitation);
 collaborationRoutes.get(

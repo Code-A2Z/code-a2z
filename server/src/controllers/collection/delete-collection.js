@@ -1,6 +1,6 @@
 /**
- * DELETE /api/collection/delete - Delete a collection
- * @param {string} collection_id - Collection ID (body param)
+ * DELETE /api/collection/:collection_id - Delete a collection
+ * @param {string} collection_id - Collection ID (URL param)
  * @returns {Object} Success message
  */
 
@@ -10,8 +10,8 @@ import { sendResponse } from '../../utils/response.js';
 
 const deleteCollection = async (req, res) => {
   try {
-    const user_id = req.user;
-    const { collection_id } = req.body;
+    const user_id = req.user.user_id;
+    const { collection_id } = req.params;
 
     if (!collection_id || !Types.ObjectId.isValid(collection_id)) {
       return sendResponse(res, 400, 'Invalid or missing collection_id');

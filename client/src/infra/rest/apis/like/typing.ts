@@ -1,6 +1,6 @@
 export interface LikeProjectPayload {
   project_id: string;
-  isLikedByUser: boolean;
+  is_liked_by_user: boolean;
 }
 
 export interface LikeProjectResponse {
