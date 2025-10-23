@@ -22,10 +22,40 @@ dotenv.config();
 
 const server = express();
 
+// ✅ CORS Middleware - COMPREHENSIVE CONFIGURATION
+server.use(cors({
+  origin: function (origin, callback) {
+    // Allow requests with no origin (like mobile apps or curl requests)
+    if (!origin) return callback(null, true);
+    
+    const allowedOrigins = [
+      'http://localhost:5173',  // Vite dev server
+      'http://localhost:3000',  // React dev server  
+      'http://localhost:4173',  // Vite preview
+      'https://code-a2z-client.vercel.app', // Production frontend
+      'https://code-a2z-client-git-main-avdhesh-varshneys-projects.vercel.app', // Vercel preview
+      'https://code-a2z-client-*.vercel.app' // All Vercel preview deployments
+    ];
+    
+    if (allowedOrigins.indexOf(origin) !== -1 || origin.includes('vercel.app')) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Accept'],
+  exposedHeaders: ['Content-Range', 'X-Content-Range']
+}));
+
+// ✅ Explicit preflight handling
+server.options('*', cors());
+
 // Middleware
-server.use(express.json());
+server.use(express.json({ limit: '10mb' }));
+server.use(express.urlencoded({ extended: true, limit: '10mb' }));
 server.use(cookieParser());
-server.use(cors());
 
 // securityMiddleware
 securityMiddleware(server);
@@ -42,6 +72,11 @@ connectDB();
 // Routes
 server.get('/', (req, res) =>
     res.status(200).json({ status: 'success', message: 'Backend is running...' })
+);
+
+// Health check route
+server.get('/health', (req, res) =>
+    res.status(200).json({ status: 'healthy', timestamp: new Date().toISOString() })
 );
 
 // Monitoring Route

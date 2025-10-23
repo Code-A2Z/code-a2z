@@ -1,124 +1,43 @@
 import axios from 'axios';
-import { VITE_SERVER_DOMAIN } from '../../config/env';
 
-enum Methods {
-  POST = 'POST',
-  PUT = 'PUT',
-  GET = 'GET',
-  DELETE = 'DELETE',
-  PATCH = 'PATCH',
-}
+// ✅ Simple and correct base URL
+const BASE_URL = 'https://code-a2z-server.vercel.app/api';
 
-export async function makeRequest<T, D = undefined>(
-  url: string,
-  method: Methods,
-  isAuthRequired: boolean,
-  data?: D,
-  hasFullURL?: boolean,
-  headers?: Record<string, string>
-): Promise<T> {
-  let token: string | null = null;
-
-  if (isAuthRequired) {
-    token = localStorage.getItem('token');
-  }
-  if (!hasFullURL) {
-    url = VITE_SERVER_DOMAIN + url;
-  }
-
-  const response = await axios({
-    url,
-    method,
-    data,
+export const makeRequest = async (url: string, options: any = {}) => {
+  // ✅ Ensure URL doesn't have duplicate /api
+  const cleanUrl = url.startsWith('/') ? url.slice(1) : url;
+  const fullUrl = `${BASE_URL}/${cleanUrl}`;
+  
+  console.log('🌐 API Request:', fullUrl);
+  
+  const config = {
+    url: fullUrl,
+    ...options,
+    timeout: 15000,
     headers: {
-      Authorization: token ? `Bearer ${token}` : undefined,
-      ...headers,
+      'Content-Type': 'application/json',
+      ...options.headers,
     },
-  });
-  return response.data;
-}
+  };
 
-export async function get<T, D = undefined>(
-  url: string,
-  isAuthRequired: boolean,
-  body?: D,
-  hasFullURL: boolean = false,
-  headers?: Record<string, string>
-): Promise<T> {
-  return makeRequest<T, D>(
-    url,
-    Methods.GET,
-    isAuthRequired,
-    body,
-    hasFullURL,
-    headers
-  );
-}
+  try {
+    const response = await axios(config);
+    return response.data;
+  } catch (error: any) {
+    console.error('❌ API Error:', error.response?.data || error.message);
+    throw error;
+  }
+};
 
-export async function post<T, D = undefined>(
-  url: string,
-  isAuthRequired: boolean,
-  body?: D,
-  hasFullURL: boolean = false,
-  headers?: Record<string, string>
-): Promise<T> {
-  return makeRequest<T, D>(
-    url,
-    Methods.POST,
-    isAuthRequired,
-    body,
-    hasFullURL,
-    headers
-  );
-}
+// Convenience methods
+export const post = (url: string, data: any, options?: any) => 
+  makeRequest(url, { method: 'POST', data, ...options });
 
-export async function put<T, D = undefined>(
-  url: string,
-  isAuthRequired: boolean,
-  body?: D,
-  hasFullURL: boolean = false,
-  headers?: Record<string, string>
-): Promise<T> {
-  return makeRequest<T, D>(
-    url,
-    Methods.PUT,
-    isAuthRequired,
-    body,
-    hasFullURL,
-    headers
-  );
-}
+export const get = (url: string, options?: any) => 
+  makeRequest(url, { method: 'GET', ...options });
 
-export async function patch<T, D = undefined>(
-  url: string,
-  isAuthRequired: boolean,
-  body?: D,
-  hasFullURL: boolean = false,
-  headers?: Record<string, string>
-): Promise<T> {
-  return makeRequest<T, D>(
-    url,
-    Methods.PATCH,
-    isAuthRequired,
-    body,
-    hasFullURL,
-    headers
-  );
-}
+export const put = (url: string, data: any, options?: any) => 
+  makeRequest(url, { method: 'PUT', data, ...options });
 
-export async function del<T, D = undefined>(
-  url: string,
-  isAuthRequired: boolean,
-  body?: D,
-  hasFullURL: boolean = false,
-  headers?: Record<string, string>
-): Promise<T> {
-  return makeRequest<T, D>(
-    url,
-    Methods.DELETE,
-    isAuthRequired,
-    body,
-    hasFullURL,
-    headers
-  );
-}
+export const del = (url: string, options?: any) => 
+  makeRequest(url, { method: 'DELETE', ...options });
