@@ -42,7 +42,7 @@
     "@mui/icons-material": "^7.2.0",
     "@mui/material": "^7.2.0",
     "@tailwindcss/vite": "^4.1.12",
-    "axios": "^1.8.1",
+    "axios": "^1.12.2",
     "firebase": "^11.4.0",
     "framer-motion": "^12.4.7",
     "jotai": "^2.13.1",
