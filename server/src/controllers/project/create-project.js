@@ -1,154 +1,127 @@
-import { nanoid } from 'nanoid';
+/**
+ * POST /api/project/create - Create or update a project
+ * @param {string} title - Project title
+ * @param {string} banner_url - Banner image URL
+ * @param {string} description - Project description (max 200 chars)
+ * @param {string} repository_url - Repository URL
+ * @param {string} live_url - Project live URL
+ * @param {string[]} tags - Array of tags (max 10)
+ * @param {object[]} content_blocks - EditorJS content blocks
+ * @param {boolean} is_draft - Is draft (true/false). If true, some fields can be empty
+ * @param {string} [project_id] - If present, updates existing project
+ * @returns {Object} Success message and project id
+ */
 
-import Project from '../../models/project.model.js';
-import User from '../../models/user.model.js';
+import PROJECT from '../../models/project.model.js';
+import USER from '../../models/user.model.js';
 import { sendResponse } from '../../utils/response.js';
 
 const createProject = async (req, res) => {
-  const authorId = req.user;
+  const user_id = req.user.user_id;
   let {
     title,
-    des,
-    banner,
-    project_url,
-    repository,
+    banner_url,
+    description,
+    repository_url,
+    live_url,
     tags,
-    content,
-    draft,
-    id,
+    content_blocks,
+    is_draft,
+    project_id,
   } = req.body;
 
   if (!title || !title.trim().length) {
-    return sendResponse(res, 403, 'error', 'You must provide a title');
+    return sendResponse(res, 400, 'You must provide a title');
   }
 
-  if (!draft) {
-    if (!des || !des.trim().length || des.length > 200) {
+  if (is_draft === false || is_draft === 'false') {
+    if (!banner_url || !banner_url.trim().length) {
+      return sendResponse(res, 400, 'Project banner required');
+    }
+    if (
+      !description ||
+      !description.trim().length ||
+      description.length > 200
+    ) {
       return sendResponse(
         res,
-        403,
-        'error',
-        'You must provide project description under 200 characters'
+        400,
+        'Project description required (max 200 chars)'
       );
     }
-
-    if (!banner || !banner.trim().length) {
-      return sendResponse(
-        res,
-        403,
-        'error',
-        'You must provide project banner to publish it'
-      );
+    if (!repository_url || !repository_url.trim().length) {
+      return sendResponse(res, 400, 'Project repository required');
     }
-
-    if (!repository || !repository.trim().length) {
-      return sendResponse(
-        res,
-        403,
-        'error',
-        'You must provide project repository to publish it'
-      );
-    }
-
     if (!tags?.length || tags.length > 10) {
-      return sendResponse(
-        res,
-        403,
-        'error',
-        'Provide tags in order to publish the project, Maximum 10'
-      );
+      return sendResponse(res, 400, 'Provide up to 10 tags');
     }
-
-    if (!content?.[0]?.blocks?.length) {
-      return sendResponse(
-        res,
-        403,
-        'error',
-        'There must be some project content to publish it'
-      );
+    if (!content_blocks?.[0]?.blocks?.length) {
+      return sendResponse(res, 400, 'Project content required');
     }
   }
 
   // Normalize tags
   tags = tags?.map(tag => tag.toLowerCase()) || [];
 
-  // Generate project ID
-  const project_id =
-    id ||
-    title
-      .replace(/[^a-zA-Z0-9]/g, ' ')
-      .replace(/\s+/g, '-')
-      .trim() + nanoid();
-
   try {
-    if (id) {
+    if (project_id) {
       // Update existing project
-      const updatedProject = await Project.findOneAndUpdate(
-        { project_id },
+      const updated_project = await PROJECT.findOneAndUpdate(
+        { _id: project_id },
         {
           title,
-          des,
-          banner,
-          project_url,
-          repository,
-          content,
+          banner_url,
+          description,
+          repository_url,
+          live_url,
           tags,
-          draft: Boolean(draft),
+          content_blocks,
+          draft: is_draft === 'true' || is_draft === true,
         },
         { new: true }
       );
-
-      if (!updatedProject) {
-        return sendResponse(res, 404, 'error', 'Project not found to update');
+      if (!updated_project) {
+        return sendResponse(res, 404, 'Project not found to update');
       }
-
-      return sendResponse(res, 200, 'success', 'Project updated successfully', {
+      return sendResponse(res, 200, 'Project updated successfully', {
         id: project_id,
       });
     } else {
       // Create new project
-      const project = new Project({
-        project_id,
+      const project = new PROJECT({
         title,
-        banner,
-        des,
-        project_url,
-        repository,
-        content,
+        banner_url,
+        description,
+        repository_url,
+        live_url,
         tags,
-        author: authorId,
-        draft: Boolean(draft),
+        content_blocks,
+        user_id,
+        draft: is_draft === 'true' || is_draft === true,
       });
 
-      const savedProject = await project.save();
-
+      const saved_project = await project.save();
       // Update user's total posts and project list
-      if (!draft) {
-        await User.findOneAndUpdate(
-          { _id: authorId },
+      if (is_draft === false || is_draft === 'false') {
+        await USER.findOneAndUpdate(
+          { _id: user_id },
           {
             $inc: { 'account_info.total_posts': 1 },
-            $push: { projects: savedProject._id },
+            $push: { project_ids: saved_project._id },
           }
         );
       } else {
-        await User.findOneAndUpdate(
-          { _id: authorId },
-          { $push: { projects: savedProject._id } }
+        await USER.findOneAndUpdate(
+          { _id: user_id },
+          { $push: { project_ids: saved_project._id } }
         );
       }
-
-      return sendResponse(res, 200, 'success', 'Project created successfully', {
-        id: savedProject.project_id,
+      return sendResponse(res, 200, 'Project created successfully', {
+        id: saved_project._id,
       });
     }
   } catch (err) {
-    return sendResponse(
-      res,
-      500,
-      'error',
-      err.message || 'Internal server error'
-    );
+    return sendResponse(res, 500, err.message || 'Internal server error');
   }
 };
 

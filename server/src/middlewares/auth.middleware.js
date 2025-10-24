@@ -1,18 +1,13 @@
 import jwt from 'jsonwebtoken';
 import { sendResponse } from '../utils/response.js';
-import { CookieToken } from '../typings/index.js';
+import { COOKIE_TOKEN } from '../typings/index.js';
 import { JWT_SECRET_ACCESS_KEY } from '../config/env.js';
 
 const authenticateUser = (req, res, next) => {
-  const token = req.cookies?.[CookieToken.ACCESS_TOKEN];
+  const token = req.cookies?.[COOKIE_TOKEN.ACCESS_TOKEN];
 
   if (!token) {
-    return sendResponse(
-      res,
-      401,
-      'error',
-      'Access Denied: No access token provided'
-    );
+    return sendResponse(res, 401, 'Access Denied: No access token provided');
   }
 
   try {
@@ -22,20 +17,14 @@ const authenticateUser = (req, res, next) => {
         return sendResponse(
           res,
           401,
-          'error',
           'Access token invalid or expired. Please refresh.'
         );
       }
-      req.user = decoded.userId;
+      req.user = decoded;
       next();
     });
   } catch (error) {
-    return sendResponse(
-      res,
-      500,
-      'error',
-      error.message || 'Token verification failed'
-    );
+    return sendResponse(res, 500, error.message || 'Token verification failed');
   }
 };
 

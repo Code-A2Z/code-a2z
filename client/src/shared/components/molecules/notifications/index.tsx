@@ -2,19 +2,20 @@
 import { css } from '@emotion/react';
 import { useAtomValue } from 'jotai';
 import { notificationsAtom } from '../../../states/notification';
-import { NotificationType } from '../../../typings/notification';
+import { NotificationType } from '../../../../infra/rest/typings/notification';
 import { Alert, Slide, IconButton, Collapse } from '@mui/material';
 import { Close as CloseIcon } from '@mui/icons-material';
 import { useState } from 'react';
 
 function CANotifications() {
   const notifications = useAtomValue(notificationsAtom);
-  const [dismissedNotifications, setDismissedNotifications] = useState<Set<string>>(new Set());
+  const [dismissedNotifications, setDismissedNotifications] = useState<
+    Set<string>
+  >(new Set());
 
   const handleDismiss = (id: string) => {
     setDismissedNotifications(prev => new Set([...prev, id]));
   };
-
 
   return (
     <div
@@ -33,7 +34,7 @@ function CANotifications() {
       {notifications.map(
         ({ id, message, type = NotificationType.INFO, open }) => {
           const isDismissed = dismissedNotifications.has(id);
-          
+
           return (
             <Collapse
               key={id}
@@ -48,7 +49,7 @@ function CANotifications() {
                 unmountOnExit
                 timeout={300}
               >
-                <Alert 
+                <Alert
                   severity={type}
                   sx={{
                     borderRadius: '12px',

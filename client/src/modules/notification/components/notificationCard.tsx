@@ -5,7 +5,10 @@ import { motion } from 'framer-motion';
 import { getDay } from '../../../shared/utils/date';
 import NotificationCommentField from './notificationCommentField';
 import { UserAtom } from '../../../shared/states/user';
-import { NotificationData, NotificationState } from '../../../shared/typings';
+import {
+  NotificationData,
+  NotificationState,
+} from '../../../infra/rest/typings';
 import axios from 'axios';
 import {
   ListItem,
@@ -116,7 +119,6 @@ const NotificationCard = ({
       });
   };
 
-
   const getNotificationColor = () => {
     switch (type) {
       case 'like':
@@ -172,7 +174,12 @@ const NotificationCard = ({
               <Avatar
                 src={profile_img}
                 alt={`${fullname}'s profile`}
-                sx={{ width: 56, height: 56, border: 2, borderColor: 'background.paper' }}
+                sx={{
+                  width: 56,
+                  height: 56,
+                  border: 2,
+                  borderColor: 'background.paper',
+                }}
               />
               <Box
                 sx={{
@@ -190,19 +197,33 @@ const NotificationCard = ({
                   borderColor: 'divider',
                 }}
               >
-{type === 'like' ? <Favorite color="error" /> : 
-                 type === 'comment' ? <Comment color="primary" /> : 
-                 type === 'reply' ? <Reply color="success" /> : 
-                 <Notifications color="action" />}
+                {type === 'like' ? (
+                  <Favorite color="error" />
+                ) : type === 'comment' ? (
+                  <Comment color="primary" />
+                ) : type === 'reply' ? (
+                  <Reply color="success" />
+                ) : (
+                  <Notifications color="action" />
+                )}
               </Box>
             </Box>
           </ListItemAvatar>
 
           <ListItemText
             primary={
-              <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 1 }}>
-                <Typography variant="h6" component="span" sx={{ fontWeight: 600 }}>
-                  <Box component="span" sx={{ display: { xs: 'none', lg: 'inline' } }}>
+              <Box
+                sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 1 }}
+              >
+                <Typography
+                  variant="h6"
+                  component="span"
+                  sx={{ fontWeight: 600 }}
+                >
+                  <Box
+                    component="span"
+                    sx={{ display: { xs: 'none', lg: 'inline' } }}
+                  >
                     {fullname}
                   </Box>
                   <Link
@@ -225,7 +246,11 @@ const NotificationCard = ({
             }
             secondary={
               <Box>
-                <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
+                <Typography
+                  variant="body2"
+                  color="text.secondary"
+                  sx={{ mb: 2 }}
+                >
                   <Typography component="span" sx={{ fontWeight: 500 }}>
                     {type === 'like'
                       ? 'liked your project'
@@ -259,7 +284,10 @@ const NotificationCard = ({
                       variant="outlined"
                       size="small"
                       sx={{
-                        '&:hover': { bgcolor: 'primary.light', color: 'primary.contrastText' },
+                        '&:hover': {
+                          bgcolor: 'primary.light',
+                          color: 'primary.contrastText',
+                        },
                       }}
                     />
                   </Link>
@@ -288,7 +316,14 @@ const NotificationCard = ({
 
         <Divider />
 
-        <Box sx={{ p: 2, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+        <Box
+          sx={{
+            p: 2,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+          }}
+        >
           <Box sx={{ display: 'flex', alignItems: 'center', gap: 3 }}>
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
               <AccessTime sx={{ fontSize: 16, color: 'text.secondary' }} />
@@ -312,7 +347,9 @@ const NotificationCard = ({
 
                 <IconButton
                   size="small"
-                  onClick={e => handleDelete(comment?._id || '', 'comment', e.target)}
+                  onClick={e =>
+                    handleDelete(comment?._id || '', 'comment', e.target)
+                  }
                   color="error"
                 >
                   <Delete />
@@ -366,7 +403,11 @@ const NotificationCard = ({
                         @{author_username}
                       </Typography>
                     </Link>
-                    <Typography component="span" color="text.secondary" sx={{ mx: 1 }}>
+                    <Typography
+                      component="span"
+                      color="text.secondary"
+                      sx={{ mx: 1 }}
+                    >
                       replied to
                     </Typography>
                     <Link

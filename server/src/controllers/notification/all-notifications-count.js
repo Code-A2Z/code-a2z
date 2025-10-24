@@ -1,20 +1,26 @@
-import Notification from '../../models/notification.model.js';
-import { NotificationTypes } from '../../typings/index.js';
+/**
+ * GET /api/notification/count - Get total notifications count for user
+ * @param {string} [filter] - Notification type filter (query param)
+ * @returns {Object} Total count
+ */
+
+import NOTIFICATION from '../../models/notification.model.js';
+import { NOTIFICATION_TYPES } from '../../typings/index.js';
 import { sendResponse } from '../../utils/response.js';
 
 const allNotificationsCount = async (req, res) => {
+  const user_id = req.user.user_id;
+  const filter = req.query.filter || NOTIFICATION_TYPES.ALL;
+  const findQuery = { author_id: user_id, user_id: { $ne: user_id } };
+  if (filter !== NOTIFICATION_TYPES.ALL) {
+    findQuery.type = filter;
+  }
+
   try {
-    const user_id = req.user;
-    const filter = req.query.filter || NotificationTypes.ALL;
-
-    const findQuery = { notification_for: user_id, user: { $ne: user_id } };
-    if (filter !== NotificationTypes.ALL) findQuery.type = filter;
-
-    const count = await Notification.countDocuments(findQuery);
+    const count = await NOTIFICATION.countDocuments(findQuery);
     return sendResponse(
       res,
       200,
-      'success',
       'Total notifications count fetched successfully',
       { totalDocs: count }
     );
@@ -22,7 +28,6 @@ const allNotificationsCount = async (req, res) => {
     return sendResponse(
       res,
       500,
-      'error',
       err.message || 'Failed to fetch total notifications count'
     );
   }

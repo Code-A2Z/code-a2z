@@ -5,7 +5,7 @@ dotenv.config();
 
 // Server Configuration
 export const PORT = process.env.PORT || 8000;
-export const NODE_ENV = process.env.NODE_ENV || 'development';
+export const SERVER_ENV = process.env.SERVER_ENV || 'development';
 export const VITE_SERVER_DOMAIN =
   process.env.VITE_SERVER_DOMAIN || 'https://code-a2z-server.vercel.app';
 

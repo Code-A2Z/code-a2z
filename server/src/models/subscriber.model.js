@@ -1,7 +1,7 @@
 import { model } from 'mongoose';
-import subscriberSchema from '../schemas/subscriber.schema.js';
+import SUBSCRIBER_SCHEMA from '../schemas/subscriber.schema.js';
 import { COLLECTION_NAMES } from '../constants/db.js';
 
-const Subscriber = model(COLLECTION_NAMES.SUBSCRIBERS, subscriberSchema);
+const SUBSCRIBER = model(COLLECTION_NAMES.SUBSCRIBERS, SUBSCRIBER_SCHEMA);
 
-export default Subscriber;
+export default SUBSCRIBER;

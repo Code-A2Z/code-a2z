@@ -1,41 +1,51 @@
-import Project from '../../models/project.model.js';
-import Notification from '../../models/notification.model.js';
-import Comment from '../../models/comment.model.js';
+/**
+ * POST /api/comment/add - Add a comment or reply to a project
+ * @param {string} project_id - Project ID (body param)
+ * @param {string} comment - Comment text (body param)
+ * @param {string} [replying_to] - Parent comment ID (for replies)
+ * @param {string} [notification_id] - Notification ID (for replies)
+ * @returns {Object} Created comment
+ */
+
+import PROJECT from '../../models/project.model.js';
+import NOTIFICATION from '../../models/notification.model.js';
+import COMMENT from '../../models/comment.model.js';
 import { sendResponse } from '../../utils/response.js';
+import { NOTIFICATION_TYPES } from '../../typings/index.js';
 
 const addComment = async (req, res) => {
-  try {
-    const user_id = req.user;
-    const { _id, comment, project_author, replying_to, notification_id } =
-      req.body;
+  const user_id = req.user.user_id;
+  const { project_id, comment, replying_to, notification_id } = req.body;
 
-    if (!comment?.trim()?.length) {
-      return sendResponse(
-        res,
-        403,
-        'error',
-        'Write something to leave a comment'
-      );
+  if (!comment?.trim()?.length) {
+    return sendResponse(res, 403, 'Write something to leave a comment');
+  }
+
+  try {
+    const project = await PROJECT.findById(project_id).select('user_id');
+    if (!project) {
+      return sendResponse(res, 404, 'Project not found');
     }
+
+    const project_author = project.user_id;
 
     // Create comment object
     const commentObj = {
-      project_id: _id,
-      project_author,
+      project_id,
       comment,
-      commented_by: user_id,
-      isReply: Boolean(replying_to),
-      parent: replying_to || null,
+      user_id: user_id,
+      is_reply: Boolean(replying_to),
+      parent_comment_id: replying_to || null,
     };
 
     // Save the comment
-    const commentDoc = await new Comment(commentObj).save();
+    const commentDoc = await new COMMENT(commentObj).save();
 
     // Update project activity and comments array
-    await Project.findOneAndUpdate(
-      { _id },
+    await PROJECT.findOneAndUpdate(
+      { _id: project_id },
       {
-        $push: { comments: commentDoc._id },
+        $push: { comment_ids: commentDoc._id },
         $inc: {
           'activity.total_comments': 1,
           'activity.total_parent_comments': replying_to ? 0 : 1,
@@ -43,52 +53,44 @@ const addComment = async (req, res) => {
       }
     );
 
-    // Prepare notification
-    const notificationObj = new Notification({
-      type: replying_to ? 'reply' : 'comment',
-      project: _id,
-      notification_for: project_author,
-      user: user_id,
-      comment: commentDoc._id,
-      replied_on_comment: replying_to || undefined,
-    });
-
-    // Handle replies
+    // Handle replies and get parent comment info
+    let parentComment = null;
     if (replying_to) {
-      const parentComment = await Comment.findOneAndUpdate(
+      parentComment = await COMMENT.findOneAndUpdate(
         { _id: replying_to },
-        { $push: { children: commentDoc._id } },
+        { $push: { children_comment_ids: commentDoc._id } },
         { new: true }
       );
 
-      notificationObj.notification_for =
-        parentComment?.commented_by || project_author;
-
       if (notification_id) {
-        await Notification.findOneAndUpdate(
+        await NOTIFICATION.findOneAndUpdate(
           { _id: notification_id },
-          { reply: commentDoc._id }
+          { reply_id: commentDoc._id }
         );
       }
     }
 
-    // Save notification
+    // Prepare notification
+    const notificationObj = new NOTIFICATION({
+      type: replying_to ? NOTIFICATION_TYPES.REPLY : NOTIFICATION_TYPES.COMMENT,
+      project_id,
+      user_id: user_id,
+      author_id: replying_to ? parentComment?.user_id : project_author,
+      comment_id: commentDoc._id,
+      replied_on_comment_id: replying_to || undefined,
+    });
+
     await notificationObj.save();
 
-    return sendResponse(res, 200, 'success', 'Comment added successfully', {
+    return sendResponse(res, 200, 'Comment added successfully', {
       _id: commentDoc._id,
       comment: commentDoc.comment,
       createdAt: commentDoc.createdAt,
       user_id,
-      children: commentDoc.children,
+      children_comment_ids: commentDoc.children_comment_ids,
     });
   } catch (err) {
-    return sendResponse(
-      res,
-      500,
-      'error',
-      err.message || 'Internal Server Error'
-    );
+    return sendResponse(res, 500, err.message || 'Internal Server Error');
   }
 };
 

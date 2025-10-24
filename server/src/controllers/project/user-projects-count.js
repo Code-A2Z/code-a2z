@@ -1,34 +1,30 @@
-import Project from '../../models/project.model.js';
+/**
+ * GET /api/project/user/count - Get count of user's projects
+ * @param {boolean} [draft] - Draft status
+ * @param {string} [query] - Title search
+ * @returns {Object} Total count
+ */
+
+import PROJECT from '../../models/project.model.js';
 import { sendResponse } from '../../utils/response.js';
 
 const userProjectsCount = async (req, res) => {
+  const user_id = req.user.user_id;
+  const { is_draft, query = '' } = req.query;
+  const titleFilter = new RegExp(query, 'i');
+
   try {
-    const user_id = req.user;
-    const { draft, query = '' } = req.query;
-
-    const draftValue = draft === 'true';
-    const titleFilter = new RegExp(query, 'i');
-
-    const totalDocs = await Project.countDocuments({
-      author: user_id,
-      draft: draftValue,
+    const totalDocs = await PROJECT.countDocuments({
+      user_id,
+      is_draft: is_draft === 'true' || is_draft === true,
       title: titleFilter,
     });
 
-    return sendResponse(
-      res,
-      200,
-      'success',
-      'User projects count fetched successfully',
-      { totalDocs }
-    );
+    return sendResponse(res, 200, 'User projects count fetched successfully', {
+      totalDocs,
+    });
   } catch (err) {
-    return sendResponse(
-      res,
-      500,
-      'error',
-      err.message || 'Internal server error'
-    );
+    return sendResponse(res, 500, err.message || 'Internal server error');
   }
 };
 

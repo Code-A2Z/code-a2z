@@ -1,53 +1,47 @@
-import Subscriber from '../../models/subscriber.model.js';
+/**
+ * PATCH /api/subscriber/unsubscribe - Unsubscribe an email from newsletter
+ * @param {string} email - Email address (body param)
+ * @returns {Object} Success message
+ */
+
+import SUBSCRIBER from '../../models/subscriber.model.js';
 import { sendResponse } from '../../utils/response.js';
-import { emailRegex } from '../../utils/regex.js';
+import { EMAIL_REGEX } from '../../utils/regex.js';
 
 const unsubscribeEmail = async (req, res) => {
   const { email } = req.body;
   if (!email) {
-    return sendResponse(res, 400, 'error', 'Email is required');
+    return sendResponse(res, 400, 'Email is required');
   }
-  if (!emailRegex.test(email)) {
-    return sendResponse(res, 400, 'error', 'Invalid email');
+  if (!EMAIL_REGEX.test(email)) {
+    return sendResponse(res, 400, 'Invalid email');
   }
 
   try {
-    const subscriber = await Subscriber.findOne({ email });
+    const subscriber = await SUBSCRIBER.findOne({ email });
     if (!subscriber) {
-      return sendResponse(
-        res,
-        404,
-        'error',
-        'Email not found in our subscription list'
-      );
+      return sendResponse(res, 404, 'Email not found in our subscription list');
     }
-    if (!subscriber.isSubscribed) {
+    if (!subscriber.is_subscribed) {
       return sendResponse(
         res,
         200,
-        'success',
         'You are already unsubscribed from our newsletter'
       );
     }
 
     // Unsubscribe the subscriber
-    subscriber.isSubscribed = false;
-    subscriber.unsubscribedAt = new Date();
+    subscriber.is_subscribed = false;
+    subscriber.unsubscribed_at = new Date();
 
     await subscriber.save();
     return sendResponse(
       res,
       200,
-      'success',
       'You have been unsubscribed from our newsletter'
     );
   } catch (error) {
-    return sendResponse(
-      res,
-      500,
-      'error',
-      error.message || 'Internal Server Error'
-    );
+    return sendResponse(res, 500, error.message || 'Internal Server Error');
   }
 };
 

@@ -1,44 +1,38 @@
-import User from '../../models/user.model.js';
-import { URLRegex } from '../../utils/regex.js';
+/**
+ * PATCH /api/user/profile-img - Update user profile image
+ * @param {string} url - Profile image URL (body param)
+ * @returns {Object} Updated profile image
+ */
+
+import USER from '../../models/user.model.js';
+import { URL_REGEX } from '../../utils/regex.js';
 import { sendResponse } from '../../utils/response.js';
 
 const updateProfileImg = async (req, res) => {
   const { url } = req.body;
-
   if (!url) {
-    return sendResponse(res, 400, 'error', 'Profile image URL is required');
+    return sendResponse(res, 400, 'Profile image URL is required');
   }
-  if (!URLRegex.test(url)) {
-    return sendResponse(res, 400, 'error', 'Invalid URL format');
+  if (!URL_REGEX.test(url)) {
+    return sendResponse(res, 400, 'Invalid URL format');
   }
 
   try {
-    const updatedUser = await User.findOneAndUpdate(
-      { _id: req.user },
+    const updated_user = await USER.findOneAndUpdate(
+      { _id: req.user.user_id },
       { 'personal_info.profile_img': url },
       { new: true }
     ).select('personal_info.profile_img');
 
-    if (!updatedUser) {
-      return sendResponse(res, 404, 'error', 'User not found');
+    if (!updated_user) {
+      return sendResponse(res, 404, 'User not found');
     }
 
-    return sendResponse(
-      res,
-      200,
-      'success',
-      'Profile image updated successfully',
-      {
-        profile_img: updatedUser.personal_info.profile_img,
-      }
-    );
+    return sendResponse(res, 200, 'Profile image updated successfully', {
+      profile_img: updated_user.personal_info.profile_img,
+    });
   } catch (error) {
-    return sendResponse(
-      res,
-      500,
-      'error',
-      error.message || 'Internal Server Error'
-    );
+    return sendResponse(res, 500, error.message || 'Internal Server Error');
   }
 };
 

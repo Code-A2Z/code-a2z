@@ -1,35 +1,36 @@
-import Project from '../../models/project.model.js';
+/**
+ * GET /api/project/search-count - Get count of projects matching search
+ * @param {string} [tag] - Tag to filter
+ * @param {string} [user_id] - Author ID
+ * @param {string} [query] - Title search
+ * @returns {Object} Total count
+ */
+
+import PROJECT from '../../models/project.model.js';
 import { sendResponse } from '../../utils/response.js';
 
 const searchProjectsCount = async (req, res) => {
+  const { tag, user_id, query } = req.query;
+
+  let findQuery = { is_draft: false };
+  if (tag) {
+    findQuery.tags = tag;
+  } else if (query) {
+    findQuery.title = new RegExp(query, 'i');
+  } else if (user_id) {
+    findQuery.user_id = user_id;
+  }
+
   try {
-    const { tag, author, query } = req.query;
-
-    let findQuery = { draft: false };
-
-    if (tag) {
-      findQuery.tags = tag;
-    } else if (query) {
-      findQuery.title = new RegExp(query, 'i');
-    } else if (author) {
-      findQuery.author = author;
-    }
-
-    const count = await Project.countDocuments(findQuery);
+    const count = await PROJECT.countDocuments(findQuery);
     return sendResponse(
       res,
       200,
-      'success',
       'Search projects count fetched successfully',
       { totalDocs: count }
     );
   } catch (err) {
-    return sendResponse(
-      res,
-      500,
-      'error',
-      err.message || 'Internal server error'
-    );
+    return sendResponse(res, 500, err.message || 'Internal server error');
   }
 };
 

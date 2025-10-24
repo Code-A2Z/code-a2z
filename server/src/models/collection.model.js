@@ -1,7 +1,7 @@
 import { model } from 'mongoose';
-import collectionSchema from '../schemas/collection.schema.js';
+import COLLECTION_SCHEMA from '../schemas/collection.schema.js';
 import { COLLECTION_NAMES } from '../constants/db.js';
 
-const Collection = model(COLLECTION_NAMES.COLLECTIONS, collectionSchema);
+const COLLECTION = model(COLLECTION_NAMES.COLLECTIONS, COLLECTION_SCHEMA);
 
-export default Collection;
+export default COLLECTION;

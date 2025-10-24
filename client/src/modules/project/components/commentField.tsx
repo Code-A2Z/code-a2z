@@ -5,7 +5,7 @@ import { useNotifications } from '../../../shared/hooks/use-notification';
 import { commentNotification } from '../requests';
 import { ProjectAtom } from '../../../shared/states/project';
 import { TotalParentCommentsLoadedAtom } from '../states';
-import { Comment } from '../../../shared/typings';
+import { Comment } from '../../../infra/rest/typings';
 
 const CommentField = ({
   action,

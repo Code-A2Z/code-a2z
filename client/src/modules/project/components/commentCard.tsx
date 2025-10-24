@@ -6,7 +6,7 @@ import { UserAtom } from '../../../shared/states/user';
 import { ProjectAtom } from '../../../shared/states/project';
 import { useNotifications } from '../../../shared/hooks/use-notification';
 import { TotalParentCommentsLoadedAtom } from '../states';
-import { Comment } from '../../../shared/typings';
+import { Comment } from '../../../infra/rest/typings';
 import { getReplies, deleteComment } from '../requests';
 
 const CommentCard = ({

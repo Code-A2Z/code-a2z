@@ -1,12 +1,12 @@
-import morgan from 'morgan'
-import logger from './winston.js'
-import dotenv from 'dotenv'
+import morgan from 'morgan';
+import logger from './winston.js';
+import dotenv from 'dotenv';
 
-dotenv.config()
+dotenv.config();
 
 const stream = {
-  write: (msg) => logger.info(msg.trim()),
-}
+  write: msg => logger.info(msg.trim()),
+};
 
 /*
  * Skip function for test environments
@@ -14,11 +14,11 @@ const stream = {
  * Kept for future scalability — useful if automated tests are added later.
  */
 
-const skip = () => process.env.NODE_ENV === 'test'
+const skip = () => process.env.NODE_ENV === 'test';
 
 const morganMiddleware = morgan(
   ':method :url :status :res[content-length] - :response-time ms',
   { stream, skip }
-)
+);
 
-export default morganMiddleware
+export default morganMiddleware;

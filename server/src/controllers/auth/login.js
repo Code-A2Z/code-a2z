@@ -1,81 +1,81 @@
-import bcrypt from 'bcrypt';
-import jwt from 'jsonwebtoken';
+/**
+ * POST /api/auth/login - Authenticate user and return tokens
+ * @param {string} email - User's email address
+ * @param {string} password - User's password
+ * @returns {Object} User object with authentication tokens
+ */
 
-import User from '../../models/user.model.js';
-import Subscriber from '../../models/subscriber.model.js';
+import bcrypt from 'bcrypt';
+import USER from '../../models/user.model.js';
+import SUBSCRIBER from '../../models/subscriber.model.js';
+import { COOKIE_TOKEN, NODE_ENV } from '../../typings/index.js';
 import { sendResponse } from '../../utils/response.js';
-import { CookieToken, NodeEnv } from '../../typings/index.js';
+import { generateTokens } from './utils/index.js';
 import {
-  JWT_SECRET_ACCESS_KEY,
-  JWT_SECRET_REFRESH_KEY,
-  JWT_ACCESS_EXPIRES_IN,
-  JWT_REFRESH_EXPIRES_IN,
   JWT_ACCESS_EXPIRES_IN_NUM,
   JWT_REFRESH_EXPIRES_IN_NUM,
-  NODE_ENV,
+  SERVER_ENV,
 } from '../../config/env.js';
-
-// Helper function to generate both tokens
-const generateTokens = payload => {
-  const accessToken = jwt.sign(payload, JWT_SECRET_ACCESS_KEY, {
-    expiresIn: JWT_ACCESS_EXPIRES_IN || '15m',
-  });
-  const refreshToken = jwt.sign(payload, JWT_SECRET_REFRESH_KEY, {
-    expiresIn: JWT_REFRESH_EXPIRES_IN || '7d',
-  });
-  return { accessToken, refreshToken };
-};
 
 const login = async (req, res) => {
   const { email, password } = req.body;
 
+  if (!email || !password) {
+    return sendResponse(res, 400, 'Email and password are required');
+  }
+
   try {
-    // Check subscriber existence
-    const isSubscriber = await Subscriber.exists({ email });
-    if (!isSubscriber) {
-      return sendResponse(res, 404, 'error', 'Email not found');
+    const subscriber = await SUBSCRIBER.findOne({ email });
+
+    if (!subscriber) {
+      return sendResponse(res, 404, 'Email not found');
     }
 
-    const user = await User.findOne({
-      'personal_info.email': isSubscriber._id,
+    const user = await USER.findOne({
+      'personal_info.subscriber_id': subscriber._id,
     });
+
     if (!user) {
-      return sendResponse(res, 404, 'error', 'User not found');
+      return sendResponse(res, 404, 'User not found');
     }
 
     if (!user.personal_info?.password) {
-      return sendResponse(res, 500, 'error', 'User data is incomplete');
+      return sendResponse(res, 500, 'User password is not set');
     }
 
-    const isMatch = await bcrypt.compare(password, user.personal_info.password);
-    if (!isMatch) return sendResponse(res, 401, 'error', 'Incorrect password');
+    const is_password_match = await bcrypt.compare(
+      password,
+      user.personal_info.password
+    );
 
-    const payload = { userId: user._id, email: user.personal_info.email };
+    if (!is_password_match) {
+      return sendResponse(res, 401, 'Incorrect password');
+    }
+
+    const payload = {
+      user_id: user._id,
+      subscriber_id: subscriber._id,
+    };
+
     const { accessToken, refreshToken } = generateTokens(payload);
 
-    // Set secure cookies
-    res.cookie(CookieToken.ACCESS_TOKEN, accessToken, {
+    res.cookie(COOKIE_TOKEN.ACCESS_TOKEN, accessToken, {
       httpOnly: true,
-      secure: NODE_ENV === NodeEnv.PRODUCTION,
+      secure: SERVER_ENV === NODE_ENV.PRODUCTION,
       sameSite: 'strict',
       maxAge: JWT_ACCESS_EXPIRES_IN_NUM,
     });
 
-    res.cookie(CookieToken.REFRESH_TOKEN, refreshToken, {
+    res.cookie(COOKIE_TOKEN.REFRESH_TOKEN, refreshToken, {
       httpOnly: true,
-      secure: NODE_ENV === NodeEnv.PRODUCTION,
+      secure: SERVER_ENV === NODE_ENV.PRODUCTION,
       sameSite: 'strict',
       maxAge: JWT_REFRESH_EXPIRES_IN_NUM,
     });
 
-    return sendResponse(res, 200, 'success', 'Login successful', user);
+    return sendResponse(res, 200, 'Login successful', user);
   } catch (err) {
-    return sendResponse(
-      res,
-      500,
-      'error',
-      err.message || 'Internal Server Error'
-    );
+    return sendResponse(res, 500, err.message || 'Internal Server Error');
   }
 };
 

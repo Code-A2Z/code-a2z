@@ -1,4 +1,4 @@
-import { Comment } from '../../../shared/typings';
+import { Comment } from '../../../infra/rest/typings';
 import { getComments } from '../requests';
 
 export const fetchComments = async ({

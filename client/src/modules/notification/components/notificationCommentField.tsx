@@ -2,16 +2,9 @@ import { useState } from 'react';
 import axios from 'axios';
 import { useAtom } from 'jotai';
 import { UserAtom } from '../../../shared/states/user';
-import { NotificationState } from '../../../shared/typings';
-import {
-  TextField,
-  Button,
-  Box,
-  Typography,
-} from '@mui/material';
-import {
-  Reply,
-} from '@mui/icons-material';
+import { NotificationState } from '../../../infra/rest/typings';
+import { TextField, Button, Box, Typography } from '@mui/material';
+import { Reply } from '@mui/icons-material';
 
 interface NotificationCommentFieldProps {
   _id: string;
@@ -127,8 +120,14 @@ const NotificationCommentField = ({
           {comment.length}/500
         </Typography>
       </Box>
-      
-      <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+
+      <Box
+        sx={{
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+        }}
+      >
         <Button
           onClick={() => setReplying(false)}
           color="inherit"
@@ -136,7 +135,7 @@ const NotificationCommentField = ({
         >
           Cancel
         </Button>
-        
+
         <Button
           onClick={handleComment}
           disabled={!comment.trim() || comment.length > 500}

@@ -40,8 +40,8 @@ loggingMiddleware(server);
 connectDB();
 
 // Routes
-server.get('/', (req, res) =>
-    res.status(200).json({ status: 'success', message: 'Backend is running...' })
+server.get('', (req, res) =>
+  res.status(200).json({ status: 'success', message: 'Backend is running...' })
 );
 
 // Monitoring Route

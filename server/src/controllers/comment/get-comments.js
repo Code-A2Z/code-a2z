@@ -1,4 +1,11 @@
-import Comment from '../../models/comment.model.js';
+/**
+ * GET /api/comment/list?project_id= - Get comments for a project
+ * @param {string} project_id - Project ID (query param)
+ * @param {number} [skip=0] - Number of comments to skip (pagination)
+ * @returns {Object[]} Array of comments
+ */
+
+import COMMENT from '../../models/comment.model.js';
 import { sendResponse } from '../../utils/response.js';
 
 const getComments = async (req, res) => {
@@ -7,33 +14,30 @@ const getComments = async (req, res) => {
     const maxLimit = 5;
 
     if (!project_id) {
-      return sendResponse(res, 400, 'error', 'Project ID is required');
+      return sendResponse(res, 400, 'Project ID is required');
     }
 
-    const comments = await Comment.find({ project_id, isReply: false })
+    const comments = await COMMENT.find({ project_id, is_reply: false })
       .populate(
-        'commented_by',
+        'user_id',
         'personal_info.username personal_info.fullname personal_info.profile_img -_id'
       )
       .skip(parseInt(skip))
       .limit(maxLimit)
-      .sort({ commentedAt: -1 })
+      .sort({ createdAt: -1 })
       .lean();
 
-    return sendResponse(
-      res,
-      200,
-      'success',
-      'Comments fetched successfully',
-      comments
-    );
+    // Replace user_id with personal_info
+    comments.forEach(comment => {
+      if (comment.user_id) {
+        comment.personal_info = comment.user_id.personal_info;
+        delete comment.user_id;
+      }
+    });
+
+    return sendResponse(res, 200, 'Comments fetched successfully', comments);
   } catch (err) {
-    return sendResponse(
-      res,
-      500,
-      'error',
-      err.message || 'Internal Server Error'
-    );
+    return sendResponse(res, 500, err.message || 'Internal Server Error');
   }
 };
 

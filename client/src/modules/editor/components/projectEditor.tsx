@@ -9,7 +9,7 @@ import { ProjectAtom } from '../../../shared/states/project';
 import { EditorAtom, TextEditorAtom } from '../states';
 import { useNotifications } from '../../../shared/hooks/use-notification';
 import { createProject } from '../requests';
-import type { EditorBlock } from '../../../shared/typings';
+import type { EditorBlock } from '../../../infra/rest/typings';
 import { EditorMode } from '../typings';
 import { defaultBanner } from '../constants';
 

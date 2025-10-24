@@ -1,132 +1,109 @@
-import { nanoid } from 'nanoid';
-import bcrypt from 'bcrypt';
-import jwt from 'jsonwebtoken';
+/**
+ * POST /api/auth/signup - Register a new user
+ * @param {string} fullname - User's full name (min 3 characters)
+ * @param {string} email - Valid email address
+ * @param {string} password - Password (6-20 chars, uppercase, lowercase, number)
+ * @returns {Object} User object with account details
+ */
 
-import User from '../../models/user.model.js';
-import Subscriber from '../../models/subscriber.model.js';
-import { emailRegex, passwordRegex } from '../../utils/regex.js';
-import { sendResponse } from '../../utils/response.js';
+import bcrypt from 'bcrypt';
+import USER from '../../models/user.model.js';
+import SUBSCRIBER from '../../models/subscriber.model.js';
+import { EMAIL_REGEX, PASSWORD_REGEX } from '../../utils/regex.js';
 import { SALT_ROUNDS } from '../../constants/index.js';
-import { CookieToken, NodeEnv } from '../../typings/index.js';
+import { COOKIE_TOKEN, NODE_ENV } from '../../typings/index.js';
+import { sendResponse } from '../../utils/response.js';
+import { generateTokens, generateUsername } from './utils/index.js';
 import {
-  JWT_SECRET_ACCESS_KEY,
-  JWT_SECRET_REFRESH_KEY,
-  JWT_ACCESS_EXPIRES_IN,
-  JWT_REFRESH_EXPIRES_IN,
   JWT_ACCESS_EXPIRES_IN_NUM,
   JWT_REFRESH_EXPIRES_IN_NUM,
-  NODE_ENV,
+  SERVER_ENV,
 } from '../../config/env.js';
-
-// Generate unique username
-export const generateUsername = async email => {
-  let username = email.split('@')[0];
-  const isUsernameNotUnique = await User.exists({
-    'personal_info.username': username,
-  });
-  if (isUsernameNotUnique) username += nanoid().substring(0, 5);
-  return username;
-};
-
-// Helper to create tokens
-const generateTokens = payload => {
-  const accessToken = jwt.sign(payload, JWT_SECRET_ACCESS_KEY, {
-    expiresIn: JWT_ACCESS_EXPIRES_IN,
-  });
-  const refreshToken = jwt.sign(payload, JWT_SECRET_REFRESH_KEY, {
-    expiresIn: JWT_REFRESH_EXPIRES_IN,
-  });
-  return { accessToken, refreshToken };
-};
 
 const signup = async (req, res) => {
   const { fullname, email, password } = req.body;
 
-  if (fullname.length < 3)
+  if (!fullname || fullname.length < 3) {
     return sendResponse(
       res,
       400,
-      'error',
-      'Full name should be at least 3 letters long'
+      'Full name must be at least 3 characters long'
     );
-  if (!emailRegex.test(email))
-    return sendResponse(res, 400, 'error', 'Invalid email');
-  if (!passwordRegex.test(password))
-    return sendResponse(
-      res,
-      400,
-      'error',
-      'Password should be at least 6 characters long and contain at least one uppercase letter, one lowercase letter, and one number'
-    );
+  }
+
+  if (!email || !EMAIL_REGEX.test(email)) {
+    return sendResponse(res, 400, 'Invalid email address');
+  }
+
+  if (!password || !PASSWORD_REGEX.test(password)) {
+    return sendResponse(res, 400, 'Invalid password format');
+  }
 
   try {
     const hashed_password = await bcrypt.hash(password, SALT_ROUNDS);
     const username = await generateUsername(email);
 
-    // Check Subscriber
-    let subscribeUser = await Subscriber.findOne({ email });
-    if (subscribeUser) {
-      if (await User.exists({ 'personal_info.email': subscribeUser._id })) {
-        return sendResponse(res, 400, 'error', 'Email is already registered');
+    let subscriber = await SUBSCRIBER.findOne({ email });
+
+    if (subscriber) {
+      const userExists = await USER.exists({
+        'personal_info.subscriber_id': subscriber._id,
+      });
+
+      if (userExists) {
+        return sendResponse(res, 400, 'Email is already registered');
       }
-      if (!subscribeUser.isSubscribed) {
-        subscribeUser.isSubscribed = true;
-        subscribeUser.subscribedAt = new Date();
-        await subscribeUser.save();
+
+      if (!subscriber.is_subscribed) {
+        subscriber.is_subscribed = true;
+        subscriber.subscribed_at = new Date();
+        subscriber.unsubscribed_at = null;
+        await subscriber.save();
       }
     } else {
-      subscribeUser = new Subscriber({
+      subscriber = new SUBSCRIBER({
         email,
-        isSubscribed: true,
-        subscribedAt: new Date(),
+        is_subscribed: true,
+        subscribed_at: new Date(),
       });
-      await subscribeUser.save();
+      await subscriber.save();
     }
 
-    const user = new User({
+    const user = new USER({
       personal_info: {
         fullname,
-        email: subscribeUser._id,
+        subscriber_id: subscriber._id,
         password: hashed_password,
         username,
       },
     });
 
-    const savedUser = await user.save();
+    const saved_user = await user.save();
+
     const payload = {
-      userId: savedUser._id,
-      email: savedUser.personal_info.email,
+      user_id: saved_user._id,
+      subscriber_id: subscriber._id,
     };
+
     const { accessToken, refreshToken } = generateTokens(payload);
 
-    // Set cookies securely
-    res.cookie(CookieToken.ACCESS_TOKEN, accessToken, {
+    res.cookie(COOKIE_TOKEN.ACCESS_TOKEN, accessToken, {
       httpOnly: true,
-      secure: NODE_ENV === NodeEnv.PRODUCTION,
+      secure: SERVER_ENV === NODE_ENV.PRODUCTION,
       sameSite: 'strict',
       maxAge: JWT_ACCESS_EXPIRES_IN_NUM,
     });
-    res.cookie(CookieToken.REFRESH_TOKEN, refreshToken, {
+
+    res.cookie(COOKIE_TOKEN.REFRESH_TOKEN, refreshToken, {
       httpOnly: true,
-      secure: NODE_ENV === NodeEnv.PRODUCTION,
+      secure: SERVER_ENV === NODE_ENV.PRODUCTION,
       sameSite: 'strict',
       maxAge: JWT_REFRESH_EXPIRES_IN_NUM,
     });
 
-    return sendResponse(
-      res,
-      201,
-      'success',
-      'User registered successfully',
-      savedUser
-    );
+    return sendResponse(res, 201, 'User registered successfully', saved_user);
   } catch (err) {
-    return sendResponse(
-      res,
-      500,
-      'error',
-      err.message || 'Internal Server Error'
-    );
+    return sendResponse(res, 500, err.message || 'Internal Server Error');
   }
 };
 

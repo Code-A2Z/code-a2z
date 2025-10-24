@@ -1,66 +1,74 @@
-import Collection from '../../models/collection.model.js';
-import User from '../../models/user.model.js';
+/**
+ * POST /api/collection/create - Create a new collection
+ * @param {string} collection_name - Name of the collection (body param)
+ * @param {string} description - Description of the collection (body param)
+ * @returns {Object} Created collection
+ */
+
+import COLLECTION from '../../models/collection.model.js';
+import USER from '../../models/user.model.js';
 import { sendResponse } from '../../utils/response.js';
 
 const createCollection = async (req, res) => {
   try {
-    const user_id = req.user;
-    const { collection_name } = req.body;
+    const user_id = req.user.user_id;
+    const { collection_name, description } = req.body;
 
-    if (!collection_name?.trim()) {
+    if (collection_name.trim().length < 2) {
       return sendResponse(
         res,
         400,
-        'error',
-        'Collection name is required',
-        null
+        'Collection name must be at least 2 characters long'
+      );
+    }
+
+    if (description && description.length > 200) {
+      return sendResponse(
+        res,
+        400,
+        'Description must be at most 200 characters long'
       );
     }
 
     // Check for duplicate collection name for the same user
-    const existingCollection = await Collection.findOne({
+    const existing_collection = await COLLECTION.findOne({
       user_id,
       collection_name: collection_name.trim(),
     });
-    if (existingCollection) {
+    if (existing_collection) {
       return sendResponse(
         res,
         400,
-        'error',
-        `Collection '${collection_name}' already exists.`,
-        null
+        `Collection '${collection_name}' already exists.`
       );
     }
 
     // Create new collection
-    const newCollection = await Collection.create({ user_id, collection_name });
+    const new_collection = await COLLECTION.create({
+      user_id,
+      collection_name,
+      description,
+    });
 
     // Push the collection into user's collections array
-    const user = await User.findByIdAndUpdate(
+    const user = await USER.findByIdAndUpdate(
       user_id,
-      { $push: { collections: newCollection._id } },
+      { $push: { collection_ids: new_collection._id } },
       { new: true }
     ).select('personal_info.fullname');
 
     if (!user) {
-      return sendResponse(res, 404, 'error', 'User not found', null);
+      return sendResponse(res, 404, 'User not found');
     }
 
     return sendResponse(
       res,
       201,
-      'success',
       `${collection_name} collection created successfully!`,
-      newCollection
+      new_collection
     );
   } catch (err) {
-    return sendResponse(
-      res,
-      500,
-      'error',
-      err.message || 'Internal Server Error',
-      null
-    );
+    return sendResponse(res, 500, err.message || 'Internal Server Error');
   }
 };
 
