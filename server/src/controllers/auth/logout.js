@@ -9,17 +9,12 @@ import { SERVER_ENV } from '../../config/env.js';
 
 const logout = async (req, res) => {
   try {
-    // Clear both access and refresh cookies
-    res.clearCookie(COOKIE_TOKEN.ACCESS_TOKEN, {
-      httpOnly: true,
-      secure: SERVER_ENV === NODE_ENV.PRODUCTION,
-      sameSite: 'strict',
-    });
-
+    // Clear refresh cookies
     res.clearCookie(COOKIE_TOKEN.REFRESH_TOKEN, {
       httpOnly: true,
       secure: SERVER_ENV === NODE_ENV.PRODUCTION,
       sameSite: 'strict',
+      path: '/',
     });
 
     return sendResponse(res, 200, 'Logged out successfully');

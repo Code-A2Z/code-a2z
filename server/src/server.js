@@ -25,7 +25,12 @@ const server = express();
 // Middleware
 server.use(express.json());
 server.use(cookieParser());
-server.use(cors());
+server.use(
+  cors({
+    origin: process.env.VITE_CLIENT_DOMAIN || 'http://localhost:5173',
+    credentials: true,
+  })
+);
 
 // securityMiddleware
 securityMiddleware(server);

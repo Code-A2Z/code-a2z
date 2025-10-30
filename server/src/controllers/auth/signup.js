@@ -14,11 +14,7 @@ import { SALT_ROUNDS } from '../../constants/index.js';
 import { COOKIE_TOKEN, NODE_ENV } from '../../typings/index.js';
 import { sendResponse } from '../../utils/response.js';
 import { generateTokens, generateUsername } from './utils/index.js';
-import {
-  JWT_ACCESS_EXPIRES_IN_NUM,
-  JWT_REFRESH_EXPIRES_IN_NUM,
-  SERVER_ENV,
-} from '../../config/env.js';
+import { JWT_REFRESH_EXPIRES_IN_NUM, SERVER_ENV } from '../../config/env.js';
 
 const signup = async (req, res) => {
   const { fullname, email, password } = req.body;
@@ -85,23 +81,19 @@ const signup = async (req, res) => {
       subscriber_id: subscriber._id,
     };
 
-    const { accessToken, refreshToken } = generateTokens(payload);
-
-    res.cookie(COOKIE_TOKEN.ACCESS_TOKEN, accessToken, {
+    const { access_token, refresh_token } = generateTokens(payload);
+    res.cookie(COOKIE_TOKEN.REFRESH_TOKEN, refresh_token, {
       httpOnly: true,
       secure: SERVER_ENV === NODE_ENV.PRODUCTION,
       sameSite: 'strict',
-      maxAge: JWT_ACCESS_EXPIRES_IN_NUM,
-    });
-
-    res.cookie(COOKIE_TOKEN.REFRESH_TOKEN, refreshToken, {
-      httpOnly: true,
-      secure: SERVER_ENV === NODE_ENV.PRODUCTION,
-      sameSite: 'strict',
+      path: '/',
       maxAge: JWT_REFRESH_EXPIRES_IN_NUM,
     });
 
-    return sendResponse(res, 201, 'User registered successfully', saved_user);
+    return sendResponse(res, 201, 'User registered successfully', {
+      user: saved_user,
+      access_token,
+    });
   } catch (err) {
     return sendResponse(res, 500, err.message || 'Internal Server Error');
   }

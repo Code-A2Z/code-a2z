@@ -55,7 +55,12 @@ const createProject = async (req, res) => {
     if (!tags?.length || tags.length > 10) {
       return sendResponse(res, 400, 'Provide up to 10 tags');
     }
-    if (!content_blocks?.[0]?.blocks?.length) {
+    if (
+      !(
+        (Array.isArray(content_blocks) && content_blocks.length > 0) ||
+        (!Array.isArray(content_blocks) && !!content_blocks?.blocks?.length)
+      )
+    ) {
       return sendResponse(res, 400, 'Project content required');
     }
   }

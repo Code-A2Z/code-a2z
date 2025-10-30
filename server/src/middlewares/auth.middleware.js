@@ -4,7 +4,9 @@ import { COOKIE_TOKEN } from '../typings/index.js';
 import { JWT_SECRET_ACCESS_KEY } from '../config/env.js';
 
 const authenticateUser = (req, res, next) => {
-  const token = req.cookies?.[COOKIE_TOKEN.ACCESS_TOKEN];
+  const token =
+    req.headers['authorization']?.split(' ')[1] ||
+    req.cookies?.[COOKIE_TOKEN.ACCESS_TOKEN];
 
   if (!token) {
     return sendResponse(res, 401, 'Access Denied: No access token provided');
