@@ -14,6 +14,14 @@ export default defineConfig([
   },
   pluginReact.configs.flat.recommended,
   {
+    // Disable react-in-jsx-scope for React 17+ (not needed)
+    files: ['**/*.{tsx,jsx}'],
+    rules: {
+      'react/react-in-jsx-scope': 'off',
+      'react/jsx-uses-react': 'off',
+    },
+  },
+  {
     ...json.configs.recommended,
     files: ["**/*.json"],
     plugins: { json },

@@ -19,5 +19,10 @@ export default defineConfig([
       ecmaVersion: 2020,
       globals: globals.browser,
     },
+    rules: {
+      // Disable react-in-jsx-scope for React 17+ (not needed)
+      'react/react-in-jsx-scope': 'off',
+      'react/jsx-uses-react': 'off',
+    },
   },
 ])
