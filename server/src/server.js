@@ -5,6 +5,8 @@ import dotenv from 'dotenv';
 
 // Configs
 import connectDB from './config/db.js';
+import { SERVER_ENV } from './config/env.js';
+import { NODE_ENV } from './typings/index.js';
 
 // Middlewares
 import errorHandler from './middlewares/error.handler.js';
@@ -38,8 +40,10 @@ securityMiddleware(server);
 // sanitizationMiddleware (global)
 server.use(sanitizeInput());
 
-// Logging middleware
-loggingMiddleware(server);
+// Logging middleware (only in development)
+if (SERVER_ENV === NODE_ENV.DEVELOPMENT) {
+  loggingMiddleware(server);
+}
 
 // Connect to Database
 connectDB();
