@@ -1,132 +1,146 @@
-import { useParams } from 'react-router-dom';
+import { Navigate, useParams } from 'react-router-dom';
 import InPageNavigation from '../../shared/components/molecules/page-navigation';
-import { useEffect, useState, useCallback } from 'react';
-import Loader from '../../shared/components/atoms/loader';
-import AnimationWrapper from '../../shared/components/atoms/page-animation';
-import ProjectPostCard from '../../shared/components/molecules/project-card';
-import NoDataMessage from '../../shared/components/atoms/no-data-msg';
-import LoadMoreDataBtn from '../../shared/components/molecules/load-more-data';
-import { filterPaginationData } from '../../shared/requests/filter-pagination-data';
-import UserCard from '../../shared/components/molecules/user-card';
-import { useAtom } from 'jotai';
-import { AllProjectsAtom } from '../../shared/states/project';
-import { searchProjectByCategory } from '../home/requests';
-import { searchUserByName } from './requests';
-import { UserProfile } from './typings';
-import { AllProjectsData } from '../../infra/rest/typings';
+import { useEffect } from 'react';
+import { useAtomValue } from 'jotai';
+import BannerProjectCard from '../home/components/banner-project-card';
+import { HomePageProjectsAtom } from '../home/states';
+import { Virtuoso } from 'react-virtuoso';
+import { BannerSkeleton } from '../../shared/components/atoms/skeleton';
+import NoDataMessageBox from '../../shared/components/atoms/no-data-msg';
+import useHome from '../home/hooks';
+import { SearchPageUsersAtom } from './states';
+import UserCard from './components/user-card';
+import { Box, CircularProgress, Stack } from '@mui/material';
+import useSearch from './hooks';
+import A2ZTypography from '../../shared/components/atoms/typography';
+import PeopleIcon from '@mui/icons-material/People';
 
 const Search = () => {
   const { query } = useParams();
+  const projects = useAtomValue(HomePageProjectsAtom);
+  const { fetchProjectsByCategory } = useHome();
 
-  const [projects, setProjects] = useAtom(AllProjectsAtom);
-  const [users, setUsers] = useState<UserProfile[] | null>(null);
-
-  const resetState = useCallback(() => {
-    setProjects(null);
-    setUsers(null);
-  }, [setProjects, setUsers]);
-
-  const searchProjects = useCallback(
-    async ({ page = 1, create_new_arr = false }) => {
-      if (!query) return;
-      const response = await searchProjectByCategory(query, page);
-      if (response?.projects) {
-        const formattedData = await filterPaginationData({
-          state: projects,
-          data: response.projects,
-          page,
-          countRoute: '/api/project/search-count',
-          data_to_send: { tag: query },
-          create_new_arr,
-        });
-        if (formattedData) {
-          setProjects(formattedData as AllProjectsData);
-        }
-      }
-    },
-    [query, projects, setProjects]
-  );
-
-  const fetchUsers = useCallback(async () => {
-    if (!query) return;
-    const response = await searchUserByName(query);
-    if (response?.users) {
-      setUsers(response.users);
-    }
-  }, [query]);
+  const users = useAtomValue(SearchPageUsersAtom);
+  const { fetchUsers } = useSearch();
 
   useEffect(() => {
-    resetState();
-    searchProjects({ page: 1, create_new_arr: true });
-    fetchUsers();
-  }, [query, resetState, searchProjects, fetchUsers]);
+    fetchProjectsByCategory({ query: query || '' });
+    fetchUsers(query || '');
+  }, [query, fetchProjectsByCategory, fetchUsers]);
 
-  const UserCardWrapper = () => {
-    return (
-      <>
-        {!users ? (
-          <Loader />
-        ) : users?.length ? (
-          users.map((user: UserProfile, i: number) => {
-            return (
-              <AnimationWrapper
-                key={i}
-                transition={{ duration: 1, delay: i * 0.08 }}
-              >
-                <UserCard user={user} />
-              </AnimationWrapper>
-            );
-          })
-        ) : (
-          <NoDataMessage message="No user found" />
-        )}
-      </>
-    );
-  };
-
-  return (
-    <section className="h-cover flex justify-center gap-10">
-      <div className="w-full">
+  return !query || query.trim() === '' ? (
+    <Navigate to="/" />
+  ) : (
+    <Box
+      component="section"
+      sx={{
+        minHeight: 'calc(100vh - 150px)',
+        display: 'flex',
+        justifyContent: 'center',
+        gap: { xs: 0, md: 5 },
+        p: 3,
+      }}
+    >
+      {/* LEFT MAIN CONTENT */}
+      <Box sx={{ width: '100%', maxWidth: 800 }}>
         <InPageNavigation
           routes={[`Search Results from "${query}"`, 'Accounts Matched']}
           defaultHidden={['Accounts Matched']}
         >
-          <>
-            {projects === null ? (
-              <Loader />
-            ) : projects && projects.results.length ? (
-              projects.results.map((project, i) => {
-                return (
-                  <AnimationWrapper
-                    key={i}
-                    transition={{ duration: 1, delay: i * 0.1 }}
-                  >
-                    <ProjectPostCard
-                      project={project}
-                      author={project.author.personal_info}
-                    />
-                  </AnimationWrapper>
-                );
-              })
-            ) : (
-              <NoDataMessage message="No projects published" />
-            )}
-            <LoadMoreDataBtn state={projects} fetchDataFun={searchProjects} />
-          </>
+          {projects.length ? (
+            <Virtuoso
+              style={{ height: '100%', width: '100%', scrollbarWidth: 'none' }}
+              totalCount={projects.length}
+              itemContent={index => (
+                <BannerProjectCard key={index} project={projects[index]} />
+              )}
+              overscan={200}
+              endReached={() => {
+                const nextPage = Math.floor(projects.length / 10) + 1; // Assuming page size of 10
+                fetchProjectsByCategory({ query: query || '', page: nextPage });
+              }}
+              components={{
+                Footer: () =>
+                  !projects || projects.length === 0 ? (
+                    <BannerSkeleton count={3} />
+                  ) : null, // FIX ME
+              }}
+            />
+          ) : (
+            <NoDataMessageBox message="No projects available" />
+          )}
 
-          <UserCardWrapper />
+          {users.length ? (
+            <Virtuoso
+              style={{ height: '100%', width: '100%', scrollbarWidth: 'none' }}
+              totalCount={users.length}
+              itemContent={index => (
+                <UserCard
+                  key={index}
+                  personal_info={users[index].personal_info}
+                />
+              )}
+              overscan={200}
+              endReached={() => {
+                const nextPage = Math.floor(users.length / 10) + 1; // Assuming page size of 10
+                fetchUsers(query || '', nextPage);
+              }}
+              components={{
+                Footer: () =>
+                  !projects || projects.length === 0 ? (
+                    <CircularProgress size={24} />
+                  ) : null, // FIX ME
+              }}
+            />
+          ) : (
+            <NoDataMessageBox message="No user found" />
+          )}
         </InPageNavigation>
-      </div>
+      </Box>
 
-      <div className="min-w-[40%] lg:min-w-[350px] max-w-min border-l border-gray-50 pl-8 pt-3 max-md:hidden">
-        <h1 className="font-medium text-xl mb-8">
-          User related to search
-          <i className="fi fi-rr-user mt-1"></i>
-        </h1>
+      {/* RIGHT SIDEBAR */}
+      <Box
+        sx={{
+          minWidth: { lg: 400 },
+          maxWidth: 400,
+          borderLeft: theme => `1px solid ${theme.palette.divider}`,
+          pl: 4,
+          pt: 1,
+          display: { xs: 'none', md: 'block' },
+        }}
+      >
+        <Stack direction="row" alignItems="center" spacing={1} mb={3}>
+          <A2ZTypography variant="h6" text="Users related to search" />
+          <PeopleIcon fontSize="medium" color="action" />
+        </Stack>
 
-        <UserCardWrapper />
-      </div>
-    </section>
+        {users.length ? (
+          <Virtuoso
+            style={{ height: '100%', width: '100%', scrollbarWidth: 'none' }}
+            totalCount={users.length}
+            itemContent={index => (
+              <UserCard
+                key={index}
+                personal_info={users[index].personal_info}
+              />
+            )}
+            overscan={200}
+            endReached={() => {
+              const nextPage = Math.floor(users.length / 10) + 1; // Assuming page size of 10
+              fetchUsers(query || '', nextPage);
+            }}
+            components={{
+              Footer: () =>
+                !projects || projects.length === 0 ? (
+                  <CircularProgress size={24} />
+                ) : null, // FIX ME
+            }}
+          />
+        ) : (
+          <NoDataMessageBox message="No user found" />
+        )}
+      </Box>
+    </Box>
   );
 };
 

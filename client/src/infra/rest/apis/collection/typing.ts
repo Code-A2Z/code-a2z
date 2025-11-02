@@ -1,8 +1,5 @@
-import {
-  PROJECT_ACTIVITY,
-  PROJECT_CONTENT_BLOCKS,
-  USER_PERSONAL_LIMITED_INFO,
-} from '../../typings';
+import { OutputData } from '@editorjs/editorjs';
+import { PROJECT_ACTIVITY, USER_PERSONAL_LIMITED_INFO } from '../../typings';
 
 export interface CreateCollectionPayload {
   collection_name: string;
@@ -43,7 +40,7 @@ export interface SortProjectResponse {
   repository_url: string;
   live_url: string | null;
   tags: Array<string>;
-  content_blocks: Array<PROJECT_CONTENT_BLOCKS>;
+  content_blocks: Array<OutputData>;
   user_id: {
     _id: string;
     personal_info: USER_PERSONAL_LIMITED_INFO;

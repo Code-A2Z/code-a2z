@@ -1,188 +1,162 @@
-import { useEffect, useState, useCallback } from 'react';
-import { Link, useParams } from 'react-router-dom';
-import AnimationWrapper from '../../shared/components/atoms/page-animation';
-import Loader from '../../shared/components/atoms/loader';
-import AboutUser from './components/aboutUser';
-import { filterPaginationData } from '../../shared/requests/filter-pagination-data';
+import { useEffect } from 'react';
+import { useParams } from 'react-router-dom';
 import InPageNavigation from '../../shared/components/molecules/page-navigation';
-import ProjectPostCard from '../../shared/components/molecules/project-card';
 import NoDataMessage from '../../shared/components/atoms/no-data-msg';
-import LoadMoreDataBtn from '../../shared/components/molecules/load-more-data';
-import PageNotFound from '../404';
 import { useAtom, useAtomValue } from 'jotai';
-import { ProfileAtom } from '../../shared/states/profile';
-import { UserAtom } from '../../shared/states/user';
-import { AllProjectsAtom } from '../../shared/states/project';
-import { AllProjectsData } from '../../infra/rest/typings/project';
-import { emptyProfileState } from '../../shared/states/emptyStates/profile';
-import { searchProjectByCategory } from '../home/requests';
-import { getUserProfile } from './requests';
+import { HomePageProjectsAtom } from '../home/states';
+import BannerProjectCard from '../home/components/banner-project-card';
+import { ProfileAtom } from './states';
+import { Virtuoso } from 'react-virtuoso';
+import { BannerSkeleton } from '../../shared/components/atoms/skeleton';
+import { UserAtom } from '../../infra/states/user';
+import { Avatar, Box, CircularProgress } from '@mui/material';
+import useHome from '../home/hooks';
+import AboutUser from './components/about-user';
+import A2ZTypography from '../../shared/components/atoms/typography';
+import Button from '../../shared/components/atoms/button';
+import useProfile from './hooks';
 
 const Profile = () => {
-  const { id: profileId } = useParams();
+  const { username } = useParams();
   const user = useAtomValue(UserAtom);
-  const [profile, setProfile] = useAtom(ProfileAtom);
-  const [projects, setProjects] = useAtom(AllProjectsAtom);
-
-  const [loading, setLoading] = useState(true);
-  const [profileLoaded, setProfileLoaded] = useState('');
-
-  const resetState = useCallback(() => {
-    setProfile(emptyProfileState);
-    setLoading(true);
-    setProfileLoaded('');
-  }, [setProfile]);
-
-  const getProjects = useCallback(
-    async (params: Record<string, unknown>) => {
-      const { page = 1, user_id } = params;
-
-      if (typeof user_id !== 'string') return;
-
-      const response = await searchProjectByCategory(
-        user_id,
-        typeof page === 'number' ? page : 1
-      );
-      if (response.projects) {
-        const formattedData = await filterPaginationData({
-          state: projects,
-          data: response.projects,
-          page: typeof page === 'number' ? page : 1,
-          countRoute: '/api/project/search-count',
-          data_to_send: { author: user_id },
-        });
-
-        if (formattedData) {
-          const projectData: AllProjectsData = {
-            results: formattedData.results,
-            page: formattedData.page,
-            totalDocs: formattedData.totalDocs || 0,
-          };
-          setProjects(projectData);
-        }
-      }
-    },
-    [projects, setProjects]
-  );
-
-  const fetchUserProfile = useCallback(async () => {
-    if (!profileId) return;
-    const response = await getUserProfile(profileId);
-    if (response) {
-      setProfile(response);
-      getProjects({ user_id: response._id });
-      setProfileLoaded(profileId);
-      setLoading(false);
-    }
-  }, [profileId, setProfile, getProjects]);
+  const profile = useAtomValue(ProfileAtom);
+  const [projects, setProjects] = useAtom(HomePageProjectsAtom);
+  const { fetchProjectsByCategory } = useHome();
+  const { fetchUserProfile } = useProfile();
 
   useEffect(() => {
-    if (profileId !== profileLoaded) {
-      setProjects(null);
+    if (username !== user?.personal_info.username) {
+      setProjects([]);
     }
-    if (projects === null) {
-      resetState();
+    if (projects.length === 0 || profile?.personal_info.username !== username) {
       fetchUserProfile();
     }
-  }, [
-    profileId,
-    projects,
-    profileLoaded,
-    fetchUserProfile,
-    resetState,
-    setProjects,
-  ]);
+  }, [username]);
 
-  if (!user || !profile) {
-    return <Loader />;
+  if (!profile) {
+    return <CircularProgress size={24} />;
   }
 
   return (
-    <AnimationWrapper>
-      {loading ? (
-        <Loader />
-      ) : profile.personal_info.username.length ? (
-        <section className="h-cover md:flex flex-row-reverse items-start gap-5 min-[1100px]:gap-12">
-          <div className="flex flex-col max-md:items-center gap-5 min-w-[250px] md:w-[50%] md:pl-8 md:border-l border-gray-300 md:sticky md:top[100px] md:py-10">
-            <img
-              src={profile.personal_info.profile_img}
-              alt=""
-              className="w-48 h-48 bg-gray-200 rounded-full md:w-32 md:h-32"
-            />
+    <Box
+      component="section"
+      sx={{
+        minHeight: 'calc(100vh - 65px)',
+        display: { xs: 'block', md: 'flex' },
+        flexDirection: { md: 'row-reverse' },
+        justifyContent: 'center',
+        gap: { md: 5, lg: 8 },
+        p: 3,
+      }}
+    >
+      {/* Right Column (Profile Info) */}
+      <Box
+        sx={{
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: { xs: 'center', md: 'flex-start' },
+          minWidth: 400,
+          gap: 2,
+          pl: { md: 4 },
+          borderLeft: theme => ({ md: `1px solid ${theme.palette.divider}` }),
+        }}
+      >
+        <Avatar
+          src={profile.personal_info.profile_img}
+          alt={profile.personal_info.fullname}
+          sx={{
+            width: { xs: 120, md: 130 },
+            height: { xs: 120, md: 130 },
+            bgcolor: 'grey.300',
+          }}
+        />
 
-            <h1 className="text-2xl font-medium">
-              @{profile.personal_info.username}
-            </h1>
-            <p className="text-xl capitalize h-6">
-              {profile.personal_info.fullname}
-            </p>
+        <A2ZTypography
+          variant="h6"
+          props={{ fontWeight: 500 }}
+          text={`@${profile.personal_info.username}`}
+        />
+        <A2ZTypography
+          variant="subtitle1"
+          props={{ textTransform: 'capitalize' }}
+          text={profile.personal_info.fullname}
+        />
+        <A2ZTypography
+          variant="body1"
+          props={{ color: 'text.secondary' }}
+          text={`${profile.account_info.total_posts.toLocaleString()} Projects - ${profile.account_info.total_reads.toLocaleString()} Reads`}
+        />
 
-            <p>
-              {profile.account_info.total_posts.toLocaleString()} Projects -{' '}
-              {profile.account_info.total_reads.toLocaleString()} Reads
-            </p>
+        {user && username === user.personal_info.username ? (
+          <Button
+            href="/settings/edit-profile"
+            variant="outlined"
+            size="small"
+            sx={{ mt: 1 }}
+          >
+            Edit Profile
+          </Button>
+        ) : undefined}
 
-            <div className="flex gap-4 mt-2">
-              {profileId === user.username ? (
-                <Link
-                  to="/settings/edit-profile"
-                  className="btn-light rounded-md"
-                >
-                  Edit Profile
-                </Link>
-              ) : (
-                ''
+        <Box
+          sx={{
+            display: { xs: 'none', md: 'block' },
+          }}
+        >
+          <AboutUser
+            bio={profile.personal_info.bio}
+            social_links={profile.social_links}
+            joinedAt={profile.joinedAt}
+          />
+        </Box>
+      </Box>
+
+      {/* Left Column (Projects + About Tabs) */}
+      <Box
+        sx={{
+          width: '100%',
+          maxWidth: 800,
+          height: { xs: '52vh', md: '90vh' },
+        }}
+      >
+        <InPageNavigation
+          routes={['Projects Published', 'About']}
+          defaultHidden={['About']}
+        >
+          {projects.length ? (
+            <Virtuoso
+              style={{ height: '100%', width: '100%', scrollbarWidth: 'none' }}
+              totalCount={projects.length}
+              itemContent={index => (
+                <BannerProjectCard key={index} project={projects[index]} />
               )}
-            </div>
-
-            <AboutUser
-              className="max-md:hidden"
-              bio={profile.personal_info.bio}
-              social_links={profile.social_links}
-              joinedAt={profile.joinedAt}
+              overscan={200}
+              endReached={() => {
+                const nextPage = Math.floor(projects.length / 10) + 1; // Assuming page size of 10
+                fetchProjectsByCategory({
+                  page: nextPage,
+                  user_id: profile._id,
+                });
+              }}
+              components={{
+                Footer: () =>
+                  !projects || projects.length === 0 ? (
+                    <BannerSkeleton count={3} />
+                  ) : null, // FIX ME
+              }}
             />
-          </div>
+          ) : (
+            <NoDataMessage message="No projects published" />
+          )}
 
-          <div className="max-wd-:mt-12 w-full">
-            <InPageNavigation
-              routes={['Projects Published', 'About']}
-              defaultHidden={['About']}
-            >
-              <>
-                {projects === null ? (
-                  <Loader />
-                ) : projects?.results.length ? (
-                  projects.results.map((project, i) => {
-                    return (
-                      <AnimationWrapper
-                        key={i}
-                        transition={{ duration: 1, delay: i * 0.1 }}
-                      >
-                        <ProjectPostCard
-                          project={project}
-                          author={project.author.personal_info}
-                        />
-                      </AnimationWrapper>
-                    );
-                  })
-                ) : (
-                  <NoDataMessage message="No projects published" />
-                )}
-                <LoadMoreDataBtn state={projects} fetchDataFun={getProjects} />
-              </>
-
-              <AboutUser
-                bio={profile.personal_info.bio}
-                social_links={profile.social_links}
-                joinedAt={profile.joinedAt}
-              />
-            </InPageNavigation>
-          </div>
-        </section>
-      ) : (
-        <PageNotFound />
-      )}
-    </AnimationWrapper>
+          <AboutUser
+            bio={profile.personal_info.bio}
+            social_links={profile.social_links}
+            joinedAt={profile.joinedAt}
+          />
+        </InPageNavigation>
+      </Box>
+    </Box>
   );
 };
 

@@ -1,5 +1,6 @@
 import axios from 'axios';
 import { VITE_SERVER_DOMAIN } from '../../config/env';
+import { getAccessToken } from '../../shared/utils/local';
 
 export enum Methods {
   GET = 'GET',
@@ -17,11 +18,7 @@ export async function makeRequest<Payload, Response>(
   hasFullURL?: boolean,
   headers?: Record<string, string>
 ): Promise<Response> {
-  let token: string | null = null;
-
-  if (isAuthRequired) {
-    token = localStorage.getItem('token');
-  }
+  const token = getAccessToken();
   if (!hasFullURL) {
     url = VITE_SERVER_DOMAIN + url;
   }
@@ -30,6 +27,7 @@ export async function makeRequest<Payload, Response>(
     url,
     method,
     data,
+    withCredentials: isAuthRequired,
     headers: {
       Authorization: token ? `Bearer ${token}` : undefined,
       ...headers,

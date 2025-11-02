@@ -1,22 +1,25 @@
 import { atom } from 'jotai';
 
-export enum Theme {
+export const THEME_LOCAL_STORAGE_KEY = 'theme';
+
+export enum THEME {
   LIGHT = 'light',
   DARK = 'dark',
   SYSTEM = 'system',
 }
 
-const getSystemTheme = (): Theme =>
+const getSystemTheme = (): THEME =>
   window.matchMedia('(prefers-color-scheme: dark)').matches
-    ? Theme.DARK
-    : Theme.LIGHT;
+    ? THEME.DARK
+    : THEME.LIGHT;
 
 const savedTheme =
-  (localStorage.getItem('theme') as Theme | null) || Theme.SYSTEM;
+  (localStorage.getItem(THEME_LOCAL_STORAGE_KEY) as THEME | null) ||
+  THEME.SYSTEM;
 
-export const themeAtom = atom<Theme>(savedTheme);
+export const ThemeAtom = atom<THEME>(savedTheme);
 
-export const resolvedThemeAtom = atom(get => {
-  const theme = get(themeAtom);
-  return theme === Theme.SYSTEM ? getSystemTheme() : theme;
+export const ResolvedThemeAtom = atom(get => {
+  const theme = get(ThemeAtom);
+  return theme === THEME.SYSTEM ? getSystemTheme() : theme;
 });

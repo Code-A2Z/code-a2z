@@ -13,14 +13,14 @@ import Warning from '@editorjs/warning';
 import Attaches from '@editorjs/attaches';
 import LinkTool from '@editorjs/link';
 
-import { uploadImage } from '../../../shared/hooks/upload-image';
+import { uploadImage } from '../../../infra/rest/apis/media';
 
 const uploadImageByFile = async (e: File) => {
-  return await uploadImage(e).then(url => {
-    if (url) {
+  return await uploadImage(e).then(({ data }) => {
+    if (data?.upload_url) {
       return {
         success: 1,
-        file: { url },
+        file: { url: data.upload_url },
       };
     }
   });

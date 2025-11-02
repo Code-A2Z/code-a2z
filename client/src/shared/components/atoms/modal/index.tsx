@@ -2,7 +2,7 @@
 import { Modal, ModalProps } from '@mui/material';
 import { css } from '@emotion/react';
 
-const CAModal = (props: ModalProps) => {
+const A2ZModal = (props: ModalProps) => {
   return (
     <Modal
       css={css`
@@ -16,4 +16,4 @@ const CAModal = (props: ModalProps) => {
   );
 };
 
-export default CAModal;
+export default A2ZModal;

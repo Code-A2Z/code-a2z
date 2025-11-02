@@ -1,11 +1,14 @@
-import { useEffect, useState } from 'react';
-import { activeTabLineRef, activeTabRef } from './refs';
+import { useState } from 'react';
+import { Box, Tabs, Tab, useTheme } from '@mui/material';
 
 interface InPageNavigationProps {
   routes: string[];
   defaultHidden?: string[];
   defaultActiveIndex?: number;
   children: React.ReactNode;
+  variant?: 'scrollable' | 'fullWidth' | 'standard';
+  scrollButtons?: 'auto' | true | false;
+  tabProps?: React.ComponentProps<typeof Tabs>;
 }
 
 const InPageNavigation = ({
@@ -13,70 +16,58 @@ const InPageNavigation = ({
   defaultHidden = [],
   defaultActiveIndex = 0,
   children,
+  variant = 'standard',
+  scrollButtons = 'auto',
+  tabProps,
 }: InPageNavigationProps) => {
-  const [inPageNavIndex, setInPageNavIndex] = useState(defaultActiveIndex);
+  const [value, setValue] = useState(defaultActiveIndex);
+  const theme = useTheme();
 
-  const [isResizeEventAdded, setIsResizeEventAdded] = useState(false);
-  const [width, setWidth] = useState(window.innerWidth);
-
-  const changePageState = (btn: EventTarget, i: number) => {
-    const { offsetWidth, offsetLeft } = btn as HTMLElement;
-    if (activeTabLineRef && activeTabLineRef.current) {
-      activeTabLineRef.current.style.width = offsetWidth + 'px';
-      activeTabLineRef.current.style.left = offsetLeft + 'px';
-      setInPageNavIndex(i);
-    }
+  const handleChange = (_: React.SyntheticEvent, newValue: number) => {
+    setValue(newValue);
   };
-
-  useEffect(() => {
-    if (
-      width > 766 &&
-      inPageNavIndex !== defaultActiveIndex &&
-      activeTabRef &&
-      activeTabRef.current
-    ) {
-      changePageState(activeTabRef.current, defaultActiveIndex);
-    }
-
-    if (!isResizeEventAdded) {
-      window.addEventListener('resize', () => {
-        if (!isResizeEventAdded) {
-          setIsResizeEventAdded(true);
-        }
-
-        setWidth(window.innerWidth);
-      });
-    }
-  }, [width, defaultActiveIndex, inPageNavIndex, isResizeEventAdded]);
 
   return (
     <>
-      <div className="relative mb-8 bg-[#fafafa] dark:bg-[#09090b] border-b border-gray-200 flex flex-nowrap overflow-x-auto">
-        {routes.map((route, i) => {
-          return (
-            <button
-              ref={i === defaultActiveIndex ? activeTabRef : null}
+      <Box
+        sx={{
+          borderBottom: 1,
+          borderColor: 'divider',
+          mb: 3,
+        }}
+      >
+        <Tabs
+          value={value}
+          onChange={handleChange}
+          variant={variant}
+          scrollButtons={scrollButtons}
+          textColor="inherit"
+          {...tabProps}
+        >
+          {routes.map((route, i) => (
+            <Tab
               key={i}
-              className={
-                'p-4 px-5 capitalize ' +
-                (inPageNavIndex === i
-                  ? 'text-black dark:text-[#ededed] '
-                  : 'text-dark-grey dark:text-[#a3a3a3] ' +
-                    (defaultHidden.includes(route) ? 'md:hidden' : ''))
-              }
-              onClick={e => {
-                changePageState(e.target, i);
+              label={route}
+              sx={{
+                textTransform: 'capitalize',
+                fontWeight: 500,
+                color:
+                  value === i
+                    ? theme.palette.text.primary
+                    : theme.palette.text.secondary,
+                display: defaultHidden.includes(route)
+                  ? { md: 'none' }
+                  : 'flex',
+                px: 3,
+                py: 2,
               }}
-            >
-              {route}
-            </button>
-          );
-        })}
+            />
+          ))}
+        </Tabs>
+      </Box>
 
-        <hr ref={activeTabLineRef} className="absolute bottom-0 duration-300" />
-      </div>
-
-      {Array.isArray(children) ? children[inPageNavIndex] : children}
+      {/* Tab content */}
+      {Array.isArray(children) ? children[value] : children}
     </>
   );
 };

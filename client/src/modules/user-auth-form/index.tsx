@@ -1,16 +1,14 @@
 import { Link, Navigate } from 'react-router-dom';
-import { useAtom } from 'jotai';
+import { useAuth } from '../../shared/hooks/use-auth';
+import { Box, CircularProgress, styled, Typography } from '@mui/material';
 import InputBox from '../../shared/components/atoms/input-box';
-import AnimationWrapper from '../../shared/components/atoms/page-animation';
-import { UserAtom } from '../../shared/states/user';
-import { emailRegex, passwordRegex } from '../../shared/utils/regex';
-import { subscribeUser } from '../../shared/components/molecules/navbar/requests';
-import { authorizeUser } from './requests';
-import { useNotifications } from '../../shared/hooks/use-notification';
-import React from 'react';
-import { AuthorizeUserPayload } from './typings';
-import { Button, Typography } from '@mui/material';
-import { styled } from '@mui/material/styles';
+import EmailIcon from '@mui/icons-material/Email';
+import PersonIcon from '@mui/icons-material/Person';
+import PasswordIcon from '@mui/icons-material/Password';
+import AppRegistrationIcon from '@mui/icons-material/AppRegistration';
+import LoginIcon from '@mui/icons-material/Login';
+import A2ZButton from '../../shared/components/atoms/button';
+import { useUserAuthForm } from './hooks';
 
 const StyledSection = styled('section')(({ theme }) => ({
   paddingTop: theme.spacing(4),
@@ -37,173 +35,101 @@ const StyledTitle = styled(Typography)(({ theme }) => ({
 }));
 
 const StyledFooter = styled('p')(({ theme }) => ({
-  marginTop: theme.spacing(2.5),
+  marginTop: theme.spacing(6),
   color: theme.palette.text.secondary,
   fontSize: '1.125rem',
   textAlign: 'center',
 }));
 
 const UserAuthForm = ({ type }: { type: string }) => {
-  const [userAuth, setUserAuth] = useAtom(UserAtom);
-  const { addNotification } = useNotifications();
+  const { isAuthenticated } = useAuth();
+  const { loading, handleSubmit } = useUserAuthForm({ type });
 
-  const userAuthThroughServer = async (
-    serverRoute: string,
-    formData: AuthorizeUserPayload
-  ) => {
-    if (serverRoute === '/api/auth/signup') {
-      const { email } = formData;
-      await subscribeUser(email);
-    }
-    const response = await authorizeUser(serverRoute, formData);
-    if (response.access_token) {
-      setUserAuth({
-        access_token: response.access_token,
-        profile_img: response.profile_img,
-        username: response.username,
-        fullname: response.fullname,
-        name: response.fullname, // Use fullname as name
-        email: response.email,
-        role: response.role,
-        new_notification_available: false,
-      });
-      addNotification({
-        message: 'Logged in successfully!',
-        type: 'success',
-      });
-    }
-  };
-
-  const formRef = React.useRef<HTMLFormElement>(null);
-
-  const handleSubmit = (e: React.FormEvent<HTMLElement>) => {
-    e.preventDefault();
-
-    const serverRoute =
-      type == 'login' ? '/api/auth/login' : '/api/auth/signup';
-
-    if (!formRef.current) return;
-
-    const form = new FormData(formRef.current);
-    const formData: AuthorizeUserPayload = {
-      email: '',
-      password: '',
-      fullname: '',
-    };
-
-    for (const [key, value] of form.entries()) {
-      if (key === 'email' || key === 'password' || key === 'fullname') {
-        formData[key as keyof AuthorizeUserPayload] = value as string;
-      }
-    }
-
-    const { fullname, email, password } = formData;
-
-    if (fullname) {
-      if (fullname.length < 3) {
-        return addNotification({
-          message: 'Full name should be atleast 3 letters long',
-          type: 'error',
-        });
-      }
-    }
-    if (!email.length) {
-      return addNotification({
-        message: 'Email is required',
-        type: 'error',
-      });
-    }
-
-    if (!emailRegex.test(email)) {
-      return addNotification({
-        message: 'Invalid email',
-        type: 'error',
-      });
-    }
-    if (!passwordRegex.test(password)) {
-      return addNotification({
-        message:
-          'Password should be atleast 6 characters long and contain atleast one uppercase letter, one lowercase letter and one number',
-        type: 'error',
-      });
-    }
-    userAuthThroughServer(serverRoute, formData);
-  };
-
-  return userAuth?.access_token ? (
+  return isAuthenticated() ? (
     <Navigate to="/" />
   ) : (
-    <AnimationWrapper keyValue={type}>
-      <StyledSection>
-        <StyledForm id="formElement" onSubmit={handleSubmit}>
-          <StyledTitle>
-            {type === 'login' ? 'Welcome back' : 'Join us today'}
-          </StyledTitle>
+    <StyledSection>
+      <StyledForm id="formElement" onSubmit={handleSubmit}>
+        <StyledTitle>
+          {type === 'login' ? 'Welcome back' : 'Join us today'}
+        </StyledTitle>
 
-          {type !== 'login' ? (
+        <Box
+          sx={{
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            justifyContent: 'center',
+            gap: 1,
+          }}
+        >
+          {type !== 'login' && (
             <InputBox
+              id="auth-form-fullname"
               name="fullname"
               type="text"
               placeholder="Full Name"
-              icon="fi-rr-user"
+              fullWidth
+              icon={<PersonIcon />}
             />
-          ) : (
-            ''
           )}
 
           <InputBox
+            id="auth-form-email"
             name="email"
             type="email"
             placeholder="Email"
-            icon="fi-rr-envelope"
+            fullWidth
+            icon={<EmailIcon />}
           />
 
           <InputBox
+            id="auth-form-password"
             name="password"
             type="password"
             placeholder="Password"
-            icon="fi-rr-key"
+            fullWidth
+            icon={<PasswordIcon />}
           />
 
-          <Button
+          <A2ZButton
             type="submit"
-            variant="contained"
-            sx={theme => ({
-              borderRadius: '999px',
-              bgcolor: theme.palette.mode === 'dark' ? '#e4e4e7' : '#1f1f1f',
-              color: theme.palette.mode === 'dark' ? '#1a1a1a' : '#f1f1f1',
-              padding: theme.spacing(1.5, 3),
-              fontSize: '1.125rem',
-              textTransform: 'none',
-              '&:hover': {
-                opacity: 0.9,
-              },
-              mt: 3.5,
-              mx: 'auto',
-              display: 'block',
-            })}
+            sx={{
+              mt: 2,
+              display: 'flex',
+              gap: 1,
+            }}
+            loading={loading}
+            loadingPosition="end"
           >
             {type === 'login' ? 'Login' : 'Sign Up'}
-          </Button>
+            {!loading ? (
+              type === 'login' ? (
+                <LoginIcon />
+              ) : (
+                <AppRegistrationIcon />
+              )
+            ) : (
+              <CircularProgress size={18} />
+            )}
+          </A2ZButton>
+        </Box>
 
-          <StyledFooter>
-            {type === 'login'
-              ? "Don't have an account ?"
-              : 'Already a member ?'}
-            <Link
-              to={type === 'login' ? '/signup' : '/login'}
-              style={{
-                marginLeft: 8,
-                textDecoration: 'underline',
-                color: 'inherit',
-              }}
-            >
-              {type === 'login' ? 'Join us today' : 'Sign in here'}
-            </Link>
-          </StyledFooter>
-        </StyledForm>
-      </StyledSection>
-    </AnimationWrapper>
+        <StyledFooter>
+          {type === 'login' ? "Don't have an account ?" : 'Already a member ?'}
+          <Link
+            to={type === 'login' ? '/signup' : '/login'}
+            style={{
+              marginLeft: 8,
+              textDecoration: 'underline',
+              color: 'inherit',
+            }}
+          >
+            {type === 'login' ? 'Join us today' : 'Sign in here'}
+          </Link>
+        </StyledFooter>
+      </StyledForm>
+    </StyledSection>
   );
 };
 
