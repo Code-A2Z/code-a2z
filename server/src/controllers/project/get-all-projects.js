@@ -9,7 +9,7 @@ import { sendResponse } from '../../utils/response.js';
 
 const getAllProjects = async (req, res) => {
   let page = req.query.page || 1;
-  const maxLimit = 5;
+  const maxLimit = 10;
 
   if (page < 1) page = 1;
 
