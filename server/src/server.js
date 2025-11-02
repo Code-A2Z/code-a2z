@@ -12,13 +12,11 @@ import { NODE_ENV } from './typings/index.js';
 import errorHandler from './middlewares/error.handler.js';
 import securityMiddleware from './middlewares/security.middleware.js';
 import sanitizeInput from './middlewares/sanitize.middleware.js';
+import loggingMiddleware from './middlewares/logging.middleware.js';
 
 // Routes
 import monitorRoutes from './routes/api/monitor.routes.js';
 import router from './routes/index.js';
-
-// Logger
-import { loggingMiddleware } from './middlewares/logging.middleware.js';
 
 dotenv.config();
 

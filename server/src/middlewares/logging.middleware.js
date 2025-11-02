@@ -1,7 +1,7 @@
 import morganMiddleware from '../logger/morgan.js';
 import logger from '../logger/winston.js';
 
-export const loggingMiddleware = app => {
+const loggingMiddleware = app => {
   app.use(morganMiddleware);
 
   app.use((req, res, next) => {
@@ -9,3 +9,5 @@ export const loggingMiddleware = app => {
     next();
   });
 };
+
+export default loggingMiddleware;
