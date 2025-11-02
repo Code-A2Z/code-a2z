@@ -1,13 +1,7 @@
 import { sendResponse } from '../utils/response.js';
-import logger from '../logger/winston.js';
 
 const errorHandler = (err, req, res, next) => {
-  if (req?.logger) {
-    req.logger.error(err.stack || err.message);
-  } else {
-    logger.error(err.stack || err.message);
-  }
-
+  console.error(err.stack || err.message);
   if (res.headersSent) {
     return next(err);
   }

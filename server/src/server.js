@@ -5,14 +5,11 @@ import dotenv from 'dotenv';
 
 // Configs
 import connectDB from './config/db.js';
-import { SERVER_ENV } from './config/env.js';
-import { NODE_ENV } from './typings/index.js';
 
 // Middlewares
 import errorHandler from './middlewares/error.handler.js';
 import securityMiddleware from './middlewares/security.middleware.js';
 import sanitizeInput from './middlewares/sanitize.middleware.js';
-import loggingMiddleware from './middlewares/logging.middleware.js';
 
 // Routes
 import monitorRoutes from './routes/api/monitor.routes.js';
@@ -37,11 +34,6 @@ securityMiddleware(server);
 
 // sanitizationMiddleware (global)
 server.use(sanitizeInput());
-
-// Logging middleware (only in development)
-if (SERVER_ENV === NODE_ENV.DEVELOPMENT) {
-  loggingMiddleware(server);
-}
 
 // Connect to Database
 connectDB();
