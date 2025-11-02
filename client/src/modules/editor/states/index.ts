@@ -1,9 +1,25 @@
 import { atom } from 'jotai';
-import type EditorJS from '@editorjs/editorjs';
-import { EditorMode } from '../typings';
+import EditorJS, { OutputData } from '@editorjs/editorjs';
 
-export const EditorAtom = atom<EditorMode>(EditorMode.EDITOR);
+export enum EditorPageState {
+  EDITOR = 'editor',
+  PUBLISH = 'publish',
+}
+
+export interface EditorContent {
+  title: string;
+  description: string;
+  banner: string;
+  content: OutputData[] | OutputData;
+  tags: string[];
+  liveURL: string;
+  repositoryURL: string;
+}
+
+export const EditorPageAtom = atom<EditorPageState>(EditorPageState.EDITOR);
 
 export const TextEditorAtom = atom<{ isReady: boolean; editor?: EditorJS }>({
   isReady: false,
 });
+
+export const EditorContentAtom = atom<EditorContent | null>(null);

@@ -1,14 +1,16 @@
 import { useSetAtom } from 'jotai';
-import { notificationsAtom } from '../states/notification';
-import { Notification } from '../../infra/rest/typings/notification';
+import { NotificationSystemAtom } from '../states/notification';
+import { NotificationSystem } from '../states/notification';
 
 export function useNotifications() {
-  const setNotifications = useSetAtom(notificationsAtom);
+  const setNotifications = useSetAtom(NotificationSystemAtom);
 
-  const addNotification = (notification: Omit<Notification, 'id' | 'open'>) => {
+  const addNotification = (
+    notification: Omit<NotificationSystem, 'id' | 'open'>
+  ) => {
     const id = Date.now().toString();
 
-    const newNotification: Notification = {
+    const newNotification: NotificationSystem = {
       id,
       open: true,
       autoHideDuration: 3000,

@@ -1,181 +1,177 @@
-import { useEffect, useState } from 'react';
-import { Box, Typography, Stack } from '@mui/material';
-import ProjectPostCard from '../../shared/components/molecules/project-card';
-import MinimalProjectPost from './components/noBannerProject';
-import NoDataMessage from '../../shared/components/atoms/no-data-msg';
-import LoadMoreDataBtn from '../../shared/components/molecules/load-more-data';
-import AnimationWrapper from '../../shared/components/atoms/page-animation';
-import InPageNavigation from '../../shared/components/molecules/page-navigation';
-import { activeTabRef } from '../../shared/components/molecules/page-navigation/refs';
-import LatestProjectsSkeleton from './components/latestProjectsSkeleton';
-import TrendingProjectsSkeleton from './components/trendingProjectsSkeleton';
-import { CategoryButton } from './components/CategoryButton';
+import { Box, Stack } from '@mui/material';
+import A2ZTypography from '../../shared/components/atoms/typography';
+import TrendingUpIcon from '@mui/icons-material/TrendingUp';
 import { categories } from './constants';
-import { useHomeProjects } from './hooks/useHomeProjects';
-import { loadProjectsByCategory as loadProjectsByCategoryUtil } from './utils';
+import { CategoryButton } from './components/category-button';
+import InPageNavigation from '../../shared/components/molecules/page-navigation';
+import NoBannerProjectCard from './components/no-banner-project';
+import { useAtom, useAtomValue } from 'jotai';
+import {
+  HomePageProjectsAtom,
+  HomePageStateAtom,
+  HomePageTrendingProjectsAtom,
+} from './states';
+import BannerProjectCard from './components/banner-project-card';
+import NoDataMessageBox from '../../shared/components/atoms/no-data-msg';
+import {
+  BannerSkeleton,
+  NoBannerSkeleton,
+} from '../../shared/components/atoms/skeleton';
+import { useEffect } from 'react';
+import useHome from './hooks';
+import { Virtuoso } from 'react-virtuoso';
 
 const Home = () => {
-  const [pageState, setPageState] = useState('home');
+  const [pageState, setPageState] = useAtom(HomePageStateAtom);
+  const projects = useAtomValue(HomePageProjectsAtom);
+  const trending = useAtomValue(HomePageTrendingProjectsAtom);
 
   const {
-    projects,
-    trendingProjects,
-    setProjects,
     fetchLatestProjects,
-    fetchProjectsByCategory,
     fetchTrendingProjects,
-  } = useHomeProjects(pageState);
-
-  const handleCategoryChange = (e: React.MouseEvent<HTMLButtonElement>) => {
-    loadProjectsByCategoryUtil(e, pageState, setPageState, setProjects);
-  };
+    fetchProjectsByCategory,
+  } = useHome();
 
   useEffect(() => {
-    if (activeTabRef.current) {
-      activeTabRef.current.click();
-    }
-
     if (pageState === 'home') {
-      fetchLatestProjects({ page: 1 });
-    } else {
-      fetchProjectsByCategory({ page: 1 });
+      fetchLatestProjects();
+    } else if (pageState !== 'trending') {
+      fetchProjectsByCategory({ tag: pageState });
     }
-    if (!trendingProjects) {
-      fetchTrendingProjects();
-    }
+    fetchTrendingProjects();
   }, [
     pageState,
     fetchLatestProjects,
     fetchProjectsByCategory,
     fetchTrendingProjects,
-    trendingProjects,
   ]);
 
   return (
-    <AnimationWrapper>
+    <Box
+      component="section"
+      sx={{
+        minHeight: 'calc(100vh - 150px)',
+        display: 'flex',
+        justifyContent: 'center',
+        gap: { xs: 0, md: 5 },
+        p: 3,
+      }}
+    >
+      {/* Latest projects */}
+      <Box sx={{ width: '100%', maxWidth: 800 }}>
+        <InPageNavigation
+          routes={[pageState, 'trending']}
+          defaultHidden={['trending']}
+        >
+          {projects.length ? (
+            <Virtuoso
+              style={{ height: '100%', width: '100%', scrollbarWidth: 'none' }}
+              totalCount={projects.length}
+              itemContent={index => (
+                <BannerProjectCard key={index} project={projects[index]} />
+              )}
+              overscan={200}
+              endReached={() => {
+                const nextPage = Math.floor(projects.length / 10) + 1; // Assuming page size of 10
+                if (pageState === 'home') {
+                  fetchLatestProjects(nextPage);
+                } else if (pageState !== 'trending') {
+                  fetchProjectsByCategory({ page: nextPage, tag: pageState });
+                }
+              }}
+              components={{
+                Footer: () =>
+                  !projects || projects.length === 0 ? (
+                    <BannerSkeleton count={3} />
+                  ) : null, // FIX ME
+              }}
+            />
+          ) : (
+            <NoDataMessageBox message="No projects available" />
+          )}
+          {trending && trending.length === 0 ? ( // FIX ME
+            <NoBannerSkeleton count={3} />
+          ) : trending && trending.length ? (
+            trending.map((project, i) => {
+              return (
+                <NoBannerProjectCard key={i} project={project} index={i} />
+              );
+            })
+          ) : (
+            <NoDataMessageBox message="No trending projects" />
+          )}
+        </InPageNavigation>
+      </Box>
+
+      {/* filters and trending projects */}
       <Box
-        component="section"
         sx={{
-          minHeight: 'calc(100vh - 80px)',
-          display: 'flex',
-          justifyContent: 'center',
-          gap: { xs: 0, md: 5 },
-          px: { xs: 2, sm: 3, md: 4 },
-          py: 3,
+          minWidth: { lg: 400 },
+          maxWidth: 400,
+          borderLeft: theme => `1px solid ${theme.palette.divider}`,
+          pl: 4,
+          pt: 1,
+          display: { xs: 'none', md: 'block' },
         }}
       >
-        {/* Latest projects */}
-        <Box sx={{ width: '100%', maxWidth: '800px' }}>
-          <InPageNavigation
-            routes={[pageState, 'trending projects']}
-            defaultHidden={['trending projects']}
-          >
-            <>
-              {projects?.results && projects.results.length === 0 ? (
-                <LatestProjectsSkeleton count={3} />
-              ) : projects?.results && projects.results.length ? (
-                projects.results.map((project, i) => {
-                  return (
-                    <AnimationWrapper
-                      key={i}
-                      transition={{ duration: 1, delay: i * 0.1 }}
-                    >
-                      <ProjectPostCard
-                        project={project}
-                        author={project.author.personal_info}
-                      />
-                    </AnimationWrapper>
-                  );
-                })
-              ) : (
-                <NoDataMessage message="No projects published" />
-              )}
-              <LoadMoreDataBtn
-                state={projects}
-                fetchDataFun={
-                  pageState === 'home'
-                    ? fetchLatestProjects
-                    : fetchProjectsByCategory
-                }
-              />
-            </>
-            {trendingProjects && trendingProjects.length === 0 ? (
-              <TrendingProjectsSkeleton count={3} />
-            ) : trendingProjects && trendingProjects.length ? (
-              trendingProjects.map((project, i) => {
+        <Stack spacing={5}>
+          <Box>
+            <A2ZTypography
+              variant="h6"
+              text="Recommended topics"
+              props={{ mb: 3 }}
+            />
+
+            <Box sx={{ display: 'flex', gap: 1.5, flexWrap: 'wrap' }}>
+              {categories.map((category, i) => {
                 return (
-                  <AnimationWrapper
+                  <CategoryButton
                     key={i}
-                    transition={{ duration: 1, delay: i * 0.1 }}
+                    onClick={() => {
+                      setPageState(pageState === category ? 'home' : category);
+                    }}
                   >
-                    <MinimalProjectPost project={project} index={i} />
-                  </AnimationWrapper>
+                    {category}
+                  </CategoryButton>
+                );
+              })}
+            </Box>
+          </Box>
+
+          <Box
+            sx={{
+              display: 'flex',
+              flexDirection: 'column',
+              gap: 2,
+            }}
+          >
+            <Box
+              sx={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: 1,
+                mb: 1,
+              }}
+            >
+              <A2ZTypography variant="h6" text="Trending" />
+              <TrendingUpIcon fontSize="medium" />
+            </Box>
+
+            {trending && trending.length === 0 ? ( // FIX ME
+              <NoBannerSkeleton count={3} />
+            ) : trending && trending.length ? (
+              trending.map((project, i) => {
+                return (
+                  <NoBannerProjectCard key={i} project={project} index={i} />
                 );
               })
             ) : (
-              <NoDataMessage message="No trending projects" />
+              <NoDataMessageBox message="No trending projects" />
             )}
-          </InPageNavigation>
-        </Box>
-
-        {/* filters and trending projects */}
-        <Box
-          sx={{
-            minWidth: { lg: '400px' },
-            maxWidth: '400px',
-            borderLeft: theme => `1px solid ${theme.palette.divider}`,
-            pl: 4,
-            pt: 1,
-            display: { xs: 'none', md: 'block' },
-          }}
-        >
-          <Stack spacing={5}>
-            <Box>
-              <Typography variant="h6" sx={{ fontWeight: 500, mb: 3 }}>
-                Recommended topics
-              </Typography>
-
-              <Box sx={{ display: 'flex', gap: 1.5, flexWrap: 'wrap' }}>
-                {categories.map((category, i) => {
-                  return (
-                    <CategoryButton
-                      key={i}
-                      className={pageState === category ? 'active' : ''}
-                      onClick={handleCategoryChange}
-                    >
-                      {category}
-                    </CategoryButton>
-                  );
-                })}
-              </Box>
-            </Box>
-
-            <Box>
-              <Typography variant="h6" sx={{ fontWeight: 500, mb: 3 }}>
-                Trending <i className="fi fi-rr-arrow-trend-up"></i>
-              </Typography>
-
-              {trendingProjects === null ? (
-                <TrendingProjectsSkeleton count={3} />
-              ) : trendingProjects.length ? (
-                trendingProjects.map((project, i) => {
-                  return (
-                    <AnimationWrapper
-                      key={i}
-                      transition={{ duration: 1, delay: i * 0.1 }}
-                    >
-                      <MinimalProjectPost project={project} index={i} />
-                    </AnimationWrapper>
-                  );
-                })
-              ) : (
-                <NoDataMessage message="No trending projects" />
-              )}
-            </Box>
-          </Stack>
-        </Box>
+          </Box>
+        </Stack>
       </Box>
-    </AnimationWrapper>
+    </Box>
   );
 };
 

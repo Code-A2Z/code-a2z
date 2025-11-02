@@ -2,13 +2,13 @@ import { del, get, post } from '../..';
 import { ApiResponse, BaseApiResponse } from '../../typings';
 import {
   createProjectPayload,
-  getAllProjectsResponse,
   getTrendingProjectsResponse,
   PROJECT_OPEN_MODE,
   ProjectData,
   searchProjectsPayload,
   userProjectsPayload,
   userProjectsResponse,
+  getAllProjectsResponse,
 } from './typing';
 
 export const createProject = async (projectData: createProjectPayload) => {
@@ -40,22 +40,23 @@ export const getTrendingProjects = async () => {
 export const searchProjects = async ({
   tag,
   query,
-  author,
+  user_id,
   page,
   limit,
+  rmv_project_by_id,
 }: searchProjectsPayload) => {
   return get<undefined, ApiResponse<getAllProjectsResponse[]>>(
-    `/api/project/search?tag=${tag}&query=${query}&author=${author}&page=${page}&limit=${limit}`
+    `/api/project/search?tag=${tag}&query=${query}&user_id=${user_id}&page=${page}&limit=${limit}&rmv_project_by_id=${rmv_project_by_id}`
   );
 };
 
 export const searchProjectsCount = async ({
   tag,
   query,
-  author,
+  user_id,
 }: searchProjectsPayload) => {
   return get<undefined, ApiResponse<{ totalDocs: number }>>(
-    `/api/project/search/count?tag=${tag}&query=${query}&author=${author}`
+    `/api/project/search/count?tag=${tag}&query=${query}&user_id=${user_id}`
   );
 };
 

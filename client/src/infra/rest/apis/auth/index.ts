@@ -4,23 +4,24 @@ import { ApiResponse, BaseApiResponse } from '../../typings';
 import { signUpPayload, loginPayload, changePasswordPayload } from './typing';
 
 export const signUp = async (signUpPayload: signUpPayload) => {
-  return post<signUpPayload, ApiResponse<USER_DB_STATE>>(
-    '/api/auth/signup',
-    false,
-    signUpPayload
-  );
+  return post<
+    signUpPayload,
+    ApiResponse<{ user: USER_DB_STATE; access_token: string }>
+  >('/api/auth/signup', false, signUpPayload);
 };
 
 export const login = async (loginPayload: loginPayload) => {
-  return post<loginPayload, ApiResponse<USER_DB_STATE>>(
-    '/api/auth/login',
-    false,
-    loginPayload
-  );
+  return post<
+    loginPayload,
+    ApiResponse<{ user: USER_DB_STATE; access_token: string }>
+  >('/api/auth/login', false, loginPayload);
 };
 
 export const refreshToken = async () => {
-  return post<undefined, BaseApiResponse>(`/api/auth/refresh`, true);
+  return post<undefined, ApiResponse<{ access_token: string }>>(
+    `/api/auth/refresh`,
+    true
+  );
 };
 
 export const logout = async () => {

@@ -1,66 +1,40 @@
-import { ReactNode, ElementType } from 'react';
-import {
-  Tooltip,
-  TooltipProps,
-  Typography,
-  TypographyProps,
-} from '@mui/material';
+import { Typography } from '@mui/material';
 
-export type QSTypographyProps<P extends ElementType> = TypographyProps<
-  P,
-  {
-    children?: ReactNode;
-    component?: P;
-    tooltipProps?: Omit<TooltipProps, 'children'>;
-  }
->;
-
-function A2ZTypography<P extends ElementType = 'span'>({
-  sx,
-  children,
+const A2ZTypography = ({
+  text,
+  variant,
   component,
-  ...props
-}: QSTypographyProps<P>) {
+  noWrap,
+  props,
+}: {
+  text: string;
+  variant?:
+    | 'body1'
+    | 'body2'
+    | 'caption'
+    | 'subtitle1'
+    | 'subtitle2'
+    | 'h1'
+    | 'h2'
+    | 'h3'
+    | 'h4'
+    | 'h5'
+    | 'h6';
+  component?: 'div' | 'span' | 'p' | 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6';
+  noWrap?: boolean;
+  props?: Record<string, unknown>;
+}) => {
   return (
     <Typography
-      component={component}
-      sx={{
-        ...sx,
-      }}
+      variant={variant ?? 'body1'}
+      component={component ?? 'div'}
+      noWrap={noWrap}
+      color="inherit"
       {...props}
     >
-      {children ? children : null}
+      {text}
     </Typography>
   );
-}
-
-export function A2ZTypographyTooltip<P extends ElementType = 'span'>({
-  sx,
-  children,
-  component,
-  tooltipProps,
-  ...props
-}: QSTypographyProps<P>) {
-  return (
-    <Tooltip
-      placement="top"
-      {...tooltipProps}
-      title={tooltipProps?.title ? tooltipProps?.title : children}
-    >
-      <Typography
-        component={component}
-        sx={{
-          ...sx,
-          whiteSpace: 'nowrap',
-          overflow: 'hidden',
-          textOverflow: 'ellipsis',
-        }}
-        {...props}
-      >
-        {children ? children : null}
-      </Typography>
-    </Tooltip>
-  );
-}
+};
 
 export default A2ZTypography;

@@ -15,7 +15,6 @@ const PROJECT_SCHEMA = Schema(
     description: {
       type: String,
       maxlength: [200, 'Bio should not be more than 200'],
-      required: true,
     },
     repository_url: {
       type: String,

@@ -18,21 +18,23 @@ const searchProjects = async (req, res) => {
     query,
     user_id,
     page = 1,
-    limit = 2,
+    limit = 10,
     rmv_project_by_id,
   } = req.query;
 
   const findQuery = { is_draft: false };
-  if (tag) {
+  if (tag && tag !== 'undefined') {
     findQuery.tags = tag;
     if (rmv_project_by_id) findQuery._id = { $ne: rmv_project_by_id };
-  } else if (query) {
+  }
+  if (query && query !== 'undefined') {
     findQuery.title = new RegExp(query, 'i');
-  } else if (user_id) {
+  }
+  if (user_id && user_id !== 'undefined') {
     findQuery.user_id = user_id;
   }
 
-  const maxLimit = parseInt(limit) || 2;
+  const maxLimit = parseInt(limit) || 10;
   const currentPage = parseInt(page) || 1;
 
   try {

@@ -16,3 +16,9 @@ export interface BaseApiResponse {
 export interface ApiResponse<T> extends BaseApiResponse {
   data?: T;
 }
+
+export interface ErrorResponse {
+  response: {
+    data: BaseApiResponse;
+  };
+}

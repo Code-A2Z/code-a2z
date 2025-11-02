@@ -27,14 +27,14 @@ export const generateUsername = async email => {
 /**
  * Generate access and refresh JWT tokens
  * @param {Object} payload - JWT payload data
- * @returns {Object} - Object containing accessToken and refreshToken
+ * @returns {Object} - Object containing access_token and refresh_token
  */
 export const generateTokens = payload => {
-  const accessToken = jwt.sign(payload, JWT_SECRET_ACCESS_KEY, {
+  const access_token = jwt.sign(payload, JWT_SECRET_ACCESS_KEY, {
     expiresIn: JWT_ACCESS_EXPIRES_IN,
   });
-  const refreshToken = jwt.sign(payload, JWT_SECRET_REFRESH_KEY, {
+  const refresh_token = jwt.sign(payload, JWT_SECRET_REFRESH_KEY, {
     expiresIn: JWT_REFRESH_EXPIRES_IN,
   });
-  return { accessToken, refreshToken };
+  return { access_token, refresh_token };
 };

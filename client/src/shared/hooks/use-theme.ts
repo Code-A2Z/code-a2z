@@ -1,17 +1,22 @@
 import { useAtom } from 'jotai';
-import { themeAtom, resolvedThemeAtom } from '../states/theme';
+import {
+  ThemeAtom,
+  ResolvedThemeAtom,
+  THEME,
+  THEME_LOCAL_STORAGE_KEY,
+} from '../states/theme';
 import { useEffect } from 'react';
 
-export function useTheme() {
-  const [theme, setTheme] = useAtom(themeAtom);
-  const [resolved] = useAtom(resolvedThemeAtom);
+export function useA2ZTheme() {
+  const [theme, setTheme] = useAtom(ThemeAtom);
+  const [resolved] = useAtom(ResolvedThemeAtom);
 
   useEffect(() => {
-    localStorage.setItem('theme', theme);
+    localStorage.setItem(THEME_LOCAL_STORAGE_KEY, theme);
 
     const root = document.documentElement;
-    if (resolved === 'dark') root.classList.add('dark');
-    else root.classList.remove('dark');
+    if (resolved === THEME.DARK) root.classList.add(THEME.DARK);
+    else root.classList.remove(THEME.DARK);
   }, [theme, resolved]);
 
   return { theme, resolvedTheme: resolved, setTheme };

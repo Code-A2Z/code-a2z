@@ -1,225 +1,210 @@
-import { useEffect, useState, useCallback } from 'react';
+import { useEffect } from 'react';
 import { Link, useParams } from 'react-router-dom';
-import AnimationWrapper from '../../shared/components/atoms/page-animation';
-import { getDay } from '../../shared/utils/date';
-import ProjectInteraction from './components/projectInteraction';
-import ProjectPostCard from '../../shared/components/molecules/project-card';
-import ProjectContent from './components/projectContent';
-import CommentsContainer from './components/comments';
-import { fetchComments } from './utils/fetchComments';
-import ProjectLoadingSkeleton from './components/projectLoadingSkeleton';
-import { useAtom, useSetAtom } from 'jotai';
-import { ProjectAtom } from '../../shared/states/project';
-import { Project } from '../../infra/rest/typings';
 import {
-  CommentsWrapperAtom,
-  LikedByUserAtom,
-  TotalParentCommentsLoadedAtom,
-} from './states';
-import { getProject, searchSimilarProjects } from './requests';
+  Box,
+  Typography,
+  Button,
+  Avatar,
+  Link as MuiLink,
+} from '@mui/material';
+import { getDay } from '../../shared/utils/date';
+import { useAtomValue } from 'jotai';
+import { SelectedProjectAtom } from './states';
+import BannerProjectCard from '../home/components/banner-project-card';
+import { ProjectLoadingSkeleton } from '../../shared/components/atoms/skeleton';
+import { HomePageProjectsAtom } from '../home/states';
+import useProject from './hooks';
+import CommentsWrapper from '../../shared/components/organisms/comments-wrapper';
+import ProjectInteraction from './components/project-interaction';
+import ProjectContent from './components/project-content';
+import {
+  defaultDarkThumbnail,
+  defaultLightThumbnail,
+} from '../editor/constants';
+import { useA2ZTheme } from '../../shared/hooks/use-theme';
+import OpenInNewIcon from '@mui/icons-material/OpenInNew';
+import GitHubIcon from '@mui/icons-material/GitHub';
+import { getAllProjectsResponse } from '../../infra/rest/apis/project/typing';
+import { OutputBlockData } from '@editorjs/editorjs';
+import { CommentsWrapperAtom } from '../../shared/components/organisms/comments-wrapper/states';
 
 const Project = () => {
-  const { project_id } = useParams<{ project_id: string }>();
-  const [project, setProject] = useAtom(ProjectAtom);
-  const setLikedByUser = useSetAtom(LikedByUserAtom);
-  const setCommentsWrapper = useSetAtom(CommentsWrapperAtom);
-  const setTotalParentCommentsLoaded = useSetAtom(
-    TotalParentCommentsLoadedAtom
-  );
-
-  const [similarProjects, setSimilarProjects] = useState<Project[] | null>(
-    null
-  );
-  const [loading, setLoading] = useState(true);
-
-  const resetStates = useCallback(() => {
-    setProject(null);
-    setSimilarProjects(null);
-    setLoading(true);
-    setLikedByUser(false);
-    setCommentsWrapper(false);
-    setTotalParentCommentsLoaded(0);
-  }, [
-    setCommentsWrapper,
-    setLikedByUser,
-    setProject,
-    setSimilarProjects,
-    setTotalParentCommentsLoaded,
-  ]);
-
-  const fetchProject = useCallback(async () => {
-    if (!project_id) return;
-
-    try {
-      const response = await getProject({ project_id });
-      if (response.project) {
-        // Fetch comments for the project
-        const commentsResponse = await fetchComments({
-          project_id: response.project._id || '',
-          setParentCommentCountFun: setTotalParentCommentsLoaded,
-        });
-
-        const projectWithComments = {
-          ...response.project,
-          comments: commentsResponse,
-        };
-
-        setProject(projectWithComments);
-
-        // Fetch similar projects
-        if (response.project.tags && response.project.tags.length > 0) {
-          const similarResponse = await searchSimilarProjects({
-            tag: response.project.tags[0],
-            limit: 6,
-            elminate_project: project_id,
-          });
-
-          if (similarResponse.projects) {
-            setSimilarProjects(similarResponse.projects);
-          }
-        }
-
-        setLoading(false);
-      }
-    } catch (error) {
-      console.error('Error fetching project:', error);
-      setLoading(false);
-    }
-  }, [
-    project_id,
-    setProject,
-    setSimilarProjects,
-    setTotalParentCommentsLoaded,
-  ]);
+  const { project_id } = useParams();
+  const { theme: a2zTheme } = useA2ZTheme();
+  const selectedProject = useAtomValue(SelectedProjectAtom);
+  const similarProjects = useAtomValue(HomePageProjectsAtom);
+  const commentsWrapper = useAtomValue(CommentsWrapperAtom);
+  const { fetchProject, loading } = useProject();
 
   useEffect(() => {
-    resetStates();
-    fetchProject();
-  }, [resetStates, fetchProject]);
+    fetchProject(project_id || '');
+  }, [project_id, fetchProject]);
 
-  if (loading) {
-    return (
-      <AnimationWrapper>
-        <ProjectLoadingSkeleton count={3} />
-      </AnimationWrapper>
-    );
+  if (loading || !selectedProject) {
+    return <ProjectLoadingSkeleton count={1} />;
   }
-
-  if (!project) {
-    return (
-      <AnimationWrapper>
-        <div className="max-w-[900px] center py-10 max-lg:px-[5vw]">
-          <h1 className="text-2xl font-medium text-center">
-            Project not found
-          </h1>
-        </div>
-      </AnimationWrapper>
-    );
-  }
-
-  const {
-    title,
-    banner,
-    author,
-    publishedAt,
-    projectUrl,
-    repository,
-    content,
-  } = project;
-  const {
-    personal_info: { fullname, username: author_username, profile_img },
-  } = author;
 
   return (
-    <AnimationWrapper>
-      <CommentsContainer />
+    <>
+      {commentsWrapper && <CommentsWrapper />}
 
-      <div className="max-w-[900px] center py-10 max-lg:px-[5vw]">
-        <div className="my-8 flex max-sm:flex-col justify-between">
-          <h2
-            className={`${projectUrl && repository ? 'max-w-[60%]' : 'max-w-[80%]'} truncate whitespace-nowrap overflow-hidden`}
+      <Box
+        sx={{
+          maxWidth: 900,
+          mx: 'auto',
+          py: 8,
+          px: { xs: '5vw', lg: 0 },
+        }}
+      >
+        {/* Header Section */}
+        <Box
+          sx={{
+            mb: 6,
+            display: 'flex',
+            justifyContent: 'space-between',
+            flexDirection: { xs: 'column', sm: 'row' },
+            alignItems: { xs: 'flex-start', sm: 'center' },
+            gap: { xs: 2, sm: 0 },
+          }}
+        >
+          <Typography
+            variant="h5"
+            noWrap
+            sx={{
+              maxWidth:
+                selectedProject.live_url && selectedProject.repository_url
+                  ? '60%'
+                  : '80%',
+              overflow: 'hidden',
+              textOverflow: 'ellipsis',
+              whiteSpace: 'nowrap',
+            }}
           >
-            {title}
-          </h2>
-          <div className="flex gap-4">
-            {projectUrl && (
-              <Link
-                to={projectUrl}
-                className="btn-dark dark:btn-light rounded flex gap-2 items-center"
+            {selectedProject.title}
+          </Typography>
+
+          <Box sx={{ display: 'flex', gap: 2 }}>
+            {selectedProject.live_url && (
+              <Button
+                component={Link}
+                to={selectedProject.live_url}
+                variant="contained"
+                color="primary"
+                startIcon={<OpenInNewIcon />}
               >
-                <i className="fi fi-rr-link"></i>
                 Live URL
-              </Link>
+              </Button>
             )}
-            {repository && (
-              <Link
-                to={repository}
-                className="btn-dark dark:btn-light rounded flex gap-2 items-center"
+
+            {selectedProject.repository_url && (
+              <Button
+                component={Link}
+                to={selectedProject.repository_url}
+                variant="contained"
+                color="inherit"
+                startIcon={<GitHubIcon />}
               >
-                <i className="fi fi-brands-github"></i>
                 GitHub
-              </Link>
+              </Button>
             )}
-          </div>
-        </div>
+          </Box>
+        </Box>
 
-        <img src={banner} alt="" className="aspect-video" />
+        {/* Banner Image */}
+        <Box
+          component="img"
+          src={
+            selectedProject.banner_url
+              ? selectedProject.banner_url
+              : a2zTheme === 'dark'
+                ? defaultDarkThumbnail
+                : defaultLightThumbnail
+          }
+          alt={selectedProject.title}
+          sx={{
+            width: '100%',
+            aspectRatio: '16/9',
+            borderRadius: 2,
+            objectFit: 'cover',
+          }}
+        />
 
-        <div className="flex max-sm:flex-col justify-between my-12">
-          <div className="flex gap-5 items-start">
-            <img src={profile_img} alt="" className="w-12 h-12 rounded-full" />
-            <p className="capitalize">
-              {fullname}
+        {/* Author Info + Publish Date */}
+        <Box
+          sx={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            flexDirection: { xs: 'column', sm: 'row' },
+            alignItems: { xs: 'flex-start', sm: 'center' },
+            my: 6,
+          }}
+        >
+          <Box sx={{ display: 'flex', alignItems: 'flex-start', gap: 2 }}>
+            <Avatar
+              src={selectedProject.user_id.personal_info.profile_img}
+              alt={selectedProject.user_id.personal_info.fullname}
+              sx={{ width: 48, height: 48 }}
+            />
+            <Typography variant="body1" sx={{ textTransform: 'capitalize' }}>
+              {selectedProject.user_id.personal_info.fullname}
               <br />@
-              <Link to={`/user/${author_username}`} className="underline">
-                {author_username}
-              </Link>
-            </p>
-          </div>
+              <MuiLink
+                component={Link}
+                to={`/user/${selectedProject.user_id.personal_info.username}`}
+                underline="hover"
+              >
+                {selectedProject.user_id.personal_info.username}
+              </MuiLink>
+            </Typography>
+          </Box>
 
-          <p className="text-gray-700 dark:text-gray-200 opacity-75 max-sm:mt-6 max-sm:ml-12 max-sm:pl-5">
-            Published on {getDay(publishedAt)}
-          </p>
-        </div>
+          <Typography
+            variant="body2"
+            sx={{
+              color: 'text.secondary',
+              opacity: 0.8,
+              mt: { xs: 2, sm: 0 },
+              ml: { xs: 6, sm: 0 },
+              pl: { xs: 1, sm: 0 },
+            }}
+          >
+            Published on {getDay(selectedProject.publishedAt)}
+          </Typography>
+        </Box>
+
+        {/* Project Interaction Section */}
+        <ProjectInteraction />
+
+        {/* Project Content */}
+        <Box sx={{ my: 6 }}>
+          {selectedProject.content_blocks &&
+            selectedProject.content_blocks[0]?.blocks?.map(
+              (block: OutputBlockData, i: number) => (
+                <Box key={i} sx={{ my: { xs: 2, md: 4 } }}>
+                  <ProjectContent block={block} />
+                </Box>
+              )
+            )}
+        </Box>
 
         <ProjectInteraction />
 
-        <div className="my-12 font-gelasio project-page-content">
-          {content &&
-            content[0]?.blocks?.map((block, i) => (
-              <div key={i} className="my-4 md:my-8">
-                <ProjectContent block={block} />
-              </div>
-            ))}
-        </div>
-
-        <ProjectInteraction />
-
+        {/* Similar Projects Section */}
         {similarProjects && similarProjects.length > 0 && (
-          <>
-            <h1 className="text-2xl mt-14 mb-10 font-medium">
+          <Box sx={{ mt: 10 }}>
+            <Typography variant="h6" sx={{ mb: 5, fontWeight: 500 }}>
               Similar Projects
-            </h1>
-            {similarProjects.map((similarProject, i) => {
-              const {
-                author: { personal_info },
-              } = similarProject;
-              return (
-                <AnimationWrapper
-                  key={i}
-                  transition={{ duration: 1, delay: i * 0.08 }}
-                >
-                  <ProjectPostCard
-                    project={similarProject}
-                    author={personal_info}
-                  />
-                </AnimationWrapper>
-              );
-            })}
-          </>
+            </Typography>
+
+            {similarProjects.map(
+              (similarProject: getAllProjectsResponse, i: number) => (
+                <BannerProjectCard key={i} project={similarProject} />
+              )
+            )}
+          </Box>
         )}
-      </div>
-    </AnimationWrapper>
+      </Box>
+    </>
   );
 };
 

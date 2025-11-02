@@ -1,8 +1,5 @@
-import {
-  PROJECT_ACTIVITY,
-  PROJECT_CONTENT_BLOCKS,
-  USER_PERSONAL_LIMITED_INFO,
-} from '../../typings';
+import { OutputData } from '@editorjs/editorjs';
+import { PROJECT_ACTIVITY, USER_PERSONAL_LIMITED_INFO } from '../../typings';
 
 export interface createProjectPayload {
   _id?: string;
@@ -12,7 +9,7 @@ export interface createProjectPayload {
   live_url?: string;
   repository_url?: string;
   tags: Array<string>;
-  content_blocks?: PROJECT_CONTENT_BLOCKS;
+  content_blocks?: OutputData | Array<OutputData>;
   is_draft: boolean;
 }
 
@@ -37,9 +34,10 @@ export interface getTrendingProjectsResponse {
 export interface searchProjectsPayload {
   tag?: string;
   query?: string;
-  author?: string;
+  user_id?: string;
   page?: number;
   limit?: number;
+  rmv_project_by_id?: string;
 }
 
 export enum PROJECT_OPEN_MODE {
@@ -55,7 +53,7 @@ export interface ProjectData {
   repository_url: string;
   live_url: string | null;
   tags: Array<string>;
-  content_blocks: Array<PROJECT_CONTENT_BLOCKS>;
+  content_blocks: Array<OutputData>;
   user_id: {
     _id: string;
     personal_info: USER_PERSONAL_LIMITED_INFO;

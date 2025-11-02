@@ -6,9 +6,9 @@ import {
   updateProfilePayload,
 } from './typing';
 
-export const searchUser = async (query: string) => {
+export const searchUser = async (query: string, page: number) => {
   return get<undefined, ApiResponse<searchUserResponse[]>>(
-    `/api/user/search?query=${query}`
+    `/api/user/search?query=${query}&page=${page}`
   );
 };
 
