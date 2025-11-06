@@ -23,6 +23,13 @@ export default defineConfig([
       // Disable react-in-jsx-scope for React 17+ (not needed)
       'react/react-in-jsx-scope': 'off',
       'react/jsx-uses-react': 'off',
+
+    
+    },
+    settings: {
+      react: {
+        version: "detect", // 👈 Add this line
+      },
     },
   },
 ])
