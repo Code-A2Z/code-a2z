@@ -10,7 +10,6 @@ import { Virtuoso } from 'react-virtuoso';
 import { BannerSkeleton } from '../../shared/components/atoms/skeleton';
 import { UserAtom } from '../../infra/states/user';
 import { Avatar, Box, CircularProgress } from '@mui/material';
-import type { Theme } from '@mui/material/styles';
 import useHome from '../home/hooks';
 import AboutUser from './components/about-user';
 import A2ZTypography from '../../shared/components/atoms/typography';
@@ -59,9 +58,7 @@ const Profile = () => {
           minWidth: 400,
           gap: 2,
           pl: { md: 4 },
-          borderLeft: (theme: Theme) => ({
-            md: `1px solid ${theme.palette.divider}`,
-          }),
+          borderLeft: theme => ({ md: `1px solid ${theme.palette.divider}` }),
         }}
       >
         <Avatar
@@ -130,7 +127,7 @@ const Profile = () => {
             <Virtuoso
               style={{ height: '100%', width: '100%', scrollbarWidth: 'none' }}
               totalCount={projects.length}
-              itemContent={(index: number) => (
+              itemContent={index => (
                 <BannerProjectCard key={index} project={projects[index]} />
               )}
               overscan={200}
