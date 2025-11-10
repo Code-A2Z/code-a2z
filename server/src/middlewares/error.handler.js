@@ -1,5 +1,5 @@
 import { sendResponse } from '../utils/response.js'
-import logger from '../logger/winston'
+import logger from '../logger/winston.js'
 
 const errorHandler = (err, req, res, next) => {
   if (req?.logger) {

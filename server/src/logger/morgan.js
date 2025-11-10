@@ -21,4 +21,4 @@ const morganMiddleware = morgan(
   { stream, skip }
 )
 
-export default morganMiddleware
+export default morganMiddleware;

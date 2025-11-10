@@ -1,15 +1,28 @@
-import { useEffect, useRef, useState } from 'react';
-import AnimationWrapper from '../../../shared/components/atoms/page-animation';
-import Loader from '../../../shared/components/atoms/loader';
-import InputBox from '../../../shared/components/atoms/input-box';
-import { uploadImage } from '../../../shared/hooks/upload-image';
-import { storeInSession } from '../../../shared/utils/session';
-import { useAtom } from 'jotai';
-import { UserAtom } from '../../../shared/states/user';
-import { useNotifications } from '../../../shared/hooks/use-notification';
-import { ProfileAtom } from '../../../shared/states/profile';
-import { bioLimit } from '../constants';
-import { getUserProfile, updateProfile, uploadProfileImage } from '../requests';
+import { useEffect, useRef, useState } from "react";
+import {
+  Box,
+  Typography,
+  Button,
+  Avatar,
+  TextField,
+  Stack,
+  Paper,
+  IconButton,
+} from "@mui/material";
+import { useAtom } from "jotai";
+import { UserAtom } from "../../../shared/states/user";
+import { ProfileAtom } from "../../../shared/states/profile";
+import { useNotifications } from "../../../shared/hooks/use-notification";
+import { storeInSession } from "../../../shared/utils/session";
+import { uploadImage } from "../../../shared/hooks/upload-image";
+import {
+  getUserProfile,
+  updateProfile,
+  uploadProfileImage,
+} from "../requests";
+import { bioLimit } from "../constants";
+import AnimationWrapper from "../../../shared/components/atoms/page-animation";
+import Loader from "../../../shared/components/atoms/loader";
 
 const EditProfile = () => {
   const [user, setUser] = useAtom(UserAtom);
@@ -24,25 +37,19 @@ const EditProfile = () => {
   const [updatedProfileImg, setUpdatedProfileImg] = useState<File | null>(null);
 
   const {
-    personal_info: {
-      fullname,
-      username: profile_username,
-      profile_img,
-      email,
-      bio,
-    },
+    personal_info: { fullname, username: profile_username, profile_img, email, bio },
     social_links,
   } = profile;
 
   useEffect(() => {
     if (user.access_token) {
       getUserProfile(user.username)
-        .then(response => {
+        .then((response) => {
           setProfile(response);
           setLoading(false);
         })
         .catch(({ response }) => {
-          console.log(response.data);
+          console.error(response.data);
           setLoading(false);
         });
     }
@@ -60,50 +67,37 @@ const EditProfile = () => {
     }
   };
 
-  const handleImageUpload = (e: React.MouseEvent<HTMLButtonElement>) => {
+  const handleImageUpload = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
 
-    if (updatedProfileImg) {
-      e.currentTarget.setAttribute('disabled', 'true');
+    if (!updatedProfileImg) return;
+    e.currentTarget.setAttribute("disabled", "true");
 
-      uploadImage(updatedProfileImg)
-        .then(url => {
-          if (url) {
-            uploadProfileImage(url)
-              .then(response => {
-                const newUser = { ...user, profile_img: response.profile_img };
-                storeInSession('user', JSON.stringify(newUser));
-                setUser(newUser);
+    try {
+      const url = await uploadImage(updatedProfileImg);
+      if (url) {
+        const response = await uploadProfileImage(url);
+        const newUser = { ...user, profile_img: response.profile_img };
+        storeInSession("user", JSON.stringify(newUser));
+        setUser(newUser);
 
-                setUpdatedProfileImg(null);
-                e.currentTarget.removeAttribute('disabled');
-                addNotification({
-                  message: 'Profile Image Updated',
-                  type: 'success',
-                });
-              })
-              .catch(({ response }) => {
-                e.currentTarget.removeAttribute('disabled');
-                addNotification({
-                  message: response.data.error,
-                  type: 'error',
-                });
-              });
-          }
-        })
-        .catch(err => {
-          console.log(err);
-        });
+        setUpdatedProfileImg(null);
+        addNotification({ message: "Profile Image Updated", type: "success" });
+      }
+    } catch (err: any) {
+      console.error(err);
+      addNotification({ message: "Error uploading image", type: "error" });
+    } finally {
+      e.currentTarget.removeAttribute("disabled");
     }
   };
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-
     if (!editProfileForm.current) return;
+
     const form = new FormData(editProfileForm.current);
     const formData: { [key: string]: FormDataEntryValue } = {};
-
     for (const [key, value] of form.entries()) {
       formData[key] = value;
     }
@@ -119,172 +113,215 @@ const EditProfile = () => {
       website,
     } = formData;
 
-    if (typeof username !== 'string' || username.length < 3) {
+    if (typeof username !== "string" || username.length < 3) {
       return addNotification({
-        message: 'Username should be atleast 3 characters long',
-        type: 'error',
+        message: "Username should be at least 3 characters long",
+        type: "error",
       });
     }
 
-    if (typeof bio === 'string' && bio.length > bioLimit) {
+    if (typeof bio === "string" && bio.length > bioLimit) {
       return addNotification({
         message: `Bio should be less than ${bioLimit} characters`,
-        type: 'error',
+        type: "error",
       });
     }
 
-    e.currentTarget.setAttribute('disabled', 'true');
+    try {
+      const response = await updateProfile(
+        username as string,
+        bio as string,
+        youtube as string,
+        facebook as string,
+        twitter as string,
+        github as string,
+        instagram as string,
+        website as string
+      );
 
-    updateProfile(
-      username,
-      bio as string,
-      youtube as string,
-      facebook as string,
-      twitter as string,
-      github as string,
-      instagram as string,
-      website as string
-    )
-      .then(response => {
-        if (user.username != response.username) {
-          const newUserAuth = { ...user, username: response.username };
-          storeInSession('user', JSON.stringify(newUserAuth));
-          setUser(newUserAuth);
-        }
+      if (user.username !== response.username) {
+        const newUserAuth = { ...user, username: response.username };
+        storeInSession("user", JSON.stringify(newUserAuth));
+        setUser(newUserAuth);
+      }
 
-        e.currentTarget.removeAttribute('disabled');
-        addNotification({
-          message: 'Profile Updated',
-          type: 'success',
-        });
-      })
-      .catch(({ response }) => {
-        e.currentTarget.removeAttribute('disabled');
-        addNotification({
-          message: response.data.error,
-          type: 'error',
-        });
-      });
+      addNotification({ message: "Profile Updated", type: "success" });
+    } catch ({ response }: any) {
+      addNotification({ message: response.data.error, type: "error" });
+    } finally {
+      e.currentTarget.removeAttribute("disabled");
+    }
   };
 
   return (
-    <AnimationWrapper>
-      {loading ? (
-        <Loader />
-      ) : (
-        <form ref={editProfileForm} onSubmit={handleSubmit}>
-          <h1 className="max-md:hidden">Edit Profile</h1>
+   <AnimationWrapper>
+  {loading ? (
+    <Loader />
+  ) : (
+    <Paper
+      elevation={3}
+      sx={{ p: 4, borderRadius: 3, maxWidth: 900, mx: "auto", mt: 4 }}
+    >
+      <Typography variant="h4" fontWeight={600} mb={4}>
+        Edit Profile
+      </Typography>
 
-          <div className="flex flex-col lg:flex-row items-start py-10 gap-8 lg:gap-10">
-            <div className="max-lg:block max-lg:mx-auto mb-5">
-              <label
-                htmlFor="uploadImg"
-                id="profileImgLabel"
-                className="relative block w-48 h-48 bg-gray-100 rounded-full overflow-hidden"
-              >
-                <div className="w-full h-full absolute top-0 left-0 flex items-center justify-center text-white bg-black/80 opacity-0 hover:opacity-100 cursor-pointer">
-                  Upload Image
-                </div>
-                <img ref={profileImgEle} src={profile_img} alt="" />
-              </label>
-
-              <input
-                onChange={handleImagePreview}
-                type="file"
-                id="uploadImg"
-                accept=".jpeg, .png, .jpg"
-                hidden
+      <form ref={editProfileForm} onSubmit={handleSubmit}>
+        <Stack
+          direction={{ xs: "column", lg: "row" }}
+          spacing={{ xs: 5, lg: 10 }}
+          alignItems="flex-start"
+        >
+          {/* Profile Image Section */}
+          <Box textAlign="center" sx={{ mx: { xs: "auto", lg: 0 } }}>
+            <Box position="relative" display="inline-block">
+              <Avatar
+                ref={profileImgEle}
+                src={profile_img}
+                alt={fullname}
+                sx={{ width: 192, height: 192 }}
               />
-
-              <button
-                onClick={handleImageUpload}
-                className="btn-light mt-5 max-lg:block max-lg:mx-auto lg:w-full px-10"
+              <IconButton
+                color="primary"
+                component="label"
+                sx={{
+                  position: "absolute",
+                  bottom: 0,
+                  left: "50%",
+                  transform: "translateX(-50%)",
+                  bgcolor: "background.paper",
+                  "&:hover": { bgcolor: "grey.100" },
+                }}
               >
-                Upload
-              </button>
-            </div>
+                Upload Image
+                <input
+                  type="file"
+                  hidden
+                  accept=".jpeg,.png,.jpg"
+                  onChange={handleImagePreview}
+                />
+              </IconButton>
+            </Box>
 
-            <div className="w-full">
-              <div className="grid grid-cols-1 md:grid-cols-2 md:gap-5">
-                <div>
-                  <InputBox
-                    name="fullname"
-                    type="text"
-                    value={fullname}
-                    placeholder="Full Name"
-                    disable={true}
-                    icon="fi-rr-user"
-                  />
-                </div>
-                <div>
-                  <InputBox
-                    name="email"
-                    type="email"
-                    value={email}
-                    placeholder="Email"
-                    disable={true}
-                    icon="fi-rr-envelope"
-                  />
-                </div>
-              </div>
+            <Button
+              variant="outlined"
+              sx={{ mt: 2, width: "100%" }}
+              onClick={handleImageUpload}
+            >
+              Upload
+            </Button>
+          </Box>
 
-              <InputBox
-                type="text"
-                name="username"
-                value={profile_username}
-                placeholder="Username"
-                icon="fi-rr-at"
+          {/* Form Fields Section */}
+          <Stack spacing={3} sx={{ width: "100%" }}>
+            <Stack direction={{ xs: "column", md: "row" }} spacing={2}>
+              <TextField
+                label="Full Name"
+                name="fullname"
+                value={fullname}
+                fullWidth
+                disabled
+                InputProps={{
+                  startAdornment: (
+                    <Box component="span" sx={{ mr: 1 }}>
+                      <i className="fi-rr-user" />
+                    </Box>
+                  ),
+                }}
               />
+              <TextField
+                label="Email"
+                name="email"
+                value={email}
+                fullWidth
+                disabled
+                InputProps={{
+                  startAdornment: (
+                    <Box component="span" sx={{ mr: 1 }}>
+                      <i className="fi-rr-envelope" />
+                    </Box>
+                  ),
+                }}
+              />
+            </Stack>
 
-              <p className="text-gray-500 -mt-3">
-                Username will use to search user and will be visible to all
-                users
-              </p>
+            <TextField
+              label="Username"
+              name="username"
+              defaultValue={profile_username}
+              fullWidth
+              InputProps={{
+                startAdornment: (
+                  <Box component="span" sx={{ mr: 1 }}>
+                    <i className="fi-rr-at" />
+                  </Box>
+                ),
+              }}
+            />
+            <Typography variant="body2" color="text.secondary" mt={-1}>
+              Username will use to search user and will be visible to all users
+            </Typography>
 
-              <textarea
-                name="bio"
-                maxLength={bioLimit}
-                defaultValue={bio}
-                className="input-box h-64 lg:h-40 resize-none leading-7 mt-5 pl-5"
-                placeholder="Bio"
-                onChange={handleCharacterChange}
-              ></textarea>
+            <TextField
+              label="Bio"
+              name="bio"
+              multiline
+              minRows={4}
+              fullWidth
+              defaultValue={bio}
+              onChange={handleCharacterChange}
+              inputProps={{ maxLength: bioLimit }}
+            />
+            <Typography variant="body2" color="text.secondary">
+              {charactersLeft} characters Left
+            </Typography>
 
-              <p className="mt-1 text-gray-500">
-                {charactersLeft} characters Left
-              </p>
+            <Typography variant="body2" color="text.secondary" mt={2}>
+              Add your social handle below
+            </Typography>
 
-              <p className="my-6 text-gray-500">Add your social handle below</p>
+            <Stack direction={{ xs: "column", md: "row" }} spacing={2} flexWrap="wrap">
+              {(Object.keys(social_links) as Array<keyof typeof social_links>).map(
+                (key, i) => (
+                  <TextField
+                    key={i}
+                    label={key.charAt(0).toUpperCase() + key.slice(1)}
+                    name={key}
+                    defaultValue={social_links[key]}
+                    placeholder="https://"
+                    sx={{ flex: "1 1 45%", mb: 2 }}
+                    InputProps={{
+                      startAdornment: (
+                        <Box component="span" sx={{ mr: 1 }}>
+                          <i
+                            className={
+                              key !== "website" ? "fi-brands-" + key : "fi-rr-globe"
+                            }
+                          />
+                        </Box>
+                      ),
+                    }}
+                  />
+                )
+              )}
+            </Stack>
 
-              <div className="md:grid md:grid-cols-2 gap-x-6">
-                {(
-                  Object.keys(social_links) as Array<keyof typeof social_links>
-                ).map((key, i) => {
-                  const link = social_links[key];
+            <Button
+              type="submit"
+              variant="contained"
+              color="primary"
+              sx={{ mt: 2, px: 5, alignSelf: "flex-start" }}
+            >
+              Update
+            </Button>
+          </Stack>
+        </Stack>
+      </form>
+    </Paper>
+  )}
+</AnimationWrapper>
 
-                  return (
-                    <InputBox
-                      key={i}
-                      name={key}
-                      type="text"
-                      value={link}
-                      placeholder="https://"
-                      icon={
-                        key !== 'website' ? 'fi-brands-' + key : 'fi-rr-globe'
-                      }
-                    />
-                  );
-                })}
-              </div>
 
-              <button className="btn-dark w-auto px-10" type="submit">
-                Update
-              </button>
-            </div>
-          </div>
-        </form>
-      )}
-    </AnimationWrapper>
   );
 };
 
