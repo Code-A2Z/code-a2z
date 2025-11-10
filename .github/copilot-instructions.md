@@ -50,7 +50,7 @@ code-a2z/
 - **UI Library**: Material-UI (MUI)
 - **Routing**: React Router v7
 - **Editor**: EditorJS
-- **Styling**: Emotion CSS-in-JS + Tailwind CSS
+- **Styling**: Emotion CSS-in-JS
 
 ### Server
 
@@ -250,8 +250,8 @@ export default projectRoutes;
 
 - Use **Material-UI components** as base
 - Apply **Emotion** for CSS-in-JS styling
-- Use **Tailwind CSS** utility classes when appropriate
 - Keep consistent spacing and color schemes from MUI theme
+- Avoid utility-based CSS frameworks (no Tailwind, Bootstrap, etc.)
 
 ### Error Handling
 
