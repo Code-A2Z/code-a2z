@@ -56,7 +56,7 @@
   "lint-staged": {
     "client/src/**/*.{ts,tsx,js,jsx,css,html}": [
       "prettier --write",
-      "eslint --fix"
+      "eslint --config client/eslint.config.js --fix"
     ],
     "server/**/*.js": [
       "prettier --write",
