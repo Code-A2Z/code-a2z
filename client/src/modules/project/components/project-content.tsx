@@ -2,7 +2,7 @@ import { OutputBlockData } from "@editorjs/editorjs";
 import React, { useState } from "react";
 import { Box, Typography, Button } from "@mui/material";
 
-interface ProjectContentProps {
+const ParagraphBlock = ({ data }: { data?: EJData }) => { 
   block: OutputBlockData;
 }
 
@@ -16,14 +16,14 @@ const ParagraphBlock = ({ data }: { data?: EJData }) => {
 const HeaderBlock = ({ data }: { data?: EJData }) => {
   const level = (data && (data["level"] as number)) || 2;
   const Tag = level === 3 ? "h3" : "h2";
-  const size = level === 3 ? "h5" : "h4";
+  const size = level === 3 ? 'h5' : 'h4'; 
   const text = (data && (data["text"] as string)) || "";
   return (
     <Typography
   component={Tag as React.ElementType}
   variant={size as 'h4' | 'h5'}
       fontWeight="bold"
-      dangerouslySetInnerHTML={{ __html: text }}
+      dangerouslySetInnerHTML={{ __html: text }} 
     />
   );
 };

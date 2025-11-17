@@ -4,7 +4,16 @@ import { useState } from 'react';
 import { useAtom } from 'jotai';
 import { UserAtom } from '../../../../shared/states/user';
 import axios from 'axios';
-import { Box, Typography, Button, Card, CardContent, CardActions, Avatar, Stack } from '@mui/material';
+import {
+  Box,
+  Typography,
+  Button,
+  Card,
+  CardContent,
+  CardActions,
+  Avatar,
+  Stack,
+} from '@mui/material';
 
 import { SetStateAction } from 'react';
 import { AllProjectsData } from '../../../../infra/rest/typings';
@@ -30,10 +39,16 @@ export interface Project {
 
 const ProjectStats = ({ stats }: { stats: ProjectStats }) => {
   return (
-    <Stack direction={{ xs: 'column', md: 'row' }} sx={{ borderTop: { xs: '1px solid #e5e7eb', md: 'none' } }}>
+    <Stack
+      direction={{ xs: 'column', md: 'row' }}
+      sx={{ borderTop: { xs: '1px solid #e5e7eb', md: 'none' } }}
+    >
       {Object.keys(stats).map((key, i) =>
         !key.includes('parent') ? (
-          <Box key={i} sx={{ p: 2, px: 3, borderLeft: i !== 0 ? '1px solid #e5e7eb' : 'none', textAlign: 'center' }}>
+          <Box
+            key={i}
+            sx={{ p: 2, px: 3, borderLeft: i !== 0 ? '1px solid #e5e7eb' : 'none', textAlign: 'center' }}
+          >
             <Typography variant="h6">{stats[key].toLocaleString()}</Typography>
             <Typography variant="body2" color="text.secondary" sx={{ textTransform: 'capitalize' }}>{key.split('_')[1]}</Typography>
           </Box>
