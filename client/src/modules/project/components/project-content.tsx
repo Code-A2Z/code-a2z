@@ -1,96 +1,161 @@
+import { useState } from 'react';
+import { Box, Typography, Button } from '@mui/material';
 import { OutputBlockData } from '@editorjs/editorjs';
 
-const Img = ({ url, caption }: { url: string; caption: string }) => {
+const ParagraphBlock = ({ text }: { text: string }) => {
+  return <Typography dangerouslySetInnerHTML={{ __html: text }} />;
+};
+
+const HeaderBlock = ({ level, text }: { level: number; text: string }) => {
+  const Tag = level === 3 ? 'h3' : 'h2';
+  const size = level === 3 ? 'h5' : 'h4';
   return (
-    <div>
-      <img src={url} alt="" />
-      {caption.length ? (
-        <p className="w-full text-center my-3 md:mb-12 text-base text-gray-700">
+    <Typography
+      component={Tag}
+      variant={size}
+      fontWeight="bold"
+      dangerouslySetInnerHTML={{ __html: text }}
+    />
+  );
+};
+
+const ImageBlock = ({ url, caption }: { url: string; caption: string }) => {
+  return (
+    <Box textAlign="center" my={2}>
+      <img
+        src={url}
+        alt={caption}
+        style={{ maxWidth: '100%', borderRadius: '8px' }}
+      />
+      {caption && (
+        <Typography variant="body2" color="text.secondary" mt={1}>
           {caption}
-        </p>
-      ) : (
-        ''
+        </Typography>
       )}
-    </div>
+    </Box>
   );
 };
 
-const Quote = ({ quote, caption }: { quote: string; caption: string }) => {
+const QuoteBlock = ({ text, caption }: { text: string; caption: string }) => {
   return (
-    <div className="bg-purple opacity-10 p-3 pl-5 border-l-4 border-purple">
-      <p className="text-xl leading-10 md:text-2xl">{quote}</p>
-      {caption.length ? (
-        <p className="w-full text-purple text-base">{caption}</p>
-      ) : (
-        ''
-      )}
-    </div>
-  );
-};
-
-const List = ({
-  style,
-  items,
-}: {
-  style: 'ordered' | 'unordered';
-  items: string[];
-}) => {
-  return (
-    <ol
-      className={`pl-5 ${style === 'ordered' ? ' list-decimal' : ' list-disc'}`}
+    <Box
+      sx={{
+        backgroundColor: 'rgba(128, 0, 128, 0.1)',
+        borderLeft: '4px solid purple',
+        p: 2,
+        pl: 3,
+        my: 2,
+      }}
     >
-      {items.map((listItem, i) => {
-        return (
-          <li
-            key={i}
-            className="my-4"
-            dangerouslySetInnerHTML={{ __html: listItem }}
-          ></li>
-        );
-      })}
-    </ol>
+      <Typography variant="h6" gutterBottom>
+        {text}
+      </Typography>
+      {caption && (
+        <Typography variant="body2" color="purple">
+          {caption}
+        </Typography>
+      )}
+    </Box>
+  );
+};
+
+const ListBlock = ({ style, items }: { style: string; items: string[] }) => {
+  const Tag = style === 'ordered' ? 'ol' : 'ul';
+  const styleType = style === 'ordered' ? 'decimal' : 'disc';
+  return (
+    <Box component={Tag} pl={3} sx={{ listStyleType: styleType }}>
+      {items.map((item, i) => (
+        <li key={i}>
+          <Typography
+            dangerouslySetInnerHTML={{ __html: item }}
+            variant="body1"
+          />
+        </li>
+      ))}
+    </Box>
+  );
+};
+
+const CodeBlock = ({ code, language }: { code: string; language: string }) => {
+  const codeText = code || '';
+  const [copied, setCopied] = useState(false);
+
+  const handleCopy = async () => {
+    try {
+      await navigator.clipboard.writeText(codeText);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    } catch {
+      setCopied(false);
+    }
+  };
+
+  return (
+    <Box
+      sx={{
+        bgcolor: '#1e1e1e',
+        color: '#f5f5f5',
+        p: 2,
+        borderRadius: 1,
+        overflow: 'auto',
+        position: 'relative',
+      }}
+    >
+      {language ? (
+        <Typography
+          sx={{
+            position: 'absolute',
+            top: 8,
+            left: 8,
+            fontSize: 12,
+            opacity: 0.7,
+          }}
+        >
+          {language}
+        </Typography>
+      ) : null}
+      <Button
+        size="small"
+        onClick={handleCopy}
+        variant="outlined"
+        sx={{ position: 'absolute', top: 8, right: 8 }}
+      >
+        {copied ? 'Copied' : 'Copy'}
+      </Button>
+      <Typography
+        component="pre"
+        sx={{ fontFamily: 'monospace', mt: 4, whiteSpace: 'pre-wrap' }}
+      >
+        {codeText}
+      </Typography>
+    </Box>
   );
 };
 
 const ProjectContent = ({ block }: { block: OutputBlockData }) => {
-  const { type, data } = block;
+  const { type, data } = block || {};
 
-  if (type === 'paragraph') {
-    return <p dangerouslySetInnerHTML={{ __html: data.text || '' }}></p>;
-  }
-
-  if (type === 'header') {
-    if (data.level === 3) {
+  switch (type) {
+    case 'paragraph':
+      return <ParagraphBlock text={data?.text ?? ''} />;
+    case 'header':
+      return <HeaderBlock level={data?.level ?? 2} text={data?.text ?? ''} />;
+    case 'image':
       return (
-        <h3
-          className="text-3xl font-bold"
-          dangerouslySetInnerHTML={{ __html: data.text || '' }}
-        ></h3>
+        <ImageBlock url={data?.file?.url ?? ''} caption={data?.caption ?? ''} />
       );
-    }
-    return (
-      <h2
-        className="text-4xl font-bold"
-        dangerouslySetInnerHTML={{ __html: data.text || '' }}
-      ></h2>
-    );
-  }
-
-  if (type === 'image') {
-    return <Img url={data.file?.url || ''} caption={data.caption || ''} />;
-  }
-
-  if (type === 'quote') {
-    return <Quote quote={data.text || ''} caption={data.caption || ''} />;
-  }
-
-  if (type === 'list') {
-    return (
-      <List
-        style={(data.style as 'ordered' | 'unordered') || 'unordered'}
-        items={data.items || []}
-      />
-    );
+    case 'quote':
+      return (
+        <QuoteBlock text={data?.text ?? ''} caption={data?.caption ?? ''} />
+      );
+    case 'list':
+      return <ListBlock style={data?.style} items={data?.items || []} />;
+    case 'code':
+      return (
+        <CodeBlock code={data?.code ?? ''} language={data?.language ?? ''} />
+      );
+    default:
+      return null;
   }
 };
 
