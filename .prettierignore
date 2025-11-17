@@ -33,6 +33,3 @@ pnpm-lock.yaml
 # OS
 .DS_Store
 Thumbs.db
-
-# Ignore markdown files in projects directory (might contain code snippets that shouldn't be formatted)
-projects/**/*.md
