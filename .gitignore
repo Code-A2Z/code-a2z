@@ -134,8 +134,3 @@ connect.lock
 # typescript
 *.tsbuildinfo
 next-env.d.ts
-
-
-######################################## Secret files ########################################
-kaggle.json
-firebase-adminsdk.json
