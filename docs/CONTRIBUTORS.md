@@ -4,11 +4,13 @@
 > **Code A2Z** is a collaborative developer-first ecosystem.  
 > Every contribution — from code commits to documentation, design, and issue tracking — shapes the project’s foundation.
 
-| Contributor                                                  | Highlights                                                              | Issue/PR |
-| :----------------------------------------------------------- | :---------------------------------------------------------------------- | :------- |
-| **[@Avdhesh-Varshney](https://github.com/Avdhesh-Varshney)** | Architecture design, MUI migration, JOTAI integration, Resend API setup |          |
-| **[@Code-A2Z](https://github.com/Code-A2Z)**                 | Repository management, issue templates, and release coordination        |          |
-| _Open for You!_                                              | Pick an issue, open a PR, and join the Code A2Z development journey     | ()       |
+| Contributor                                              | Highlights                                                              | Issue/PR                                         |
+| :------------------------------------------------------- | :---------------------------------------------------------------------- | :----------------------------------------------- |
+| [@Avdhesh-Varshney](https://github.com/Avdhesh-Varshney) | Architecture design, MUI migration, JOTAI integration, Resend API setup |                                                  |
+| [@Vriti62](https://github.com/Vriti62)                   | Backend Implementation of Project Bookmarking & Saved Collections       | https://github.com/Code-A2Z/code-a2z/issues/1180 |
+| [@vansh909](https://github.com/vansh909)                 | Backend Implementation Collaboration Invitations through Email          | https://github.com/Code-A2Z/code-a2z/issues/1179 |
+| [@Maxzovert](https://github.com/Maxzovert)               | Implement Ctrl/Cmd + K Search Shortcut                                  | https://github.com/Code-A2Z/code-a2z/issues/1176 |
+| _Open for You!_                                          | Pick an issue, open a PR, and join the Code A2Z development journey     | ()                                               |
 
 > [!TIP]  
 > Want to contribute?  

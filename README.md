@@ -18,13 +18,18 @@
     <a href="https://documenter.getpostman.com/view/46893887/2sB3QNp8fM">
       <img src="https://img.shields.io/badge/API%20Docs-FF6C37?style=for-the-badge&logo=postman&logoColor=white">
     </a>
-    <br /><br />
+  </p>
+
+  <p>
     <a href="https://www.buymeacoffee.com/avdheshvarshney">
       <img src="https://img.shields.io/badge/Buy%20Me%20a%20Coffee-ffdd00?style=for-the-badge&logo=buy-me-a-coffee&logoColor=black" />
     </a>
     <a href="https://discord.gg/tSqtvHUJzE">
       <img src="https://img.shields.io/badge/Discord-%235865F2.svg?style=for-the-badge&logo=discord&logoColor=white" />
-    </a><br /><br />
+    </a>
+  </p>
+
+  <p>
     <img src="https://img.shields.io/github/repo-size/Code-A2Z/code-a2z" />
     <img src="https://img.shields.io/github/languages/count/Code-A2Z/code-a2z" />
     <img src="https://img.shields.io/github/stars/Code-A2Z/code-a2z" />
@@ -87,28 +92,29 @@ Future releases will expand into AI-driven productivity tools, personalized feed
 > These features represent the current strengths and future goals of **Code A2Z**, focused on scalability, collaboration, and developer productivity.  
 > Each item listed here is open for contribution, proposal, and improvement.
 
-- [x] MUI-Based Design System (https://github.com/Code-A2Z/code-a2z/pull/1317, https://github.com/Code-A2Z/code-a2z/pull/1291)
-- [x] Custom Notification Engine (https://github.com/Code-A2Z/code-a2z/pull/1317)
-- [x] JOTAI State Management Integration (https://github.com/Code-A2Z/code-a2z/pull/1317)
-- [x] Modular Client & Server Architecture (https://github.com/Code-A2Z/code-a2z/pull/1317, https://github.com/Code-A2Z/code-a2z/pull/1304)
-- [x] Real-Time Editor Synchronization (https://github.com/Code-A2Z/code-a2z/pull/1317, https://github.com/Code-A2Z/code-a2z/pull/1104)
-- [x] Subscription & Mailing via RESEND API (https://github.com/Code-A2Z/code-a2z/pull/1294)
-- [x] Personal Project Collections (https://github.com/Code-A2Z/code-a2z/issues/1180)
-- [x] In-App Project Collaboration (https://github.com/Code-A2Z/code-a2z/issues/1179)
-- [ ] User Feedback Collection System
-- [ ] Personalized Learning Feed
-- [ ] Role Based Dashboard System
-- [ ] Developer Collaboration Matchmaking
-- [ ] Project & User Ranking Mechanism
-- [ ] Multi-Language Localization
-- [ ] Collection & Bookmarking System
-- [ ] Collaboration Invitations via Email
-- [ ] AI-Powered Real-Time Chat Channels
-- [ ] Dynamic Project Activity Dashboard
-- [ ] Private Notes Per Project
-- [ ] Habit & Streak Tracker
-- [ ] LLM-Generated Quiz System
-- [ ] Integrated Video Streaming Platform
+- [x] Unified MUI Component & Design Framework (https://github.com/Code-A2Z/code-a2z/pull/1317, https://github.com/Code-A2Z/code-a2z/pull/1291)
+- [x] Custom In-App Notification Infrastructure (https://github.com/Code-A2Z/code-a2z/pull/1317)
+- [x] Jotai-Driven Global State Architecture (https://github.com/Code-A2Z/code-a2z/pull/1317)
+- [x] Separated & Modularized Client–Server Codebase (https://github.com/Code-A2Z/code-a2z/pull/1317, https://github.com/Code-A2Z/code-a2z/pull/1304)
+- [x] Real-Time Collaborative Code Editing Engine (https://github.com/Code-A2Z/code-a2z/pull/1317, https://github.com/Code-A2Z/code-a2z/pull/1104)
+- [x] Subscription & Email Automation via Resend (https://github.com/Code-A2Z/code-a2z/pull/1294)
+- [ ] User Insight & Feedback Collection Module (https://github.com/Code-A2Z/code-a2z/issues/1170)
+- [ ] Developer Skill-Based Matchmaking System ()
+- [ ] Project & Profile Reputation/Ratings Engine ()
+- [ ] Advanced Project Bookmarking & Saved Collections (https://github.com/Code-A2Z/code-a2z/issues/1180)
+- [ ] Role-Aware Dashboard & Permissions System ()
+- [ ] Email-Based Collaboration Invitations (https://github.com/Code-A2Z/code-a2z/issues/1179)
+- [ ] Open Public JSON APIs for Project Data ()
+- [ ] Multi-Language Localization & i18n Support (https://github.com/Code-A2Z/code-a2z/issues/1001)
+- [ ] AI-Powered Real-Time Discussion Channels (https://github.com/Code-A2Z/code-a2z/issues/788)
+- [ ] Live Project Activity Analytics Dashboard (https://github.com/Code-A2Z/code-a2z/issues/1182)
+- [ ] Private Project-Specific Notes (https://github.com/Code-A2Z/code-a2z/issues/249)
+- [ ] Task Creation & Project Taskboard (https://github.com/Code-A2Z/code-a2z/issues/38)
+- [ ] Gamified Habit Tracking & Streak System (https://github.com/Code-A2Z/code-a2z/issues/51)
+- [ ] PR Workflow Automation via Webhooks (https://github.com/Code-A2Z/code-a2z/issues/1116)
+- [ ] AI-Generated Quiz & Assessment Engine (https://github.com/Code-A2Z/code-a2z/issues/48)
+- [ ] Personalized Learning Recommendations Feed (https://github.com/Code-A2Z/code-a2z/issues/1211)
+- [ ] AI-Powered Video Streaming & Knowledge Sharing Platform (https://github.com/Code-A2Z/code-a2z/issues/30)
 
 > [!TIP]  
 > Each feature aligns with Code A2Z’s mission to make collaborative development **simpler, faster, and smarter**.  
@@ -141,17 +147,5 @@ Be part of our developer space where we brainstorm, debug, and build together.
 > [!IMPORTANT]  
 > All discussions and contributions follow our [**Code of Conduct**](./CODE_OF_CONDUCT.md).  
 > Respect, collaboration, and professionalism are non-negotiable values of the **Code A2Z** community.
-
-![Line](https://user-images.githubusercontent.com/85225156/171937799-8fc9e255-9889-4642-9c92-6df85fb86e82.gif)
-
-<div align="center">
-
-# Tip from us 😇
-
-##### It always takes time to understand and learn. So, don't worry at all. We know <b>you have got this</b>! 💪
-
-### Show some &nbsp;❤️&nbsp; by &nbsp;🌟&nbsp; this repository!
-
-</div>
 
 <a href="#top"><img src="https://img.shields.io/badge/⬆-Back%20to%20Top-red?style=for-the-badge" align="right"/></a>
