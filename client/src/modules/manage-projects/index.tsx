@@ -5,6 +5,8 @@ import InPageNavigation from '../../shared/components/molecules/page-navigation'
 import NoDataMessageBox from '../../shared/components/atoms/no-data-msg';
 import ManagePublishedProjectCard from './components/publish-projects';
 import ManageDraftProjectPost from './components/draft-projects';
+import { Box, Typography, TextField, InputAdornment } from '@mui/material';
+import SearchIcon from '@mui/icons-material/Search';
 
 const ManageProjects = () => {
   const [projects, setProjects] = useAtom(AllProjectsAtom);
@@ -84,21 +86,29 @@ const ManageProjects = () => {
 
   return (
     <>
-      <h1 className="max-md:hidden">Manage Projects</h1>
-      <div className="relative max-md:mt-5 md:mt-8 mb-10">
-        <input
-          type="search"
-          className="w-full bg-gray-100 dark:bg-[#1f1f1f] text-black dark:text-white p-4 pl-12 pr-6 rounded-full placeholder:text-gray-500 dark:placeholder:text-gray-400"
+      <Typography variant="h4" sx={{ display: { xs: 'none', md: 'block' }, mb: 2 }}>
+        Manage Projects
+      </Typography>
+
+      <Box sx={{ my: { xs: 2, md: 3 }, mb: 5 }}>
+        <TextField
+          fullWidth
           placeholder="Search Projects"
+          variant="outlined"
           onChange={handleChange}
           onKeyDown={handleSearch}
+          InputProps={{
+            startAdornment: (
+              <InputAdornment position="start">
+                <SearchIcon color="action" />
+              </InputAdornment>
+            ),
+          }}
         />
-
-        <i className="fi fi-rr-search absolute right-[10%] md:pointer-events-none md:left-5 top-1/2 -translate-y-1/2 text-xl text-gray-500"></i>
-      </div>
+      </Box>
 
       <InPageNavigation
-        routes={['Published Projects', 'Drafts']}
+        routes={["Published Projects", "Drafts"]}
         defaultActiveIndex={activeTab !== 'draft' ? 0 : 1}
       >
         {
