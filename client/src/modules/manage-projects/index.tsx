@@ -5,8 +5,13 @@ import InPageNavigation from '../../shared/components/molecules/page-navigation'
 import NoDataMessageBox from '../../shared/components/atoms/no-data-msg';
 import ManagePublishedProjectCard from './components/publish-projects';
 import ManageDraftProjectPost from './components/draft-projects';
-import { Box, Typography, TextField, InputAdornment } from '@mui/material';
+import { Box, Typography, TextField, InputAdornment, CircularProgress } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
+import { AllProjectsAtom, DraftProjectAtom } from './states';
+import { UserAtom } from '../../infra/states/user';
+import { filterPaginationData } from '../../shared/requests/filter-pagination-data';
+import LoadMoreDataBtn from '../../shared/components/molecules/load-more-data';
+import { userProjects } from '../../infra/rest/apis/project';
 
 const ManageProjects = () => {
   const [projects, setProjects] = useAtom(AllProjectsAtom);
@@ -17,20 +22,16 @@ const ManageProjects = () => {
   const [query, setQuery] = useState('');
 
   const getProjects = useCallback(
-    (params: Record<string, unknown>) => {
-      const { page = 1, draft = false, deletedDocCount = 0 } = params;
+    (params: { page?: number; draft?: boolean; deletedDocCount?: number } | undefined) => {
+      const { page = 1, draft = false, deletedDocCount = 0 } = params || {};
 
-      userWrittenProjects({
-        page: page as number,
-        draft: draft as boolean,
-        query,
-        deletedDocCount: deletedDocCount as number,
-      })
+      // userProjects expects is_draft instead of draft
+      userProjects({ is_draft: draft, page, query, deletedDocCount })
         .then(async data => {
           const formattedData = (await filterPaginationData({
             state: draft ? drafts : projects,
             data: data.projects || [],
-            page: page as number,
+            page: page,
             countRoute: '/search-projects-count',
             data_to_send: {
               query,
@@ -38,7 +39,7 @@ const ManageProjects = () => {
               author: user.username || '',
               draft,
             },
-          })) as AllProjectsData;
+          }));
 
           if (formattedData) {
             if (draft) {
@@ -86,10 +87,7 @@ const ManageProjects = () => {
 
   return (
     <>
-      <Typography
-        variant="h4"
-        sx={{ display: { xs: 'none', md: 'block' }, mb: 2 }}
-      >
+      <Typography variant="h4" sx={{ display: { xs: 'none', md: 'block' }, mb: 2 }}>
         Manage Projects
       </Typography>
 
@@ -110,14 +108,13 @@ const ManageProjects = () => {
         />
       </Box>
 
-      <InPageNavigation
-        routes={['Published Projects', 'Drafts']}
-        defaultActiveIndex={activeTab !== 'draft' ? 0 : 1}
-      >
+      <InPageNavigation routes={["Published Projects", "Drafts"]} defaultActiveIndex={activeTab !== 'draft' ? 0 : 1}>
         {
           // Published Projects
           projects === null ? (
-            <Loader />
+            <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', py: 6 }}>
+              <CircularProgress />
+            </Box>
           ) : projects.results.length ? (
             <>
               {projects.results.map((project, i) => {
@@ -150,7 +147,9 @@ const ManageProjects = () => {
         {
           // Draft Projects
           drafts === null ? (
-            <Loader />
+            <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', py: 6 }}>
+              <CircularProgress />
+            </Box>
           ) : drafts.results.length ? (
             <>
               {drafts.results.map((project, i) => {
