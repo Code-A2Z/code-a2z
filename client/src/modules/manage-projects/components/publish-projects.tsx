@@ -3,7 +3,16 @@ import { getDay } from '../../../../shared/utils/date';
 import { useState } from 'react';
 import { useAtom } from 'jotai';
 import { UserAtom } from '../../../infra/states/user';
-import { Box, Typography, Button, Card, CardContent, CardActions, Avatar, Stack } from '@mui/material';
+import {
+  Box,
+  Typography,
+  Button,
+  Card,
+  CardContent,
+  CardActions,
+  Avatar,
+  Stack,
+} from '@mui/material';
 import { Project, deleteProject } from './utils';
 
 interface ProjectStats {

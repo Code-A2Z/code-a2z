@@ -13,7 +13,7 @@ import Profile from './modules/profile';
 import Project from './modules/project';
 import Sidebar from './shared/components/organisms/sidebar';
 // import ChangePassword from "./modules/change-password";
-import ManageProjects from "./modules/manage-projects";
+import ManageProjects from './modules/manage-projects';
 // import EditProfile from "./modules/edit-profile";
 // import Notifications from "./modules/notification";
 
