@@ -86,7 +86,10 @@ const ManageProjects = () => {
 
   return (
     <>
-      <Typography variant="h4" sx={{ display: { xs: 'none', md: 'block' }, mb: 2 }}>
+      <Typography
+        variant="h4"
+        sx={{ display: { xs: 'none', md: 'block' }, mb: 2 }}
+      >
         Manage Projects
       </Typography>
 
@@ -108,7 +111,7 @@ const ManageProjects = () => {
       </Box>
 
       <InPageNavigation
-        routes={["Published Projects", "Drafts"]}
+        routes={['Published Projects', 'Drafts']}
         defaultActiveIndex={activeTab !== 'draft' ? 0 : 1}
       >
         {
