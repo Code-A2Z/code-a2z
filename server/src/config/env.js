@@ -7,7 +7,9 @@ dotenv.config();
 export const PORT = process.env.PORT || 8000;
 export const SERVER_ENV = process.env.SERVER_ENV || 'development';
 export const VITE_SERVER_DOMAIN =
-  process.env.VITE_SERVER_DOMAIN || 'https://code-a2z-server.vercel.app';
+  process.env.VITE_SERVER_DOMAIN || 'http://localhost:8000';
+export const VITE_CLIENT_DOMAIN =
+  process.env.VITE_CLIENT_DOMAIN || 'http://localhost:5173';
 
 // MongoDB Configuration
 export const MONGODB_URL =
