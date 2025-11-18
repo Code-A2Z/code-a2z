@@ -45,6 +45,8 @@
     "@eslint/css": "^0.10.0",
     "@eslint/js": "^9.34.0",
     "@eslint/json": "^0.13.1",
+    "@types/mongoose": "^5.11.96",
+    "@types/node": "^24.10.1",
     "concurrently": "^9.2.0",
     "eslint": "^9.34.0",
     "eslint-plugin-react": "^7.37.5",

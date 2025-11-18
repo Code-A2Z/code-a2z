@@ -47,6 +47,7 @@
     "winston": "^3.18.3"
   },
   "devDependencies": {
+    "@types/express": "^5.0.5",
     "nodemon": "^3.1.10"
   }
 }
