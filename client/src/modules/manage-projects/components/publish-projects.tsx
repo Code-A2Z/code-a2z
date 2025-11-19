@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { getDay } from '../../../../shared/utils/date';
+import { getDay } from '../../../shared/utils/date';
 import { useState } from 'react';
 import { useAtom } from 'jotai';
 import { UserAtom } from '../../../infra/states/user';
@@ -63,7 +63,10 @@ const ManagePublishedProjectCard = ({ project }: { project: Project }) => {
   const { banner, project_id, title, publishedAt, activity } = project;
 
   const [user] = useAtom(UserAtom);
-  const access_token = user.access_token || '';
+  // USER_DB_STATE doesn't include access_token; if present (legacy/session), read safely
+  const access_token = user
+    ? ((user as unknown as { access_token?: string }).access_token ?? '')
+    : '';
 
   const [showStat, setShowStat] = useState(false);
 

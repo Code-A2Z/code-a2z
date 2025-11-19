@@ -1,216 +1,163 @@
-import { useAtom, useAtomValue } from 'jotai';
-import { useEffect, useState, useCallback } from 'react';
-import { useSearchParams } from 'react-router-dom';
+import { useEffect } from 'react';
+import { useParams } from 'react-router-dom';
 import InPageNavigation from '../../shared/components/molecules/page-navigation';
-import NoDataMessageBox from '../../shared/components/atoms/no-data-msg';
-import ManagePublishedProjectCard from './components/publish-projects';
-import ManageDraftProjectPost from './components/draft-projects';
-import {
-  Box,
-  Typography,
-  TextField,
-  InputAdornment,
-  CircularProgress,
-} from '@mui/material';
-import SearchIcon from '@mui/icons-material/Search';
-import { AllProjectsAtom, DraftProjectAtom } from './states';
+import NoDataMessage from '../../shared/components/atoms/no-data-msg';
+import { useAtom, useAtomValue } from 'jotai';
+import { HomePageProjectsAtom } from '../home/states';
+import BannerProjectCard from '../home/components/banner-project-card';
+import { ProfileAtom } from '../profile/states';
+import { Virtuoso } from 'react-virtuoso';
+import { BannerSkeleton } from '../../shared/components/atoms/skeleton';
 import { UserAtom } from '../../infra/states/user';
-import { filterPaginationData } from '../../shared/requests/filter-pagination-data';
-import LoadMoreDataBtn from '../../shared/components/molecules/load-more-data';
-import { userProjects } from '../../infra/rest/apis/project';
+import { Avatar, Box, CircularProgress } from '@mui/material';
+import useHome from '../home/hooks';
+import AboutUser from '../profile/components/about-user';
+import A2ZTypography from '../../shared/components/atoms/typography';
+import Button from '../../shared/components/atoms/button';
+import useProfile from '../profile/hooks';
 
-const ManageProjects = () => {
-  const [projects, setProjects] = useAtom(AllProjectsAtom);
-  const [drafts, setDrafts] = useAtom(DraftProjectAtom);
+const Profile = () => {
+  const { username } = useParams();
   const user = useAtomValue(UserAtom);
-
-  const activeTab = useSearchParams()[0].get('tab');
-  const [query, setQuery] = useState('');
-
-  const getProjects = useCallback(
-    (
-      params:
-        | { page?: number; draft?: boolean; deletedDocCount?: number }
-        | undefined
-    ) => {
-      const { page = 1, draft = false, deletedDocCount = 0 } = params || {};
-
-      // userProjects expects is_draft instead of draft
-      userProjects({ is_draft: draft, page, query, deletedDocCount })
-        .then(async data => {
-          const formattedData = await filterPaginationData({
-            state: draft ? drafts : projects,
-            data: data.projects || [],
-            page: page,
-            countRoute: '/search-projects-count',
-            data_to_send: {
-              query,
-              tag: query,
-              author: user.username || '',
-              draft,
-            },
-          });
-
-          if (formattedData) {
-            if (draft) {
-              setDrafts(formattedData);
-            } else {
-              setProjects(formattedData);
-            }
-          }
-        })
-        .catch(err => {
-          console.log(err);
-        });
-    },
-    [drafts, projects, query, setDrafts, setProjects, user.username]
-  );
+  const profile = useAtomValue(ProfileAtom);
+  const [projects, setProjects] = useAtom(HomePageProjectsAtom);
+  const { fetchProjectsByCategory } = useHome();
+  const { fetchUserProfile } = useProfile();
 
   useEffect(() => {
-    if (user.access_token) {
-      if (projects === null) {
-        getProjects({ page: 1, draft: false });
-      }
-      if (drafts === null) {
-        getProjects({ page: 1, draft: true });
-      }
+    if (username !== user?.personal_info.username) {
+      setProjects([]);
     }
-  }, [user.access_token, projects, drafts, query, getProjects]);
-
-  const handleSearch = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    const searchQuery = e.currentTarget.value;
-    setQuery(searchQuery);
-
-    if (e.keyCode === 13 && searchQuery.length) {
-      setProjects(null);
-      setDrafts(null);
+    if (projects.length === 0 || profile?.personal_info.username !== username) {
+      fetchUserProfile();
     }
-  };
+  }, [username]);
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (!e.currentTarget.value.length) {
-      setQuery('');
-      setProjects(null);
-      setDrafts(null);
-    }
-  };
+  if (!profile) {
+    return <CircularProgress size={24} />;
+  }
 
   return (
-    <>
-      <Typography
-        variant="h4"
-        sx={{ display: { xs: 'none', md: 'block' }, mb: 2 }}
+    <Box
+      component="section"
+      sx={{
+        minHeight: 'calc(100vh - 65px)',
+        display: { xs: 'block', md: 'flex' },
+        flexDirection: { md: 'row-reverse' },
+        justifyContent: 'center',
+        gap: { md: 5, lg: 8 },
+        p: 3,
+      }}
+    >
+      {/* Right Column (Profile Info) */}
+      <Box
+        sx={{
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: { xs: 'center', md: 'flex-start' },
+          minWidth: 400,
+          gap: 2,
+          pl: { md: 4 },
+          borderLeft: theme => ({ md: `1px solid ${theme.palette.divider}` }),
+        }}
       >
-        Manage Projects
-      </Typography>
-
-      <Box sx={{ my: { xs: 2, md: 3 }, mb: 5 }}>
-        <TextField
-          fullWidth
-          placeholder="Search Projects"
-          variant="outlined"
-          onChange={handleChange}
-          onKeyDown={handleSearch}
-          InputProps={{
-            startAdornment: (
-              <InputAdornment position="start">
-                <SearchIcon color="action" />
-              </InputAdornment>
-            ),
+        <Avatar
+          src={profile.personal_info.profile_img}
+          alt={profile.personal_info.fullname}
+          sx={{
+            width: { xs: 120, md: 130 },
+            height: { xs: 120, md: 130 },
+            bgcolor: 'grey.300',
           }}
         />
+
+        <A2ZTypography
+          variant="h6"
+          props={{ fontWeight: 500 }}
+          text={`@${profile.personal_info.username}`}
+        />
+        <A2ZTypography
+          variant="subtitle1"
+          props={{ textTransform: 'capitalize' }}
+          text={profile.personal_info.fullname}
+        />
+        <A2ZTypography
+          variant="body1"
+          props={{ color: 'text.secondary' }}
+          text={`${profile.account_info.total_posts.toLocaleString()} Projects - ${profile.account_info.total_reads.toLocaleString()} Reads`}
+        />
+
+        {user && username === user.personal_info.username ? (
+          <Button
+            href="/settings/edit-profile"
+            variant="outlined"
+            size="small"
+            sx={{ mt: 1 }}
+          >
+            Edit Profile
+          </Button>
+        ) : undefined}
+
+        <Box
+          sx={{
+            display: { xs: 'none', md: 'block' },
+          }}
+        >
+          <AboutUser
+            bio={profile.personal_info.bio}
+            social_links={profile.social_links}
+            joinedAt={profile.joinedAt}
+          />
+        </Box>
       </Box>
 
-      <InPageNavigation
-        routes={['Published Projects', 'Drafts']}
-        defaultActiveIndex={activeTab !== 'draft' ? 0 : 1}
+      {/* Left Column (Projects + About Tabs) */}
+      <Box
+        sx={{
+          width: '100%',
+          maxWidth: 800,
+          height: { xs: '52vh', md: '90vh' },
+        }}
       >
-        {
-          // Published Projects
-          projects === null ? (
-            <Box
-              sx={{
-                display: 'flex',
-                justifyContent: 'center',
-                alignItems: 'center',
-                py: 6,
+        <InPageNavigation
+          routes={['Projects Published', 'About']}
+          defaultHidden={['About']}
+        >
+          {projects.length ? (
+            <Virtuoso
+              style={{ height: '100%', width: '100%', scrollbarWidth: 'none' }}
+              totalCount={projects.length}
+              itemContent={index => (
+                <BannerProjectCard key={index} project={projects[index]} />
+              )}
+              overscan={200}
+              endReached={() => {
+                const nextPage = Math.floor(projects.length / 10) + 1; // Assuming page size of 10
+                fetchProjectsByCategory({
+                  page: nextPage,
+                  user_id: profile._id,
+                });
               }}
-            >
-              <CircularProgress />
-            </Box>
-          ) : projects.results.length ? (
-            <>
-              {projects.results.map((project, i) => {
-                return (
-                  <ManagePublishedProjectCard
-                    key={i}
-                    project={{
-                      ...project,
-                      index: i,
-                      setStateFunc: setProjects,
-                    }}
-                  />
-                );
-              })}
-
-              <LoadMoreDataBtn
-                state={projects}
-                fetchDataFun={getProjects}
-                additionalParam={{
-                  draft: false,
-                  deletedDocCount: projects.deletedDocCount,
-                }}
-              />
-            </>
-          ) : (
-            <NoDataMessageBox message="No Published Projects" />
-          )
-        }
-
-        {
-          // Draft Projects
-          drafts === null ? (
-            <Box
-              sx={{
-                display: 'flex',
-                justifyContent: 'center',
-                alignItems: 'center',
-                py: 6,
+              components={{
+                Footer: () =>
+                  !projects || projects.length === 0 ? (
+                    <BannerSkeleton count={3} />
+                  ) : null, // FIX ME
               }}
-            >
-              <CircularProgress />
-            </Box>
-          ) : drafts.results.length ? (
-            <>
-              {drafts.results.map((project, i) => {
-                return (
-                  <ManageDraftProjectPost
-                    key={i}
-                    project={{
-                      ...project,
-                      index: i,
-                      setStateFunc: setDrafts,
-                    }}
-                  />
-                );
-              })}
-
-              <LoadMoreDataBtn
-                state={drafts}
-                fetchDataFun={getProjects}
-                additionalParam={{
-                  draft: true,
-                  deletedDocCount: drafts.deletedDocCount,
-                }}
-              />
-            </>
+            />
           ) : (
-            <NoDataMessageBox message="No Draft Projects" />
-          )
-        }
-      </InPageNavigation>
-    </>
+            <NoDataMessage message="No projects published" />
+          )}
+
+          <AboutUser
+            bio={profile.personal_info.bio}
+            social_links={profile.social_links}
+            joinedAt={profile.joinedAt}
+          />
+        </InPageNavigation>
+      </Box>
+    </Box>
   );
 };
 
-export default ManageProjects;
+export default Profile;
