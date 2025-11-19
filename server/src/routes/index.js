@@ -1,10 +1,8 @@
 import express from 'express';
 
-// Import rate limiting middlewares
 import authLimiter from '../middlewares/auth.limiter.js';
 import generalLimiter from '../middlewares/general.limiter.js';
 
-// Import route modules
 import authRoutes from './api/auth.routes.js';
 import subscriberRoutes from './api/subscriber.routes.js';
 import mediaRoutes from './api/media.routes.js';
@@ -15,7 +13,8 @@ import commentRoutes from './api/comment.routes.js';
 import notificationRoutes from './api/notification.routes.js';
 import collectionRoutes from './api/collections.routes.js';
 import collaborationRoutes from './api/collaboration.routes.js';
-import noteRoutes from './api/noteRoutes.js';   // ✅ NEW
+import noteRoutes from './api/noteRoutes.js';
+
 
 const router = express.Router();
 
@@ -30,7 +29,7 @@ router.use('/notification', generalLimiter, notificationRoutes);
 router.use('/collection', generalLimiter, collectionRoutes);
 router.use('/collaboration', generalLimiter, collaborationRoutes);
 
-// ✅ NEW: Notes API route
-router.use('/', generalLimiter, noteRoutes);
+// Notes API
+router.use('/notes', generalLimiter, noteRoutes);
 
 export default router;

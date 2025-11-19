@@ -14,7 +14,9 @@ import sanitizeInput from './middlewares/sanitize.middleware.js';
 // Routes
 import monitorRoutes from './routes/api/monitor.routes.js';
 import router from './routes/index.js';
-import noteRoutes from './routes/noteRoutes.js'; // <--- NEW IMPORT
+
+import noteRoutes from "./routes/api/noteRoutes.js";
+
 
 dotenv.config();
 
