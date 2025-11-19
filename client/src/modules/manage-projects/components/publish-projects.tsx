@@ -4,6 +4,13 @@ import { useState } from 'react';
 import { useAtom } from 'jotai';
 import { UserAtom } from '../../../infra/states/user';
 import {
+  Card,
+  CardContent,
+  CardActions,
+  Typography,
+  Button,
+} from '@mui/material';
+import {
   Box,
   Typography,
   Button,
@@ -11,7 +18,6 @@ import {
   CardContent,
   CardActions,
   Avatar,
-  Stack,
 } from '@mui/material';
 import { Project, deleteProject } from './utils';
 
@@ -27,9 +33,12 @@ interface ProjectStats {
 
 const ProjectStats = ({ stats }: { stats: ProjectStats }) => {
   return (
-    <Stack
-      direction={{ xs: 'column', md: 'row' }}
-      sx={{ borderTop: { xs: '1px solid #e5e7eb', md: 'none' } }}
+    <Box
+      sx={{
+        display: 'flex',
+        flexDirection: { xs: 'column', md: 'row' },
+        borderTop: { xs: '1px solid #e5e7eb', md: 'none' },
+      }}
     >
       {Object.keys(stats).map((key, i) =>
         !key.includes('parent') ? (
@@ -53,7 +62,7 @@ const ProjectStats = ({ stats }: { stats: ProjectStats }) => {
           </Box>
         ) : null
       )}
-    </Stack>
+    </Box>
   );
 };
 
@@ -73,10 +82,13 @@ const ManagePublishedProjectCard = ({ project }: { project: Project }) => {
   return (
     <Card variant="outlined" sx={{ mb: 2, borderRadius: 2 }}>
       <CardContent>
-        <Stack
-          direction={{ xs: 'column', md: 'row' }}
-          spacing={2}
-          alignItems="center"
+        <Box
+          sx={{
+            display: 'flex',
+            flexDirection: { xs: 'column', md: 'row' },
+            gap: 2,
+            alignItems: 'center',
+          }}
         >
           {banner ? (
             <Box
@@ -144,7 +156,7 @@ const ManagePublishedProjectCard = ({ project }: { project: Project }) => {
           <Box sx={{ display: { xs: 'none', md: 'block' } }}>
             {activity && <ProjectStats stats={activity} />}
           </Box>
-        </Stack>
+        </Box>
       </CardContent>
 
       {showStat ? (

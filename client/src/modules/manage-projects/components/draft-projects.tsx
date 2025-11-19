@@ -1,12 +1,5 @@
 import { Link } from 'react-router-dom';
-import {
-  Box,
-  Typography,
-  Button,
-  Card,
-  CardContent,
-  Stack,
-} from '@mui/material';
+import { Box, Typography, Button, Card, CardContent } from '@mui/material';
 import { Project, deleteProject } from './utils';
 
 const ManageDraftProjectPost = ({ project }: { project: Project }) => {
@@ -18,10 +11,13 @@ const ManageDraftProjectPost = ({ project }: { project: Project }) => {
   return (
     <Card variant="outlined" sx={{ mb: 2, borderRadius: 2 }}>
       <CardContent>
-        <Stack
-          direction={{ xs: 'column', md: 'row' }}
-          alignItems="center"
-          spacing={2}
+        <Box
+          sx={{
+            display: 'flex',
+            flexDirection: { xs: 'column', md: 'row' },
+            alignItems: 'center',
+            gap: 2,
+          }}
         >
           <Box sx={{ minWidth: 56, textAlign: 'center' }}>
             <Typography sx={{ fontWeight: 600 }}>
@@ -57,7 +53,7 @@ const ManageDraftProjectPost = ({ project }: { project: Project }) => {
               </Button>
             </Box>
           </Box>
-        </Stack>
+        </Box>
       </CardContent>
     </Card>
   );
