@@ -15,6 +15,7 @@ import commentRoutes from './api/comment.routes.js';
 import notificationRoutes from './api/notification.routes.js';
 import collectionRoutes from './api/collections.routes.js';
 import collaborationRoutes from './api/collaboration.routes.js';
+import noteRoutes from './api/noteRoutes.js';   // ✅ NEW
 
 const router = express.Router();
 
@@ -28,5 +29,8 @@ router.use('/comment', generalLimiter, commentRoutes);
 router.use('/notification', generalLimiter, notificationRoutes);
 router.use('/collection', generalLimiter, collectionRoutes);
 router.use('/collaboration', generalLimiter, collaborationRoutes);
+
+// ✅ NEW: Notes API route
+router.use('/', generalLimiter, noteRoutes);
 
 export default router;

@@ -1,27 +1,40 @@
-import { Router } from 'express';
-import {
-    getProjectNotes,
-    createNote,
-    updateNote,
-    deleteNote,
-} from '../controllers/noteController';
-// NOTE: Update the path if your authMiddleware is located elsewhere
-import authMiddleware from '../middlewares/auth.middleware';
-const router: Router = Router();
+import { Router } from "express";
+import { getNotes, addNote, updateNote } from "../controllers/noteController.js";
+import { isAuthenticated } from "../middlewares/auth.js";
+import { isCollaborator, isMaintainer, isAdmin } from "../middlewares/roleAuth";
 
-// All note routes require authentication to ensure privacy
-router.use(authMiddleware); 
 
-// GET /api/v1/notes/:projectId -> Fetch all notes for a specific project by the user
-router.get('/:projectId', getProjectNotes);
 
-// POST /api/v1/notes -> Create a new note
-router.post('/', createNote);
+const router = Router();
 
-// PUT /api/v1/notes/:noteId -> Update a specific note
-router.put('/:noteId', updateNote);
+/**
+ * GET notes — COLLABORATOR / MAINTAINER / ADMIN
+ */
+router.get(
+  "/projects/:id/notes",
+  isAuthenticated,
+  isCollaborator,   // 👈 NEW
+  getNotes
+);
 
-// DELETE /api/v1/notes/:noteId -> Delete a specific note
-router.delete('/:noteId', deleteNote);
+/**
+ * POST note — MAINTAINER / ADMIN
+ */
+router.post(
+  "/projects/:id/notes",
+  isAuthenticated,
+  isMaintainer,     // 👈 NEW
+  addNote
+);
+
+/**
+ * PUT note — MAINTAINER / ADMIN
+ */
+router.put(
+  "/projects/:projectId/notes/:noteId",
+  isAuthenticated,
+  isMaintainer,     // 👈 NEW
+  updateNote
+);
 
 export default router;
