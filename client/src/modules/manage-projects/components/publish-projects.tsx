@@ -4,13 +4,6 @@ import { useState } from 'react';
 import { useAtom } from 'jotai';
 import { UserAtom } from '../../../infra/states/user';
 import {
-  Card,
-  CardContent,
-  CardActions,
-  Typography,
-  Button,
-} from '@mui/material';
-import {
   Box,
   Typography,
   Button,
