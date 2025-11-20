@@ -1,25 +1,37 @@
-import { useState } from 'react';
-import { Box, Typography, Button } from '@mui/material';
 import { OutputBlockData } from '@editorjs/editorjs';
+import React, { useState } from 'react';
+import { Box, Typography, Button } from '@mui/material';
 
-const ParagraphBlock = ({ text }: { text: string }) => {
+interface ProjectContentProps {
+  block: OutputBlockData;
+}
+
+type EJData = Record<string, unknown> | undefined;
+
+const ParagraphBlock = ({ data }: { data?: EJData }) => {
+  const text = (data && (data['text'] as string)) || '';
   return <Typography dangerouslySetInnerHTML={{ __html: text }} />;
 };
 
-const HeaderBlock = ({ level, text }: { level: number; text: string }) => {
+const HeaderBlock = ({ data }: { data?: EJData }) => {
+  const level = (data && (data['level'] as number)) || 2;
   const Tag = level === 3 ? 'h3' : 'h2';
   const size = level === 3 ? 'h5' : 'h4';
+  const text = (data && (data['text'] as string)) || '';
   return (
     <Typography
-      component={Tag}
-      variant={size}
+      component={Tag as React.ElementType}
+      variant={size as 'h4' | 'h5'}
       fontWeight="bold"
       dangerouslySetInnerHTML={{ __html: text }}
     />
   );
 };
 
-const ImageBlock = ({ url, caption }: { url: string; caption: string }) => {
+const ImageBlock = ({ data }: { data?: EJData }) => {
+  const file = data && (data['file'] as EJData);
+  const url = (file && (file['url'] as string)) || '';
+  const caption = (data && (data['caption'] as string)) || '';
   return (
     <Box textAlign="center" my={2}>
       <img
@@ -27,20 +39,22 @@ const ImageBlock = ({ url, caption }: { url: string; caption: string }) => {
         alt={caption}
         style={{ maxWidth: '100%', borderRadius: '8px' }}
       />
-      {caption && (
+      {caption ? (
         <Typography variant="body2" color="text.secondary" mt={1}>
           {caption}
         </Typography>
-      )}
+      ) : null}
     </Box>
   );
 };
 
-const QuoteBlock = ({ text, caption }: { text: string; caption: string }) => {
+const QuoteBlock = ({ data }: { data?: EJData }) => {
+  const text = (data && (data['text'] as string)) || '';
+  const caption = (data && (data['caption'] as string)) || '';
   return (
     <Box
       sx={{
-        backgroundColor: 'rgba(128, 0, 128, 0.1)',
+        bgcolor: 'rgba(128, 0, 128, 0.1)',
         borderLeft: '4px solid purple',
         p: 2,
         pl: 3,
@@ -50,20 +64,26 @@ const QuoteBlock = ({ text, caption }: { text: string; caption: string }) => {
       <Typography variant="h6" gutterBottom>
         {text}
       </Typography>
-      {caption && (
+      {caption ? (
         <Typography variant="body2" color="purple">
           {caption}
         </Typography>
-      )}
+      ) : null}
     </Box>
   );
 };
 
-const ListBlock = ({ style, items }: { style: string; items: string[] }) => {
+const ListBlock = ({ data }: { data?: EJData }) => {
+  const style = (data && (data['style'] as string)) || 'unordered';
   const Tag = style === 'ordered' ? 'ol' : 'ul';
   const styleType = style === 'ordered' ? 'decimal' : 'disc';
+  const items = (data && (data['items'] as string[])) || [];
   return (
-    <Box component={Tag} pl={3} sx={{ listStyleType: styleType }}>
+    <Box
+      component={Tag as React.ElementType}
+      pl={3}
+      sx={{ listStyleType: styleType }}
+    >
       {items.map((item, i) => (
         <li key={i}>
           <Typography
@@ -76,8 +96,9 @@ const ListBlock = ({ style, items }: { style: string; items: string[] }) => {
   );
 };
 
-const CodeBlock = ({ code, language }: { code: string; language: string }) => {
-  const codeText = code || '';
+const CodeBlock = ({ data }: { data?: EJData }) => {
+  const codeText = (data && (data['code'] as string)) || '';
+  const language = (data && (data['language'] as string)) || '';
   const [copied, setCopied] = useState(false);
 
   const handleCopy = async () => {
@@ -132,28 +153,22 @@ const CodeBlock = ({ code, language }: { code: string; language: string }) => {
   );
 };
 
-const ProjectContent = ({ block }: { block: OutputBlockData }) => {
-  const { type, data } = block || {};
+const ProjectContent = ({ block }: ProjectContentProps) => {
+  const { type, data } = block;
 
   switch (type) {
     case 'paragraph':
-      return <ParagraphBlock text={data?.text ?? ''} />;
+      return <ParagraphBlock data={data as EJData} />;
     case 'header':
-      return <HeaderBlock level={data?.level ?? 2} text={data?.text ?? ''} />;
+      return <HeaderBlock data={data as EJData} />;
     case 'image':
-      return (
-        <ImageBlock url={data?.file?.url ?? ''} caption={data?.caption ?? ''} />
-      );
+      return <ImageBlock data={data as EJData} />;
     case 'quote':
-      return (
-        <QuoteBlock text={data?.text ?? ''} caption={data?.caption ?? ''} />
-      );
+      return <QuoteBlock data={data as EJData} />;
     case 'list':
-      return <ListBlock style={data?.style} items={data?.items || []} />;
+      return <ListBlock data={data as EJData} />;
     case 'code':
-      return (
-        <CodeBlock code={data?.code ?? ''} language={data?.language ?? ''} />
-      );
+      return <CodeBlock data={data as EJData} />;
     default:
       return null;
   }

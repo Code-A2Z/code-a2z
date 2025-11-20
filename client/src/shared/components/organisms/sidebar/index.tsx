@@ -1,7 +1,5 @@
-import { useAtomValue } from 'jotai';
 import { useEffect, useState } from 'react';
 import { Navigate, NavLink, Outlet, useLocation } from 'react-router-dom';
-import { UserAtom } from '../../../../infra/states/user';
 import { useAuth } from '../../../hooks/use-auth';
 import { notificationStatus } from '../../../../infra/rest/apis/notification';
 
@@ -19,6 +17,7 @@ import {
   Typography,
   useMediaQuery,
   useTheme,
+  CircularProgress,
 } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
 import NotificationsNoneIcon from '@mui/icons-material/NotificationsNone';
@@ -30,8 +29,7 @@ import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 const drawerWidth = 240;
 
 const Sidebar = () => {
-  const user = useAtomValue(UserAtom);
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated, initialized } = useAuth();
   const location = useLocation();
   const page = location.pathname.split('/')[2];
 
@@ -43,7 +41,23 @@ const Sidebar = () => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
 
+  // TEMP DEBUG: log auth init and token presence to help diagnose routing issues
   useEffect(() => {
+    try {
+      console.debug('Sidebar debug:', {
+        initialized,
+        isAuthenticated: isAuthenticated(),
+        token: localStorage.getItem('access_token'),
+      });
+    } catch (err) {
+      console.debug('Sidebar debug error', err);
+    }
+  }, [initialized]);
+
+  useEffect(() => {
+    // Only fetch notification status after auth initialization and when authenticated.
+    if (!initialized || !isAuthenticated()) return;
+
     const fetchNotificationStatus = async () => {
       const response = await notificationStatus();
       if (response.status === 'success' && response.data) {
@@ -51,9 +65,27 @@ const Sidebar = () => {
       }
     };
     fetchNotificationStatus();
-  }, []);
+  }, [initialized, isAuthenticated]);
 
-  if (!user || !isAuthenticated()) {
+  // If auth hasn't finished initializing yet, render a small loader to avoid
+  // premature redirects while the token/user is being restored.
+  if (!initialized) {
+    return (
+      <Box
+        sx={{
+          minHeight: 'calc(100vh - 65px)',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+        }}
+      >
+        <CircularProgress />
+      </Box>
+    );
+  }
+
+  // After initialization, if not authenticated, redirect to login.
+  if (!isAuthenticated()) {
     return <Navigate to="/login" />;
   }
 

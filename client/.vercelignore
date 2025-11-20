@@ -1,8 +1,6 @@
 projects/*
 server/*
 client/src/modules/edit-profile/*
-client/src/modules/manage-projects/*
 client/src/modules/notification/*
 src/modules/edit-profile/*
-src/modules/manage-projects/*
 src/modules/notification/*

@@ -1,174 +1,191 @@
-import { useAtom, useAtomValue } from 'jotai';
-import { useEffect, useState, useCallback } from 'react';
-import { useSearchParams } from 'react-router-dom';
+import { useEffect } from 'react';
+import { useParams } from 'react-router-dom';
 import InPageNavigation from '../../shared/components/molecules/page-navigation';
-import NoDataMessageBox from '../../shared/components/atoms/no-data-msg';
-import ManagePublishedProjectCard from './components/publish-projects';
-import ManageDraftProjectPost from './components/draft-projects';
+import NoDataMessage from '../../shared/components/atoms/no-data-msg';
+import { useAtom, useAtomValue } from 'jotai';
+import { HomePageProjectsAtom } from '../home/states';
+import BannerProjectCard from '../home/components/banner-project-card';
+import { ProfileAtom } from '../profile/states';
+import { Virtuoso } from 'react-virtuoso';
+import { BannerSkeleton } from '../../shared/components/atoms/skeleton';
+import { UserAtom } from '../../infra/states/user';
+import { Avatar, Box, CircularProgress, Grid } from '@mui/material';
+import useHome from '../home/hooks';
+import AboutUser from '../profile/components/about-user';
+import A2ZTypography from '../../shared/components/atoms/typography';
+import Button from '../../shared/components/atoms/button';
+import useProfile from '../profile/hooks';
 
-const ManageProjects = () => {
-  const [projects, setProjects] = useAtom(AllProjectsAtom);
-  const [drafts, setDrafts] = useAtom(DraftProjectAtom);
+const Profile = () => {
+  const { username } = useParams();
   const user = useAtomValue(UserAtom);
-
-  const activeTab = useSearchParams()[0].get('tab');
-  const [query, setQuery] = useState('');
-
-  const getProjects = useCallback(
-    (params: Record<string, unknown>) => {
-      const { page = 1, draft = false, deletedDocCount = 0 } = params;
-
-      userWrittenProjects({
-        page: page as number,
-        draft: draft as boolean,
-        query,
-        deletedDocCount: deletedDocCount as number,
-      })
-        .then(async data => {
-          const formattedData = (await filterPaginationData({
-            state: draft ? drafts : projects,
-            data: data.projects || [],
-            page: page as number,
-            countRoute: '/search-projects-count',
-            data_to_send: {
-              query,
-              tag: query,
-              author: user.username || '',
-              draft,
-            },
-          })) as AllProjectsData;
-
-          if (formattedData) {
-            if (draft) {
-              setDrafts(formattedData);
-            } else {
-              setProjects(formattedData);
-            }
-          }
-        })
-        .catch(err => {
-          console.log(err);
-        });
-    },
-    [drafts, projects, query, setDrafts, setProjects, user.username]
-  );
+  const profile = useAtomValue(ProfileAtom);
+  const [projects, setProjects] = useAtom(HomePageProjectsAtom);
+  const { fetchProjectsByCategory } = useHome();
+  const { fetchUserProfile } = useProfile();
 
   useEffect(() => {
-    if (user.access_token) {
-      if (projects === null) {
-        getProjects({ page: 1, draft: false });
-      }
-      if (drafts === null) {
-        getProjects({ page: 1, draft: true });
-      }
+    if (username !== user?.personal_info.username) {
+      setProjects([]);
     }
-  }, [user.access_token, projects, drafts, query, getProjects]);
-
-  const handleSearch = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    const searchQuery = e.currentTarget.value;
-    setQuery(searchQuery);
-
-    if (e.keyCode === 13 && searchQuery.length) {
-      setProjects(null);
-      setDrafts(null);
+    if (projects.length === 0 || profile?.personal_info.username !== username) {
+      fetchUserProfile();
     }
-  };
+  }, [
+    username,
+    user?.personal_info.username,
+    projects.length,
+    profile?.personal_info.username,
+    fetchUserProfile,
+    setProjects,
+  ]);
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (!e.currentTarget.value.length) {
-      setQuery('');
-      setProjects(null);
-      setDrafts(null);
-    }
-  };
+  if (!profile) {
+    return (
+      <Box
+        component="section"
+        sx={{
+          minHeight: 'calc(100vh - 65px)',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          p: 3,
+        }}
+      >
+        <CircularProgress size={28} />
+      </Box>
+    );
+  }
 
   return (
-    <>
-      <h1 className="max-md:hidden">Manage Projects</h1>
-      <div className="relative max-md:mt-5 md:mt-8 mb-10">
-        <input
-          type="search"
-          className="w-full bg-gray-100 dark:bg-[#1f1f1f] text-black dark:text-white p-4 pl-12 pr-6 rounded-full placeholder:text-gray-500 dark:placeholder:text-gray-400"
-          placeholder="Search Projects"
-          onChange={handleChange}
-          onKeyDown={handleSearch}
-        />
-
-        <i className="fi fi-rr-search absolute right-[10%] md:pointer-events-none md:left-5 top-1/2 -translate-y-1/2 text-xl text-gray-500"></i>
-      </div>
-
-      <InPageNavigation
-        routes={['Published Projects', 'Drafts']}
-        defaultActiveIndex={activeTab !== 'draft' ? 0 : 1}
+    <Box component="section" sx={{ minHeight: 'calc(100vh - 65px)', p: 3 }}>
+      <Grid
+        container
+        spacing={{ md: 5, lg: 8 }}
+        justifyContent="center"
+        sx={{ alignItems: 'flex-start' }}
       >
-        {
-          // Published Projects
-          projects === null ? (
-            <Loader />
-          ) : projects.results.length ? (
-            <>
-              {projects.results.map((project, i) => {
-                return (
-                  <ManagePublishedProjectCard
-                    key={i}
-                    project={{
-                      ...project,
-                      index: i,
-                      setStateFunc: setProjects,
-                    }}
-                  />
-                );
-              })}
+        {/* Right Column (Profile Info) */}
+        <Grid
+          item
+          xs={12}
+          md="auto"
+          sx={{
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: { xs: 'center', md: 'flex-start' },
+            minWidth: 400,
+            gap: 2,
+            pl: { md: 4 },
+            borderLeft: theme => ({ md: `1px solid ${theme.palette.divider}` }),
+          }}
+        >
+          <Avatar
+            src={profile.personal_info.profile_img}
+            alt={profile.personal_info.fullname}
+            sx={{
+              width: { xs: 120, md: 130 },
+              height: { xs: 120, md: 130 },
+              bgcolor: 'grey.300',
+            }}
+          />
 
-              <LoadMoreDataBtn
-                state={projects}
-                fetchDataFun={getProjects}
-                additionalParam={{
-                  draft: false,
-                  deletedDocCount: projects.deletedDocCount,
+          <A2ZTypography
+            variant="h6"
+            props={{ fontWeight: 500 }}
+            text={`@${profile.personal_info.username}`}
+          />
+          <A2ZTypography
+            variant="subtitle1"
+            props={{ textTransform: 'capitalize' }}
+            text={profile.personal_info.fullname}
+          />
+          <A2ZTypography
+            variant="body1"
+            props={{ color: 'text.secondary' }}
+            text={`${profile.account_info.total_posts.toLocaleString()} Projects - ${profile.account_info.total_reads.toLocaleString()} Reads`}
+          />
+
+          {user && username === user.personal_info.username ? (
+            <Button
+              href="/settings/edit-profile"
+              variant="outlined"
+              size="small"
+              sx={{ mt: 1 }}
+            >
+              Edit Profile
+            </Button>
+          ) : undefined}
+
+          <Box
+            sx={{
+              display: { xs: 'none', md: 'block' },
+            }}
+          >
+            <AboutUser
+              bio={profile.personal_info.bio}
+              social_links={profile.social_links}
+              joinedAt={profile.joinedAt}
+            />
+          </Box>
+        </Grid>
+
+        {/* Left Column (Projects + About Tabs) */}
+        <Grid
+          item
+          xs={12}
+          md
+          sx={{
+            width: '100%',
+            maxWidth: 800,
+            height: { xs: '52vh', md: '90vh' },
+            alignSelf: 'stretch',
+          }}
+        >
+          <InPageNavigation
+            routes={['Projects Published', 'About']}
+            defaultHidden={['About']}
+          >
+            {projects.length ? (
+              <Virtuoso
+                style={{
+                  height: '100%',
+                  width: '100%',
+                  scrollbarWidth: 'none',
+                }}
+                totalCount={projects.length}
+                itemContent={index => (
+                  <BannerProjectCard key={index} project={projects[index]} />
+                )}
+                overscan={200}
+                endReached={() => {
+                  const nextPage = Math.floor(projects.length / 10) + 1; // Assuming page size of 10
+                  fetchProjectsByCategory({
+                    page: nextPage,
+                    user_id: profile._id,
+                  });
+                }}
+                components={{
+                  Footer: () =>
+                    !projects || projects.length === 0 ? (
+                      <BannerSkeleton count={3} />
+                    ) : null, // FIX ME
                 }}
               />
-            </>
-          ) : (
-            <NoDataMessageBox message="No Published Projects" />
-          )
-        }
+            ) : (
+              <NoDataMessage message="No projects published" />
+            )}
 
-        {
-          // Draft Projects
-          drafts === null ? (
-            <Loader />
-          ) : drafts.results.length ? (
-            <>
-              {drafts.results.map((project, i) => {
-                return (
-                  <ManageDraftProjectPost
-                    key={i}
-                    project={{
-                      ...project,
-                      index: i,
-                      setStateFunc: setDrafts,
-                    }}
-                  />
-                );
-              })}
-
-              <LoadMoreDataBtn
-                state={drafts}
-                fetchDataFun={getProjects}
-                additionalParam={{
-                  draft: true,
-                  deletedDocCount: drafts.deletedDocCount,
-                }}
-              />
-            </>
-          ) : (
-            <NoDataMessageBox message="No Draft Projects" />
-          )
-        }
-      </InPageNavigation>
-    </>
+            <AboutUser
+              bio={profile.personal_info.bio}
+              social_links={profile.social_links}
+              joinedAt={profile.joinedAt}
+            />
+          </InPageNavigation>
+        </Grid>
+      </Grid>
+    </Box>
   );
 };
 
-export default ManageProjects;
+export default Profile;
