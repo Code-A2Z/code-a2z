@@ -27,7 +27,7 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "install:client": "cd client && npm install",
     "install:server": "cd server && npm install",
-    "install": "npm install && cd client && npm install && cd ../server && npm install",
+    "install:both": "npm install && cd client && npm install && cd ../server && npm install",
     "client": "cd client && npm run dev",
     "server": "cd server && npm run dev",
     "dev": "concurrently -n \"CLIENT,SERVER\" -c \"bgBlue.bold,bgMagenta.bold\" \"npm run client\" \"npm run server\"",
