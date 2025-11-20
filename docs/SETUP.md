@@ -170,7 +170,7 @@ npm run client
 **Reason:** Wrong `VITE_SERVER_DOMAIN`
 **Fix:**
 
-- Local mode → set to `http://localhost:8000/api`
+- Local mode → set to `http://localhost:8000`
 - Frontend mode → set to deployed backend
 
 ### File uploads not working

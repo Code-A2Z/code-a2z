@@ -1,0 +1,98 @@
+services:
+  client:
+    build:
+      context: ./client
+      dockerfile: Dockerfile
+      target: development
+    container_name: code-a2z-client
+    ports:
+      - '5173:5173'
+    env_file:
+      - ./client/.env
+    volumes:
+      - ./client/src:/app/src
+      - ./client/public:/app/public
+      - client_node_modules:/app/node_modules
+    depends_on:
+      - server
+    restart: unless-stopped
+    networks:
+      - code-a2z-network
+
+  server:
+    build:
+      context: ./server
+      dockerfile: Dockerfile
+      target: development
+    container_name: code-a2z-server
+    ports:
+      - '8000:8000'
+    depends_on:
+      mongo:
+        condition: service_healthy
+    env_file:
+      - ./server/.env
+    environment:
+      - MONGODB_URL=mongodb://mongo:27017/code-a2z
+      - VITE_CLIENT_DOMAIN=http://localhost:5173
+    volumes:
+      - ./server/src:/app/src
+      - ./server/logs:/app/logs
+    restart: unless-stopped
+    healthcheck:
+      test:
+        [
+          'CMD',
+          'wget',
+          '--no-verbose',
+          '--tries=1',
+          '--spider',
+          'http://localhost:8000/monitor/health',
+        ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    networks:
+      - code-a2z-network
+
+  mongo:
+    image: mongo:8-noble
+    container_name: code-a2z-mongo
+    ports:
+      - '27017:27017'
+    volumes:
+      - mongo-data:/data/db
+    restart: unless-stopped
+    healthcheck:
+      test: ['CMD', 'mongosh', '--eval', "db.adminCommand('ping')"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+    networks:
+      - code-a2z-network
+
+  mongo-express:
+    image: mongo-express:latest
+    container_name: code-a2z-mongo-express
+    ports:
+      - '8081:8081'
+    environment:
+      - ME_CONFIG_MONGODB_URL=mongodb://mongo:27017
+      - ME_CONFIG_BASICAUTH_USERNAME=${MONGO_EXPRESS_USER:-admin}
+      - ME_CONFIG_BASICAUTH_PASSWORD=${MONGO_EXPRESS_PASSWORD:-changeme}
+      - ME_CONFIG_MONGODB_ENABLE_ADMIN=true
+    depends_on:
+      - mongo
+    restart: unless-stopped
+    networks:
+      - code-a2z-network
+
+volumes:
+  mongo-data:
+  client_node_modules:
+
+networks:
+  code-a2z-network:
+    driver: bridge

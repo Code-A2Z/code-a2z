@@ -1,0 +1,22 @@
+services:
+  client:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: development
+    container_name: code-a2z-client
+    ports:
+      - '5173:5173'
+    env_file:
+      - .env
+    volumes:
+      - ./src:/app/src
+      - ./public:/app/public
+      - /app/node_modules
+    restart: unless-stopped
+    networks:
+      - code-a2z-network
+
+networks:
+  code-a2z-network:
+    driver: bridge
