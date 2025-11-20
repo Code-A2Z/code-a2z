@@ -21,7 +21,7 @@ services:
       - code-a2z-network
 
   mongo:
-    image: mongo:8.2.2-noble
+    image: mongo:7-noble
     container_name: code-a2z-mongo
     ports:
       - '27017:27017'
@@ -38,8 +38,8 @@ services:
       - '8081:8081'
     environment:
       - ME_CONFIG_MONGODB_URL=mongodb://mongo:27017
-      - ME_CONFIG_BASICAUTH_USERNAME=admin
-      - ME_CONFIG_BASICAUTH_PASSWORD=admin123
+      - ME_CONFIG_BASICAUTH_USERNAME=${MONGO_EXPRESS_USER:-admin}
+      - ME_CONFIG_BASICAUTH_PASSWORD=${MONGO_EXPRESS_PASSWORD:-changeme}
       - ME_CONFIG_MONGODB_ENABLE_ADMIN=true
     depends_on:
       - mongo
