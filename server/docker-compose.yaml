@@ -21,7 +21,7 @@ services:
       - code-a2z-network
 
   mongo:
-    image: mongo:7-noble
+    image: mongo:8-noble
     container_name: code-a2z-mongo
     ports:
       - '27017:27017'
