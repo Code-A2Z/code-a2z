@@ -748,10 +748,10 @@ sudo chown -R $USER:$USER .
 
 ```bash
 # Clear Docker cache and rebuild
-docker-compose -f docker-compose.fullstack.yaml build --no-cache
+docker-compose build --no-cache
 
 # Remove all containers and images
-docker-compose -f docker-compose.fullstack.yaml down
+docker-compose down
 docker system prune -a
 ```
 
