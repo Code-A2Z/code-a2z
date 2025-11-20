@@ -1,0 +1,78 @@
+services:
+  client:
+    build:
+      context: ./client
+      dockerfile: Dockerfile
+      target: development
+    container_name: code-a2z-client
+    ports:
+      - '5173:5173'
+    env_file:
+      - ./client/.env
+    environment:
+      - VITE_SERVER_DOMAIN=http://localhost:8000
+    volumes:
+      - ./client/src:/app/src
+      - ./client/public:/app/public
+      - /app/node_modules
+    depends_on:
+      - server
+    restart: unless-stopped
+    networks:
+      - code-a2z-network
+
+  server:
+    build:
+      context: ./server
+      dockerfile: Dockerfile
+      target: development
+    container_name: code-a2z-server
+    ports:
+      - '8000:8000'
+    depends_on:
+      - mongo
+    env_file:
+      - ./server/.env
+    environment:
+      - MONGODB_URL=mongodb://mongo:27017/code-a2z
+      - VITE_CLIENT_DOMAIN=http://localhost:5173
+    volumes:
+      - ./server/src:/app/src
+      - ./server/logs:/app/logs
+    restart: unless-stopped
+    networks:
+      - code-a2z-network
+
+  mongo:
+    image: mongo:8.2.2-noble
+    container_name: code-a2z-mongo
+    ports:
+      - '27017:27017'
+    volumes:
+      - mongo-data:/data/db
+    restart: unless-stopped
+    networks:
+      - code-a2z-network
+
+  mongo-express:
+    image: mongo-express:latest
+    container_name: code-a2z-mongo-express
+    ports:
+      - '8081:8081'
+    environment:
+      - ME_CONFIG_MONGODB_URL=mongodb://mongo:27017
+      - ME_CONFIG_BASICAUTH_USERNAME=admin
+      - ME_CONFIG_BASICAUTH_PASSWORD=admin123
+      - ME_CONFIG_MONGODB_ENABLE_ADMIN=true
+    depends_on:
+      - mongo
+    restart: unless-stopped
+    networks:
+      - code-a2z-network
+
+volumes:
+  mongo-data:
+
+networks:
+  code-a2z-network:
+    driver: bridge
