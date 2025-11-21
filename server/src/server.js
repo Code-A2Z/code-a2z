@@ -15,6 +15,9 @@ import sanitizeInput from './middlewares/sanitize.middleware.js';
 import monitorRoutes from './routes/api/monitor.routes.js';
 import router from './routes/index.js';
 
+import noteRoutes from "./routes/api/noteRoutes.js";
+
+
 dotenv.config();
 
 const server = express();
@@ -50,6 +53,11 @@ server.use('/monitor', monitorRoutes);
 
 // API Routes
 server.use('/api', router);
+
+// ADDED: Mount the new Note Routes under the /api/v1/notes path
+// We use the '/api' prefix here, but your noteRoutes file uses /:projectId etc.,
+// so the final path will be /api/notes/:projectId
+server.use('/api/notes', noteRoutes); // <--- NEW MOUNT
 
 // Error handler (last middleware)
 server.use(errorHandler);
