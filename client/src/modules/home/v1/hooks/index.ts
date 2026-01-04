@@ -4,7 +4,7 @@ import {
   getAllProjects,
   getTrendingProjects,
   searchProjects,
-} from '../../../infra/rest/apis/project';
+} from '../../../../infra/rest/apis/project';
 
 const useHome = () => {
   const setProjects = useSetAtom(HomePageProjectsAtom);

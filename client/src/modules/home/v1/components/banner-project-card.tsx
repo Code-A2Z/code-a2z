@@ -2,13 +2,13 @@
 import { Link } from 'react-router-dom';
 import { Avatar, Box, Chip, Stack, Typography, useTheme } from '@mui/material';
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
-import { useA2ZTheme } from '../../../shared/hooks/use-theme';
-import { getDay } from '../../../shared/utils/date';
+import { useA2ZTheme } from '../../../../shared/hooks/use-theme';
+import { getDay } from '../../../../shared/utils/date';
 import {
   defaultDarkThumbnail,
   defaultLightThumbnail,
-} from '../../editor/constants';
-import { getAllProjectsResponse } from '../../../infra/rest/apis/project/typing';
+} from '../../../editor/constants';
+import { getAllProjectsResponse } from '../../../../infra/rest/apis/project/typing';
 
 const BannerProjectCard = ({
   project,

@@ -1,13 +1,13 @@
 import { FormEvent, useState } from 'react';
-import { emailRegex, passwordRegex } from '../../../shared/utils/regex';
-import { useNotifications } from '../../../shared/hooks/use-notification';
-import { login, signUp } from '../../../infra/rest/apis/auth';
+import { emailRegex, passwordRegex } from '../../../../shared/utils/regex';
+import { useNotifications } from '../../../../shared/hooks/use-notification';
+import { login, signUp } from '../../../../infra/rest/apis/auth';
 import { useSetAtom } from 'jotai';
-import { UserAtom } from '../../../infra/states/user';
+import { UserAtom } from '../../../../infra/states/user';
 import { useSetAtom as useSetAtomGeneric } from 'jotai';
-import { TokenAtom } from '../../../infra/states/auth';
-import { setAccessToken } from '../../../shared/utils/local';
-import { ErrorResponse } from '../../../infra/rest/typings';
+import { TokenAtom } from '../../../../infra/states/auth';
+import { setAccessToken } from '../../../../shared/utils/local';
+import { ErrorResponse } from '../../../../infra/rest/typings';
 import { useNavigate } from 'react-router-dom';
 
 export const useUserAuthForm = ({ type }: { type: string }) => {

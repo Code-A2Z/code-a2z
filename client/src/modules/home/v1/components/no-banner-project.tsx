@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom';
 import { Avatar, Box, Typography, Stack, useTheme } from '@mui/material';
-import { getTrendingProjectsResponse } from '../../../infra/rest/apis/project/typing';
-import { getDay } from '../../../shared/utils/date';
+import { getTrendingProjectsResponse } from '../../../../infra/rest/apis/project/typing';
+import { getDay } from '../../../../shared/utils/date';
 
 interface NoBannerProjectCardProps {
   project: getTrendingProjectsResponse;

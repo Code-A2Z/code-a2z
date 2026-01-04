@@ -3,7 +3,7 @@ import { userProfile } from '../../../infra/rest/apis/user';
 import { useParams } from 'react-router-dom';
 import { useSetAtom } from 'jotai';
 import { ProfileAtom } from '../states';
-import useHome from '../../home/hooks';
+import useHome from '../../home/v1/hooks';
 
 const useProfile = () => {
   const { username } = useParams();
