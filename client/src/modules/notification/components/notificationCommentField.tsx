@@ -7,18 +7,14 @@ import { TextField, Button, Box, Typography } from '@mui/material';
 import { Reply } from '@mui/icons-material';
 
 interface NotificationCommentFieldProps {
-  _id: string;
-  project_author: {
-    _id: string;
-  };
+  project_id: string;
   replyingTo?: string;
   setReplying: (value: boolean) => void;
   notification_id: string;
 }
 
 const NotificationCommentField = ({
-  _id,
-  project_author,
+  project_id,
   replyingTo,
   setReplying,
   notification_id,
@@ -26,8 +22,6 @@ const NotificationCommentField = ({
   const [comment, setComment] = useState('');
   const user = useAtomValue(UserAtom);
   const { isAuthenticated } = useAuth();
-
-  const { _id: user_id } = project_author;
 
   const handleComment = () => {
     if (!comment.length) {
@@ -42,11 +36,10 @@ const NotificationCommentField = ({
 
     axios
       .post(
-        import.meta.env.VITE_SERVER_DOMAIN + '/api/notification/comment',
+        import.meta.env.VITE_SERVER_DOMAIN + '/api/comment',
         {
-          _id,
+          project_id,
           comment,
-          project_author: user_id,
           replying_to: replyingTo,
           notification_id,
         },

@@ -39,21 +39,53 @@ const EditProfile = () => {
   const [charactersLeft, setCharactersLeft] = useState(bioLimit);
   const [updatedProfileImg, setUpdatedProfileImg] = useState<File | null>(null);
   const [previewImg, setPreviewImg] = useState<string | null>(null);
+  
+  // Form state
+  const [formData, setFormData] = useState({
+    username: '',
+    bio: '',
+    youtube: '',
+    facebook: '',
+    twitter: '',
+    github: '',
+    instagram: '',
+    website: '',
+  });
 
   useEffect(() => {
     if (isAuthenticated()) {
       fetchProfile().finally(() => setLoading(false));
     }
-  }, [isAuthenticated, fetchProfile]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   useEffect(() => {
-    if (profile?.personal_info?.bio) {
-      setCharactersLeft(bioLimit - profile.personal_info.bio.length);
+    if (profile) {
+      setFormData({
+        username: profile.personal_info.username || '',
+        bio: profile.personal_info.bio || '',
+        youtube: profile.social_links.youtube || '',
+        facebook: profile.social_links.facebook || '',
+        twitter: profile.social_links.x || '',
+        github: profile.social_links.github || '',
+        instagram: profile.social_links.instagram || '',
+        website: profile.social_links.website || '',
+      });
+      if (profile.personal_info?.bio) {
+        setCharactersLeft(bioLimit - profile.personal_info.bio.length);
+      }
     }
   }, [profile]);
 
   const handleCharacterChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    setCharactersLeft(bioLimit - e.currentTarget.value.length);
+    const value = e.currentTarget.value;
+    setFormData(prev => ({ ...prev, bio: value }));
+    setCharactersLeft(bioLimit - value.length);
+  };
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.currentTarget;
+    setFormData(prev => ({ ...prev, [name]: value }));
   };
 
   const handleImagePreview = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -93,33 +125,16 @@ const EditProfile = () => {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    if (!editProfileForm.current) return;
-    const form = new FormData(editProfileForm.current);
-    const formData: { [key: string]: FormDataEntryValue } = {};
+    const { username, bio, youtube, facebook, twitter, github, instagram, website } = formData;
 
-    for (const [key, value] of form.entries()) {
-      formData[key] = value;
-    }
-
-    const {
-      username,
-      bio,
-      youtube,
-      facebook,
-      twitter,
-      github,
-      instagram,
-      website,
-    } = formData;
-
-    if (typeof username !== 'string' || username.length < 3) {
+    if (username.length < 3) {
       return addNotification({
         message: 'Username should be atleast 3 characters long',
         type: 'error',
       });
     }
 
-    if (typeof bio === 'string' && bio.length > bioLimit) {
+    if (bio.length > bioLimit) {
       return addNotification({
         message: `Bio should be less than ${bioLimit} characters`,
         type: 'error',
@@ -131,15 +146,15 @@ const EditProfile = () => {
     try {
       await updateUserProfile({
         username,
-        bio: (bio as string) || '',
+        bio: bio || '',
         social_links: {
-          youtube: (youtube as string) || '',
-          facebook: (facebook as string) || '',
-          x: (twitter as string) || '',
-          github: (github as string) || '',
-          instagram: (instagram as string) || '',
-          linkedin: '',
-          website: (website as string) || '',
+          youtube: youtube || '',
+          facebook: facebook || '',
+          x: twitter || '',
+          github: github || '',
+          instagram: instagram || '',
+          linkedin: profile?.social_links.linkedin || '',
+          website: website || '',
         },
       });
       addNotification({
@@ -278,9 +293,14 @@ const EditProfile = () => {
                   id="edit-profile-username"
                   type="text"
                   name="username"
-                  defaultValue={username}
+                  value={formData.username}
                   placeholder="Username"
                   icon={<AlternateEmailIcon />}
+                  slotProps={{
+                    htmlInput: {
+                      onChange: handleInputChange,
+                    },
+                  }}
                 />
                 <Typography
                   variant="caption"
@@ -297,7 +317,7 @@ const EditProfile = () => {
                   name="bio"
                   multiline
                   rows={4}
-                  defaultValue={bio}
+                  value={formData.bio}
                   placeholder="Bio"
                   fullWidth
                   inputProps={{ maxLength: bioLimit }}
@@ -328,23 +348,24 @@ const EditProfile = () => {
                     gap: 2,
                   }}
                 >
-                  {(
-                    Object.keys(social_links) as Array<
-                      keyof typeof social_links
-                    >
-                  ).map(key => {
-                    const link = social_links[key] || '';
+                  {['youtube', 'facebook', 'twitter', 'github', 'instagram', 'website'].map(key => {
+                    const fieldName = key as keyof typeof formData;
                     return (
                       <InputBox
                         key={key}
                         id={`edit-profile-${key}`}
                         name={key}
                         type="text"
-                        defaultValue={link}
+                        value={formData[fieldName]}
                         placeholder="https://"
                         icon={socialIcons[key] || <LanguageIcon />}
                         sx={{
                           flex: { xs: '1 1 100%', sm: '1 1 calc(50% - 8px)' },
+                        }}
+                        slotProps={{
+                          htmlInput: {
+                            onChange: handleInputChange,
+                          },
                         }}
                       />
                     );

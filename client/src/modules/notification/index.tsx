@@ -35,7 +35,8 @@ const Notifications = () => {
       setNotifications(null);
       fetchNotifications({ page: 1, filter, deletedDocCount: 0 });
     }
-  }, [isAuthenticated, filter, fetchNotifications, setNotifications]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [filter]);
 
   const handleFilter = (filterName: string) => {
     setFilter(filterName as NOTIFICATION_FILTER_TYPE);

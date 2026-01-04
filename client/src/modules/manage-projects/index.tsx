@@ -29,10 +29,12 @@ const ManageProjects = () => {
     if (draftProjects === null) {
       fetchProjects({ page: 1, is_draft: true, query });
     }
-  }, [publishedProjects, draftProjects, fetchProjects, query]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [publishedProjects, draftProjects, query]);
 
   const handleSearch = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === 'Enter' && query.length) {
+    const value = e.currentTarget.value;
+    if (e.key === 'Enter' && value.length) {
       setPublishedProjects(null);
       setDraftProjects(null);
     }

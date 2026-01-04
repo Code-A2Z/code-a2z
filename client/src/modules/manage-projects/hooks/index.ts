@@ -36,36 +36,49 @@ const useManageProjects = () => {
         ]);
 
         if (projectsResponse.data && countResponse.data) {
-          const currentState = is_draft ? draftProjects : publishedProjects;
-          const existingResults = currentState?.results || [];
-
-          const formattedData: ManageProjectsPaginationState = {
-            results:
-              page === 1
-                ? projectsResponse.data
-                : [...existingResults, ...projectsResponse.data],
-            page,
-            totalDocs: countResponse.data.totalDocs || 0,
-            deletedDocCount,
-          };
+          const totalDocs = countResponse.data.totalDocs || 0;
 
           if (is_draft) {
-            setDraftProjects(formattedData);
+            setDraftProjects((prevState: ManageProjectsPaginationState | undefined) => {
+              const previousResults = prevState?.results || [];
+
+              const results =
+                page === 1 || !prevState
+                  ? projectsResponse.data
+                  : [...previousResults, ...projectsResponse.data];
+
+              return {
+                results,
+                page,
+                totalDocs,
+                deletedDocCount,
+              };
+            });
           } else {
-            setPublishedProjects(formattedData);
+            setPublishedProjects(
+              (prevState: ManageProjectsPaginationState | undefined) => {
+                const previousResults = prevState?.results || [];
+
+                const results =
+                  page === 1 || !prevState
+                    ? projectsResponse.data
+                    : [...previousResults, ...projectsResponse.data];
+
+                return {
+                  results,
+                  page,
+                  totalDocs,
+                  deletedDocCount,
+                };
+              }
+            );
           }
         }
       } catch (error) {
         console.error('Error fetching projects:', error);
       }
     },
-    [
-      isAuthenticated,
-      setPublishedProjects,
-      setDraftProjects,
-      publishedProjects,
-      draftProjects,
-    ]
+    [isAuthenticated, setPublishedProjects, setDraftProjects]
   );
 
   return {
