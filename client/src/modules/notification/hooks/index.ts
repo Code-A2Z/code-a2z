@@ -30,7 +30,7 @@ const useNotifications = () => {
         ]);
 
         if (notificationsResponse.data && countResponse.data) {
-          setNotifications((currentState) => {
+          setNotifications(currentState => {
             const existingResults = currentState?.results || [];
 
             const formattedData: NotificationPaginationState = {

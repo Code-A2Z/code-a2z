@@ -39,7 +39,7 @@ const EditProfile = () => {
   const [charactersLeft, setCharactersLeft] = useState(bioLimit);
   const [updatedProfileImg, setUpdatedProfileImg] = useState<File | null>(null);
   const [previewImg, setPreviewImg] = useState<string | null>(null);
-  
+
   // Form state
   const [formData, setFormData] = useState({
     username: '',
@@ -125,7 +125,16 @@ const EditProfile = () => {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    const { username, bio, youtube, facebook, twitter, github, instagram, website } = formData;
+    const {
+      username,
+      bio,
+      youtube,
+      facebook,
+      twitter,
+      github,
+      instagram,
+      website,
+    } = formData;
 
     if (username.length < 3) {
       return addNotification({
@@ -181,8 +190,7 @@ const EditProfile = () => {
   }
 
   const {
-    personal_info: { fullname, username, profile_img, bio },
-    social_links,
+    personal_info: { fullname, profile_img },
   } = profile;
 
   const socialIcons: Record<string, React.ReactNode> = {
@@ -348,7 +356,14 @@ const EditProfile = () => {
                     gap: 2,
                   }}
                 >
-                  {['youtube', 'facebook', 'twitter', 'github', 'instagram', 'website'].map(key => {
+                  {[
+                    'youtube',
+                    'facebook',
+                    'twitter',
+                    'github',
+                    'instagram',
+                    'website',
+                  ].map(key => {
                     const fieldName = key as keyof typeof formData;
                     return (
                       <InputBox

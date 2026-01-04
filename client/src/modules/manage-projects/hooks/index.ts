@@ -39,21 +39,23 @@ const useManageProjects = () => {
           const totalDocs = countResponse.data.totalDocs || 0;
 
           if (is_draft) {
-            setDraftProjects((prevState: ManageProjectsPaginationState | undefined) => {
-              const previousResults = prevState?.results || [];
+            setDraftProjects(
+              (prevState: ManageProjectsPaginationState | undefined) => {
+                const previousResults = prevState?.results || [];
 
-              const results =
-                page === 1 || !prevState
-                  ? projectsResponse.data
-                  : [...previousResults, ...projectsResponse.data];
+                const results =
+                  page === 1 || !prevState
+                    ? projectsResponse.data
+                    : [...previousResults, ...projectsResponse.data];
 
-              return {
-                results,
-                page,
-                totalDocs,
-                deletedDocCount,
-              };
-            });
+                return {
+                  results,
+                  page,
+                  totalDocs,
+                  deletedDocCount,
+                };
+              }
+            );
           } else {
             setPublishedProjects(
               (prevState: ManageProjectsPaginationState | undefined) => {
