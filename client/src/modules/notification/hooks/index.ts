@@ -32,14 +32,13 @@ const useNotifications = () => {
         if (notificationsResponse.data && countResponse.data) {
           setNotifications(currentState => {
             const existingResults = currentState?.results || [];
+            const newResults = notificationsResponse.data || [];
 
             const formattedData: NotificationPaginationState = {
               results:
-                page === 1
-                  ? notificationsResponse.data
-                  : [...existingResults, ...notificationsResponse.data],
+                page === 1 ? newResults : [...existingResults, ...newResults],
               page,
-              totalDocs: countResponse.data.totalDocs || 0,
+              totalDocs: countResponse.data?.totalDocs || 0,
               deleteDocCount: deletedDocCount,
             };
 

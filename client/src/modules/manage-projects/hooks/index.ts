@@ -37,16 +37,17 @@ const useManageProjects = () => {
 
         if (projectsResponse.data && countResponse.data) {
           const totalDocs = countResponse.data.totalDocs || 0;
+          const newResults = projectsResponse.data || [];
 
           if (is_draft) {
             setDraftProjects(
-              (prevState: ManageProjectsPaginationState | undefined) => {
+              (prevState: ManageProjectsPaginationState | null) => {
                 const previousResults = prevState?.results || [];
 
                 const results =
                   page === 1 || !prevState
-                    ? projectsResponse.data
-                    : [...previousResults, ...projectsResponse.data];
+                    ? newResults
+                    : [...previousResults, ...newResults];
 
                 return {
                   results,
@@ -58,13 +59,13 @@ const useManageProjects = () => {
             );
           } else {
             setPublishedProjects(
-              (prevState: ManageProjectsPaginationState | undefined) => {
+              (prevState: ManageProjectsPaginationState | null) => {
                 const previousResults = prevState?.results || [];
 
                 const results =
                   page === 1 || !prevState
-                    ? projectsResponse.data
-                    : [...previousResults, ...projectsResponse.data];
+                    ? newResults
+                    : [...previousResults, ...newResults];
 
                 return {
                   results,
