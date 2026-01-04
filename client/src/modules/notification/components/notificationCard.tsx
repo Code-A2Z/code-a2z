@@ -112,7 +112,7 @@ const NotificationCard = ({
         borderLeftColor: `${getNotificationColor()}.main`,
         position: 'relative',
         '&:hover': {
-          elevation: 4,
+          boxShadow: theme => theme.shadows[4],
           transform: 'scale(1.01)',
           transition: 'all 0.2s ease-in-out',
         },
@@ -318,8 +318,7 @@ const NotificationCard = ({
       <Collapse in={isReplying} timeout="auto" unmountOnExit>
         <Box sx={{ p: 2, bgcolor: 'grey.50' }}>
           <NotificationCommentField
-            _id={project_id}
-            project_author={{ _id: userAuth?.personal_info?.username || '' }}
+            project_id={project_id}
             replyingTo={comment_id?._id}
             setReplying={setIsReplying}
             notification_id={notification_id}

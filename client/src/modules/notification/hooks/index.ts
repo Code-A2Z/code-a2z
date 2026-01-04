@@ -30,26 +30,27 @@ const useNotifications = () => {
         ]);
 
         if (notificationsResponse.data && countResponse.data) {
-          const currentState = notifications;
-          const existingResults = currentState?.results || [];
+          setNotifications((currentState) => {
+            const existingResults = currentState?.results || [];
 
-          const formattedData: NotificationPaginationState = {
-            results:
-              page === 1
-                ? notificationsResponse.data
-                : [...existingResults, ...notificationsResponse.data],
-            page,
-            totalDocs: countResponse.data.totalDocs || 0,
-            deleteDocCount: deletedDocCount,
-          };
+            const formattedData: NotificationPaginationState = {
+              results:
+                page === 1
+                  ? notificationsResponse.data
+                  : [...existingResults, ...notificationsResponse.data],
+              page,
+              totalDocs: countResponse.data.totalDocs || 0,
+              deleteDocCount: deletedDocCount,
+            };
 
-          setNotifications(formattedData);
+            return formattedData;
+          });
         }
       } catch (error) {
         console.error('Error fetching notifications:', error);
       }
     },
-    [isAuthenticated, setNotifications, notifications]
+    [isAuthenticated, setNotifications]
   );
 
   return {
