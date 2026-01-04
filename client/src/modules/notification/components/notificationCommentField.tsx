@@ -1,8 +1,8 @@
 import { useState } from 'react';
 import axios from 'axios';
-import { useAtom } from 'jotai';
-import { UserAtom } from '../../../shared/states/user';
-import { NotificationState } from '../../../infra/rest/typings';
+import { useAtomValue } from 'jotai';
+import { UserAtom } from '../../../infra/states/user';
+import { useAuth } from '../../../shared/hooks/use-auth';
 import { TextField, Button, Box, Typography } from '@mui/material';
 import { Reply } from '@mui/icons-material';
 
@@ -11,34 +11,23 @@ interface NotificationCommentFieldProps {
   project_author: {
     _id: string;
   };
-  index?: number;
   replyingTo?: string;
   setReplying: (value: boolean) => void;
   notification_id: string;
-  notificationData: {
-    notifications: NotificationState;
-    setNotifications: (state: NotificationState) => void;
-  };
 }
 
 const NotificationCommentField = ({
   _id,
   project_author,
-  index,
   replyingTo,
   setReplying,
   notification_id,
-  notificationData,
 }: NotificationCommentFieldProps) => {
   const [comment, setComment] = useState('');
-  const [user] = useAtom(UserAtom);
+  const user = useAtomValue(UserAtom);
+  const { isAuthenticated } = useAuth();
 
   const { _id: user_id } = project_author;
-  const {
-    notifications,
-    notifications: { results },
-    setNotifications,
-  } = notificationData;
 
   const handleComment = () => {
     if (!comment.length) {
@@ -46,7 +35,7 @@ const NotificationCommentField = ({
       return;
     }
 
-    if (!user.access_token) {
+    if (!isAuthenticated() || !user) {
       console.error('User not authenticated');
       return;
     }
@@ -62,18 +51,15 @@ const NotificationCommentField = ({
           notification_id,
         },
         {
-          headers: {
-            Authorization: `Bearer ${user.access_token}`,
-          },
+          withCredentials: true,
         }
       )
-      .then(({ data }: { data: { _id: string } }) => {
+      .then(() => {
         setReplying(false);
+        setComment('');
 
-        if (typeof index === 'number' && results[index]) {
-          results[index].reply = { comment, _id: data._id };
-          setNotifications({ ...notifications, results });
-        }
+        // Refresh notifications to get updated data
+        // The reply will be handled by the server and returned in the next fetch
       })
       .catch((err: unknown) => {
         console.log(err);

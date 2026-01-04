@@ -1,17 +1,19 @@
-import { useRef } from 'react';
+import { useRef, useState } from 'react';
 import { useNotifications } from '../../shared/hooks/use-notification';
 import { passwordRegex } from '../../shared/utils/regex';
 import { changePassword } from '../../infra/rest/apis/auth';
 import InputBox from '../../shared/components/atoms/input-box';
-import { Box, Button, Typography, Stack } from '@mui/material';
+import { Box, Button, Stack, CircularProgress } from '@mui/material';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import VpnKeyOutlinedIcon from '@mui/icons-material/VpnKeyOutlined';
+import A2ZTypography from '../../shared/components/atoms/typography';
 
 const ChangePassword = () => {
   const changePasswordForm = useRef<HTMLFormElement>(null);
   const { addNotification } = useNotifications();
+  const [loading, setLoading] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     if (!changePasswordForm.current) return;
@@ -44,26 +46,29 @@ const ChangePassword = () => {
       return;
     }
 
-    e.currentTarget.setAttribute('disabled', 'true');
+    setLoading(true);
 
-    changePassword({
-      current_password: currentPassword,
-      new_password: newPassword,
-    })
-      .then(() => {
-        e.currentTarget.removeAttribute('disabled');
-        return addNotification({
-          message: 'Password Updated!',
-          type: 'success',
-        });
-      })
-      .catch(({ response }) => {
-        e.currentTarget.removeAttribute('disabled');
-        return addNotification({
-          message: response.data.error,
-          type: 'error',
-        });
+    try {
+      await changePassword({
+        current_password: currentPassword,
+        new_password: newPassword,
       });
+      addNotification({
+        message: 'Password Updated!',
+        type: 'success',
+      });
+      if (changePasswordForm.current) {
+        changePasswordForm.current.reset();
+      }
+    } catch (error: unknown) {
+      const err = error as { response?: { data?: { error?: string } } };
+      addNotification({
+        message: err.response?.data?.error || 'Failed to update password',
+        type: 'error',
+      });
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -75,14 +80,16 @@ const ChangePassword = () => {
         display: 'flex',
         flexDirection: 'column',
         gap: 4,
-        maxWidth: 400,
+        maxWidth: 500,
         width: '100%',
-        py: 6,
+        py: 4,
       }}
     >
-      <Typography variant="h5" fontWeight={600}>
-        Change Password
-      </Typography>
+      <A2ZTypography
+        variant="h5"
+        text="Change Password"
+        props={{ fontWeight: 600 }}
+      />
 
       <Stack spacing={3}>
         <InputBox
@@ -91,6 +98,7 @@ const ChangePassword = () => {
           type="password"
           placeholder="Current Password"
           icon={<LockOutlinedIcon />}
+          disabled={loading}
         />
         <InputBox
           id="change-password--new"
@@ -98,12 +106,14 @@ const ChangePassword = () => {
           type="password"
           placeholder="New Password"
           icon={<VpnKeyOutlinedIcon />}
+          disabled={loading}
         />
       </Stack>
       <Button
         type="submit"
         variant="contained"
         color="primary"
+        disabled={loading}
         sx={{
           mt: 2,
           py: 1.2,
@@ -113,7 +123,7 @@ const ChangePassword = () => {
           fontWeight: 500,
         }}
       >
-        Change Password
+        {loading ? <CircularProgress size={24} /> : 'Change Password'}
       </Button>
     </Box>
   );

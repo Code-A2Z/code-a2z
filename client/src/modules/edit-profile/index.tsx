@@ -1,48 +1,56 @@
 import { useEffect, useRef, useState } from 'react';
-import { useAtom } from 'jotai';
-import { UserAtom } from '../../infra/states/user';
-import { ProfileAtom } from '../profile/states';
 import { useNotifications } from '../../shared/hooks/use-notification';
 import { bioLimit } from './constants';
 import { useAuth } from '../../shared/hooks/use-auth';
+import useEditProfile from './hooks';
+import {
+  Box,
+  Avatar,
+  Button,
+  TextField,
+  Typography,
+  Stack,
+  CircularProgress,
+} from '@mui/material';
+import PhotoCameraIcon from '@mui/icons-material/PhotoCamera';
+import A2ZTypography from '../../shared/components/atoms/typography';
+import InputBox from '../../shared/components/atoms/input-box';
+import PersonIcon from '@mui/icons-material/Person';
+import AlternateEmailIcon from '@mui/icons-material/AlternateEmail';
+import YouTubeIcon from '@mui/icons-material/YouTube';
+import FacebookIcon from '@mui/icons-material/Facebook';
+import TwitterIcon from '@mui/icons-material/Twitter';
+import GitHubIcon from '@mui/icons-material/GitHub';
+import InstagramIcon from '@mui/icons-material/Instagram';
+import LanguageIcon from '@mui/icons-material/Language';
 
 const EditProfile = () => {
-  const [user, setUser] = useAtom(UserAtom);
-  const [profile, setProfile] = useAtom(ProfileAtom);
   const { addNotification } = useNotifications();
   const { isAuthenticated } = useAuth();
+  const { fetchProfile, updateProfileImage, updateUserProfile, profile } =
+    useEditProfile();
 
-  const profileImgEle = useRef<HTMLImageElement>(null);
+  const profileImgInputRef = useRef<HTMLInputElement>(null);
   const editProfileForm = useRef<HTMLFormElement>(null);
 
-  const [loading, setLoading] = useState<boolean>(true);
-  const [charactersLeft, setCharactersLeft] = useState<number>(bioLimit);
+  const [loading, setLoading] = useState(true);
+  const [uploading, setUploading] = useState(false);
+  const [saving, setSaving] = useState(false);
+  const [charactersLeft, setCharactersLeft] = useState(bioLimit);
   const [updatedProfileImg, setUpdatedProfileImg] = useState<File | null>(null);
-
-  const {
-    personal_info: {
-      fullname,
-      username: profile_username,
-      profile_img,
-      email,
-      bio,
-    },
-    social_links,
-  } = profile;
+  const [previewImg, setPreviewImg] = useState<string | null>(null);
 
   useEffect(() => {
     if (isAuthenticated()) {
-      getUserProfile(user?.personal_info.username)
-        .then(response => {
-          setProfile(response);
-          setLoading(false);
-        })
-        .catch(({ response }) => {
-          console.log(response.data);
-          setLoading(false);
-        });
+      fetchProfile().finally(() => setLoading(false));
     }
-  }, [user?.personal_info.username, setProfile, isAuthenticated]);
+  }, [isAuthenticated, fetchProfile]);
+
+  useEffect(() => {
+    if (profile?.personal_info?.bio) {
+      setCharactersLeft(bioLimit - profile.personal_info.bio.length);
+    }
+  }, [profile]);
 
   const handleCharacterChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     setCharactersLeft(bioLimit - e.currentTarget.value.length);
@@ -50,50 +58,39 @@ const EditProfile = () => {
 
   const handleImagePreview = (e: React.ChangeEvent<HTMLInputElement>) => {
     const img = e.currentTarget.files?.[0];
-    if (profileImgEle.current && img) {
-      profileImgEle.current.src = URL.createObjectURL(img);
+    if (img) {
+      setPreviewImg(URL.createObjectURL(img));
       setUpdatedProfileImg(img);
     }
   };
 
-  const handleImageUpload = (e: React.MouseEvent<HTMLButtonElement>) => {
-    e.preventDefault();
+  const handleImageUpload = async () => {
+    if (!updatedProfileImg) return;
 
-    if (updatedProfileImg) {
-      e.currentTarget.setAttribute('disabled', 'true');
-
-      uploadImage(updatedProfileImg)
-        .then(url => {
-          if (url) {
-            uploadProfileImage(url)
-              .then(response => {
-                const newUser = { ...user, profile_img: response.profile_img };
-                storeInSession('user', JSON.stringify(newUser));
-                setUser(newUser);
-
-                setUpdatedProfileImg(null);
-                e.currentTarget.removeAttribute('disabled');
-                addNotification({
-                  message: 'Profile Image Updated',
-                  type: 'success',
-                });
-              })
-              .catch(({ response }) => {
-                e.currentTarget.removeAttribute('disabled');
-                addNotification({
-                  message: response.data.error,
-                  type: 'error',
-                });
-              });
-          }
-        })
-        .catch(err => {
-          console.log(err);
-        });
+    setUploading(true);
+    try {
+      await updateProfileImage(updatedProfileImg);
+      addNotification({
+        message: 'Profile Image Updated',
+        type: 'success',
+      });
+      setUpdatedProfileImg(null);
+      setPreviewImg(null);
+      if (profileImgInputRef.current) {
+        profileImgInputRef.current.value = '';
+      }
+    } catch (error: unknown) {
+      const err = error as { response?: { data?: { error?: string } } };
+      addNotification({
+        message: err.response?.data?.error || 'Failed to update profile image',
+        type: 'error',
+      });
+    } finally {
+      setUploading(false);
     }
   };
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     if (!editProfileForm.current) return;
@@ -129,158 +126,253 @@ const EditProfile = () => {
       });
     }
 
-    e.currentTarget.setAttribute('disabled', 'true');
+    setSaving(true);
 
-    updateProfile(
-      username,
-      bio as string,
-      youtube as string,
-      facebook as string,
-      twitter as string,
-      github as string,
-      instagram as string,
-      website as string
-    )
-      .then(response => {
-        if (user.username != response.username) {
-          const newUserAuth = { ...user, username: response.username };
-          storeInSession('user', JSON.stringify(newUserAuth));
-          setUser(newUserAuth);
-        }
-
-        e.currentTarget.removeAttribute('disabled');
-        addNotification({
-          message: 'Profile Updated',
-          type: 'success',
-        });
-      })
-      .catch(({ response }) => {
-        e.currentTarget.removeAttribute('disabled');
-        addNotification({
-          message: response.data.error,
-          type: 'error',
-        });
+    try {
+      await updateUserProfile({
+        username,
+        bio: (bio as string) || '',
+        social_links: {
+          youtube: (youtube as string) || '',
+          facebook: (facebook as string) || '',
+          x: (twitter as string) || '',
+          github: (github as string) || '',
+          instagram: (instagram as string) || '',
+          linkedin: '',
+          website: (website as string) || '',
+        },
       });
+      addNotification({
+        message: 'Profile Updated',
+        type: 'success',
+      });
+    } catch (error: unknown) {
+      const err = error as { response?: { data?: { error?: string } } };
+      addNotification({
+        message: err.response?.data?.error || 'Failed to update profile',
+        type: 'error',
+      });
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  if (loading || !profile) {
+    return (
+      <Box sx={{ display: 'flex', justifyContent: 'center', py: 6 }}>
+        <CircularProgress />
+      </Box>
+    );
+  }
+
+  const {
+    personal_info: { fullname, username, profile_img, bio },
+    social_links,
+  } = profile;
+
+  const socialIcons: Record<string, React.ReactNode> = {
+    youtube: <YouTubeIcon />,
+    facebook: <FacebookIcon />,
+    twitter: <TwitterIcon />,
+    github: <GitHubIcon />,
+    instagram: <InstagramIcon />,
+    website: <LanguageIcon />,
   };
 
   return (
-    <>
-      {loading ? (
-        <Loader />
-      ) : (
-        <form ref={editProfileForm} onSubmit={handleSubmit}>
-          <h1 className="max-md:hidden">Edit Profile</h1>
+    <Box sx={{ maxWidth: 900, mx: 'auto', p: 3 }}>
+      <A2ZTypography
+        variant="h4"
+        text="Edit Profile"
+        props={{ sx: { mb: 4, display: { xs: 'none', md: 'block' } } }}
+      />
 
-          <div className="flex flex-col lg:flex-row items-start py-10 gap-8 lg:gap-10">
-            <div className="max-lg:block max-lg:mx-auto mb-5">
-              <label
-                htmlFor="uploadImg"
-                id="profileImgLabel"
-                className="relative block w-48 h-48 bg-gray-100 rounded-full overflow-hidden"
-              >
-                <div className="w-full h-full absolute top-0 left-0 flex items-center justify-center text-white bg-black/80 opacity-0 hover:opacity-100 cursor-pointer">
-                  Upload Image
-                </div>
-                <img ref={profileImgEle} src={profile_img} alt="" />
-              </label>
+      <Box
+        component="form"
+        ref={editProfileForm}
+        onSubmit={handleSubmit}
+        sx={{ py: 4 }}
+      >
+        <Box
+          sx={{
+            display: 'flex',
+            flexDirection: { xs: 'column', md: 'row' },
+            gap: 4,
+          }}
+        >
+          {/* Profile Image Section */}
+          <Box sx={{ width: { xs: '100%', md: '33.333%' } }}>
+            <Stack spacing={2} alignItems={{ xs: 'center', md: 'flex-start' }}>
+              <Box sx={{ position: 'relative' }}>
+                <Avatar
+                  src={previewImg || profile_img}
+                  alt={fullname}
+                  sx={{
+                    width: 192,
+                    height: 192,
+                    bgcolor: 'grey.300',
+                    cursor: 'pointer',
+                  }}
+                  onClick={() => profileImgInputRef.current?.click()}
+                />
+                <Box
+                  sx={{
+                    position: 'absolute',
+                    bottom: 0,
+                    right: 0,
+                    bgcolor: 'primary.main',
+                    borderRadius: '50%',
+                    p: 1,
+                    cursor: 'pointer',
+                    '&:hover': { bgcolor: 'primary.dark' },
+                  }}
+                  onClick={() => profileImgInputRef.current?.click()}
+                >
+                  <PhotoCameraIcon sx={{ color: 'white' }} />
+                </Box>
+                <input
+                  ref={profileImgInputRef}
+                  onChange={handleImagePreview}
+                  type="file"
+                  accept=".jpeg,.png,.jpg"
+                  hidden
+                />
+              </Box>
 
-              <input
-                onChange={handleImagePreview}
-                type="file"
-                id="uploadImg"
-                accept=".jpeg, .png, .jpg"
-                hidden
-              />
-
-              <button
+              <Button
+                variant="outlined"
                 onClick={handleImageUpload}
-                className="btn-light mt-5 max-lg:block max-lg:mx-auto lg:w-full px-10"
+                disabled={!updatedProfileImg || uploading}
+                fullWidth
+                sx={{ maxWidth: 192 }}
               >
-                Upload
-              </button>
-            </div>
+                {uploading ? <CircularProgress size={24} /> : 'Upload'}
+              </Button>
+            </Stack>
+          </Box>
 
-            <div className="w-full">
-              <div className="grid grid-cols-1 md:grid-cols-2 md:gap-5">
-                <div>
-                  <InputBox
-                    name="fullname"
-                    type="text"
-                    value={fullname}
-                    placeholder="Full Name"
-                    disable={true}
-                    icon="fi-rr-user"
-                  />
-                </div>
-                <div>
-                  <InputBox
-                    name="email"
-                    type="email"
-                    value={email}
-                    placeholder="Email"
-                    disable={true}
-                    icon="fi-rr-envelope"
-                  />
-                </div>
-              </div>
+          {/* Form Fields */}
+          <Box sx={{ flex: 1 }}>
+            <Stack spacing={3}>
+              <Box
+                sx={{
+                  display: 'flex',
+                  flexDirection: { xs: 'column', sm: 'row' },
+                  gap: 2,
+                }}
+              >
+                <InputBox
+                  id="edit-profile-fullname"
+                  name="fullname"
+                  type="text"
+                  value={fullname}
+                  placeholder="Full Name"
+                  disabled
+                  icon={<PersonIcon />}
+                  sx={{ flex: 1 }}
+                />
+              </Box>
 
-              <InputBox
-                type="text"
-                name="username"
-                value={profile_username}
-                placeholder="Username"
-                icon="fi-rr-at"
-              />
+              <Box>
+                <InputBox
+                  id="edit-profile-username"
+                  type="text"
+                  name="username"
+                  defaultValue={username}
+                  placeholder="Username"
+                  icon={<AlternateEmailIcon />}
+                />
+                <Typography
+                  variant="caption"
+                  color="text.secondary"
+                  sx={{ mt: 0.5, display: 'block' }}
+                >
+                  Username will be used to search user and will be visible to
+                  all users
+                </Typography>
+              </Box>
 
-              <p className="text-gray-500 -mt-3">
-                Username will use to search user and will be visible to all
-                users
-              </p>
+              <Box>
+                <TextField
+                  name="bio"
+                  multiline
+                  rows={4}
+                  defaultValue={bio}
+                  placeholder="Bio"
+                  fullWidth
+                  inputProps={{ maxLength: bioLimit }}
+                  onChange={handleCharacterChange}
+                />
+                <Typography
+                  variant="caption"
+                  color="text.secondary"
+                  sx={{ mt: 0.5, display: 'block' }}
+                >
+                  {charactersLeft} characters left
+                </Typography>
+              </Box>
 
-              <textarea
-                name="bio"
-                maxLength={bioLimit}
-                defaultValue={bio}
-                className="input-box h-64 lg:h-40 resize-none leading-7 mt-5 pl-5"
-                placeholder="Bio"
-                onChange={handleCharacterChange}
-              ></textarea>
+              <Box>
+                <Typography
+                  variant="subtitle2"
+                  color="text.secondary"
+                  sx={{ mb: 2 }}
+                >
+                  Add your social handles below
+                </Typography>
+                <Box
+                  sx={{
+                    display: 'flex',
+                    flexDirection: { xs: 'column', sm: 'row' },
+                    flexWrap: 'wrap',
+                    gap: 2,
+                  }}
+                >
+                  {(
+                    Object.keys(social_links) as Array<
+                      keyof typeof social_links
+                    >
+                  ).map(key => {
+                    const link = social_links[key] || '';
+                    return (
+                      <InputBox
+                        key={key}
+                        id={`edit-profile-${key}`}
+                        name={key}
+                        type="text"
+                        defaultValue={link}
+                        placeholder="https://"
+                        icon={socialIcons[key] || <LanguageIcon />}
+                        sx={{
+                          flex: { xs: '1 1 100%', sm: '1 1 calc(50% - 8px)' },
+                        }}
+                      />
+                    );
+                  })}
+                </Box>
+              </Box>
 
-              <p className="mt-1 text-gray-500">
-                {charactersLeft} characters Left
-              </p>
-
-              <p className="my-6 text-gray-500">Add your social handle below</p>
-
-              <div className="md:grid md:grid-cols-2 gap-x-6">
-                {(
-                  Object.keys(social_links) as Array<keyof typeof social_links>
-                ).map((key, i) => {
-                  const link = social_links[key];
-
-                  return (
-                    <InputBox
-                      key={i}
-                      name={key}
-                      type="text"
-                      value={link}
-                      placeholder="https://"
-                      icon={
-                        key !== 'website' ? 'fi-brands-' + key : 'fi-rr-globe'
-                      }
-                    />
-                  );
-                })}
-              </div>
-
-              <button className="btn-dark w-auto px-10" type="submit">
-                Update
-              </button>
-            </div>
-          </div>
-        </form>
-      )}
-    </>
+              <Button
+                type="submit"
+                variant="contained"
+                color="primary"
+                disabled={saving}
+                sx={{
+                  py: 1.2,
+                  fontSize: '1rem',
+                  borderRadius: 2,
+                  textTransform: 'none',
+                  fontWeight: 500,
+                  alignSelf: 'flex-start',
+                }}
+              >
+                {saving ? <CircularProgress size={24} /> : 'Update Profile'}
+              </Button>
+            </Stack>
+          </Box>
+        </Box>
+      </Box>
+    </Box>
   );
 };
 
