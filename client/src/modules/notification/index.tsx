@@ -1,13 +1,10 @@
-import { useEffect, useState, useCallback } from 'react';
-import axios from 'axios';
-import { filterPaginationData } from '../../shared/requests/filter-pagination-data';
-import AnimationWrapper from '../../shared/components/atoms/page-animation';
-import LoadMoreDataBtn from '../../shared/components/molecules/load-more-data';
+import { useEffect, useState } from 'react';
 import NotificationCard from './components/notificationCard';
 import { notificationFilters } from './constants';
-import { useAtom } from 'jotai';
-import { UserAtom } from '../../shared/states/user';
-import { NotificationData } from '../../infra/rest/typings';
+import { useSetAtom } from 'jotai';
+import { NotificationsAtom } from './states';
+import useNotifications from './hooks';
+import { useAuth } from '../../shared/hooks/use-auth';
 import {
   Box,
   Typography,
@@ -23,91 +20,46 @@ import {
   Comment,
   Reply,
 } from '@mui/icons-material';
-
-interface PaginationState<T = unknown> {
-  results: T[];
-  page: number;
-  totalDocs: number;
-}
-
-type NotificationPaginationState = PaginationState<NotificationData> & {
-  deleteDocCount?: number;
-};
+import { NOTIFICATION_FILTER_TYPE } from '../../infra/rest/typings';
 
 const Notifications = () => {
-  const [user, setUser] = useAtom(UserAtom);
-
-  const [filter, setFilter] = useState('all');
-  const [notifications, setNotifications] =
-    useState<NotificationPaginationState | null>(null);
-
-  const fetchNotifications = useCallback(
-    (params: Record<string, unknown>) => {
-      const { page, deletedDocCount = 0 } = params;
-
-      if (!user.access_token || typeof page !== 'number') return;
-
-      axios
-        .post(
-          import.meta.env.VITE_SERVER_DOMAIN + '/api/notification/get',
-          { page, filter, deletedDocCount },
-          {
-            headers: {
-              Authorization: `Bearer ${user.access_token}`,
-            },
-          }
-        )
-        .then(
-          async ({
-            data: { notifications: data },
-          }: {
-            data: { notifications: NotificationData[] };
-          }) => {
-            if (user.new_notification_available) {
-              setUser(prev => ({ ...prev, new_notification_available: false }));
-            }
-
-            const formattedData = await filterPaginationData({
-              state: notifications,
-              data,
-              page,
-              countRoute: '/api/notification/all-count',
-              data_to_send: { filter },
-            });
-
-            setNotifications(formattedData as NotificationPaginationState);
-          }
-        )
-        .catch((err: unknown) => {
-          console.log(err);
-        });
-    },
-    [
-      user.access_token,
-      filter,
-      notifications,
-      user.new_notification_available,
-      setUser,
-    ]
+  const setNotifications = useSetAtom(NotificationsAtom);
+  const [filter, setFilter] = useState<NOTIFICATION_FILTER_TYPE>(
+    NOTIFICATION_FILTER_TYPE.ALL
   );
+  const { fetchNotifications, notifications } = useNotifications();
+  const { isAuthenticated } = useAuth();
 
   useEffect(() => {
-    if (user.access_token) {
-      fetchNotifications({ page: 1 });
+    if (isAuthenticated()) {
+      setNotifications(null);
+      fetchNotifications({ page: 1, filter, deletedDocCount: 0 });
     }
-  }, [user.access_token, filter, fetchNotifications]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [filter]);
 
-  const handleFilter = (e: React.MouseEvent<HTMLButtonElement>) => {
-    const btn = e.target as HTMLButtonElement;
-    setFilter(btn.innerHTML.toLowerCase());
-    setNotifications(null);
+  const handleFilter = (filterName: string) => {
+    setFilter(filterName as NOTIFICATION_FILTER_TYPE);
+  };
+
+  const handleLoadMore = () => {
+    if (
+      notifications &&
+      notifications.results.length < notifications.totalDocs
+    ) {
+      fetchNotifications({
+        page: notifications.page + 1,
+        filter,
+        deletedDocCount: notifications.deleteDocCount || 0,
+      });
+    }
   };
 
   return (
-    <Box sx={{ maxWidth: '4xl', mx: 'auto', p: 2 }}>
+    <Box sx={{ maxWidth: 900, mx: 'auto', p: 3 }}>
       <Box sx={{ mb: 4 }}>
         <Typography
-          variant="h3"
+          variant="h4"
           component="h1"
           sx={{ fontWeight: 'bold', mb: 1 }}
         >
@@ -140,7 +92,7 @@ const Notifications = () => {
                 key={i}
                 variant={isActive ? 'contained' : 'outlined'}
                 color={isActive ? 'primary' : 'inherit'}
-                onClick={handleFilter}
+                onClick={() => handleFilter(filterName)}
                 startIcon={
                   filterName === 'all' ? (
                     <NotificationsIcon />
@@ -187,24 +139,17 @@ const Notifications = () => {
         <>
           {notifications.results.length ? (
             <List sx={{ width: '100%' }}>
-              {notifications.results.map(
-                (notification: NotificationData, i: number) => {
-                  return (
-                    <AnimationWrapper key={i} transition={{ delay: i * 0.08 }}>
-                      <NotificationCard
-                        data={notification}
-                        index={i}
-                        notificationState={{
-                          notifications: notifications,
-                          setNotifications: (
-                            newState: NotificationPaginationState
-                          ) => setNotifications(newState),
-                        }}
-                      />
-                    </AnimationWrapper>
-                  );
-                }
-              )}
+              {notifications.results.map((notification, i) => (
+                <NotificationCard
+                  key={notification._id || i}
+                  data={notification}
+                  index={i}
+                  notificationState={{
+                    notifications: notifications,
+                    setNotifications: setNotifications,
+                  }}
+                />
+              ))}
             </List>
           ) : (
             <Alert
@@ -222,24 +167,25 @@ const Notifications = () => {
                 No notifications yet
               </Typography>
               <Typography variant="body2" color="text.secondary">
-                {filter === 'all'
+                {filter === NOTIFICATION_FILTER_TYPE.ALL
                   ? "You're all caught up! Check back later for new notifications."
                   : `No ${filter} notifications found.`}
               </Typography>
             </Alert>
           )}
 
-          {notifications.results.length > 0 && (
-            <Box sx={{ mt: 4 }}>
-              <LoadMoreDataBtn
-                state={notifications}
-                fetchDataFun={fetchNotifications}
-                additionalParam={{
-                  deletedDocCount: notifications.deleteDocCount ?? 0,
-                }}
-              />
-            </Box>
-          )}
+          {notifications.results.length > 0 &&
+            notifications.results.length < notifications.totalDocs && (
+              <Box sx={{ mt: 4, display: 'flex', justifyContent: 'center' }}>
+                <Button
+                  onClick={handleLoadMore}
+                  variant="outlined"
+                  size="medium"
+                >
+                  Load More
+                </Button>
+              </Box>
+            )}
         </>
       )}
     </Box>

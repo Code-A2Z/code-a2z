@@ -12,10 +12,10 @@ import Search from './modules/search';
 import Profile from './modules/profile';
 import Project from './modules/project';
 import Sidebar from './shared/components/organisms/sidebar';
-// import ChangePassword from "./modules/change-password";
-// import ManageProjects from "./modules/manage-projects";
-// import EditProfile from "./modules/edit-profile";
-// import Notifications from "./modules/notification";
+import ChangePassword from './modules/change-password';
+import ManageProjects from './modules/manage-projects';
+import EditProfile from './modules/edit-profile';
+import Notifications from './modules/notification';
 
 function App() {
   useEffect(() => {
@@ -35,12 +35,12 @@ function App() {
             <Route path="project/:project_id" element={<Project />} />
 
             <Route path="dashboard" element={<Sidebar />}>
-              {/* <Route path="projects" element={<ManageProjects />} /> */}
-              {/* <Route path="notifications" element={<Notifications />} /> */}
+              <Route path="projects" element={<ManageProjects />} />
+              <Route path="notifications" element={<Notifications />} />
             </Route>
             <Route path="settings" element={<Sidebar />}>
-              {/* <Route path="edit-profile" element={<EditProfile />} /> */}
-              {/* <Route path="change-password" element={<ChangePassword />} /> */}
+              <Route path="edit-profile" element={<EditProfile />} />
+              <Route path="change-password" element={<ChangePassword />} />
             </Route>
           </Route>
 
