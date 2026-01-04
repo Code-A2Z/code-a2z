@@ -42,7 +42,7 @@ export const useAuth = () => {
     setToken(null);
     setUser(null);
     clearToken();
-  }, [setToken, setUser]);
+  }, [setToken, setUser, clearToken]);
 
   const login = (accessToken: string) => {
     setToken(accessToken);
@@ -114,9 +114,9 @@ export const useAuth = () => {
     }
   };
 
-  const isAuthenticated = () => {
+  const isAuthenticated = useCallback(() => {
     return !!token;
-  };
+  }, [token]);
 
   const getAuthHeaders = () => {
     return {
