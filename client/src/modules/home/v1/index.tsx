@@ -1,9 +1,9 @@
 import { Box, Stack } from '@mui/material';
-import A2ZTypography from '../../shared/components/atoms/typography';
+import A2ZTypography from '../../../shared/components/atoms/typography';
 import TrendingUpIcon from '@mui/icons-material/TrendingUp';
 import { categories } from './constants';
 import { CategoryButton } from './components/category-button';
-import InPageNavigation from '../../shared/components/molecules/page-navigation';
+import InPageNavigation from '../../../shared/components/molecules/page-navigation';
 import NoBannerProjectCard from './components/no-banner-project';
 import { useAtom, useAtomValue } from 'jotai';
 import {
@@ -12,11 +12,11 @@ import {
   HomePageTrendingProjectsAtom,
 } from './states';
 import BannerProjectCard from './components/banner-project-card';
-import NoDataMessageBox from '../../shared/components/atoms/no-data-msg';
+import NoDataMessageBox from '../../../shared/components/atoms/no-data-msg';
 import {
   BannerSkeleton,
   NoBannerSkeleton,
-} from '../../shared/components/atoms/skeleton';
+} from '../../../shared/components/atoms/skeleton';
 import { useEffect } from 'react';
 import useHome from './hooks';
 import { Virtuoso } from 'react-virtuoso';
