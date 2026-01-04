@@ -2,7 +2,7 @@ import { useCallback, useState } from 'react';
 import { getProjectById } from '../../../infra/rest/apis/project';
 import { SelectedProjectAtom } from '../states';
 import { useSetAtom } from 'jotai';
-import useHome from '../../home/hooks';
+import useHome from '../../home/v1/hooks';
 import useCommentsWrapper from '../../../shared/components/organisms/comments-wrapper/hooks';
 
 const useProject = () => {

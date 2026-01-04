@@ -10,9 +10,9 @@ import {
 import { getDay } from '../../shared/utils/date';
 import { useAtomValue } from 'jotai';
 import { SelectedProjectAtom } from './states';
-import BannerProjectCard from '../home/components/banner-project-card';
+import BannerProjectCard from '../home/v1/components/banner-project-card';
 import { ProjectLoadingSkeleton } from '../../shared/components/atoms/skeleton';
-import { HomePageProjectsAtom } from '../home/states';
+import { HomePageProjectsAtom } from '../home/v1/states';
 import useProject from './hooks';
 import CommentsWrapper from '../../shared/components/organisms/comments-wrapper';
 import ProjectInteraction from './components/project-interaction';
