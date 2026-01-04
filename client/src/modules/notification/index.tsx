@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState,useRef,useCallback } from 'react';
 import NotificationCard from './components/notificationCard';
 import { notificationFilters } from './constants';
 import { useSetAtom } from 'jotai';
@@ -23,37 +23,65 @@ import {
 import { NOTIFICATION_FILTER_TYPE } from '../../infra/rest/typings';
 
 const Notifications = () => {
+  const prevFilterRef = useRef<NOTIFICATION_FILTER_TYPE | null>(null);
   const setNotifications = useSetAtom(NotificationsAtom);
   const [filter, setFilter] = useState<NOTIFICATION_FILTER_TYPE>(
     NOTIFICATION_FILTER_TYPE.ALL
   );
   const { fetchNotifications, notifications } = useNotifications();
   const { isAuthenticated } = useAuth();
+  const [isLoadingMore, setIsLoadingMore] = useState(false);
+  const [isFilterLoading, setIsFilterLoading] = useState(false);
 
+
+  // Avoid refetching notifications when the same filter is selected again
   useEffect(() => {
-    if (isAuthenticated()) {
-      setNotifications(null);
-      fetchNotifications({ page: 1, filter, deletedDocCount: 0 });
+    if (!isAuthenticated()) return;
+    if (prevFilterRef.current === filter && notifications !== null) {
+      return;
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [filter]);
+    prevFilterRef.current = filter;
+    setIsFilterLoading(true);
+    setNotifications(null);
+    fetchNotifications({
+      page: 1,
+      filter,
+      deletedDocCount: 0, 
+    }).finally(() => {
+      setIsFilterLoading(false);
+});
 
-  const handleFilter = (filterName: string) => {
+  }, [filter, isAuthenticated, fetchNotifications, notifications, setNotifications]);
+
+
+  const handleFilter = useCallback((filterName: string) => {
     setFilter(filterName as NOTIFICATION_FILTER_TYPE);
-  };
+  }, []);
 
-  const handleLoadMore = () => {
+
+  const handleLoadMore = async () => {
     if (
-      notifications &&
-      notifications.results.length < notifications.totalDocs
+      !notifications ||
+      isLoadingMore ||
+      notifications.results.length >= notifications.totalDocs
     ) {
-      fetchNotifications({
+      return;
+    }
+
+    try {
+      setIsLoadingMore(true);
+      await fetchNotifications({
         page: notifications.page + 1,
         filter,
         deletedDocCount: notifications.deleteDocCount || 0,
       });
+    } 
+    
+    finally {
+      setIsLoadingMore(false);
     }
   };
+
 
   return (
     <Box sx={{ maxWidth: 900, mx: 'auto', p: 3 }}>
@@ -93,6 +121,7 @@ const Notifications = () => {
                 variant={isActive ? 'contained' : 'outlined'}
                 color={isActive ? 'primary' : 'inherit'}
                 onClick={() => handleFilter(filterName)}
+                disabled={isFilterLoading}
                 startIcon={
                   filterName === 'all' ? (
                     <NotificationsIcon />
@@ -181,8 +210,12 @@ const Notifications = () => {
                   onClick={handleLoadMore}
                   variant="outlined"
                   size="medium"
+                  disabled={isLoadingMore}
+                  startIcon={
+                    isLoadingMore ? <CircularProgress size={16} /> : null
+                  }
                 >
-                  Load More
+                  {isLoadingMore ? 'Loading...' : 'Load More'}
                 </Button>
               </Box>
             )}
