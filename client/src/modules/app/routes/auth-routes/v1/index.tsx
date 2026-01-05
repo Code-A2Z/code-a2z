@@ -20,8 +20,8 @@ export default function getRoutesV1() {
       }
     />,
     <Route
-      key={ROUTES_V1.SETTINGS}
-      path={ROUTES_V1.SETTINGS}
+      key={`${ROUTES_V1.SETTINGS}/*`}
+      path={`${ROUTES_V1.SETTINGS}/*`}
       element={
         <Suspense fallback={<Loader size={32} secondary={LOADING} />}>
           <SettingsPageLazyComponent />
