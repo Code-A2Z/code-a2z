@@ -10,7 +10,11 @@ export const ProfileLazyComponentV1 = lazy(
   () => import('../../modules/profile/v1')
 );
 
-export const getSettings = () => {
+export const getSettings = ({
+  isMobileOrTablet,
+}: {
+  isMobileOrTablet: boolean;
+}) => {
   const settings: SettingTabType[] = [
     {
       id: 'profile',
@@ -30,16 +34,18 @@ export const getSettings = () => {
       }
     />,
 
-    <Route
-      key="*"
-      path="*"
-      element={
-        <Navigate
-          to={`${ROUTES_V1.SETTINGS}${ROUTES_V1.SETTINGS_PROFILE}`}
-          replace
-        />
-      }
-    />,
+    !isMobileOrTablet && (
+      <Route
+        key="*"
+        path="*"
+        element={
+          <Navigate
+            to={`${ROUTES_V1.SETTINGS}${ROUTES_V1.SETTINGS_PROFILE}`}
+            replace
+          />
+        }
+      />
+    ),
   ];
 
   return {

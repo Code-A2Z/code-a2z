@@ -1,20 +1,28 @@
 import { Box, useTheme } from '@mui/material';
+import { Routes } from 'react-router-dom';
 import Searchbar from '../../../shared/components/molecules/searchbar';
 import { SETTINGS_SIDEBAR_WIDTH } from './constants';
 import useSettingsV1 from './hooks';
 import NoResultsFound from './components/no-results-found';
 import SettingsTab from './components/settings-tab';
-import { Routes } from 'react-router-dom';
+import SettingsHeader from './components/settings-header';
+import { useDevice } from '../../../shared/hooks/use-device';
 
 const Settings = () => {
   const theme = useTheme();
+  const { isMobileOrTablet } = useDevice();
   const {
     searchTerm,
     setSearchTerm,
     handleClearSearch,
     filteredSettings,
     routes,
+    activeSetting,
+    isSettingsDetailPage,
   } = useSettingsV1();
+
+  // On mobile, show sidebar only when not on a detail page
+  const showSidebarOnMobile = !isMobileOrTablet || !isSettingsDetailPage;
 
   return (
     <Box
@@ -31,14 +39,27 @@ const Settings = () => {
       <Box
         sx={{
           height: '100%',
-          width: { xs: '100%', md: SETTINGS_SIDEBAR_WIDTH },
-          minWidth: { xs: '100%', md: SETTINGS_SIDEBAR_WIDTH },
-          maxWidth: { xs: '100%', md: SETTINGS_SIDEBAR_WIDTH },
-          display: 'flex',
+          width: {
+            xs: showSidebarOnMobile ? '100%' : 0,
+            md: SETTINGS_SIDEBAR_WIDTH,
+          },
+          minWidth: {
+            xs: showSidebarOnMobile ? '100%' : 0,
+            md: SETTINGS_SIDEBAR_WIDTH,
+          },
+          maxWidth: {
+            xs: showSidebarOnMobile ? '100%' : 0,
+            md: SETTINGS_SIDEBAR_WIDTH,
+          },
+          display: {
+            xs: showSidebarOnMobile ? 'flex' : 'none',
+            md: 'flex',
+          },
           flexDirection: 'column',
           justifyContent: 'flex-start',
           alignItems: 'flex-start',
           bgcolor: 'background.paper',
+          overflow: 'hidden',
         }}
       >
         <Box
@@ -109,18 +130,36 @@ const Settings = () => {
       <Box
         sx={{
           height: '100%',
-          width: { xs: 0, md: `calc(100% - ${SETTINGS_SIDEBAR_WIDTH}px)` },
-          minWidth: { xs: 0, md: `calc(100% - ${SETTINGS_SIDEBAR_WIDTH}px)` },
-          maxWidth: { xs: 0, md: `calc(100% - ${SETTINGS_SIDEBAR_WIDTH}px)` },
-          display: { xs: 'none', md: 'flex' },
+          width: {
+            xs: isSettingsDetailPage ? '100%' : 0,
+            md: `calc(100% - ${SETTINGS_SIDEBAR_WIDTH}px)`,
+          },
+          minWidth: {
+            xs: isSettingsDetailPage ? '100%' : 0,
+            md: `calc(100% - ${SETTINGS_SIDEBAR_WIDTH}px)`,
+          },
+          maxWidth: {
+            xs: isSettingsDetailPage ? '100%' : 0,
+            md: `calc(100% - ${SETTINGS_SIDEBAR_WIDTH}px)`,
+          },
+          display: {
+            xs: isSettingsDetailPage ? 'flex' : 'none',
+            md: 'flex',
+          },
           flexDirection: 'column',
           borderLeft: { xs: 'none', md: `1px solid ${theme.palette.divider}` },
           borderColor: 'divider',
           bgcolor: 'background.default',
-          overflow: 'auto',
+          overflow: 'hidden',
         }}
       >
-        <Box sx={{ p: 3 }}>
+        {activeSetting && <SettingsHeader title={activeSetting.name} />}
+        <Box
+          sx={{
+            flex: 1,
+            overflow: 'auto',
+          }}
+        >
           <Routes>{routes}</Routes>
         </Box>
       </Box>
