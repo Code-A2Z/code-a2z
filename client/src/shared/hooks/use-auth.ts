@@ -43,10 +43,10 @@ export const useAuth = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const clearToken = (): void => {
+  const clearToken = useCallback((): void => {
     removeFromLocal(TOKEN_CONFIG.ACCESS_TOKEN_NAME);
     setToken(null);
-  };
+  }, [setToken]);
 
   const logout = useCallback(() => {
     setToken(null);

@@ -1,9 +1,7 @@
 import { Link } from 'react-router-dom';
 import { useState } from 'react';
-import { useAtomValue } from 'jotai';
 import { getDay } from '../../../shared/utils/date';
 import NotificationCommentField from './notificationCommentField';
-import { UserAtom } from '../../../infra/states/user';
 import { GetNotificationsResponse } from '../../../infra/rest/apis/notification/typing';
 import { NotificationPaginationState } from '../states';
 import { deleteComment } from '../../../infra/rest/apis/comment';
@@ -58,7 +56,6 @@ const NotificationCard = ({
     _id: notification_id,
   } = data;
 
-  const userAuth = useAtomValue(UserAtom);
   const { addNotification } = useNotificationHook();
 
   const { notifications, setNotifications } = notificationState;

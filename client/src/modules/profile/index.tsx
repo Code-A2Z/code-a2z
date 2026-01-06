@@ -31,7 +31,14 @@ const Profile = () => {
     if (projects.length === 0 || profile?.personal_info.username !== username) {
       fetchUserProfile();
     }
-  }, [username]);
+  }, [
+    username,
+    user?.personal_info.username,
+    profile?.personal_info.username,
+    projects.length,
+    setProjects,
+    fetchUserProfile,
+  ]);
 
   if (!profile) {
     return <CircularProgress size={24} />;

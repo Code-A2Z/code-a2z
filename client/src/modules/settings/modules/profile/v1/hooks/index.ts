@@ -232,7 +232,7 @@ const useProfileSettings = (): UseProfileSettingsReturn => {
         throw error;
       }
     },
-    [user]
+    [user, setUser]
   );
 
   const handleSubmit = useCallback(
