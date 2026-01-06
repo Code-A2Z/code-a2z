@@ -1,5 +1,6 @@
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
+import { Provider } from 'jotai';
 import App from './App';
 import createCache from '@emotion/cache';
 import { CacheProvider } from '@emotion/react';
@@ -14,13 +15,15 @@ const cache = createCache({
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
-    <CacheProvider value={cache}>
-      <MuiThemeProvider>
-        <BrowserRouter>
-          <A2ZNotifications />
-          <App />
-        </BrowserRouter>
-      </MuiThemeProvider>
-    </CacheProvider>
+    <Provider>
+      <CacheProvider value={cache}>
+        <MuiThemeProvider>
+          <BrowserRouter>
+            <A2ZNotifications />
+            <App />
+          </BrowserRouter>
+        </MuiThemeProvider>
+      </CacheProvider>
+    </Provider>
   </StrictMode>
 );

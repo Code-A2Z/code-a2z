@@ -1,4 +1,4 @@
-import { useEffect, useState,useRef,useCallback } from 'react';
+import { useEffect, useState, useRef, useCallback } from 'react';
 import NotificationCard from './components/notificationCard';
 import { notificationFilters } from './constants';
 import { useSetAtom } from 'jotai';
@@ -33,7 +33,6 @@ const Notifications = () => {
   const [isLoadingMore, setIsLoadingMore] = useState(false);
   const [isFilterLoading, setIsFilterLoading] = useState(false);
 
-
   // Avoid refetching notifications when the same filter is selected again
   useEffect(() => {
     if (!isAuthenticated()) return;
@@ -46,18 +45,21 @@ const Notifications = () => {
     fetchNotifications({
       page: 1,
       filter,
-      deletedDocCount: 0, 
+      deletedDocCount: 0,
     }).finally(() => {
       setIsFilterLoading(false);
-});
-
-  }, [filter, isAuthenticated, fetchNotifications, notifications, setNotifications]);
-
+    });
+  }, [
+    filter,
+    isAuthenticated,
+    fetchNotifications,
+    notifications,
+    setNotifications,
+  ]);
 
   const handleFilter = useCallback((filterName: string) => {
     setFilter(filterName as NOTIFICATION_FILTER_TYPE);
   }, []);
-
 
   const handleLoadMore = async () => {
     if (
@@ -75,13 +77,10 @@ const Notifications = () => {
         filter,
         deletedDocCount: notifications.deleteDocCount || 0,
       });
-    } 
-    
-    finally {
+    } finally {
       setIsLoadingMore(false);
     }
   };
-
 
   return (
     <Box sx={{ maxWidth: 900, mx: 'auto', p: 3 }}>

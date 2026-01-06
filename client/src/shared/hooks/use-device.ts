@@ -2,7 +2,8 @@ import { useEffect, useState } from 'react';
 
 const breakpoints = {
   mobile: 640,
-  tablet: 1024,
+  tablet: 900,
+  laptop: 1024,
 };
 
 export function useDevice() {
@@ -17,6 +18,9 @@ export function useDevice() {
   return {
     isMobile: width < breakpoints.mobile,
     isTablet: width >= breakpoints.mobile && width < breakpoints.tablet,
-    isDesktop: width >= breakpoints.tablet,
+    isLaptop: width >= breakpoints.tablet && width < breakpoints.laptop,
+    isDesktop: width >= breakpoints.laptop,
+
+    isMobileOrTablet: width < breakpoints.tablet,
   };
 }

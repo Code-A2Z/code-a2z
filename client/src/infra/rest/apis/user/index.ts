@@ -1,5 +1,6 @@
 import { get, patch } from '../..';
 import { ApiResponse } from '../../typings';
+import { USER_DB_STATE } from '../../typings';
 import {
   getUserProfileResponse,
   searchUserResponse,
@@ -16,6 +17,10 @@ export const userProfile = async (username: string) => {
   return get<undefined, ApiResponse<getUserProfileResponse>>(
     `/api/user/profile?username=${username}`
   );
+};
+
+export const getCurrentUser = async () => {
+  return get<undefined, ApiResponse<USER_DB_STATE>>(`/api/user/me`, true);
 };
 
 export const updateProfileImg = async (imageUrl: string) => {
