@@ -1,16 +1,13 @@
 import { Box, Stack } from '@mui/material';
+import { Routes } from 'react-router-dom';
 import A2ZTypography from '../../../shared/components/atoms/typography';
 import TrendingUpIcon from '@mui/icons-material/TrendingUp';
 import { categories } from './constants';
 import { CategoryButton } from './components/category-button';
 import InPageNavigation from '../../../shared/components/molecules/page-navigation';
 import NoBannerProjectCard from './components/no-banner-project';
-import { useAtom, useAtomValue } from 'jotai';
-import {
-  HomePageProjectsAtom,
-  HomePageStateAtom,
-  HomePageTrendingProjectsAtom,
-} from './states';
+import { useAtomValue } from 'jotai';
+import { HomePageProjectsAtom } from './states';
 import BannerProjectCard from './components/banner-project-card';
 import NoDataMessageBox from '../../../shared/components/atoms/no-data-msg';
 import {
@@ -18,33 +15,54 @@ import {
   NoBannerSkeleton,
 } from '../../../shared/components/atoms/skeleton';
 import { useEffect } from 'react';
-import useHome from './hooks';
+import useHomeV1 from './hooks';
 import { Virtuoso } from 'react-virtuoso';
 
 const Home = () => {
-  const [pageState, setPageState] = useAtom(HomePageStateAtom);
   const projects = useAtomValue(HomePageProjectsAtom);
-  const trending = useAtomValue(HomePageTrendingProjectsAtom);
 
   const {
+    routes,
+    isHomePage,
+    selectedCategory,
+    setSelectedCategory,
+    trendingProjects,
     fetchLatestProjects,
     fetchTrendingProjects,
     fetchProjectsByCategory,
-  } = useHome();
+  } = useHomeV1();
 
   useEffect(() => {
-    if (pageState === 'home') {
-      fetchLatestProjects();
-    } else if (pageState !== 'trending') {
-      fetchProjectsByCategory({ tag: pageState });
+    // Only fetch projects if not on project page
+    if (isHomePage) {
+      if (!selectedCategory) {
+        fetchLatestProjects();
+      } else if (selectedCategory !== 'trending') {
+        fetchProjectsByCategory({ tag: selectedCategory });
+      }
+      fetchTrendingProjects();
     }
-    fetchTrendingProjects();
   }, [
-    pageState,
+    selectedCategory,
     fetchLatestProjects,
     fetchProjectsByCategory,
     fetchTrendingProjects,
+    isHomePage,
   ]);
+
+  if (!isHomePage) {
+    return (
+      <Box
+        sx={{
+          height: '100%',
+          width: '100%',
+          overflow: 'auto',
+        }}
+      >
+        <Routes>{routes}</Routes>
+      </Box>
+    );
+  }
 
   return (
     <Box
@@ -60,7 +78,7 @@ const Home = () => {
       {/* Latest projects */}
       <Box sx={{ width: '100%', maxWidth: 800 }}>
         <InPageNavigation
-          routes={[pageState, 'trending']}
+          routes={[selectedCategory || 'home', 'trending']}
           defaultHidden={['trending']}
         >
           {projects.length ? (
@@ -73,10 +91,13 @@ const Home = () => {
               overscan={200}
               endReached={() => {
                 const nextPage = Math.floor(projects.length / 10) + 1; // Assuming page size of 10
-                if (pageState === 'home') {
+                if (!selectedCategory) {
                   fetchLatestProjects(nextPage);
-                } else if (pageState !== 'trending') {
-                  fetchProjectsByCategory({ page: nextPage, tag: pageState });
+                } else if (selectedCategory !== 'trending') {
+                  fetchProjectsByCategory({
+                    page: nextPage,
+                    tag: selectedCategory,
+                  });
                 }
               }}
               components={{
@@ -89,10 +110,10 @@ const Home = () => {
           ) : (
             <NoDataMessageBox message="No projects available" />
           )}
-          {trending && trending.length === 0 ? ( // FIX ME
+          {trendingProjects && trendingProjects.length === 0 ? ( // FIX ME
             <NoBannerSkeleton count={3} />
-          ) : trending && trending.length ? (
-            trending.map((project, i) => {
+          ) : trendingProjects && trendingProjects.length ? (
+            trendingProjects.map((project, i) => {
               return (
                 <NoBannerProjectCard key={i} project={project} index={i} />
               );
@@ -128,7 +149,9 @@ const Home = () => {
                   <CategoryButton
                     key={i}
                     onClick={() => {
-                      setPageState(pageState === category ? 'home' : category);
+                      setSelectedCategory(
+                        selectedCategory === category ? null : category
+                      );
                     }}
                   >
                     {category}
@@ -157,10 +180,10 @@ const Home = () => {
               <TrendingUpIcon fontSize="medium" />
             </Box>
 
-            {trending && trending.length === 0 ? ( // FIX ME
+            {trendingProjects && trendingProjects.length === 0 ? ( // FIX ME
               <NoBannerSkeleton count={3} />
-            ) : trending && trending.length ? (
-              trending.map((project, i) => {
+            ) : trendingProjects && trendingProjects.length ? (
+              trendingProjects.map((project, i) => {
                 return (
                   <NoBannerProjectCard key={i} project={project} index={i} />
                 );

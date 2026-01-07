@@ -1,7 +1,9 @@
 import { Link } from 'react-router-dom';
-import { Avatar, Box, Typography, Stack, useTheme } from '@mui/material';
+import { Avatar, Box, Stack, useTheme } from '@mui/material';
 import { getTrendingProjectsResponse } from '../../../../infra/rest/apis/project/typing';
 import { getDay } from '../../../../shared/utils/date';
+import A2ZTypography from '../../../../shared/components/atoms/typography';
+import { ROUTES_V1 } from '../../../app/routes/constants/routes';
 
 interface NoBannerProjectCardProps {
   project: getTrendingProjectsResponse;
@@ -21,7 +23,7 @@ const NoBannerProjectCard = ({ project, index }: NoBannerProjectCardProps) => {
   return (
     <Box
       component={Link}
-      to={`/project/${_id}`}
+      to={`${ROUTES_V1.HOME}/${_id}`}
       sx={{
         display: 'flex',
         gap: 2,
@@ -34,17 +36,18 @@ const NoBannerProjectCard = ({ project, index }: NoBannerProjectCardProps) => {
       }}
     >
       {/* Index Number */}
-      <Typography
+      <A2ZTypography
         variant="h5"
-        sx={{
-          fontWeight: 600,
-          minWidth: 40,
-          textAlign: 'center',
-          color: theme.palette.text.secondary,
+        text={index < 10 ? `0${index + 1}` : String(index + 1)}
+        props={{
+          sx: {
+            fontWeight: 600,
+            minWidth: 40,
+            textAlign: 'center',
+            color: 'text.secondary',
+          },
         }}
-      >
-        {index < 10 ? `0${index + 1}` : index}
-      </Typography>
+      />
 
       {/* Main Content */}
       <Box>
@@ -55,36 +58,42 @@ const NoBannerProjectCard = ({ project, index }: NoBannerProjectCardProps) => {
             alt={fullname}
             sx={{ width: 24, height: 24 }}
           />
-          <Typography
+          <A2ZTypography
             variant="body2"
+            text={`${fullname} @${username}`}
             noWrap
-            sx={{ maxWidth: 160, color: theme.palette.text.primary }}
-          >
-            {fullname} @{username}
-          </Typography>
-          <Typography
-            variant="caption"
-            sx={{
-              minWidth: 'fit-content',
-              color: theme.palette.text.secondary,
+            props={{
+              sx: {
+                maxWidth: 160,
+                color: 'text.primary',
+              },
             }}
-          >
-            {getDay(publishedAt)}
-          </Typography>
+          />
+          <A2ZTypography
+            variant="caption"
+            text={getDay(publishedAt)}
+            props={{
+              sx: {
+                minWidth: 'fit-content',
+                color: 'text.secondary',
+              },
+            }}
+          />
         </Stack>
 
         {/* Project Title */}
-        <Typography
-          className="project-title"
+        <A2ZTypography
           variant="h6"
-          sx={{
-            fontWeight: 600,
-            lineHeight: 1.3,
-            color: theme.palette.text.primary,
+          text={title}
+          props={{
+            className: 'project-title',
+            sx: {
+              fontWeight: 600,
+              lineHeight: 1.3,
+              color: 'text.primary',
+            },
           }}
-        >
-          {title}
-        </Typography>
+        />
       </Box>
     </Box>
   );

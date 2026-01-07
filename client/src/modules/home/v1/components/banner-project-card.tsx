@@ -1,6 +1,6 @@
 // TODO: Redesign this component to make it more visually appealing & interactive.
 import { Link } from 'react-router-dom';
-import { Avatar, Box, Chip, Stack, Typography, useTheme } from '@mui/material';
+import { Avatar, Box, Chip, Stack, useTheme } from '@mui/material';
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import { useA2ZTheme } from '../../../../shared/hooks/use-theme';
 import { getDay } from '../../../../shared/utils/date';
@@ -9,6 +9,8 @@ import {
   defaultLightThumbnail,
 } from '../../../editor/constants';
 import { getAllProjectsResponse } from '../../../../infra/rest/apis/project/typing';
+import A2ZTypography from '../../../../shared/components/atoms/typography';
+import { ROUTES_V1 } from '../../../app/routes/constants/routes';
 
 const BannerProjectCard = ({
   project,
@@ -31,7 +33,7 @@ const BannerProjectCard = ({
   return (
     <Box
       component={Link}
-      to={`/project/${_id}`}
+      to={`${ROUTES_V1.HOME}/${_id}`}
       sx={{
         display: 'flex',
         alignItems: 'center',
@@ -55,45 +57,50 @@ const BannerProjectCard = ({
             alt={fullname}
             sx={{ width: 24, height: 24 }}
           />
-          <Typography variant="body2" noWrap>
-            {fullname} @{username}
-          </Typography>
-          <Typography variant="caption" color="text.secondary">
-            {getDay(publishedAt)}
-          </Typography>
+          <A2ZTypography
+            variant="body2"
+            text={`${fullname} @${username}`}
+            noWrap
+          />
+          <A2ZTypography
+            variant="caption"
+            text={getDay(publishedAt)}
+            props={{ sx: { color: 'text.secondary' } }}
+          />
         </Stack>
 
         {/* Title */}
-        <Typography
+        <A2ZTypography
           variant="h6"
-          className="project-title"
-          sx={{
-            fontWeight: 600,
-            lineHeight: 1.3,
-            mb: 1,
+          text={title}
+          props={{
+            className: 'project-title',
+            sx: {
+              fontWeight: 600,
+              lineHeight: 1.3,
+              mb: 1,
+            },
           }}
-        >
-          {title}
-        </Typography>
+        />
 
         {/* Description */}
-        <Typography
+        <A2ZTypography
           variant="body1"
-          color="text.secondary"
-          sx={{
-            fontFamily: "'Gelasio', serif",
-            lineHeight: 1.6,
-            display: { xs: 'none', sm: 'block', md: 'none', lg: 'block' },
-            mb: 2,
-            overflow: 'hidden',
-            textOverflow: 'ellipsis',
-            WebkitLineClamp: 2,
-            WebkitBoxOrient: 'vertical',
-            displayWebkitBox: 'true',
+          text={description}
+          props={{
+            sx: {
+              fontFamily: "'Gelasio', serif",
+              lineHeight: 1.6,
+              display: { xs: 'none', sm: 'block', md: 'none', lg: 'block' },
+              mb: 2,
+              overflow: 'hidden',
+              textOverflow: 'ellipsis',
+              WebkitLineClamp: 2,
+              WebkitBoxOrient: 'vertical',
+              color: 'text.secondary',
+            },
           }}
-        >
-          {description}
-        </Typography>
+        />
 
         {/* Tags + Likes */}
         <Stack direction="row" spacing={3} alignItems="center" mt={2}>
@@ -120,10 +127,10 @@ const BannerProjectCard = ({
             direction="row"
             alignItems="center"
             spacing={1}
-            color="text.secondary"
+            sx={{ color: 'text.secondary' }}
           >
             <FavoriteBorderIcon fontSize="small" />
-            <Typography variant="body2">{total_likes}</Typography>
+            <A2ZTypography variant="body2" text={String(total_likes)} />
           </Stack>
         </Stack>
       </Box>
