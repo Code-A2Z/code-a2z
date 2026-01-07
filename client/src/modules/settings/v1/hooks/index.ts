@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react';
 import { useLocation } from 'react-router-dom';
-import { getSettings } from './get-settings';
+import { settingsRoutes } from '../../routes';
 import { ROUTES_V1 } from '../../../app/routes/constants/routes';
 import { useDevice } from '../../../../shared/hooks/use-device';
 
@@ -13,7 +13,7 @@ const useSettingsV1 = () => {
     setSearchTerm('');
   };
 
-  const { settings, routes } = getSettings({ isMobileOrTablet });
+  const { settings, routes } = settingsRoutes({ isMobileOrTablet });
   const filteredSettings = useMemo(() => {
     if (!searchTerm) return settings;
     return settings.filter(setting =>

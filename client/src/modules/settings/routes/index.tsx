@@ -1,16 +1,15 @@
-/* eslint-disable react-refresh/only-export-components */
+ 
 import AccountCircleOutlinedIcon from '@mui/icons-material/AccountCircleOutlined';
-import { ROUTES_V1 } from '../../../app/routes/constants/routes';
-import { SettingTabType } from '../typings';
+import {
+  ROUTES_V1,
+  ROUTES_SETTINGS_V1,
+} from '../../app/routes/constants/routes';
+import { SettingTabType } from '../v1/typings';
 import { Navigate, Route } from 'react-router-dom';
-import { ProtectedRoute } from '../../../app/routes/auth-routes/protected-route';
-import { lazy } from 'react';
+import { ProtectedRoute } from '../../app/routes/auth-routes/protected-route';
+import { ProfileLazyComponentV1 } from '../modules';
 
-export const ProfileLazyComponentV1 = lazy(
-  () => import('../../modules/profile/v1')
-);
-
-export const getSettings = ({
+export const settingsRoutes = ({
   isMobileOrTablet,
 }: {
   isMobileOrTablet: boolean;
@@ -19,7 +18,7 @@ export const getSettings = ({
     {
       id: 'profile',
       icon: <AccountCircleOutlinedIcon sx={{ fontSize: 20 }} />,
-      path: ROUTES_V1.SETTINGS_PROFILE,
+      path: ROUTES_SETTINGS_V1.PROFILE,
       name: 'Your profile',
       description: 'Edit your personal details',
     },
@@ -27,8 +26,8 @@ export const getSettings = ({
 
   const routes: React.ReactNode[] = [
     <Route
-      key={ROUTES_V1.SETTINGS_PROFILE}
-      path={ROUTES_V1.SETTINGS_PROFILE}
+      key={ROUTES_SETTINGS_V1.PROFILE}
+      path={ROUTES_SETTINGS_V1.PROFILE}
       element={
         <ProtectedRoute component={ProfileLazyComponentV1} hasAccess={true} />
       }
@@ -40,7 +39,7 @@ export const getSettings = ({
         path="*"
         element={
           <Navigate
-            to={`${ROUTES_V1.SETTINGS}${ROUTES_V1.SETTINGS_PROFILE}`}
+            to={`${ROUTES_V1.SETTINGS}${ROUTES_SETTINGS_V1.PROFILE}`}
             replace
           />
         }
@@ -49,7 +48,7 @@ export const getSettings = ({
   ];
 
   return {
-    settings: settings,
-    routes: routes,
+    settings,
+    routes,
   };
 };

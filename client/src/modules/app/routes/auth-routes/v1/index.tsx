@@ -11,8 +11,8 @@ import {
 export default function getRoutesV1() {
   const routes = [
     <Route
-      key={ROUTES_V1.HOME}
-      path={ROUTES_V1.HOME}
+      key={`${ROUTES_V1.HOME}/*`}
+      path={`${ROUTES_V1.HOME}/*`}
       element={
         <Suspense fallback={<Loader size={32} secondary={LOADING} />}>
           <HomePageLazyComponent />
