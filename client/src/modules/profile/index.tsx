@@ -10,7 +10,7 @@ import { Virtuoso } from 'react-virtuoso';
 import { BannerSkeleton } from '../../shared/components/atoms/skeleton';
 import { UserAtom } from '../../infra/states/user';
 import { Avatar, Box, CircularProgress } from '@mui/material';
-import useHome from '../home/v1/hooks';
+import useHomeV1 from '../home/v1/hooks';
 import AboutUser from './components/about-user';
 import A2ZTypography from '../../shared/components/atoms/typography';
 import Button from '../../shared/components/atoms/button';
@@ -21,7 +21,7 @@ const Profile = () => {
   const user = useAtomValue(UserAtom);
   const profile = useAtomValue(ProfileAtom);
   const [projects, setProjects] = useAtom(HomePageProjectsAtom);
-  const { fetchProjectsByCategory } = useHome();
+  const { fetchProjectsByCategory } = useHomeV1();
   const { fetchUserProfile } = useProfile();
 
   useEffect(() => {

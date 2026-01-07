@@ -9,7 +9,7 @@ import {
 import { useNotifications } from '../../../../hooks/use-notification';
 import { UserAtom } from '../../../../../infra/states/user';
 import { useAuth } from '../../../../hooks/use-auth';
-import { SelectedProjectAtom } from '../../../../../modules/project/states';
+import { SelectedProjectAtom } from '../../../../../modules/home/modules/project/v1/states';
 import { addComment } from '../../../../../infra/rest/apis/comment';
 
 const CommentField = ({

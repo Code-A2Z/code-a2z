@@ -1,5 +1,5 @@
 import { atom } from 'jotai';
-import { ProjectData } from '../../../infra/rest/apis/project/typing';
+import { ProjectData } from '../../../../../../infra/rest/apis/project/typing';
 
 export const SelectedProjectAtom = atom<ProjectData | null>(null);
 
