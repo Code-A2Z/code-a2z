@@ -1,53 +1,43 @@
-import { useRef, useState } from 'react';
+import { useRef, useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useDevice } from '../../../../hooks/use-device';
 import { useNotifications } from '../../../../hooks/use-notification';
 import { emailRegex } from '../../../../utils/regex';
 import { subscribeUser } from '../../../../../infra/rest/apis/subscriber';
-import { allNotificationCounts } from '../../../../../infra/rest/apis/notification';
-import { NOTIFICATION_FILTER_TYPE } from '../../../../../infra/rest/typings';
 
 export const useNavbar = () => {
   const navigate = useNavigate();
   const { isDesktop } = useDevice();
+  const searchInputRef = useRef<HTMLInputElement>(null);
 
-  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] =
     useState<null | HTMLElement>(null);
-  const [searchBoxVisibility, setSearchBoxVisibility] =
-    useState<boolean>(false);
-  const [notificationCount, setNotificationCount] = useState<number>(0);
+  const [searchTerm, setSearchTerm] = useState<string>('');
 
-  const searchRef = useRef<HTMLInputElement>(null);
-  const isMenuOpen = Boolean(anchorEl);
   const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
-
-  const handleProfileMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
-    setAnchorEl(event.currentTarget);
-  };
 
   const handleMobileMenuClose = () => {
     setMobileMoreAnchorEl(null);
-  };
-
-  const handleMenuClose = () => {
-    setAnchorEl(null);
-    handleMobileMenuClose();
   };
 
   const handleMobileMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
     setMobileMoreAnchorEl(event.currentTarget);
   };
 
-  const handleSearch = (event: React.KeyboardEvent<HTMLInputElement>) => {
-    if (event.key === 'Enter' || event.keyCode === 13) {
-      const query = event.currentTarget.value;
-      if (!query.trim().length) {
-        navigate('/');
-        return;
-      }
-      navigate(`/search/${encodeURIComponent(query)}`);
+  const handleSearchChange = (value: string) => {
+    setSearchTerm(value);
+  };
+
+  const handleSearchSubmit = () => {
+    if (!searchTerm.trim().length) {
+      navigate('/');
+      return;
     }
+    navigate(`/search/${encodeURIComponent(searchTerm)}`);
+  };
+
+  const handleClearSearch = () => {
+    setSearchTerm('');
   };
 
   const triggerSearchByKeyboard = (e: KeyboardEvent) => {
@@ -55,54 +45,34 @@ export const useNavbar = () => {
       e.preventDefault();
       e.stopPropagation();
 
-      if (isDesktop) {
+      if (isDesktop && searchInputRef.current) {
         setTimeout(() => {
-          if (searchRef.current) {
-            searchRef.current.focus();
-            searchRef.current.select();
+          if (searchInputRef.current) {
+            searchInputRef.current.focus();
+            searchInputRef.current.select();
           }
         }, 10);
-      } else {
-        setSearchBoxVisibility(true);
-        setTimeout(() => {
-          if (searchRef.current) {
-            searchRef.current.focus();
-          }
-        }, 100);
       }
     }
   };
 
-  const fetchNotificationCount = async () => {
-    try {
-      const response = await allNotificationCounts({
-        filter: NOTIFICATION_FILTER_TYPE.ALL,
-      });
-      if (response.status === 'success') {
-        setNotificationCount(response?.data?.totalDocs || 0);
-      }
-    } catch (error) {
-      console.error('Error fetching notification count:', error);
-    }
-  };
+  useEffect(() => {
+    document.addEventListener('keydown', triggerSearchByKeyboard, true);
+    return () => {
+      document.removeEventListener('keydown', triggerSearchByKeyboard, true);
+    };
+  }, [isDesktop]);
 
   return {
-    anchorEl,
     mobileMoreAnchorEl,
-    isMenuOpen,
     isMobileMenuOpen,
-    handleProfileMenuOpen,
     handleMobileMenuClose,
-    handleMenuClose,
     handleMobileMenuOpen,
-    handleSearch,
-    searchRef,
-    searchBoxVisibility,
-    setSearchBoxVisibility,
-    triggerSearchByKeyboard,
-    notificationCount,
-    setNotificationCount,
-    fetchNotificationCount,
+    searchTerm,
+    handleSearchChange,
+    handleSearchSubmit,
+    handleClearSearch,
+    searchInputRef,
   };
 };
 

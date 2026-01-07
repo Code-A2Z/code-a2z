@@ -24,6 +24,12 @@ const A2ZTypography = ({
   noWrap?: boolean;
   props?: Record<string, unknown>;
 }) => {
+  // If dangerouslySetInnerHTML is provided, don't render text as children
+  const hasDangerousHTML =
+    props &&
+    'dangerouslySetInnerHTML' in props &&
+    props.dangerouslySetInnerHTML;
+
   return (
     <Typography
       variant={variant ?? 'body1'}
@@ -32,7 +38,7 @@ const A2ZTypography = ({
       color="inherit"
       {...props}
     >
-      {text}
+      {hasDangerousHTML ? null : text}
     </Typography>
   );
 };
