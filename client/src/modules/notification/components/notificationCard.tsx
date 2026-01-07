@@ -6,6 +6,7 @@ import { GetNotificationsResponse } from '../../../infra/rest/apis/notification/
 import { NotificationPaginationState } from '../states';
 import { deleteComment } from '../../../infra/rest/apis/comment';
 import { useNotifications as useNotificationHook } from '../../../shared/hooks/use-notification';
+import { ROUTES_V1 } from '../../app/routes/constants/routes';
 import {
   ListItem,
   ListItemAvatar,
@@ -232,7 +233,7 @@ const NotificationCard = ({
                 </Paper>
               ) : (
                 <Link
-                  to={`/project/${project_id}`}
+                  to={`${ROUTES_V1.HOME}/${project_id}`}
                   style={{ textDecoration: 'none' }}
                 >
                   <Chip

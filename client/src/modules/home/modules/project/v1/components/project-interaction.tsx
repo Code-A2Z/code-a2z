@@ -1,21 +1,24 @@
 import { useAtom, useAtomValue, useSetAtom } from 'jotai';
 import { useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { IconButton, Box, Divider, Typography, Tooltip } from '@mui/material';
+import { IconButton, Box, Divider, Tooltip } from '@mui/material';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import ChatBubbleOutlineIcon from '@mui/icons-material/ChatBubbleOutline';
 import EditIcon from '@mui/icons-material/Edit';
 import XIcon from '@mui/icons-material/X';
-import { UserAtom } from '../../../infra/states/user';
+import { UserAtom } from '../../../../../../infra/states/user';
 import { LikedByUserAtom, SelectedProjectAtom } from '../states';
-import { useAuth } from '../../../shared/hooks/use-auth';
-import { likeStatus } from '../../../infra/rest/apis/like';
+import { likeStatus } from '../../../../../../infra/rest/apis/like';
 import useProjectInteraction from '../hooks/use-project-interaction';
-import { CommentsWrapperAtom } from '../../../shared/components/organisms/comments-wrapper/states';
+import { CommentsWrapperAtom } from '../../../../../../shared/components/organisms/comments-wrapper/states';
+import A2ZTypography from '../../../../../../shared/components/atoms/typography';
+
+// Module-level refs to prevent duplicate API calls across component instances
+const fetchedProjectIdRef: { current: string | null } = { current: null };
+const fetchingLikeStatusRef: { current: boolean } = { current: false };
 
 const ProjectInteraction = () => {
-  const { isAuthenticated } = useAuth();
   const user = useAtomValue(UserAtom);
   const project = useAtomValue(SelectedProjectAtom);
   const [islikedByUser, setLikedByUser] = useAtom(LikedByUserAtom);
@@ -24,28 +27,51 @@ const ProjectInteraction = () => {
 
   useEffect(() => {
     const fetchLikeStatus = async () => {
-      if (!isAuthenticated() || !project?._id) return;
+      if (!project?._id) {
+        // Reset refs if project is cleared
+        fetchedProjectIdRef.current = null;
+        fetchingLikeStatusRef.current = false;
+        return;
+      }
+
+      // Prevent fetching if we've already fetched for this project or are currently fetching
+      if (
+        fetchedProjectIdRef.current === project._id ||
+        fetchingLikeStatusRef.current
+      ) {
+        return;
+      }
+
+      fetchedProjectIdRef.current = project._id;
+      fetchingLikeStatusRef.current = true;
+
       try {
         const response = await likeStatus(project._id);
-        if (response.is_liked) {
-          setLikedByUser(Boolean(response.is_liked));
-        }
+        setLikedByUser(Boolean(response.is_liked));
       } catch (error) {
         console.error('Error fetching like status:', error);
+        // Reset on error to allow retry
+        fetchedProjectIdRef.current = null;
+      } finally {
+        fetchingLikeStatusRef.current = false;
       }
     };
     fetchLikeStatus();
-  }, [project?._id, setLikedByUser, isAuthenticated]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [project?._id]);
 
   return (
     <>
       <Divider sx={{ my: 2 }} />
 
       <Box
-        display="flex"
-        justifyContent="space-between"
-        alignItems="center"
-        gap={3}
+        sx={{
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          gap: { xs: 2, sm: 3 },
+          flexWrap: { xs: 'wrap', sm: 'nowrap' },
+        }}
       >
         {/* Left side — Likes & Comments */}
         <Box display="flex" alignItems="center" gap={2}>
@@ -69,29 +95,33 @@ const ProjectInteraction = () => {
               {islikedByUser ? <FavoriteIcon /> : <FavoriteBorderIcon />}
             </IconButton>
           </Tooltip>
-          <Typography variant="body1" color="text.primary">
-            {project?.activity.total_likes}
-          </Typography>
+          <A2ZTypography
+            variant="body1"
+            text={String(project?.activity.total_likes || 0)}
+            props={{ sx: { color: 'text.primary' } }}
+          />
 
           {/* Comment Button */}
           <Tooltip title="Comments">
             <IconButton
               onClick={() => setCommentsWrapper(prev => !prev)}
               sx={{
-                bgcolor: theme => theme.palette.action.hover,
+                bgcolor: 'action.hover',
                 color: 'text.secondary',
                 transition: 'background-color 0.2s, color 0.2s',
                 '&:hover': {
-                  bgcolor: theme => theme.palette.action.selected,
+                  bgcolor: 'action.selected',
                 },
               }}
             >
               <ChatBubbleOutlineIcon />
             </IconButton>
           </Tooltip>
-          <Typography variant="body1" color="text.primary">
-            {project?.activity.total_comments}
-          </Typography>
+          <A2ZTypography
+            variant="body1"
+            text={String(project?.activity.total_comments || 0)}
+            props={{ sx: { color: 'text.primary' } }}
+          />
         </Box>
 
         {/* Right side — Edit & Share */}
@@ -114,9 +144,10 @@ const ProjectInteraction = () => {
 
           <Tooltip title="Share on X">
             <IconButton
-              component={Link}
-              to={`https://twitter.com/intent/tweet?text=Read ${project?.title}&url=${location.href}`}
+              component="a"
+              href={`https://twitter.com/intent/tweet?text=Read ${project?.title}&url=${window.location.href}`}
               target="_blank"
+              rel="noopener noreferrer"
               sx={{
                 color: 'text.secondary',
                 '&:hover': { color: '#1DA1F2' },

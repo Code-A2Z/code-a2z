@@ -17,7 +17,7 @@ import {
   TotalParentCommentsLoadedAtom,
 } from '../states';
 import { UserAtom } from '../../../../../infra/states/user';
-import { SelectedProjectAtom } from '../../../../../modules/project/states';
+import { SelectedProjectAtom } from '../../../../../modules/home/modules/project/v1/states';
 import { useNotifications } from '../../../../hooks/use-notification';
 import {
   deleteComment,

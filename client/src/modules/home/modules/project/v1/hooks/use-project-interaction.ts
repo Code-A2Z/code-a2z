@@ -1,21 +1,16 @@
 import { useAtom } from 'jotai';
-import { useAuth } from '../../../shared/hooks/use-auth';
 import { LikedByUserAtom, SelectedProjectAtom } from '../states';
-import { useNotifications } from '../../../shared/hooks/use-notification';
-import { likeProject } from '../../../infra/rest/apis/like';
+import { useNotifications } from '../../../../../../shared/hooks/use-notification';
+import { likeProject } from '../../../../../../infra/rest/apis/like';
 
 const useProjectInteraction = () => {
-  const { isAuthenticated } = useAuth();
   const [project, setProject] = useAtom(SelectedProjectAtom);
   const [islikedByUser, setLikedByUser] = useAtom(LikedByUserAtom);
   const { addNotification } = useNotifications();
 
   const handleLike = async () => {
-    if (!project?._id || !isAuthenticated()) {
-      return addNotification({
-        message: 'Please login to like this project',
-        type: 'error',
-      });
+    if (!project?._id) {
+      return;
     }
 
     try {
@@ -37,7 +32,7 @@ const useProjectInteraction = () => {
       });
     } catch (error) {
       addNotification({
-        message: 'Please login to like this project',
+        message: 'Failed to like this project',
         type: 'error',
       });
       console.error('Like error:', error);

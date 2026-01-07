@@ -7,7 +7,7 @@ import { HomePageProjectsAtom } from '../home/v1/states';
 import { Virtuoso } from 'react-virtuoso';
 import { BannerSkeleton } from '../../shared/components/atoms/skeleton';
 import NoDataMessageBox from '../../shared/components/atoms/no-data-msg';
-import useHome from '../home/v1/hooks';
+import useHomeV1 from '../home/v1/hooks';
 import { SearchPageUsersAtom } from './states';
 import UserCard from './components/user-card';
 import { Box, CircularProgress, Stack } from '@mui/material';
@@ -18,7 +18,7 @@ import PeopleIcon from '@mui/icons-material/People';
 const Search = () => {
   const { query } = useParams();
   const projects = useAtomValue(HomePageProjectsAtom);
-  const { fetchProjectsByCategory } = useHome();
+  const { fetchProjectsByCategory } = useHomeV1();
 
   const users = useAtomValue(SearchPageUsersAtom);
   const { fetchUsers } = useSearch();

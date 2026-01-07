@@ -1,13 +1,4 @@
 import { atom } from 'jotai';
-import {
-  getAllProjectsResponse,
-  getTrendingProjectsResponse,
-} from '../../../../infra/rest/apis/project/typing';
-
-export const HomePageStateAtom = atom<string>('home');
+import { getAllProjectsResponse } from '../../../../infra/rest/apis/project/typing';
 
 export const HomePageProjectsAtom = atom<getAllProjectsResponse[]>([]);
-
-export const HomePageTrendingProjectsAtom = atom<getTrendingProjectsResponse[]>(
-  []
-);

@@ -5,6 +5,7 @@ import { useSetAtom } from 'jotai';
 import { deleteProjectById } from '../../../infra/rest/apis/project';
 import { useNotifications } from '../../../shared/hooks/use-notification';
 import { useAuth } from '../../../shared/hooks/use-auth';
+import { ROUTES_V1 } from '../../app/routes/constants/routes';
 import {
   PublishedProjectsAtom,
   ManageProjectsPaginationState,
@@ -152,7 +153,7 @@ const ManagePublishedProjectCard = ({
             <Typography
               variant="h6"
               component={Link}
-              to={`/project/${_id}`}
+              to={`${ROUTES_V1.HOME}/${_id}`}
               sx={{
                 mb: 1,
                 display: 'block',

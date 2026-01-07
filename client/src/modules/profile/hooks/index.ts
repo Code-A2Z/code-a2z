@@ -3,12 +3,12 @@ import { userProfile } from '../../../infra/rest/apis/user';
 import { useParams } from 'react-router-dom';
 import { useSetAtom } from 'jotai';
 import { ProfileAtom } from '../states';
-import useHome from '../../home/v1/hooks';
+import useHomeV1 from '../../home/v1/hooks';
 
 const useProfile = () => {
   const { username } = useParams();
   const setProfile = useSetAtom(ProfileAtom);
-  const { fetchProjectsByCategory } = useHome();
+  const { fetchProjectsByCategory } = useHomeV1();
 
   const fetchUserProfile = useCallback(async () => {
     if (!username) return;
