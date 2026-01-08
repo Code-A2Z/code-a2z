@@ -4,6 +4,7 @@ import LightModeIcon from '@mui/icons-material/LightMode';
 import DarkModeIcon from '@mui/icons-material/DarkMode';
 import CreateIcon from '@mui/icons-material/Create';
 import LoginIcon from '@mui/icons-material/Login';
+import AssistantIcon from '@mui/icons-material/Assistant';
 import { menuId, mobileMenuId } from '../constants';
 import A2ZIconButton from '../../../atoms/icon-button';
 import A2ZTypography from '../../../atoms/typography';
@@ -81,7 +82,20 @@ const RenderMobileMenu: FC<RenderMobileMenuProps> = ({
         </A2ZIconButton>
         <A2ZTypography component="p" text="Write" />
       </MenuItem>
-
+      <MenuItem
+              key="Get recommendation"
+              onClick={() => {
+                navigate('/recommendation');
+                handleMobileMenuClose();
+              }}
+            >
+              <A2ZIconButton>
+                <Badge>
+                  <AssistantIcon />
+                </Badge>
+              </A2ZIconButton>
+              <A2ZTypography component="p" text="Get recommendation" />
+            </MenuItem>
       {isAuthenticated()
         ? [
             <MenuItem

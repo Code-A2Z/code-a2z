@@ -12,6 +12,7 @@ import Search from './modules/search';
 import Profile from './modules/profile';
 import Project from './modules/project';
 import Sidebar from './shared/components/organisms/sidebar';
+import Recommendation from './shared/components/organisms/navbar/components/recommendation';
 // import ChangePassword from "./modules/change-password";
 // import ManageProjects from "./modules/manage-projects";
 // import EditProfile from "./modules/edit-profile";
@@ -30,6 +31,7 @@ function App() {
             <Route index element={<Home />} />
             <Route path="login" element={<UserAuthForm type="login" />} />
             <Route path="signup" element={<UserAuthForm type="signup" />} />
+            <Route path="/recommendation" element={<Recommendation />} />
             <Route path="search/:query" element={<Search />} />
             <Route path="user/:username" element={<Profile />} />
             <Route path="project/:project_id" element={<Project />} />
