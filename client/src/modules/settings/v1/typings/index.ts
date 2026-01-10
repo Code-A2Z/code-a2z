@@ -12,3 +12,13 @@ export interface SettingTabType {
   disabled?: boolean;
   feature?: string;
 }
+
+export interface IntegrationSettingType {
+  id: string;
+  type: string;
+  integrationSlug: string;
+  icon: ReactNode;
+  name: string;
+  description?: string;
+  locked?: boolean;
+}

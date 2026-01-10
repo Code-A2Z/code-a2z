@@ -16,3 +16,7 @@ export enum ROUTES_SETTINGS_V1 {
   PROFILE = '/profile',
   INTEGRATIONS = '/integrations',
 }
+
+export enum ROUTES_SETTINGS_INTEGRATIONS_V1 {
+  OPENAI = '/openai',
+}
