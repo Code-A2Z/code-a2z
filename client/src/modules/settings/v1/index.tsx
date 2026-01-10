@@ -18,11 +18,10 @@ const Settings = () => {
     filteredSettings,
     routes,
     activeSetting,
-    isSettingsDetailPage,
   } = useSettingsV1();
 
   // On mobile, show sidebar only when not on a detail page
-  const showSidebarOnMobile = !isMobileOrTablet || !isSettingsDetailPage;
+  const showSidebarOnMobile = !isMobileOrTablet || !activeSetting;
 
   return (
     <Box
@@ -131,19 +130,19 @@ const Settings = () => {
         sx={{
           height: '100%',
           width: {
-            xs: isSettingsDetailPage ? '100%' : 0,
+            xs: activeSetting ? '100%' : 0,
             md: `calc(100% - ${SETTINGS_SIDEBAR_WIDTH}px)`,
           },
           minWidth: {
-            xs: isSettingsDetailPage ? '100%' : 0,
+            xs: activeSetting ? '100%' : 0,
             md: `calc(100% - ${SETTINGS_SIDEBAR_WIDTH}px)`,
           },
           maxWidth: {
-            xs: isSettingsDetailPage ? '100%' : 0,
+            xs: activeSetting ? '100%' : 0,
             md: `calc(100% - ${SETTINGS_SIDEBAR_WIDTH}px)`,
           },
           display: {
-            xs: isSettingsDetailPage ? 'flex' : 'none',
+            xs: activeSetting ? 'flex' : 'none',
             md: 'flex',
           },
           flexDirection: 'column',
