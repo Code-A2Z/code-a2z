@@ -14,4 +14,5 @@ export enum ROUTES_HOME_V1 {
 
 export enum ROUTES_SETTINGS_V1 {
   PROFILE = '/profile',
+  INTEGRATIONS = '/integrations',
 }
