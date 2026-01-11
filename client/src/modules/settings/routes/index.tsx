@@ -34,7 +34,6 @@ export const settingsRoutes = ({
       path: ROUTES_SETTINGS_V1.INTEGRATIONS,
       name: 'Integrations',
       description: 'Manage your integrations',
-      locked: false,
     },
   ];
 
@@ -85,12 +84,10 @@ export const integrationsRoutes = ({
   const integrations: IntegrationSettingType[] = [
     {
       id: 'openai',
-      type: 'integration',
       integrationSlug: 'openai',
-      icon: <OpenAIIcon width={24} height={24} />,
+      icon: <OpenAIIcon width={20} height={20} />,
       name: 'OpenAI',
       description: 'Setup your OpenAI integration',
-      locked: false,
     },
   ];
 

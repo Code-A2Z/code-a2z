@@ -15,7 +15,6 @@ export interface SettingTabType {
 
 export interface IntegrationSettingType {
   id: string;
-  type: string;
   integrationSlug: string;
   icon: ReactNode;
   name: string;
