@@ -10,7 +10,7 @@ import {
 } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 import NoDataMessage from '../../atoms/no-data-msg';
-import { SelectedProjectAtom } from '../../../../modules/project/states';
+import { SelectedProjectAtom } from '../../../../modules/home/modules/project/v1/states';
 import CommentField from './components/comment-field';
 import CommentCard from './components/comment-card';
 import {

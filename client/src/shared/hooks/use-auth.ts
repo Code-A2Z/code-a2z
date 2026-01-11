@@ -1,8 +1,9 @@
-import { useSetAtom, useAtom } from 'jotai';
-import { useEffect, useState, useCallback } from 'react';
+import { useSetAtom, useAtom, useAtomValue } from 'jotai';
+import { useEffect, useState, useCallback, useRef } from 'react';
 import { UserAtom } from '../../infra/states/user';
 import { TokenAtom } from '../../infra/states/auth';
 import { refreshToken } from '../../infra/rest/apis/auth';
+import { getCurrentUser } from '../../infra/rest/apis/user';
 import {
   getAccessToken,
   removeFromLocal,
@@ -12,37 +13,53 @@ import { TOKEN_CONFIG } from '../../config/env';
 
 export const useAuth = () => {
   const [token, setToken] = useAtom(TokenAtom);
+  const user = useAtomValue(UserAtom);
   const setUser = useSetAtom(UserAtom);
   const [initialized, setInitialized] = useState<boolean>(false);
+  const hasFetchedUserRef = useRef<boolean>(false);
 
-  // Initialize tokens from localStorage on app start
+  // Initialize tokens and fetch user data from server on app start
   useEffect(() => {
-    const accessToken = getAccessToken();
+    const initializeAuth = async () => {
+      const accessToken = getAccessToken();
 
-    if (accessToken) {
-      setToken(accessToken);
-    }
-    // Mark auth as initialized after syncing from storage so components can wait
-    setInitialized(true);
-  }, [setToken]);
+      if (accessToken) {
+        setToken(accessToken);
+        // Only fetch user if we don't already have user data and haven't fetched yet
+        if (!user && !hasFetchedUserRef.current) {
+          hasFetchedUserRef.current = true;
+          try {
+            const response = await getCurrentUser();
+            if (response.status === 'success' && response.data) {
+              setUser(response.data);
+            }
+          } catch (error) {
+            // If fetching user fails, token might be invalid
+            // Don't clear token here - let the interceptor handle it
+            console.error('Failed to fetch current user:', error);
+            hasFetchedUserRef.current = false; // Allow retry on next mount if needed
+          }
+        }
+      }
 
-  // Sync tokens with localStorage when they change (for local state management)
-  useEffect(() => {
-    if (token) {
-      setAccessToken(token);
-    }
-  }, [token]);
+      // Mark auth as initialized after syncing from storage so components can wait
+      setInitialized(true);
+    };
 
-  const clearToken = (): void => {
+    initializeAuth();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const clearToken = useCallback((): void => {
     removeFromLocal(TOKEN_CONFIG.ACCESS_TOKEN_NAME);
     setToken(null);
-  };
+  }, [setToken]);
 
   const logout = useCallback(() => {
     setToken(null);
     setUser(null);
     clearToken();
-  }, [setToken, setUser]);
+  }, [setToken, setUser, clearToken]);
 
   const login = (accessToken: string) => {
     setToken(accessToken);
@@ -114,9 +131,9 @@ export const useAuth = () => {
     }
   };
 
-  const isAuthenticated = () => {
+  const isAuthenticated = useCallback(() => {
     return !!token;
-  };
+  }, [token]);
 
   const getAuthHeaders = () => {
     return {

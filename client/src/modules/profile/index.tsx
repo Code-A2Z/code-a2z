@@ -3,14 +3,14 @@ import { useParams } from 'react-router-dom';
 import InPageNavigation from '../../shared/components/molecules/page-navigation';
 import NoDataMessage from '../../shared/components/atoms/no-data-msg';
 import { useAtom, useAtomValue } from 'jotai';
-import { HomePageProjectsAtom } from '../home/states';
-import BannerProjectCard from '../home/components/banner-project-card';
+import { HomePageProjectsAtom } from '../home/v1/states';
+import BannerProjectCard from '../home/v1/components/banner-project-card';
 import { ProfileAtom } from './states';
 import { Virtuoso } from 'react-virtuoso';
 import { BannerSkeleton } from '../../shared/components/atoms/skeleton';
 import { UserAtom } from '../../infra/states/user';
 import { Avatar, Box, CircularProgress } from '@mui/material';
-import useHome from '../home/hooks';
+import useHomeV1 from '../home/v1/hooks';
 import AboutUser from './components/about-user';
 import A2ZTypography from '../../shared/components/atoms/typography';
 import Button from '../../shared/components/atoms/button';
@@ -21,7 +21,7 @@ const Profile = () => {
   const user = useAtomValue(UserAtom);
   const profile = useAtomValue(ProfileAtom);
   const [projects, setProjects] = useAtom(HomePageProjectsAtom);
-  const { fetchProjectsByCategory } = useHome();
+  const { fetchProjectsByCategory } = useHomeV1();
   const { fetchUserProfile } = useProfile();
 
   useEffect(() => {
@@ -31,7 +31,14 @@ const Profile = () => {
     if (projects.length === 0 || profile?.personal_info.username !== username) {
       fetchUserProfile();
     }
-  }, [username]);
+  }, [
+    username,
+    user?.personal_info.username,
+    profile?.personal_info.username,
+    projects.length,
+    setProjects,
+    fetchUserProfile,
+  ]);
 
   if (!profile) {
     return <CircularProgress size={24} />;

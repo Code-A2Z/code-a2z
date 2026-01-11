@@ -75,7 +75,7 @@ export const userProjects = async ({
   query,
   deletedDocCount,
 }: userProjectsPayload) => {
-  return get<undefined, ApiResponse<userProjectsResponse>>(
+  return get<undefined, ApiResponse<userProjectsResponse[]>>(
     `/api/project/user?is_draft=${is_draft}&query=${query}&page=${page}&deletedDocCount=${deletedDocCount}`
   );
 };

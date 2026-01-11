@@ -1,173 +1,159 @@
-import { useAtom, useAtomValue } from 'jotai';
-import { useEffect, useState, useCallback } from 'react';
+import { useEffect, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import InPageNavigation from '../../shared/components/molecules/page-navigation';
 import NoDataMessageBox from '../../shared/components/atoms/no-data-msg';
 import ManagePublishedProjectCard from './components/publish-projects';
 import ManageDraftProjectPost from './components/draft-projects';
+import useManageProjects from './hooks';
+import { Box, CircularProgress } from '@mui/material';
+import SearchIcon from '@mui/icons-material/Search';
+import InputBox from '../../shared/components/atoms/input-box';
+import A2ZTypography from '../../shared/components/atoms/typography';
+import Button from '../../shared/components/atoms/button';
+import { useSetAtom } from 'jotai';
+import { PublishedProjectsAtom, DraftProjectsAtom } from './states';
 
 const ManageProjects = () => {
-  const [projects, setProjects] = useAtom(AllProjectsAtom);
-  const [drafts, setDrafts] = useAtom(DraftProjectAtom);
-  const user = useAtomValue(UserAtom);
-
-  const activeTab = useSearchParams()[0].get('tab');
+  const [searchParams] = useSearchParams();
+  const activeTab = searchParams.get('tab');
   const [query, setQuery] = useState('');
-
-  const getProjects = useCallback(
-    (params: Record<string, unknown>) => {
-      const { page = 1, draft = false, deletedDocCount = 0 } = params;
-
-      userWrittenProjects({
-        page: page as number,
-        draft: draft as boolean,
-        query,
-        deletedDocCount: deletedDocCount as number,
-      })
-        .then(async data => {
-          const formattedData = (await filterPaginationData({
-            state: draft ? drafts : projects,
-            data: data.projects || [],
-            page: page as number,
-            countRoute: '/search-projects-count',
-            data_to_send: {
-              query,
-              tag: query,
-              author: user.username || '',
-              draft,
-            },
-          })) as AllProjectsData;
-
-          if (formattedData) {
-            if (draft) {
-              setDrafts(formattedData);
-            } else {
-              setProjects(formattedData);
-            }
-          }
-        })
-        .catch(err => {
-          console.log(err);
-        });
-    },
-    [drafts, projects, query, setDrafts, setProjects, user.username]
-  );
+  const { fetchProjects, publishedProjects, draftProjects } =
+    useManageProjects();
+  const setPublishedProjects = useSetAtom(PublishedProjectsAtom);
+  const setDraftProjects = useSetAtom(DraftProjectsAtom);
 
   useEffect(() => {
-    if (user.access_token) {
-      if (projects === null) {
-        getProjects({ page: 1, draft: false });
-      }
-      if (drafts === null) {
-        getProjects({ page: 1, draft: true });
-      }
+    if (publishedProjects === null) {
+      fetchProjects({ page: 1, is_draft: false, query });
     }
-  }, [user.access_token, projects, drafts, query, getProjects]);
+    if (draftProjects === null) {
+      fetchProjects({ page: 1, is_draft: true, query });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [publishedProjects, draftProjects, query]);
 
   const handleSearch = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    const searchQuery = e.currentTarget.value;
-    setQuery(searchQuery);
-
-    if (e.keyCode === 13 && searchQuery.length) {
-      setProjects(null);
-      setDrafts(null);
+    const value = e.currentTarget.value;
+    if (e.key === 'Enter' && value.length) {
+      setPublishedProjects(null);
+      setDraftProjects(null);
     }
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (!e.currentTarget.value.length) {
-      setQuery('');
-      setProjects(null);
-      setDrafts(null);
+    const value = e.currentTarget.value;
+    setQuery(value);
+    if (!value.length) {
+      setPublishedProjects(null);
+      setDraftProjects(null);
+    }
+  };
+
+  const handleLoadMore = (is_draft: boolean) => {
+    const currentState = is_draft ? draftProjects : publishedProjects;
+    if (currentState && currentState.results.length < currentState.totalDocs) {
+      fetchProjects({
+        page: currentState.page + 1,
+        is_draft,
+        query,
+        deletedDocCount: currentState.deletedDocCount || 0,
+      });
     }
   };
 
   return (
-    <>
-      <h1 className="max-md:hidden">Manage Projects</h1>
-      <div className="relative max-md:mt-5 md:mt-8 mb-10">
-        <input
-          type="search"
-          className="w-full bg-gray-100 dark:bg-[#1f1f1f] text-black dark:text-white p-4 pl-12 pr-6 rounded-full placeholder:text-gray-500 dark:placeholder:text-gray-400"
-          placeholder="Search Projects"
-          onChange={handleChange}
-          onKeyDown={handleSearch}
-        />
+    <Box sx={{ maxWidth: 900, mx: 'auto', p: 3 }}>
+      <A2ZTypography
+        variant="h4"
+        text="Manage Projects"
+        props={{ sx: { mb: 4, display: { xs: 'none', md: 'block' } } }}
+      />
 
-        <i className="fi fi-rr-search absolute right-[10%] md:pointer-events-none md:left-5 top-1/2 -translate-y-1/2 text-xl text-gray-500"></i>
-      </div>
+      <Box sx={{ mb: 4, position: 'relative' }}>
+        <InputBox
+          id="manage-projects-search"
+          name="search"
+          type="text"
+          placeholder="Search Projects"
+          defaultValue={query}
+          icon={<SearchIcon />}
+          sx={{ width: '100%' }}
+          slotProps={{
+            htmlInput: {
+              onChange: handleChange,
+              onKeyDown: handleSearch,
+            },
+          }}
+        />
+      </Box>
 
       <InPageNavigation
         routes={['Published Projects', 'Drafts']}
         defaultActiveIndex={activeTab !== 'draft' ? 0 : 1}
       >
-        {
-          // Published Projects
-          projects === null ? (
-            <Loader />
-          ) : projects.results.length ? (
-            <>
-              {projects.results.map((project, i) => {
-                return (
-                  <ManagePublishedProjectCard
-                    key={i}
-                    project={{
-                      ...project,
-                      index: i,
-                      setStateFunc: setProjects,
-                    }}
-                  />
-                );
-              })}
-
-              <LoadMoreDataBtn
-                state={projects}
-                fetchDataFun={getProjects}
-                additionalParam={{
-                  draft: false,
-                  deletedDocCount: projects.deletedDocCount,
-                }}
+        {/* Published Projects */}
+        {publishedProjects === null ? (
+          <Box sx={{ display: 'flex', justifyContent: 'center', py: 6 }}>
+            <CircularProgress />
+          </Box>
+        ) : publishedProjects.results.length ? (
+          <>
+            {publishedProjects.results.map((project, i) => (
+              <ManagePublishedProjectCard
+                key={project._id || i}
+                project={project}
+                index={i}
               />
-            </>
-          ) : (
-            <NoDataMessageBox message="No Published Projects" />
-          )
-        }
+            ))}
 
-        {
-          // Draft Projects
-          drafts === null ? (
-            <Loader />
-          ) : drafts.results.length ? (
-            <>
-              {drafts.results.map((project, i) => {
-                return (
-                  <ManageDraftProjectPost
-                    key={i}
-                    project={{
-                      ...project,
-                      index: i,
-                      setStateFunc: setDrafts,
-                    }}
-                  />
-                );
-              })}
+            {publishedProjects.results.length < publishedProjects.totalDocs && (
+              <Box sx={{ mt: 4, display: 'flex', justifyContent: 'center' }}>
+                <Button
+                  onClick={() => handleLoadMore(false)}
+                  variant="outlined"
+                  size="medium"
+                >
+                  Load More
+                </Button>
+              </Box>
+            )}
+          </>
+        ) : (
+          <NoDataMessageBox message="No Published Projects" />
+        )}
 
-              <LoadMoreDataBtn
-                state={drafts}
-                fetchDataFun={getProjects}
-                additionalParam={{
-                  draft: true,
-                  deletedDocCount: drafts.deletedDocCount,
-                }}
+        {/* Draft Projects */}
+        {draftProjects === null ? (
+          <Box sx={{ display: 'flex', justifyContent: 'center', py: 6 }}>
+            <CircularProgress />
+          </Box>
+        ) : draftProjects.results.length ? (
+          <>
+            {draftProjects.results.map((project, i) => (
+              <ManageDraftProjectPost
+                key={project._id || i}
+                project={project}
+                index={i}
               />
-            </>
-          ) : (
-            <NoDataMessageBox message="No Draft Projects" />
-          )
-        }
+            ))}
+
+            {draftProjects.results.length < draftProjects.totalDocs && (
+              <Box sx={{ mt: 4, display: 'flex', justifyContent: 'center' }}>
+                <Button
+                  onClick={() => handleLoadMore(true)}
+                  variant="outlined"
+                  size="medium"
+                >
+                  Load More
+                </Button>
+              </Box>
+            )}
+          </>
+        ) : (
+          <NoDataMessageBox message="No Draft Projects" />
+        )}
       </InPageNavigation>
-    </>
+    </Box>
   );
 };
 
