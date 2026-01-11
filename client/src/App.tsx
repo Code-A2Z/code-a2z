@@ -31,7 +31,7 @@ function App() {
             <Route index element={<Home />} />
             <Route path="login" element={<UserAuthForm type="login" />} />
             <Route path="signup" element={<UserAuthForm type="signup" />} />
-            <Route path="/recommendation" element={<Recommendation />} />
+            <Route path="recommendation" element={<Recommendation />} />
             <Route path="search/:query" element={<Search />} />
             <Route path="user/:username" element={<Profile />} />
             <Route path="project/:project_id" element={<Project />} />
