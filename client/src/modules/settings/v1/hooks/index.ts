@@ -46,10 +46,6 @@ const useSettingsV1 = () => {
     });
   }, [location.pathname, settings]);
 
-  const isSettingsDetailPage = useMemo(() => {
-    return activeSetting !== undefined;
-  }, [activeSetting]);
-
   return {
     searchTerm,
     setSearchTerm,
@@ -58,7 +54,6 @@ const useSettingsV1 = () => {
     routes,
     filteredSettings,
     activeSetting,
-    isSettingsDetailPage,
   };
 };
 
