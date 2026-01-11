@@ -3,7 +3,7 @@ import { useLocation } from 'react-router-dom';
 import { integrationsRoutes } from '../../../../routes';
 import { useDevice } from '../../../../../../shared/hooks/use-device';
 
-const useIntegrationsSettings = () => {
+const useIntegrationsSettingsV1 = () => {
   const location = useLocation();
   const { isMobileOrTablet } = useDevice();
 
@@ -36,4 +36,4 @@ const useIntegrationsSettings = () => {
   };
 };
 
-export default useIntegrationsSettings;
+export default useIntegrationsSettingsV1;

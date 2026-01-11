@@ -2,7 +2,7 @@ import { Box, ButtonBase, useTheme } from '@mui/material';
 import { Routes } from 'react-router-dom';
 import LockIcon from '@mui/icons-material/Lock';
 import { SETTINGS_SIDEBAR_WIDTH } from '../../../v1/constants';
-import useIntegrationsSettings from './hooks';
+import useIntegrationsSettingsV1 from './hooks';
 import A2ZTypography from '../../../../../shared/components/atoms/typography';
 import { useCustomNavigate } from '../../../../../shared/hooks/use-custom-navigate';
 import { useDevice } from '../../../../../shared/hooks/use-device';
@@ -18,7 +18,7 @@ const Integrations = () => {
   const { isMobileOrTablet } = useDevice();
   const navigate = useCustomNavigate();
   const { integrations, routes, integrationId, activeIntegration } =
-    useIntegrationsSettings();
+    useIntegrationsSettingsV1();
 
   // On mobile, show sidebar only when not on a detail page
   const showSidebarOnMobile = !isMobileOrTablet || !activeIntegration;
