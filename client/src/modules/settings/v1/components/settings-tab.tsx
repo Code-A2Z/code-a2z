@@ -14,7 +14,8 @@ const SettingsTab = ({
   const { name, description, icon, path, locked, isNew, newText, feature, id } =
     setting;
   const absolutePath = `${ROUTES_V1.SETTINGS}${path}`;
-  const isTabActive = window.location.pathname.includes(absolutePath);
+  // Don't highlight settings items when viewing their detail pages
+  const isTabActive = false;
   const isLastItem = index === filteredSettings.length - 1;
 
   return (
