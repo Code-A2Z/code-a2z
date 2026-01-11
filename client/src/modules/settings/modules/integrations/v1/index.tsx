@@ -216,7 +216,7 @@ const Integrations = () => {
                           fontSize: 14,
                           fontWeight: 400,
                           color: 'text.secondary',
-                          pl: 'calc(20px + 12px)',
+                          pl: 4,
                         },
                       }}
                     />

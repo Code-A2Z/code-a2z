@@ -38,7 +38,7 @@ const OpenAI = () => {
             id="openai-api-key"
             name="apiKey"
             type={isConnected ? 'text' : 'password'}
-            value={isConnected ? '*'.repeat(apiKey.length) : apiKey}
+            value={isConnected ? '••••••••••••••••' : apiKey}
             placeholder={
               isConnected
                 ? 'Your API key is connected and encrypted'
@@ -49,7 +49,7 @@ const OpenAI = () => {
             autoComplete="off"
             autoFocus={!isConnected && !loading}
             sx={{
-              width: '50%',
+              width: { xs: '100%', md: '50%' },
               '& .MuiOutlinedInput-root': {
                 bgcolor: 'background.paper',
               },
