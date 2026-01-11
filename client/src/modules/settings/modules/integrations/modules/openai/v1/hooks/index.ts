@@ -1,5 +1,5 @@
 import { useState, useCallback } from 'react';
-import { useNotifications } from '../../../../../../../shared/hooks/use-notification';
+import { useNotifications } from '../../../../../../../../shared/hooks/use-notification';
 
 const useOpenAIIntegrationV1 = () => {
   const [apiKey, setApiKey] = useState<string>('');
