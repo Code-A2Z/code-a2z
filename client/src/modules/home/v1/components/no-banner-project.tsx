@@ -3,7 +3,7 @@ import { Avatar, Box, Stack, useTheme } from '@mui/material';
 import { getTrendingProjectsResponse } from '../../../../infra/rest/apis/project/typing';
 import { getDay } from '../../../../shared/utils/date';
 import A2ZTypography from '../../../../shared/components/atoms/typography';
-import { ROUTES_V1 } from '../../../app/routes/constants/routes';
+import { ROUTES_V1 } from '../../../../app/routes/constants/routes';
 
 interface NoBannerProjectCardProps {
   project: getTrendingProjectsResponse;

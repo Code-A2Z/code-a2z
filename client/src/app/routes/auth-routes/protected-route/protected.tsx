@@ -1,7 +1,7 @@
 import { FC } from 'react';
 import { Box, Typography, useTheme } from '@mui/material';
-import { useCustomNavigate } from '../../../../../shared/hooks/use-custom-navigate';
-import A2ZButton from '../../../../../shared/components/atoms/button';
+import { useCustomNavigate } from '../../../../shared/hooks/use-custom-navigate';
+import A2ZButton from '../../../../shared/components/atoms/button';
 import { ROUTES_V1 } from '../../constants/routes';
 
 interface ProtectedPlaceholderProps {

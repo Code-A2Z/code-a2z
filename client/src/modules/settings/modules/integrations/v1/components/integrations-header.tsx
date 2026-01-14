@@ -7,7 +7,7 @@ import { useCustomNavigate } from '../../../../../../shared/hooks/use-custom-nav
 import {
   ROUTES_SETTINGS_V1,
   ROUTES_V1,
-} from '../../../../../app/routes/constants/routes';
+} from '../../../../../../app/routes/constants/routes';
 
 interface IntegrationsHeaderProps {
   title: string;

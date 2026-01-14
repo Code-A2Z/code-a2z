@@ -1,5 +1,5 @@
 import { ComponentType, LazyExoticComponent, Suspense } from 'react';
-import Loader from '../../../../../shared/components/molecules/loader';
+import Loader from '../../../../shared/components/molecules/loader';
 import { LOADING } from '../../constants';
 import ProtectedPlaceholder from './protected';
 

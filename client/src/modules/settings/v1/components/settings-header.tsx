@@ -4,7 +4,7 @@ import A2ZTypography from '../../../../shared/components/atoms/typography';
 import { HEADER_HEIGHT } from '../../../../shared/components/organisms/header/constants';
 import { useDevice } from '../../../../shared/hooks/use-device';
 import { useCustomNavigate } from '../../../../shared/hooks/use-custom-navigate';
-import { ROUTES_V1 } from '../../../app/routes/constants/routes';
+import { ROUTES_V1 } from '../../../../app/routes/constants/routes';
 
 interface SettingsHeaderProps {
   title: string;

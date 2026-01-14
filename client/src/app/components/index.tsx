@@ -1,17 +1,21 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
 import { lazy } from 'react';
-import Header from '../../../shared/components/organisms/header';
-import { HEADER_HEIGHT } from '../../../shared/components/organisms/header/constants';
-import Sidebar from '../../../shared/components/organisms/sidebar';
-import { SIDEBAR_WIDTH } from '../../../shared/components/organisms/sidebar/constants';
+import Header from '../../shared/components/organisms/header';
+import { HEADER_HEIGHT } from '../../shared/components/organisms/header/constants';
+import Sidebar from '../../shared/components/organisms/sidebar';
+import { SIDEBAR_WIDTH } from '../../shared/components/organisms/sidebar/constants';
 import { Routes } from 'react-router-dom';
 import getRoutesV1 from '../routes/auth-routes/v1';
 
-export const LoginLazyComponent = lazy(() => import('../../user-auth-form/v1'));
-export const HomePageLazyComponent = lazy(() => import('../../home/v1'));
+export const LoginLazyComponent = lazy(
+  () => import('../../modules/user-auth-form/v1')
+);
+export const HomePageLazyComponent = lazy(
+  () => import('../../modules/home/v1')
+);
 export const SettingsPageLazyComponent = lazy(
-  () => import('../../settings/v1')
+  () => import('../../modules/settings/v1')
 );
 
 export const AppLayout = () => {

@@ -2,7 +2,7 @@ import { Suspense } from 'react';
 import { Navigate, Route } from 'react-router-dom';
 import { ROUTES_V1 } from '../../constants/routes';
 import { LOADING } from '../../constants';
-import Loader from '../../../../../shared/components/molecules/loader';
+import Loader from '../../../../shared/components/molecules/loader';
 import {
   HomePageLazyComponent,
   SettingsPageLazyComponent,

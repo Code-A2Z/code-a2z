@@ -8,7 +8,7 @@ import {
 } from '../../../../infra/rest/apis/project';
 import { homeRoutes } from '../../routes';
 import { useLocation } from 'react-router-dom';
-import { ROUTES_V1 } from '../../../app/routes/constants/routes';
+import { ROUTES_V1 } from '../../../../app/routes/constants/routes';
 import { getTrendingProjectsResponse } from '../../../../infra/rest/apis/project/typing';
 
 const useHomeV1 = () => {

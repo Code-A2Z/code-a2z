@@ -6,7 +6,7 @@ import { SideBarItemsType } from '../typings';
 import {
   ROUTES_PAGE_V1,
   ROUTES_V1,
-} from '../../../../../modules/app/routes/constants/routes';
+} from '../../../../../app/routes/constants/routes';
 
 const logoutStyle = {
   marginTop: 'auto',

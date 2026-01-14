@@ -1,6 +1,6 @@
 import { SxProps, Theme } from '@mui/material';
 import { ReactNode, MouseEvent, ElementType } from 'react';
-import { ROUTES_PAGE_V1 } from '../../../../../modules/app/routes/constants/routes';
+import { ROUTES_PAGE_V1 } from '../../../../../app/routes/constants/routes';
 
 export type SideBarItemsType = {
   icon: ElementType;

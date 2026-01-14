@@ -5,7 +5,7 @@ import { useSetAtom } from 'jotai';
 import { deleteProjectById } from '../../../infra/rest/apis/project';
 import { useNotifications } from '../../../shared/hooks/use-notification';
 import { useAuth } from '../../../shared/hooks/use-auth';
-import { ROUTES_V1 } from '../../app/routes/constants/routes';
+import { ROUTES_V1 } from '../../../app/routes/constants/routes';
 import {
   PublishedProjectsAtom,
   ManageProjectsPaginationState,

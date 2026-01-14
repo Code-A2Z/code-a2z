@@ -1,7 +1,7 @@
 import { useMemo, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import { settingsRoutes } from '../../routes';
-import { ROUTES_V1 } from '../../../app/routes/constants/routes';
+import { ROUTES_V1 } from '../../../../app/routes/constants/routes';
 import { useDevice } from '../../../../shared/hooks/use-device';
 
 const useSettingsV1 = () => {
