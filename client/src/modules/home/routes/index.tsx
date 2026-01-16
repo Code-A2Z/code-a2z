@@ -3,7 +3,7 @@ import { ProtectedRoute } from '../../../app/routes/auth-routes/protected-route'
 import { ROUTES_HOME_V1 } from '../../../app/routes/constants/routes';
 import { ProjectLazyComponentV1 } from '../modules';
 
-export const homeRoutes = () => {
+export const HOME_ROUTES = () => {
   const routes: React.ReactNode[] = [
     <Route
       key={ROUTES_HOME_V1.PROJECT}
@@ -16,3 +16,7 @@ export const homeRoutes = () => {
 
   return { routes };
 };
+
+export enum HOME_QUERY_PARAMS {
+  SEARCH_TERM = 'searchTerm',
+}

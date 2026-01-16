@@ -10,19 +10,34 @@ import SubscribeModal from './components/subscribe';
 import Searchbar from '../../molecules/searchbar';
 import { HEADER_HEIGHT } from '../header/constants';
 
-const Navbar = () => {
+const Navbar = ({
+  searchTerm: externalSearchTerm,
+  onSearchChange,
+  onSearchSubmit,
+  onSearchClear,
+}: {
+  searchTerm?: string;
+  onSearchChange?: (value: string) => void;
+  onSearchSubmit?: (value: string) => void;
+  onSearchClear?: () => void;
+}) => {
   const theme = useTheme();
   const {
     mobileMoreAnchorEl,
     isMobileMenuOpen,
     handleMobileMenuOpen,
     handleMobileMenuClose,
-    searchTerm,
+    internalSearchTerm,
     handleSearchChange,
     handleSearchSubmit,
     handleClearSearch,
     searchInputRef,
-  } = useNavbar();
+  } = useNavbar({
+    externalSearchTerm,
+    onSearchChange,
+    onSearchSubmit,
+    onSearchClear,
+  });
 
   const {
     subscribeEmailRef,
@@ -49,7 +64,7 @@ const Navbar = () => {
         <Searchbar
           placeholder="Search..."
           onSearch={handleSearchChange}
-          searchTerm={searchTerm}
+          searchTerm={internalSearchTerm}
           handleOnClearClick={handleClearSearch}
           variant="fullWidth"
           autoFocus={false}

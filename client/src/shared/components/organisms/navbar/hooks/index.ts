@@ -1,20 +1,34 @@
 import { useRef, useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { useDevice } from '../../../../hooks/use-device';
 import { useNotifications } from '../../../../hooks/use-notification';
 import { emailRegex } from '../../../../utils/regex';
 import { subscribeUser } from '../../../../../infra/rest/apis/subscriber';
 
-export const useNavbar = () => {
-  const navigate = useNavigate();
+export const useNavbar = ({
+  externalSearchTerm,
+  onSearchChange,
+  onSearchSubmit,
+  onSearchClear,
+}: {
+  externalSearchTerm?: string;
+  onSearchChange?: (value: string) => void;
+  onSearchSubmit?: (value: string) => void;
+  onSearchClear?: () => void;
+}) => {
   const { isDesktop } = useDevice();
   const searchInputRef = useRef<HTMLInputElement>(null);
 
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] =
     useState<null | HTMLElement>(null);
-  const [searchTerm, setSearchTerm] = useState<string>('');
-
   const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
+
+  const [internalSearchTerm, setInternalSearchTerm] = useState<string>('');
+
+  useEffect(() => {
+    if (externalSearchTerm !== undefined) {
+      setInternalSearchTerm(externalSearchTerm);
+    }
+  }, [externalSearchTerm]);
 
   const handleMobileMenuClose = () => {
     setMobileMoreAnchorEl(null);
@@ -25,19 +39,17 @@ export const useNavbar = () => {
   };
 
   const handleSearchChange = (value: string) => {
-    setSearchTerm(value);
+    setInternalSearchTerm(value);
+    onSearchChange?.(value);
   };
 
   const handleSearchSubmit = () => {
-    if (!searchTerm.trim().length) {
-      navigate('/');
-      return;
-    }
-    navigate(`/search/${encodeURIComponent(searchTerm)}`);
+    onSearchSubmit?.(internalSearchTerm);
   };
 
   const handleClearSearch = () => {
-    setSearchTerm('');
+    setInternalSearchTerm('');
+    onSearchClear?.();
   };
 
   const triggerSearchByKeyboard = (e: KeyboardEvent) => {
@@ -68,7 +80,7 @@ export const useNavbar = () => {
     isMobileMenuOpen,
     handleMobileMenuClose,
     handleMobileMenuOpen,
-    searchTerm,
+    internalSearchTerm,
     handleSearchChange,
     handleSearchSubmit,
     handleClearSearch,
