@@ -1,6 +1,6 @@
 import "dotenv/config";
 
-import { analyzeUser } from "./src/services/corelogic.js";
+import { analyzeUser } from "./src/services/index.js";
 import { getAIRecommendation } from "./gemini.js";
 
 async function run() {
