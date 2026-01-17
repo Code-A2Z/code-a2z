@@ -61,7 +61,7 @@ const useHomeV1 = () => {
     if (response.data) {
       setTrendingProjects(response.data);
     }
-  }, [isHomePage, setTrendingProjects]);
+  }, [isHomePage]);
 
   const fetchProjectsByCategory = useCallback(
     async ({
@@ -69,7 +69,7 @@ const useHomeV1 = () => {
       query,
       user_id,
       page = 1,
-      limit = 10,
+      limit = PAGE_SIZE,
       rmv_project_by_id,
     }: {
       tag?: string;
