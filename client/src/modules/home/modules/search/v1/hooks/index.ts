@@ -16,10 +16,13 @@ const useSearchV1 = () => {
   const [users, setUsers] = useState<searchUserResponse[]>([]);
   const [isLoadingProjects, setIsLoadingProjects] = useState(false);
   const [isLoadingUsers, setIsLoadingUsers] = useState(false);
+  const [hasMoreUsers, setHasMoreUsers] = useState(true);
+  const [hasMoreProjects, setHasMoreProjects] = useState(true);
 
   const fetchUsers = useCallback(async (query: string, page: number = 1) => {
     if (query.trim() === '') {
       setUsers([]);
+      setHasMoreUsers(true);
       return;
     }
     setIsLoadingUsers(true);
@@ -27,6 +30,8 @@ const useSearchV1 = () => {
       const response = await searchUser(query, page);
       if (response.data && Array.isArray(response.data)) {
         const newUsers = response.data;
+        // Check if there are more users to load
+        setHasMoreUsers(newUsers.length === 10);
         // Append new users for pagination, replace for new search
         if (page === 1) {
           setUsers(newUsers);
@@ -45,6 +50,7 @@ const useSearchV1 = () => {
     async (query: string, page: number = 1) => {
       if (!query.trim()) {
         setProjects([]);
+        setHasMoreProjects(true);
         return;
       }
       setIsLoadingProjects(true);
@@ -56,6 +62,8 @@ const useSearchV1 = () => {
         });
         if (response.data && Array.isArray(response.data)) {
           const newProjects = response.data;
+          // Check if there are more projects to load
+          setHasMoreProjects(newProjects.length === 10);
           if (page === 1) {
             setProjects(newProjects);
           } else {
@@ -72,13 +80,11 @@ const useSearchV1 = () => {
   );
 
   const handleSearchChange = useCallback(
-    (value: string) => {
-      // If search is cleared, navigate to home without query params
-      if (!value.trim().length) {
-        navigate({ href: ROUTES_V1.HOME });
-      }
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    (_value: string) => {
+      // Intentionally left blank: navigation is handled on submit and clear actions
     },
-    [navigate]
+    []
   );
 
   const handleSearchSubmit = useCallback(
@@ -108,12 +114,15 @@ const useSearchV1 = () => {
     users,
     isLoadingProjects,
     isLoadingUsers,
+    hasMoreUsers,
+    hasMoreProjects,
     fetchUsers,
     fetchProjects,
     handleSearchChange,
     handleSearchSubmit,
     handleSearchClear,
     searchTerm,
+    setUsers,
   };
 };
 

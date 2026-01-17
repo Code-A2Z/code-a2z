@@ -6,13 +6,13 @@ import {
   getTrendingProjects,
   searchProjects,
 } from '../../../../infra/rest/apis/project';
-import { HOME_ROUTES, HOME_QUERY_PARAMS } from '../../routes';
+import { homeRoutes, HOME_QUERY_PARAMS } from '../../routes';
 import { useLocation, useSearchParams } from 'react-router-dom';
 import { ROUTES_V1 } from '../../../../app/routes/constants/routes';
 import { getTrendingProjectsResponse } from '../../../../infra/rest/apis/project/typing';
 
 const useHomeV1 = () => {
-  const { routes } = HOME_ROUTES();
+  const { routes } = homeRoutes();
   const location = useLocation();
   const [searchParams] = useSearchParams();
   const setProjects = useSetAtom(HomePageProjectsAtom);
@@ -21,6 +21,8 @@ const useHomeV1 = () => {
   const [trendingProjects, setTrendingProjects] = useState<
     getTrendingProjectsResponse[]
   >([]);
+  const [hasMoreProjects, setHasMoreProjects] = useState(true);
+  const [isLoadingProjects, setIsLoadingProjects] = useState(false);
 
   const isHomePage = useMemo(() => {
     const currentPath = location.pathname;
@@ -30,13 +32,26 @@ const useHomeV1 = () => {
 
   const fetchLatestProjects = useCallback(
     async (page = 1) => {
-      if (!isHomePage) return;
-      const response = await getAllProjects(page);
-      if (response.data) {
-        setProjects(response.data);
+      if (!isHomePage || isLoadingProjects) return;
+      setIsLoadingProjects(true);
+      try {
+        const response = await getAllProjects(page);
+        if (response.data && Array.isArray(response.data)) {
+          // Check if there are more projects to load
+          setHasMoreProjects(response.data.length === 10);
+          if (page === 1) {
+            setProjects(response.data);
+          } else {
+            setProjects(prevProjects => [...prevProjects, ...response.data!]);
+          }
+        }
+      } catch (error) {
+        console.error('Error fetching latest projects:', error);
+      } finally {
+        setIsLoadingProjects(false);
       }
     },
-    [setProjects]
+    [isHomePage, isLoadingProjects, setProjects]
   );
 
   const fetchTrendingProjects = useCallback(async () => {
@@ -45,7 +60,7 @@ const useHomeV1 = () => {
     if (response.data) {
       setTrendingProjects(response.data);
     }
-  }, [setTrendingProjects]);
+  }, [isHomePage, setTrendingProjects]);
 
   const fetchProjectsByCategory = useCallback(
     async ({
@@ -63,20 +78,33 @@ const useHomeV1 = () => {
       limit?: number;
       rmv_project_by_id?: string;
     }) => {
-      if (!isHomePage) return;
-      const response = await searchProjects({
-        tag,
-        query,
-        user_id,
-        page,
-        limit,
-        rmv_project_by_id,
-      });
-      if (response.data) {
-        setProjects(response.data);
+      if (!isHomePage || isLoadingProjects) return;
+      setIsLoadingProjects(true);
+      try {
+        const response = await searchProjects({
+          tag,
+          query,
+          user_id,
+          page,
+          limit,
+          rmv_project_by_id,
+        });
+        if (response.data && Array.isArray(response.data)) {
+          // Check if there are more projects to load
+          setHasMoreProjects(response.data.length === 10);
+          if (page === 1) {
+            setProjects(response.data);
+          } else {
+            setProjects(prevProjects => [...prevProjects, ...response.data!]);
+          }
+        }
+      } catch (error) {
+        console.error('Error fetching projects by category:', error);
+      } finally {
+        setIsLoadingProjects(false);
       }
     },
-    [setProjects]
+    [isHomePage, isLoadingProjects, setProjects]
   );
 
   const searchTerm = useMemo(() => {
@@ -84,7 +112,7 @@ const useHomeV1 = () => {
     return term ? decodeURIComponent(term) : '';
   }, [searchParams]);
 
-  const activeModule = useMemo(() => {
+  const activeModule = useMemo((): 'search' | 'home' => {
     if (searchTerm) {
       return 'search';
     }
@@ -103,6 +131,8 @@ const useHomeV1 = () => {
     fetchProjectsByCategory,
     searchTerm,
     activeModule,
+    hasMoreProjects,
+    isLoadingProjects,
   };
 };
 

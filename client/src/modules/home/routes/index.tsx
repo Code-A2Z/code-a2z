@@ -3,7 +3,7 @@ import { ProtectedRoute } from '../../../app/routes/auth-routes/protected-route'
 import { ROUTES_HOME_V1 } from '../../../app/routes/constants/routes';
 import { ProjectLazyComponentV1 } from '../modules';
 
-export const HOME_ROUTES = () => {
+export const homeRoutes = () => {
   const routes: React.ReactNode[] = [
     <Route
       key={ROUTES_HOME_V1.PROJECT}

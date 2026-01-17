@@ -23,15 +23,18 @@ const Home = () => {
     fetchProjectsByCategory,
     searchTerm,
     activeModule,
+    hasMoreProjects,
+    isLoadingProjects,
   } = useHomeV1();
 
-  const { handleSearchChange, handleSearchSubmit, handleSearchClear } =
+  const { handleSearchChange, handleSearchSubmit, handleSearchClear, setUsers } =
     useSearchV1();
 
   useEffect(() => {
     if (isHomePage) {
       if (searchTerm) {
         setProjects([]);
+        setUsers([]);
       } else {
         if (!selectedCategory) {
           fetchLatestProjects();
@@ -49,6 +52,7 @@ const Home = () => {
     isHomePage,
     searchTerm,
     setProjects,
+    setUsers,
   ]);
 
   if (!isHomePage) {
@@ -83,6 +87,8 @@ const Home = () => {
           trendingProjects={trendingProjects}
           fetchLatestProjects={fetchLatestProjects}
           fetchProjectsByCategory={fetchProjectsByCategory}
+          hasMoreProjects={hasMoreProjects}
+          isLoadingProjects={isLoadingProjects}
         />
       )}
     </>

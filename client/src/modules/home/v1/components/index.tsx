@@ -22,6 +22,8 @@ interface HomeContentProps {
   trendingProjects: getTrendingProjectsResponse[];
   fetchLatestProjects: (page?: number) => void;
   fetchProjectsByCategory: (params: { tag?: string; page?: number }) => void;
+  hasMoreProjects: boolean;
+  isLoadingProjects: boolean;
 }
 
 const HomeContent = ({
@@ -30,6 +32,8 @@ const HomeContent = ({
   trendingProjects,
   fetchLatestProjects,
   fetchProjectsByCategory,
+  hasMoreProjects,
+  isLoadingProjects,
 }: HomeContentProps) => {
   const projects = useAtomValue(HomePageProjectsAtom);
 
@@ -63,14 +67,17 @@ const HomeContent = ({
               )}
               overscan={200}
               endReached={() => {
-                const nextPage = Math.floor(projects.length / 10) + 1;
-                if (!selectedCategory) {
-                  fetchLatestProjects(nextPage);
-                } else if (selectedCategory !== 'trending') {
-                  fetchProjectsByCategory({
-                    page: nextPage,
-                    tag: selectedCategory,
-                  });
+                // Only fetch next page if the last page was "full" and we're not already loading
+                if (!isLoadingProjects && hasMoreProjects) {
+                  const nextPage = Math.floor(projects.length / 10) + 1;
+                  if (!selectedCategory) {
+                    fetchLatestProjects(nextPage);
+                  } else if (selectedCategory !== 'trending') {
+                    fetchProjectsByCategory({
+                      page: nextPage,
+                      tag: selectedCategory,
+                    });
+                  }
                 }
               }}
               components={{

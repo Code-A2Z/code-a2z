@@ -20,6 +20,8 @@ const SearchModule = () => {
     users,
     isLoadingProjects,
     isLoadingUsers,
+    hasMoreUsers,
+    hasMoreProjects,
     fetchUsers,
     fetchProjects,
     searchTerm,
@@ -68,8 +70,11 @@ const SearchModule = () => {
               )}
               overscan={200}
               endReached={() => {
-                const nextPage = Math.floor(projects.length / 10) + 1;
-                fetchProjects(searchTerm, nextPage);
+                // Only fetch next page if the last page was "full" and we're not already loading
+                if (!isLoadingProjects && hasMoreProjects) {
+                  const nextPage = Math.floor(projects.length / 10) + 1;
+                  fetchProjects(searchTerm, nextPage);
+                }
               }}
               components={{
                 Footer: () =>
@@ -106,8 +111,11 @@ const SearchModule = () => {
               )}
               overscan={200}
               endReached={() => {
-                const nextPage = Math.floor(users.length / 10) + 1;
-                fetchUsers(searchTerm, nextPage);
+                // Only fetch next page if the last page was "full" and we're not already loading
+                if (!isLoadingUsers && hasMoreUsers) {
+                  const nextPage = Math.floor(users.length / 10) + 1;
+                  fetchUsers(searchTerm, nextPage);
+                }
               }}
               components={{
                 Footer: () =>
@@ -162,8 +170,11 @@ const SearchModule = () => {
             )}
             overscan={200}
             endReached={() => {
-              const nextPage = Math.floor(users.length / 10) + 1;
-              fetchUsers(searchTerm, nextPage);
+              // Only fetch next page if the last page was "full" and we're not already loading
+              if (!isLoadingUsers && hasMoreUsers) {
+                const nextPage = Math.floor(users.length / 10) + 1;
+                fetchUsers(searchTerm, nextPage);
+              }
             }}
             components={{
               Footer: () =>
