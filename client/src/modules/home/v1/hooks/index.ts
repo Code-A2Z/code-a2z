@@ -10,6 +10,7 @@ import { homeRoutes, HOME_QUERY_PARAMS } from '../../routes';
 import { useLocation, useSearchParams } from 'react-router-dom';
 import { ROUTES_V1 } from '../../../../app/routes/constants/routes';
 import { getTrendingProjectsResponse } from '../../../../infra/rest/apis/project/typing';
+import { PAGE_SIZE } from '../constants';
 
 const useHomeV1 = () => {
   const { routes } = homeRoutes();
@@ -38,7 +39,7 @@ const useHomeV1 = () => {
         const response = await getAllProjects(page);
         if (response.data && Array.isArray(response.data)) {
           // Check if there are more projects to load
-          setHasMoreProjects(response.data.length === 10);
+          setHasMoreProjects(response.data.length === PAGE_SIZE);
           if (page === 1) {
             setProjects(response.data);
           } else {
@@ -91,7 +92,7 @@ const useHomeV1 = () => {
         });
         if (response.data && Array.isArray(response.data)) {
           // Check if there are more projects to load
-          setHasMoreProjects(response.data.length === 10);
+          setHasMoreProjects(response.data.length === PAGE_SIZE);
           if (page === 1) {
             setProjects(response.data);
           } else {

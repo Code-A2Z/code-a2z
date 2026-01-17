@@ -7,3 +7,5 @@ export const categories = [
   'cloud computing',
   'blockchain',
 ];
+
+export const PAGE_SIZE = 10;

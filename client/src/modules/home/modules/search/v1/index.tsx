@@ -11,6 +11,7 @@ import NoDataMessageBox from '../../../../../shared/components/atoms/no-data-msg
 import { BannerSkeleton } from '../../../../../shared/components/atoms/skeleton';
 import useSearchV1 from './hooks';
 import UserCard from './components/user-card';
+import { PAGE_SIZE } from '../../../v1/constants';
 
 const SearchModule = () => {
   const theme = useTheme();
@@ -72,7 +73,7 @@ const SearchModule = () => {
               endReached={() => {
                 // Only fetch next page if the last page was "full" and we're not already loading
                 if (!isLoadingProjects && hasMoreProjects) {
-                  const nextPage = Math.floor(projects.length / 10) + 1;
+                  const nextPage = Math.floor(projects.length / PAGE_SIZE) + 1;
                   fetchProjects(searchTerm, nextPage);
                 }
               }}
@@ -113,7 +114,7 @@ const SearchModule = () => {
               endReached={() => {
                 // Only fetch next page if the last page was "full" and we're not already loading
                 if (!isLoadingUsers && hasMoreUsers) {
-                  const nextPage = Math.floor(users.length / 10) + 1;
+                  const nextPage = Math.floor(users.length / PAGE_SIZE) + 1;
                   fetchUsers(searchTerm, nextPage);
                 }
               }}
@@ -172,7 +173,7 @@ const SearchModule = () => {
             endReached={() => {
               // Only fetch next page if the last page was "full" and we're not already loading
               if (!isLoadingUsers && hasMoreUsers) {
-                const nextPage = Math.floor(users.length / 10) + 1;
+                const nextPage = Math.floor(users.length / PAGE_SIZE) + 1;
                 fetchUsers(searchTerm, nextPage);
               }
             }}

@@ -8,6 +8,7 @@ import { ROUTES_V1 } from '../../../../../../app/routes/constants/routes';
 import { HOME_QUERY_PARAMS } from '../../../../routes';
 import { useCustomNavigate } from '../../../../../../shared/hooks/use-custom-navigate';
 import { useSearchParams } from 'react-router-dom';
+import { PAGE_SIZE } from '../../../../v1/constants';
 
 const useSearchV1 = () => {
   const [searchParams] = useSearchParams();
@@ -31,7 +32,7 @@ const useSearchV1 = () => {
       if (response.data && Array.isArray(response.data)) {
         const newUsers = response.data;
         // Check if there are more users to load
-        setHasMoreUsers(newUsers.length === 10);
+        setHasMoreUsers(newUsers.length === PAGE_SIZE);
         // Append new users for pagination, replace for new search
         if (page === 1) {
           setUsers(newUsers);
@@ -58,12 +59,12 @@ const useSearchV1 = () => {
         const response = await searchProjects({
           query,
           page,
-          limit: 10,
+          limit: PAGE_SIZE,
         });
         if (response.data && Array.isArray(response.data)) {
           const newProjects = response.data;
           // Check if there are more projects to load
-          setHasMoreProjects(newProjects.length === 10);
+          setHasMoreProjects(newProjects.length === PAGE_SIZE);
           if (page === 1) {
             setProjects(newProjects);
           } else {
@@ -79,13 +80,11 @@ const useSearchV1 = () => {
     [setProjects]
   );
 
-  const handleSearchChange = useCallback(
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    (_value: string) => {
-      // Intentionally left blank: navigation is handled on submit and clear actions
-    },
-    []
-  );
+  // Intentionally empty: navigation is handled on submit and clear actions
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const handleSearchChange = useCallback((_value: string) => {
+    // No action needed
+  }, []);
 
   const handleSearchSubmit = useCallback(
     (value: string) => {

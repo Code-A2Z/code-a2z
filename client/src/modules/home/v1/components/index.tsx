@@ -1,7 +1,7 @@
 import { Box, Stack } from '@mui/material';
 import A2ZTypography from '../../../../shared/components/atoms/typography';
 import TrendingUpIcon from '@mui/icons-material/TrendingUp';
-import { categories } from '../constants';
+import { categories, PAGE_SIZE } from '../constants';
 import { CategoryButton } from './category-button';
 import InPageNavigation from '../../../../shared/components/molecules/page-navigation';
 import NoBannerProjectCard from './no-banner-project';
@@ -69,7 +69,7 @@ const HomeContent = ({
               endReached={() => {
                 // Only fetch next page if the last page was "full" and we're not already loading
                 if (!isLoadingProjects && hasMoreProjects) {
-                  const nextPage = Math.floor(projects.length / 10) + 1;
+                  const nextPage = Math.floor(projects.length / PAGE_SIZE) + 1;
                   if (!selectedCategory) {
                     fetchLatestProjects(nextPage);
                   } else if (selectedCategory !== 'trending') {
