@@ -92,6 +92,31 @@ jobs:
                 .trim();
             }
             
+            // Extract keywords (words longer than 3 characters, excluding common words)
+            function extractKeywords(text) {
+              const commonWords = new Set(['the', 'and', 'for', 'with', 'this', 'that', 'from', 'have', 'been', 'were', 'will', 'would', 'could', 'should', 'about', 'after', 'before', 'when', 'where', 'which', 'what', 'how', 'why', 'does', 'doesn', 'not', 'are', 'was', 'has']);
+              
+              return text
+                .toLowerCase()
+                .replace(/[^\w\s]/g, ' ')
+                .split(/\s+/)
+                .filter(word => word.length > 3 && !commonWords.has(word));
+            }
+            
+            // Calculate keyword overlap (Jaccard similarity)
+            function calculateKeywordSimilarity(text1, text2) {
+              const keywords1 = new Set(extractKeywords(text1));
+              const keywords2 = new Set(extractKeywords(text2));
+              
+              if (keywords1.size === 0 && keywords2.size === 0) return 1;
+              if (keywords1.size === 0 || keywords2.size === 0) return 0;
+              
+              const intersection = new Set([...keywords1].filter(x => keywords2.has(x)));
+              const union = new Set([...keywords1, ...keywords2]);
+              
+              return intersection.size / union.size;
+            }
+            
             // Fetch all open issues
             const { data: openIssues } = await github.rest.issues.listForRepo({
               owner: context.repo.owner,
@@ -117,13 +142,22 @@ jobs:
               const existingTitle = normalizeText(existingIssue.title);
               const existingBody = normalizeText(existingIssue.body || '');
               
-              // Calculate weighted similarity (title: 40%, body: 60%)
-              const titleSimilarity = calculateSimilarity(normalizedIssueTitle, existingTitle);
-              const bodySimilarity = calculateSimilarity(normalizedIssueBody, existingBody);
+              // Calculate syntactic similarity (Levenshtein)
+              const titleLevenshtein = calculateSimilarity(normalizedIssueTitle, existingTitle);
+              const bodyLevenshtein = calculateSimilarity(normalizedIssueBody, existingBody);
               
+              // Calculate semantic similarity (keyword overlap)
+              const titleKeywords = calculateKeywordSimilarity(issueTitle, existingIssue.title);
+              const bodyKeywords = calculateKeywordSimilarity(issueBody, existingIssue.body || '');
+              
+              // Hybrid approach: 50% syntactic + 50% semantic
+              const titleSimilarity = (titleLevenshtein * 0.5) + (titleKeywords * 0.5);
+              const bodySimilarity = (bodyLevenshtein * 0.5) + (bodyKeywords * 0.5);
+              
+              // Overall: title 40% + body 60%
               const overallSimilarity = (titleSimilarity * 0.4) + (bodySimilarity * 0.6);
               
-              console.log(`Comparing with #${existingIssue.number}: Title=${(titleSimilarity * 100).toFixed(2)}%, Body=${(bodySimilarity * 100).toFixed(2)}%, Overall=${(overallSimilarity * 100).toFixed(2)}%`);
+              console.log(`Comparing with #${existingIssue.number}: Title=${(titleSimilarity * 100).toFixed(2)}% (Lev:${(titleLevenshtein * 100).toFixed(0)}% Kw:${(titleKeywords * 100).toFixed(0)}%), Body=${(bodySimilarity * 100).toFixed(2)}% (Lev:${(bodyLevenshtein * 100).toFixed(0)}% Kw:${(bodyKeywords * 100).toFixed(0)}%), Overall=${(overallSimilarity * 100).toFixed(2)}%`);
               
               if (overallSimilarity > highestSimilarity) {
                 highestSimilarity = overallSimilarity;
