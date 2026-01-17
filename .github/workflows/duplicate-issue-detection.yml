@@ -103,6 +103,10 @@ jobs:
             let mostSimilarIssue = null;
             let highestSimilarity = 0;
             
+            // Normalize current issue text once before the loop (performance optimization)
+            const normalizedIssueTitle = normalizeText(issueTitle);
+            const normalizedIssueBody = normalizeText(issueBody);
+            
             // Compare with existing open issues
             for (const existingIssue of openIssues) {
               // Skip the current issue and pull requests
@@ -110,21 +114,8 @@ jobs:
                 continue;
               }
               
-              const existingLabels = existingIssue.labels.map(label => label.name);
-              const existingCategory = existingLabels.find(label => 
-                ['bug', 'enhancement', 'feature'].includes(label.toLowerCase())
-              );
-              
-              // Only compare issues with the same category
-              if (issueCategory && existingCategory && issueCategory !== existingCategory) {
-                continue;
-              }
-              
               const existingTitle = normalizeText(existingIssue.title);
               const existingBody = normalizeText(existingIssue.body || '');
-              
-              const normalizedIssueTitle = normalizeText(issueTitle);
-              const normalizedIssueBody = normalizeText(issueBody);
               
               // Calculate weighted similarity (title: 40%, body: 60%)
               const titleSimilarity = calculateSimilarity(normalizedIssueTitle, existingTitle);
