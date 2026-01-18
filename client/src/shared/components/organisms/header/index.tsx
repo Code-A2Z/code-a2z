@@ -1,64 +1,137 @@
-import { AppBar, Toolbar, Box, Badge } from '@mui/material';
-import LightModeIcon from '@mui/icons-material/LightMode';
-import DarkModeIcon from '@mui/icons-material/DarkMode';
+import { ReactNode } from 'react';
+import { Box, useTheme } from '@mui/material';
+import MoreIcon from '@mui/icons-material/MoreVert';
 import A2ZIconButton from '../../atoms/icon-button';
-import Logo from '../../atoms/logo';
-import { useA2ZTheme } from '../../../hooks/use-theme';
-import { THEME } from '../../../states/theme';
-import { HEADER_HEIGHT } from './constants';
+import { useHeader } from './hooks';
+import { mobileMenuId } from './constants';
+import RenderMobileMenu from './components/render-mobile-menu';
+import Searchbar from '../../molecules/searchbar';
+import { NAVBAR_HEIGHT } from '../navbar/constants';
+import { HeaderAction } from './typings';
 
-const Header = () => {
-  const { theme, setTheme } = useA2ZTheme();
+const Header = ({
+  leftSideChildren,
+  rightSideActions,
+  enableSearch = false,
+  searchTerm,
+  onSearchChange,
+  onSearchSubmit,
+  onSearchClear,
+}: {
+  leftSideChildren?: ReactNode;
+  rightSideActions?: HeaderAction[];
+  enableSearch?: boolean;
+  searchTerm?: string;
+  onSearchChange?: (value: string) => void;
+  onSearchSubmit?: (value: string) => void;
+  onSearchClear?: () => void;
+}) => {
+  const theme = useTheme();
+  const {
+    mobileMoreAnchorEl,
+    isMobileMenuOpen,
+    handleMobileMenuOpen,
+    handleMobileMenuClose,
+    internalSearchTerm,
+    handleSearchChange,
+    handleSearchSubmit,
+    handleClearSearch,
+    searchInputRef,
+  } = useHeader({
+    externalSearchTerm: searchTerm,
+    onSearchChange,
+    onSearchSubmit,
+    onSearchClear,
+    enableSearch,
+  });
+  const hasRightActions = Boolean(rightSideActions?.length);
 
   return (
-    <AppBar
-      position="static"
-      sx={{
-        minHeight: `${HEADER_HEIGHT}px`,
-        maxHeight: `${HEADER_HEIGHT}px`,
-        height: `${HEADER_HEIGHT}px`,
-      }}
-    >
-      <Toolbar
+    <Box>
+      <Box
         sx={{
-          minHeight: `${HEADER_HEIGHT}px !important`,
-          maxHeight: `${HEADER_HEIGHT}px`,
-          height: `${HEADER_HEIGHT}px`,
+          height: `${NAVBAR_HEIGHT}px`,
+          minHeight: `${NAVBAR_HEIGHT}px`,
+          maxHeight: `${NAVBAR_HEIGHT}px`,
           display: 'flex',
-          justifyContent: 'space-between',
           alignItems: 'center',
-          px: { xs: 2, sm: 3 },
+          px: { xs: 2, md: 3 },
+          borderBottom: `1px solid ${theme.palette.divider}`,
+          bgcolor: 'background.paper',
+          gap: 2,
         }}
       >
         <Box
           sx={{
             display: 'flex',
             alignItems: 'center',
-            height: '100%',
+            gap: 2,
+            flexGrow: 1,
+            minWidth: 0,
           }}
         >
-          <Logo />
+          {leftSideChildren}
+          {enableSearch && (
+            <Searchbar
+              placeholder="Search..."
+              onSearch={handleSearchChange}
+              searchTerm={internalSearchTerm}
+              handleOnClearClick={handleClearSearch}
+              variant="fullWidth"
+              autoFocus={false}
+              sx={{ maxWidth: { xs: '100%', md: 400 }, width: '100%' }}
+              inputRef={searchInputRef}
+              onKeyDown={e => {
+                if (e.key === 'Enter' || e.keyCode === 13) {
+                  handleSearchSubmit();
+                }
+              }}
+            />
+          )}
         </Box>
 
-        <Box
-          sx={{
-            display: 'flex',
-            alignItems: 'center',
-            gap: 1,
-          }}
-        >
-          <A2ZIconButton>
-            <Badge
-              onClick={() =>
-                setTheme(theme === THEME.DARK ? THEME.LIGHT : THEME.DARK)
-              }
+        {hasRightActions && (
+          <Box sx={{ display: { xs: 'none', md: 'flex' }, gap: 1 }}>
+            {rightSideActions?.map(action => (
+              <A2ZIconButton
+                key={action.key}
+                link={action.link}
+                props={{
+                  onClick: action.onClick,
+                  'aria-label': action.ariaLabel ?? action.label,
+                }}
+              >
+                {action.icon}
+              </A2ZIconButton>
+            ))}
+          </Box>
+        )}
+
+        {hasRightActions && (
+          <Box sx={{ display: { xs: 'flex', md: 'none' } }}>
+            <A2ZIconButton
+              props={{
+                'aria-controls': mobileMenuId,
+                'aria-haspopup': true,
+                onClick: handleMobileMenuOpen,
+                'aria-label': 'Open menu',
+              }}
             >
-              {theme === THEME.DARK ? <LightModeIcon /> : <DarkModeIcon />}
-            </Badge>
-          </A2ZIconButton>
-        </Box>
-      </Toolbar>
-    </AppBar>
+              <MoreIcon />
+            </A2ZIconButton>
+          </Box>
+        )}
+      </Box>
+
+      {hasRightActions && (
+        <RenderMobileMenu
+          mobileMoreAnchorEl={mobileMoreAnchorEl}
+          isMobileMenuOpen={isMobileMenuOpen}
+          handleMobileMenuClose={handleMobileMenuClose}
+          actions={rightSideActions ?? []}
+        />
+      )}
+    </Box>
   );
 };
 

@@ -1,4 +1,4 @@
-export const categories = [
+export const CATEGORIES = [
   // REPLACE ME WITH POPULAR TAGS
   'web',
   'data science',

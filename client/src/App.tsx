@@ -1,7 +1,7 @@
 import { memo, useEffect, useMemo } from 'react';
 import { setupTokenRefresh } from './shared/utils/api-interceptor';
-import { AppUnProtectedRoutes } from './modules/app/routes';
-import { AppProtectedRoutes } from './modules/app/routes/auth-routes';
+import { AppUnProtectedRoutes } from './app/routes';
+import { AppProtectedRoutes } from './app/routes/auth-routes';
 import useScrollbar from './shared/components/atoms/scrollbar';
 import { useAuth } from './shared/hooks/use-auth';
 

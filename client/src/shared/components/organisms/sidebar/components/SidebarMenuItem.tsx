@@ -9,7 +9,7 @@ import {
 } from '@mui/material';
 import { FC, MouseEvent, useMemo, useCallback, ElementType } from 'react';
 import LockIcon from '@mui/icons-material/Lock';
-import { ROUTES_PAGE_V1 } from '../../../../../modules/app/routes/constants/routes';
+import { ROUTES_PAGE_V1 } from '../../../../../app/routes/constants/routes';
 import { useCustomNavigate } from '../../../../hooks/use-custom-navigate';
 import { openPopup } from '../../../../utils/popup';
 

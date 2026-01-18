@@ -1,6 +1,6 @@
 import { Box, ButtonBase, useTheme } from '@mui/material';
 import LockIcon from '@mui/icons-material/Lock';
-import { ROUTES_V1 } from '../../../app/routes/constants/routes';
+import { ROUTES_V1 } from '../../../../app/routes/constants/routes';
 import { SettingTabType } from '../typings';
 import A2ZTypography from '../../../../shared/components/atoms/typography';
 import { useCustomNavigate } from '../../../../shared/hooks/use-custom-navigate';

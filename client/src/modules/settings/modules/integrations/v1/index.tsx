@@ -9,7 +9,7 @@ import { useDevice } from '../../../../../shared/hooks/use-device';
 import {
   ROUTES_SETTINGS_V1,
   ROUTES_V1,
-} from '../../../../app/routes/constants/routes';
+} from '../../../../../app/routes/constants/routes';
 import IntegrationsHeader from './components/integrations-header';
 import { IntegrationSettingType } from '../../../v1/typings';
 

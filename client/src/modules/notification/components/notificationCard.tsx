@@ -6,7 +6,7 @@ import { GetNotificationsResponse } from '../../../infra/rest/apis/notification/
 import { NotificationPaginationState } from '../states';
 import { deleteComment } from '../../../infra/rest/apis/comment';
 import { useNotifications as useNotificationHook } from '../../../shared/hooks/use-notification';
-import { ROUTES_V1 } from '../../app/routes/constants/routes';
+import { ROUTES_V1 } from '../../../app/routes/constants/routes';
 import {
   ListItem,
   ListItemAvatar,

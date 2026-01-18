@@ -1,6 +1,6 @@
 import { Suspense } from 'react';
 import { Route, Routes } from 'react-router-dom';
-import Loader from '../../../shared/components/molecules/loader';
+import Loader from '../../shared/components/molecules/loader';
 import { LOADING } from './constants';
 import { LoginLazyComponent } from '../components';
 

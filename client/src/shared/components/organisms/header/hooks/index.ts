@@ -1,20 +1,33 @@
 import { useRef, useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { useDevice } from '../../../../hooks/use-device';
-import { useNotifications } from '../../../../hooks/use-notification';
-import { emailRegex } from '../../../../utils/regex';
-import { subscribeUser } from '../../../../../infra/rest/apis/subscriber';
 
-export const useNavbar = () => {
-  const navigate = useNavigate();
+export const useHeader = ({
+  externalSearchTerm,
+  onSearchChange,
+  onSearchSubmit,
+  onSearchClear,
+  enableSearch = true,
+}: {
+  externalSearchTerm?: string;
+  onSearchChange?: (value: string) => void;
+  onSearchSubmit?: (value: string) => void;
+  onSearchClear?: () => void;
+  enableSearch?: boolean;
+}) => {
   const { isDesktop } = useDevice();
   const searchInputRef = useRef<HTMLInputElement>(null);
 
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] =
     useState<null | HTMLElement>(null);
-  const [searchTerm, setSearchTerm] = useState<string>('');
-
   const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
+
+  const [internalSearchTerm, setInternalSearchTerm] = useState<string>('');
+
+  useEffect(() => {
+    if (externalSearchTerm !== undefined) {
+      setInternalSearchTerm(externalSearchTerm);
+    }
+  }, [externalSearchTerm]);
 
   const handleMobileMenuClose = () => {
     setMobileMoreAnchorEl(null);
@@ -25,19 +38,17 @@ export const useNavbar = () => {
   };
 
   const handleSearchChange = (value: string) => {
-    setSearchTerm(value);
+    setInternalSearchTerm(value);
+    onSearchChange?.(value);
   };
 
   const handleSearchSubmit = () => {
-    if (!searchTerm.trim().length) {
-      navigate('/');
-      return;
-    }
-    navigate(`/search/${encodeURIComponent(searchTerm)}`);
+    onSearchSubmit?.(internalSearchTerm);
   };
 
   const handleClearSearch = () => {
-    setSearchTerm('');
+    setInternalSearchTerm('');
+    onSearchClear?.();
   };
 
   const triggerSearchByKeyboard = (e: KeyboardEvent) => {
@@ -57,60 +68,25 @@ export const useNavbar = () => {
   };
 
   useEffect(() => {
+    if (!enableSearch) {
+      return;
+    }
+
     document.addEventListener('keydown', triggerSearchByKeyboard, true);
     return () => {
       document.removeEventListener('keydown', triggerSearchByKeyboard, true);
     };
-  }, [isDesktop]);
+  }, [isDesktop, enableSearch]);
 
   return {
     mobileMoreAnchorEl,
     isMobileMenuOpen,
     handleMobileMenuClose,
     handleMobileMenuOpen,
-    searchTerm,
+    internalSearchTerm,
     handleSearchChange,
     handleSearchSubmit,
     handleClearSearch,
     searchInputRef,
-  };
-};
-
-export const useSubscribe = () => {
-  const { addNotification } = useNotifications();
-  const subscribeEmailRef = useRef<HTMLInputElement>(null);
-  const [showSubscribeModal, setShowSubscribeModal] = useState<boolean>(false);
-
-  const handleSubscribe = async () => {
-    const email = subscribeEmailRef.current?.value || '';
-    if (!email.trim().length) {
-      addNotification({
-        message: 'Email is required',
-        type: 'error',
-      });
-      return;
-    }
-
-    if (!emailRegex.test(email)) {
-      addNotification({
-        message: 'Please enter a valid email',
-        type: 'error',
-      });
-      return;
-    }
-
-    const response = await subscribeUser(email);
-    addNotification({
-      message: response.message,
-      type: response.status,
-    });
-    setShowSubscribeModal(false);
-  };
-
-  return {
-    subscribeEmailRef,
-    showSubscribeModal,
-    setShowSubscribeModal,
-    handleSubscribe,
   };
 };

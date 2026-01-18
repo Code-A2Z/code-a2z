@@ -4,10 +4,10 @@ import {
   ROUTES_V1,
   ROUTES_SETTINGS_V1,
   ROUTES_SETTINGS_INTEGRATIONS_V1,
-} from '../../app/routes/constants/routes';
+} from '../../../app/routes/constants/routes';
 import { IntegrationSettingType, SettingTabType } from '../v1/typings';
 import { Navigate, Route } from 'react-router-dom';
-import { ProtectedRoute } from '../../app/routes/auth-routes/protected-route';
+import { ProtectedRoute } from '../../../app/routes/auth-routes/protected-route';
 import {
   ProfileLazyComponentV1,
   IntegrationsLazyComponentV1,

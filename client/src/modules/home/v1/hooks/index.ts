@@ -6,14 +6,15 @@ import {
   getTrendingProjects,
   searchProjects,
 } from '../../../../infra/rest/apis/project';
-import { homeRoutes } from '../../routes';
-import { useLocation } from 'react-router-dom';
-import { ROUTES_V1 } from '../../../app/routes/constants/routes';
+import { homeRoutes, HOME_QUERY_PARAMS } from '../../routes';
+import { useLocation, useSearchParams } from 'react-router-dom';
+import { ROUTES_V1 } from '../../../../app/routes/constants/routes';
 import { getTrendingProjectsResponse } from '../../../../infra/rest/apis/project/typing';
 
 const useHomeV1 = () => {
   const { routes } = homeRoutes();
   const location = useLocation();
+  const [searchParams] = useSearchParams();
   const setProjects = useSetAtom(HomePageProjectsAtom);
 
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
@@ -78,6 +79,18 @@ const useHomeV1 = () => {
     [setProjects]
   );
 
+  const searchTerm = useMemo(() => {
+    const term = searchParams.get(HOME_QUERY_PARAMS.SEARCH_TERM);
+    return term ? decodeURIComponent(term) : '';
+  }, [searchParams]);
+
+  const activeModule = useMemo(() => {
+    if (searchTerm) {
+      return 'search';
+    }
+    return 'home';
+  }, [searchTerm]);
+
   return {
     routes,
     isHomePage,
@@ -88,6 +101,8 @@ const useHomeV1 = () => {
     fetchLatestProjects,
     fetchTrendingProjects,
     fetchProjectsByCategory,
+    searchTerm,
+    activeModule,
   };
 };
 

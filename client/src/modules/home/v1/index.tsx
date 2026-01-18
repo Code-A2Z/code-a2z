@@ -1,26 +1,21 @@
-import { Box, Stack } from '@mui/material';
+import { Badge, Box } from '@mui/material';
+import CreateIcon from '@mui/icons-material/Create';
+import MailIcon from '@mui/icons-material/Mail';
 import { Routes } from 'react-router-dom';
-import A2ZTypography from '../../../shared/components/atoms/typography';
-import TrendingUpIcon from '@mui/icons-material/TrendingUp';
-import { categories } from './constants';
-import { CategoryButton } from './components/category-button';
-import InPageNavigation from '../../../shared/components/molecules/page-navigation';
-import NoBannerProjectCard from './components/no-banner-project';
-import { useAtomValue } from 'jotai';
-import { HomePageProjectsAtom } from './states';
-import BannerProjectCard from './components/banner-project-card';
-import NoDataMessageBox from '../../../shared/components/atoms/no-data-msg';
-import {
-  BannerSkeleton,
-  NoBannerSkeleton,
-} from '../../../shared/components/atoms/skeleton';
 import { useEffect } from 'react';
+import { useSetAtom } from 'jotai';
+import Header from '../../../shared/components/organisms/header';
+import { HeaderAction } from '../../../shared/components/organisms/header/typings';
+import HomeContent from './components';
 import useHomeV1 from './hooks';
-import { Virtuoso } from 'react-virtuoso';
-import Navbar from '../../../shared/components/organisms/navbar';
+import { HomePageProjectsAtom } from './states';
+import { SearchLazyComponentV1 } from '../modules';
+import useSearchV1 from '../modules/search/v1/hooks';
+import SubscribeModal from './components/subscribe-modal';
+import { useSubscribe } from './hooks/use-subscribe';
 
 const Home = () => {
-  const projects = useAtomValue(HomePageProjectsAtom);
+  const setProjects = useSetAtom(HomePageProjectsAtom);
 
   const {
     routes,
@@ -31,17 +26,55 @@ const Home = () => {
     fetchLatestProjects,
     fetchTrendingProjects,
     fetchProjectsByCategory,
+    searchTerm,
+    activeModule,
   } = useHomeV1();
 
+  const { handleSearchChange, handleSearchSubmit, handleSearchClear } =
+    useSearchV1();
+
+  const {
+    subscribeEmailRef,
+    showSubscribeModal,
+    setShowSubscribeModal,
+    handleSubscribe,
+  } = useSubscribe();
+
+  const headerActions: HeaderAction[] = [
+    {
+      key: 'write',
+      label: 'Write',
+      icon: (
+        <Badge>
+          <CreateIcon />
+        </Badge>
+      ),
+      link: '/editor',
+    },
+    {
+      key: 'subscribe',
+      label: 'Subscribe',
+      icon: (
+        <Badge>
+          <MailIcon />
+        </Badge>
+      ),
+      onClick: () => setShowSubscribeModal(true),
+    },
+  ];
+
   useEffect(() => {
-    // Only fetch projects if not on project page
     if (isHomePage) {
-      if (!selectedCategory) {
-        fetchLatestProjects();
-      } else if (selectedCategory !== 'trending') {
-        fetchProjectsByCategory({ tag: selectedCategory });
+      if (searchTerm) {
+        setProjects([]);
+      } else {
+        if (!selectedCategory) {
+          fetchLatestProjects();
+        } else if (selectedCategory !== 'trending') {
+          fetchProjectsByCategory({ tag: selectedCategory });
+        }
+        fetchTrendingProjects();
       }
-      fetchTrendingProjects();
     }
   }, [
     selectedCategory,
@@ -49,6 +82,8 @@ const Home = () => {
     fetchProjectsByCategory,
     fetchTrendingProjects,
     isHomePage,
+    searchTerm,
+    setProjects,
   ]);
 
   if (!isHomePage) {
@@ -67,142 +102,33 @@ const Home = () => {
 
   return (
     <>
-      <Navbar />
+      <Header
+        enableSearch
+        searchTerm={searchTerm}
+        onSearchChange={handleSearchChange}
+        onSearchSubmit={handleSearchSubmit}
+        onSearchClear={handleSearchClear}
+        rightSideActions={headerActions}
+      />
 
-      <Box
-        component="section"
-        sx={{
-          minHeight: 'calc(100vh - 150px)',
-          display: 'flex',
-          justifyContent: 'center',
-          gap: { xs: 0, md: 5 },
-          p: 3,
-        }}
-      >
-        {/* Latest projects */}
-        <Box sx={{ width: '100%', maxWidth: 800 }}>
-          <InPageNavigation
-            routes={[selectedCategory || 'home', 'trending']}
-            defaultHidden={['trending']}
-          >
-            {projects.length ? (
-              <Virtuoso
-                style={{
-                  height: '100%',
-                  width: '100%',
-                  scrollbarWidth: 'none',
-                }}
-                totalCount={projects.length}
-                itemContent={index => (
-                  <BannerProjectCard key={index} project={projects[index]} />
-                )}
-                overscan={200}
-                endReached={() => {
-                  const nextPage = Math.floor(projects.length / 10) + 1; // Assuming page size of 10
-                  if (!selectedCategory) {
-                    fetchLatestProjects(nextPage);
-                  } else if (selectedCategory !== 'trending') {
-                    fetchProjectsByCategory({
-                      page: nextPage,
-                      tag: selectedCategory,
-                    });
-                  }
-                }}
-                components={{
-                  Footer: () =>
-                    !projects || projects.length === 0 ? (
-                      <BannerSkeleton count={3} />
-                    ) : null, // FIX ME
-                }}
-              />
-            ) : (
-              <NoDataMessageBox message="No projects available" />
-            )}
-            {trendingProjects && trendingProjects.length === 0 ? ( // FIX ME
-              <NoBannerSkeleton count={3} />
-            ) : trendingProjects && trendingProjects.length ? (
-              trendingProjects.map((project, i) => {
-                return (
-                  <NoBannerProjectCard key={i} project={project} index={i} />
-                );
-              })
-            ) : (
-              <NoDataMessageBox message="No trending projects" />
-            )}
-          </InPageNavigation>
-        </Box>
+      {activeModule === 'search' ? (
+        <SearchLazyComponentV1 />
+      ) : (
+        <HomeContent
+          selectedCategory={selectedCategory}
+          setSelectedCategory={setSelectedCategory}
+          trendingProjects={trendingProjects}
+          fetchLatestProjects={fetchLatestProjects}
+          fetchProjectsByCategory={fetchProjectsByCategory}
+        />
+      )}
 
-        {/* filters and trending projects */}
-        <Box
-          sx={{
-            minWidth: { lg: 400 },
-            maxWidth: 400,
-            borderLeft: theme => `1px solid ${theme.palette.divider}`,
-            pl: 4,
-            pt: 1,
-            display: { xs: 'none', md: 'block' },
-          }}
-        >
-          <Stack spacing={5}>
-            <Box>
-              <A2ZTypography
-                variant="h6"
-                text="Recommended topics"
-                props={{ mb: 3 }}
-              />
-
-              <Box sx={{ display: 'flex', gap: 1.5, flexWrap: 'wrap' }}>
-                {categories.map((category, i) => {
-                  return (
-                    <CategoryButton
-                      key={i}
-                      onClick={() => {
-                        setSelectedCategory(
-                          selectedCategory === category ? null : category
-                        );
-                      }}
-                    >
-                      {category}
-                    </CategoryButton>
-                  );
-                })}
-              </Box>
-            </Box>
-
-            <Box
-              sx={{
-                display: 'flex',
-                flexDirection: 'column',
-                gap: 2,
-              }}
-            >
-              <Box
-                sx={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: 1,
-                  mb: 1,
-                }}
-              >
-                <A2ZTypography variant="h6" text="Trending" />
-                <TrendingUpIcon fontSize="medium" />
-              </Box>
-
-              {trendingProjects && trendingProjects.length === 0 ? ( // FIX ME
-                <NoBannerSkeleton count={3} />
-              ) : trendingProjects && trendingProjects.length ? (
-                trendingProjects.map((project, i) => {
-                  return (
-                    <NoBannerProjectCard key={i} project={project} index={i} />
-                  );
-                })
-              ) : (
-                <NoDataMessageBox message="No trending projects" />
-              )}
-            </Box>
-          </Stack>
-        </Box>
-      </Box>
+      <SubscribeModal
+        subscribeEmailRef={subscribeEmailRef}
+        showSubscribeModal={showSubscribeModal}
+        setShowSubscribeModal={setShowSubscribeModal}
+        handleSubscribe={handleSubscribe}
+      />
     </>
   );
 };
