@@ -1,0 +1,211 @@
+name: Duplicate Issue Detection
+
+on:
+  issues:
+    types: [opened]
+
+permissions:
+  issues: write
+
+jobs:
+  check-duplicates:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Check for Duplicate Issues
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const issue = context.payload.issue;
+            const issueNumber = issue.number;
+            const issueTitle = issue.title.toLowerCase().trim();
+            const issueBody = (issue.body || '').toLowerCase().trim();
+            const issueLabels = issue.labels.map(label => label.name);
+            
+            // Configuration
+            const SIMILARITY_THRESHOLD = 0.80; // 80% similarity threshold
+            const PROTECTED_LABELS = ['critical', 'security', 'urgent', 'high-priority'];
+            
+            // Skip if issue has protected labels
+            const hasProtectedLabel = issueLabels.some(label => 
+              PROTECTED_LABELS.includes(label.toLowerCase())
+            );
+            
+            if (hasProtectedLabel) {
+              console.log(`Issue #${issueNumber} has protected label. Skipping duplicate check.`);
+              return;
+            }
+            
+            // Get issue category (bug, enhancement, feature)
+            const issueCategory = issueLabels.find(label => 
+              ['bug', 'enhancement', 'feature'].includes(label.toLowerCase())
+            );
+            
+            // Levenshtein distance algorithm for fuzzy string matching
+            function levenshteinDistance(str1, str2) {
+              const matrix = [];
+              
+              for (let i = 0; i <= str2.length; i++) {
+                matrix[i] = [i];
+              }
+              
+              for (let j = 0; j <= str1.length; j++) {
+                matrix[0][j] = j;
+              }
+              
+              for (let i = 1; i <= str2.length; i++) {
+                for (let j = 1; j <= str1.length; j++) {
+                  if (str2.charAt(i - 1) === str1.charAt(j - 1)) {
+                    matrix[i][j] = matrix[i - 1][j - 1];
+                  } else {
+                    matrix[i][j] = Math.min(
+                      matrix[i - 1][j - 1] + 1,
+                      matrix[i][j - 1] + 1,
+                      matrix[i - 1][j] + 1
+                    );
+                  }
+                }
+              }
+              
+              return matrix[str2.length][str1.length];
+            }
+            
+            // Calculate similarity percentage
+            function calculateSimilarity(str1, str2) {
+              if (!str1 || !str2) return 0;
+              
+              const distance = levenshteinDistance(str1, str2);
+              const maxLength = Math.max(str1.length, str2.length);
+              
+              if (maxLength === 0) return 1;
+              
+              return 1 - (distance / maxLength);
+            }
+            
+            // Normalize text for comparison
+            function normalizeText(text) {
+              return text
+                .toLowerCase()
+                .replace(/[^\w\s]/g, ' ')
+                .replace(/\s+/g, ' ')
+                .trim();
+            }
+            
+            // Extract keywords (words longer than 3 characters, excluding common words)
+            function extractKeywords(text) {
+              const commonWords = new Set(['the', 'and', 'for', 'with', 'this', 'that', 'from', 'have', 'been', 'were', 'will', 'would', 'could', 'should', 'about', 'after', 'before', 'when', 'where', 'which', 'what', 'how', 'why', 'does', 'doesn', 'not', 'are', 'was', 'has']);
+              
+              return text
+                .toLowerCase()
+                .replace(/[^\w\s]/g, ' ')
+                .split(/\s+/)
+                .filter(word => word.length > 3 && !commonWords.has(word));
+            }
+            
+            // Calculate keyword overlap (Jaccard similarity)
+            function calculateKeywordSimilarity(text1, text2) {
+              const keywords1 = new Set(extractKeywords(text1));
+              const keywords2 = new Set(extractKeywords(text2));
+              
+              if (keywords1.size === 0 && keywords2.size === 0) return 1;
+              if (keywords1.size === 0 || keywords2.size === 0) return 0;
+              
+              const intersection = new Set([...keywords1].filter(x => keywords2.has(x)));
+              const union = new Set([...keywords1, ...keywords2]);
+              
+              return intersection.size / union.size;
+            }
+            
+            // Fetch all open issues
+            const { data: openIssues } = await github.rest.issues.listForRepo({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              state: 'open',
+              per_page: 100
+            });
+            
+            let mostSimilarIssue = null;
+            let highestSimilarity = 0;
+            
+            // Normalize current issue text once before the loop (performance optimization)
+            const normalizedIssueTitle = normalizeText(issueTitle);
+            const normalizedIssueBody = normalizeText(issueBody);
+            
+            // Compare with existing open issues
+            for (const existingIssue of openIssues) {
+              // Skip the current issue and pull requests
+              if (existingIssue.number === issueNumber || existingIssue.pull_request) {
+                continue;
+              }
+              
+              const existingTitle = normalizeText(existingIssue.title);
+              const existingBody = normalizeText(existingIssue.body || '');
+              
+              // Calculate syntactic similarity (Levenshtein)
+              const titleLevenshtein = calculateSimilarity(normalizedIssueTitle, existingTitle);
+              const bodyLevenshtein = calculateSimilarity(normalizedIssueBody, existingBody);
+              
+              // Calculate semantic similarity (keyword overlap)
+              const titleKeywords = calculateKeywordSimilarity(issueTitle, existingIssue.title);
+              const bodyKeywords = calculateKeywordSimilarity(issueBody, existingIssue.body || '');
+              
+              // Hybrid approach: 50% syntactic + 50% semantic
+              const titleSimilarity = (titleLevenshtein * 0.5) + (titleKeywords * 0.5);
+              const bodySimilarity = (bodyLevenshtein * 0.5) + (bodyKeywords * 0.5);
+              
+              // Overall: title 40% + body 60%
+              const overallSimilarity = (titleSimilarity * 0.4) + (bodySimilarity * 0.6);
+              
+              console.log(`Comparing with #${existingIssue.number}: Title=${(titleSimilarity * 100).toFixed(2)}% (Lev:${(titleLevenshtein * 100).toFixed(0)}% Kw:${(titleKeywords * 100).toFixed(0)}%), Body=${(bodySimilarity * 100).toFixed(2)}% (Lev:${(bodyLevenshtein * 100).toFixed(0)}% Kw:${(bodyKeywords * 100).toFixed(0)}%), Overall=${(overallSimilarity * 100).toFixed(2)}%`);
+              
+              if (overallSimilarity > highestSimilarity) {
+                highestSimilarity = overallSimilarity;
+                mostSimilarIssue = existingIssue;
+              }
+            }
+            
+            // If similarity exceeds threshold, close as duplicate
+            if (highestSimilarity >= SIMILARITY_THRESHOLD && mostSimilarIssue) {
+              console.log(`Duplicate detected! Issue #${issueNumber} is ${(highestSimilarity * 100).toFixed(2)}% similar to #${mostSimilarIssue.number}`);
+              
+              // Add duplicate label
+              await github.rest.issues.addLabels({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: issueNumber,
+                labels: ['duplicate']
+              });
+              
+              // Add comment explaining the closure
+              const comment = '👋 Thank you for creating this issue!\n\n' +
+                `However, this appears to be a duplicate of #${mostSimilarIssue.number} (${(highestSimilarity * 100).toFixed(0)}% similarity detected).\n\n` +
+                `**Original Issue:** #${mostSimilarIssue.number} - ${mostSimilarIssue.title}\n\n` +
+                'To avoid fragmenting the discussion, we\'re closing this issue. Please feel free to:\n' +
+                `- 👀 Follow the original issue for updates\n` +
+                `- 💬 Add your comments or additional context to #${mostSimilarIssue.number}\n` +
+                '- 🔄 Reopen this issue if you believe it was incorrectly flagged as a duplicate\n\n' +
+                'For further communication, join our Discord server: https://discord.gg/tSqtvHUJzE\n\n' +
+                '---\n' +
+                '*This action was performed automatically by our duplicate detection workflow.*';
+              
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: issueNumber,
+                body: comment
+              });
+              
+              // Close the issue
+              await github.rest.issues.update({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: issueNumber,
+                state: 'closed',
+                state_reason: 'not_planned'
+              });
+              
+              console.log(`Issue #${issueNumber} closed as duplicate of #${mostSimilarIssue.number}`);
+            } else {
+              console.log(`No duplicate found. Highest similarity: ${(highestSimilarity * 100).toFixed(2)}%`);
+            }
