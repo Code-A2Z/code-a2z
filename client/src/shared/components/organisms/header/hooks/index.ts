@@ -6,11 +6,13 @@ export const useHeader = ({
   onSearchChange,
   onSearchSubmit,
   onSearchClear,
+  enableSearch = true,
 }: {
   externalSearchTerm?: string;
   onSearchChange?: (value: string) => void;
   onSearchSubmit?: (value: string) => void;
   onSearchClear?: () => void;
+  enableSearch?: boolean;
 }) => {
   const { isDesktop } = useDevice();
   const searchInputRef = useRef<HTMLInputElement>(null);
@@ -66,11 +68,15 @@ export const useHeader = ({
   };
 
   useEffect(() => {
+    if (!enableSearch) {
+      return;
+    }
+
     document.addEventListener('keydown', triggerSearchByKeyboard, true);
     return () => {
       document.removeEventListener('keydown', triggerSearchByKeyboard, true);
     };
-  }, [isDesktop]);
+  }, [isDesktop, enableSearch]);
 
   return {
     mobileMoreAnchorEl,

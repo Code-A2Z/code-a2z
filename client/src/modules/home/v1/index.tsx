@@ -1,8 +1,11 @@
-import { Box } from '@mui/material';
+import { Badge, Box } from '@mui/material';
+import CreateIcon from '@mui/icons-material/Create';
+import MailIcon from '@mui/icons-material/Mail';
 import { Routes } from 'react-router-dom';
 import { useEffect } from 'react';
 import { useSetAtom } from 'jotai';
 import Header from '../../../shared/components/organisms/header';
+import { HeaderAction } from '../../../shared/components/organisms/header/typings';
 import HomeContent from './components';
 import useHomeV1 from './hooks';
 import { HomePageProjectsAtom } from './states';
@@ -36,6 +39,29 @@ const Home = () => {
     setShowSubscribeModal,
     handleSubscribe,
   } = useSubscribe();
+
+  const headerActions: HeaderAction[] = [
+    {
+      key: 'write',
+      label: 'Write',
+      icon: (
+        <Badge>
+          <CreateIcon />
+        </Badge>
+      ),
+      link: '/editor',
+    },
+    {
+      key: 'subscribe',
+      label: 'Subscribe',
+      icon: (
+        <Badge>
+          <MailIcon />
+        </Badge>
+      ),
+      onClick: () => setShowSubscribeModal(true),
+    },
+  ];
 
   useEffect(() => {
     if (isHomePage) {
@@ -77,11 +103,12 @@ const Home = () => {
   return (
     <>
       <Header
+        enableSearch
         searchTerm={searchTerm}
         onSearchChange={handleSearchChange}
         onSearchSubmit={handleSearchSubmit}
         onSearchClear={handleSearchClear}
-        setShowSubscribeModal={setShowSubscribeModal}
+        rightSideActions={headerActions}
       />
 
       {activeModule === 'search' ? (

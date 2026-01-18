@@ -1,26 +1,36 @@
-import { Menu, MenuItem, Badge } from '@mui/material';
+import { Menu, MenuItem } from '@mui/material';
 import { FC } from 'react';
-import CreateIcon from '@mui/icons-material/Create';
+import { useNavigate } from 'react-router-dom';
 import { mobileMenuId } from '../constants';
 import A2ZIconButton from '../../../atoms/icon-button';
 import A2ZTypography from '../../../atoms/typography';
-import MailIcon from '@mui/icons-material/Mail';
-import { useNavigate } from 'react-router-dom';
+import { HeaderAction } from '../typings';
 
 interface RenderMobileMenuProps {
   mobileMoreAnchorEl: HTMLElement | null;
   isMobileMenuOpen: boolean;
   handleMobileMenuClose: () => void;
-  setShowSubscribeModal: (show: boolean) => void;
+  actions: HeaderAction[];
 }
 
 const RenderMobileMenu: FC<RenderMobileMenuProps> = ({
   mobileMoreAnchorEl,
   isMobileMenuOpen,
   handleMobileMenuClose,
-  setShowSubscribeModal,
+  actions,
 }) => {
   const navigate = useNavigate();
+
+  const handleActionClick = (action: HeaderAction) => {
+    if (action.onClick) {
+      action.onClick();
+    }
+    if (action.link) {
+      navigate(action.link);
+    }
+    handleMobileMenuClose();
+  };
+
   return (
     <Menu
       anchorEl={mobileMoreAnchorEl}
@@ -37,34 +47,12 @@ const RenderMobileMenu: FC<RenderMobileMenuProps> = ({
       open={isMobileMenuOpen}
       onClose={handleMobileMenuClose}
     >
-      <MenuItem
-        onClick={() => {
-          navigate('/editor');
-          handleMobileMenuClose();
-        }}
-      >
-        <A2ZIconButton>
-          <Badge>
-            <CreateIcon />
-          </Badge>
-        </A2ZIconButton>
-        <A2ZTypography component="p" text="Write" />
-      </MenuItem>
-
-      <MenuItem
-        key="subscribe"
-        onClick={() => {
-          setShowSubscribeModal(true);
-          handleMobileMenuClose();
-        }}
-      >
-        <A2ZIconButton>
-          <Badge>
-            <MailIcon />
-          </Badge>
-        </A2ZIconButton>
-        <A2ZTypography component="p" text="Subscribe" />
-      </MenuItem>
+      {actions.map(action => (
+        <MenuItem key={action.key} onClick={() => handleActionClick(action)}>
+          <A2ZIconButton>{action.icon}</A2ZIconButton>
+          <A2ZTypography component="p" text={action.label} />
+        </MenuItem>
+      ))}
     </Menu>
   );
 };
