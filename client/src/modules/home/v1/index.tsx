@@ -2,7 +2,7 @@ import { Box } from '@mui/material';
 import { Routes } from 'react-router-dom';
 import { useEffect } from 'react';
 import { useSetAtom } from 'jotai';
-import Navbar from '../../../shared/components/organisms/navbar';
+import Header from '../../../shared/components/organisms/header';
 import HomeContent from './components';
 import useHomeV1 from './hooks';
 import { HomePageProjectsAtom } from './states';
@@ -76,7 +76,7 @@ const Home = () => {
 
   return (
     <>
-      <Navbar
+      <Header
         searchTerm={searchTerm}
         onSearchChange={handleSearchChange}
         onSearchSubmit={handleSearchSubmit}

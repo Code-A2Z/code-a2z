@@ -1,7 +1,7 @@
 import { useRef, useState, useEffect } from 'react';
 import { useDevice } from '../../../../hooks/use-device';
 
-export const useNavbar = ({
+export const useHeader = ({
   externalSearchTerm,
   onSearchChange,
   onSearchSubmit,

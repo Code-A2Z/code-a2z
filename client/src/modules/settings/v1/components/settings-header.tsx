@@ -1,7 +1,7 @@
 import { Box, IconButton, useTheme } from '@mui/material';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import A2ZTypography from '../../../../shared/components/atoms/typography';
-import { HEADER_HEIGHT } from '../../../../shared/components/organisms/header/constants';
+import { NAVBAR_HEIGHT } from '../../../../shared/components/organisms/navbar/constants';
 import { useDevice } from '../../../../shared/hooks/use-device';
 import { useCustomNavigate } from '../../../../shared/hooks/use-custom-navigate';
 import { ROUTES_V1 } from '../../../../app/routes/constants/routes';
@@ -22,9 +22,9 @@ const SettingsHeader = ({ title }: SettingsHeaderProps) => {
   return (
     <Box
       sx={{
-        height: `${HEADER_HEIGHT}px`,
-        minHeight: `${HEADER_HEIGHT}px`,
-        maxHeight: `${HEADER_HEIGHT}px`,
+        height: `${NAVBAR_HEIGHT}px`,
+        minHeight: `${NAVBAR_HEIGHT}px`,
+        maxHeight: `${NAVBAR_HEIGHT}px`,
         display: 'flex',
         alignItems: 'center',
         px: { xs: 2, md: 3 },

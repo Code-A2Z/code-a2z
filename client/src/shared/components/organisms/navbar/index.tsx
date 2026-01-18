@@ -1,112 +1,64 @@
-import { Box, Badge, useTheme } from '@mui/material';
-import MailIcon from '@mui/icons-material/Mail';
-import CreateIcon from '@mui/icons-material/Create';
-import MoreIcon from '@mui/icons-material/MoreVert';
+import { AppBar, Toolbar, Box, Badge } from '@mui/material';
+import LightModeIcon from '@mui/icons-material/LightMode';
+import DarkModeIcon from '@mui/icons-material/DarkMode';
 import A2ZIconButton from '../../atoms/icon-button';
-import { useNavbar } from './hooks';
-import { mobileMenuId } from './constants';
-import RenderMobileMenu from './components/render-mobile-menu';
-import Searchbar from '../../molecules/searchbar';
-import { HEADER_HEIGHT } from '../header/constants';
+import Logo from '../../atoms/logo';
+import { useA2ZTheme } from '../../../hooks/use-theme';
+import { THEME } from '../../../states/theme';
+import { NAVBAR_HEIGHT } from './constants';
 
-const Navbar = ({
-  searchTerm: externalSearchTerm,
-  onSearchChange,
-  onSearchSubmit,
-  onSearchClear,
-  setShowSubscribeModal,
-}: {
-  searchTerm?: string;
-  onSearchChange?: (value: string) => void;
-  onSearchSubmit?: (value: string) => void;
-  onSearchClear?: () => void;
-  setShowSubscribeModal: (show: boolean) => void;
-}) => {
-  const theme = useTheme();
-  const {
-    mobileMoreAnchorEl,
-    isMobileMenuOpen,
-    handleMobileMenuOpen,
-    handleMobileMenuClose,
-    internalSearchTerm,
-    handleSearchChange,
-    handleSearchSubmit,
-    handleClearSearch,
-    searchInputRef,
-  } = useNavbar({
-    externalSearchTerm,
-    onSearchChange,
-    onSearchSubmit,
-    onSearchClear,
-  });
+const Navbar = () => {
+  const { theme, setTheme } = useA2ZTheme();
 
   return (
-    <Box>
-      <Box
+    <AppBar
+      position="static"
+      sx={{
+        minHeight: `${NAVBAR_HEIGHT}px`,
+        maxHeight: `${NAVBAR_HEIGHT}px`,
+        height: `${NAVBAR_HEIGHT}px`,
+      }}
+    >
+      <Toolbar
         sx={{
-          height: `${HEADER_HEIGHT}px`,
-          minHeight: `${HEADER_HEIGHT}px`,
-          maxHeight: `${HEADER_HEIGHT}px`,
+          minHeight: `${NAVBAR_HEIGHT}px !important`,
+          maxHeight: `${NAVBAR_HEIGHT}px`,
+          height: `${NAVBAR_HEIGHT}px`,
           display: 'flex',
+          justifyContent: 'space-between',
           alignItems: 'center',
-          px: { xs: 2, md: 3 },
-          borderBottom: `1px solid ${theme.palette.divider}`,
-          bgcolor: 'background.paper',
-          gap: 2,
+          px: { xs: 2, sm: 3 },
         }}
       >
-        <Searchbar
-          placeholder="Search..."
-          onSearch={handleSearchChange}
-          searchTerm={internalSearchTerm}
-          handleOnClearClick={handleClearSearch}
-          variant="fullWidth"
-          autoFocus={false}
-          sx={{ maxWidth: { xs: '100%', md: 400 }, width: '100%' }}
-          inputRef={searchInputRef}
-          onKeyDown={e => {
-            if (e.key === 'Enter' || e.keyCode === 13) {
-              handleSearchSubmit();
-            }
+        <Box
+          sx={{
+            display: 'flex',
+            alignItems: 'center',
+            height: '100%',
           }}
-        />
+        >
+          <Logo />
+        </Box>
 
-        <Box sx={{ flexGrow: 1 }} />
-
-        <Box sx={{ display: { xs: 'none', md: 'flex' }, gap: 1 }}>
-          <A2ZIconButton link="/editor">
-            <Badge>
-              <CreateIcon />
-            </Badge>
-          </A2ZIconButton>
-
+        <Box
+          sx={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: 1,
+          }}
+        >
           <A2ZIconButton>
-            <Badge onClick={() => setShowSubscribeModal(true)}>
-              <MailIcon />
+            <Badge
+              onClick={() =>
+                setTheme(theme === THEME.DARK ? THEME.LIGHT : THEME.DARK)
+              }
+            >
+              {theme === THEME.DARK ? <LightModeIcon /> : <DarkModeIcon />}
             </Badge>
           </A2ZIconButton>
         </Box>
-
-        <Box sx={{ display: { xs: 'flex', md: 'none' } }}>
-          <A2ZIconButton
-            props={{
-              'aria-controls': mobileMenuId,
-              'aria-haspopup': true,
-              onClick: handleMobileMenuOpen,
-            }}
-          >
-            <MoreIcon />
-          </A2ZIconButton>
-        </Box>
-      </Box>
-
-      <RenderMobileMenu
-        mobileMoreAnchorEl={mobileMoreAnchorEl}
-        isMobileMenuOpen={isMobileMenuOpen}
-        handleMobileMenuClose={handleMobileMenuClose}
-        setShowSubscribeModal={setShowSubscribeModal}
-      />
-    </Box>
+      </Toolbar>
+    </AppBar>
   );
 };
 
