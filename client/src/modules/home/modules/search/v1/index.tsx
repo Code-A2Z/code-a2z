@@ -11,6 +11,7 @@ import NoDataMessageBox from '../../../../../shared/components/atoms/no-data-msg
 import { BannerSkeleton } from '../../../../../shared/components/atoms/skeleton';
 import useSearchV1 from './hooks';
 import UserCard from './components/user-card';
+import { PAGE_SIZE } from '../../../../../shared/constants';
 
 const SearchModule = () => {
   const theme = useTheme();
@@ -68,7 +69,7 @@ const SearchModule = () => {
               )}
               overscan={200}
               endReached={() => {
-                const nextPage = Math.floor(projects.length / 10) + 1;
+                const nextPage = Math.floor(projects.length / PAGE_SIZE) + 1;
                 fetchProjects(searchTerm, nextPage);
               }}
               components={{
@@ -106,7 +107,7 @@ const SearchModule = () => {
               )}
               overscan={200}
               endReached={() => {
-                const nextPage = Math.floor(users.length / 10) + 1;
+                const nextPage = Math.floor(users.length / PAGE_SIZE) + 1;
                 fetchUsers(searchTerm, nextPage);
               }}
               components={{
@@ -162,7 +163,7 @@ const SearchModule = () => {
             )}
             overscan={200}
             endReached={() => {
-              const nextPage = Math.floor(users.length / 10) + 1;
+              const nextPage = Math.floor(users.length / PAGE_SIZE) + 1;
               fetchUsers(searchTerm, nextPage);
             }}
             components={{

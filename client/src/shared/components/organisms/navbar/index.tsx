@@ -47,12 +47,13 @@ const Navbar = () => {
             gap: 1,
           }}
         >
-          <A2ZIconButton>
-            <Badge
-              onClick={() =>
-                setTheme(theme === THEME.DARK ? THEME.LIGHT : THEME.DARK)
-              }
-            >
+          <A2ZIconButton
+            props={{
+              onClick: () =>
+                setTheme(theme === THEME.DARK ? THEME.LIGHT : THEME.DARK),
+            }}
+          >
+            <Badge>
               {theme === THEME.DARK ? <LightModeIcon /> : <DarkModeIcon />}
             </Badge>
           </A2ZIconButton>

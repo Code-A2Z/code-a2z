@@ -26,12 +26,20 @@ export const useSubscribe = () => {
       return;
     }
 
-    const response = await subscribeUser(email);
-    addNotification({
-      message: response.message,
-      type: response.status,
-    });
-    setShowSubscribeModal(false);
+    try {
+      const response = await subscribeUser(email);
+      addNotification({
+        message: response.message,
+        type: response.status,
+      });
+      setShowSubscribeModal(false);
+    } catch (error) {
+      console.error('Failed to subscribe user', error);
+      addNotification({
+        message: 'Failed to subscribe. Please try again later.',
+        type: 'error',
+      });
+    }
   };
 
   return {

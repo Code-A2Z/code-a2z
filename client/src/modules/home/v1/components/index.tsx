@@ -15,6 +15,7 @@ import {
 } from '../../../../shared/components/atoms/skeleton';
 import { Virtuoso } from 'react-virtuoso';
 import { getTrendingProjectsResponse } from '../../../../infra/rest/apis/project/typing';
+import { PAGE_SIZE } from '../../../../shared/constants';
 
 interface HomeContentProps {
   selectedCategory: string | null;
@@ -63,7 +64,7 @@ const HomeContent = ({
               )}
               overscan={200}
               endReached={() => {
-                const nextPage = Math.floor(projects.length / 10) + 1;
+                const nextPage = Math.floor(projects.length / PAGE_SIZE) + 1;
                 if (!selectedCategory) {
                   fetchLatestProjects(nextPage);
                 } else if (selectedCategory !== 'trending') {
