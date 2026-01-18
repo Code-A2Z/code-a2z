@@ -3,10 +3,9 @@ import MailIcon from '@mui/icons-material/Mail';
 import CreateIcon from '@mui/icons-material/Create';
 import MoreIcon from '@mui/icons-material/MoreVert';
 import A2ZIconButton from '../../atoms/icon-button';
-import { useNavbar, useSubscribe } from './hooks';
+import { useNavbar } from './hooks';
 import { mobileMenuId } from './constants';
 import RenderMobileMenu from './components/render-mobile-menu';
-import SubscribeModal from './components/subscribe';
 import Searchbar from '../../molecules/searchbar';
 import { HEADER_HEIGHT } from '../header/constants';
 
@@ -15,11 +14,13 @@ const Navbar = ({
   onSearchChange,
   onSearchSubmit,
   onSearchClear,
+  setShowSubscribeModal,
 }: {
   searchTerm?: string;
   onSearchChange?: (value: string) => void;
   onSearchSubmit?: (value: string) => void;
   onSearchClear?: () => void;
+  setShowSubscribeModal: (show: boolean) => void;
 }) => {
   const theme = useTheme();
   const {
@@ -38,13 +39,6 @@ const Navbar = ({
     onSearchSubmit,
     onSearchClear,
   });
-
-  const {
-    subscribeEmailRef,
-    showSubscribeModal,
-    setShowSubscribeModal,
-    handleSubscribe,
-  } = useSubscribe();
 
   return (
     <Box>
@@ -111,13 +105,6 @@ const Navbar = ({
         isMobileMenuOpen={isMobileMenuOpen}
         handleMobileMenuClose={handleMobileMenuClose}
         setShowSubscribeModal={setShowSubscribeModal}
-      />
-
-      <SubscribeModal
-        subscribeEmailRef={subscribeEmailRef}
-        showSubscribeModal={showSubscribeModal}
-        setShowSubscribeModal={setShowSubscribeModal}
-        handleSubscribe={handleSubscribe}
       />
     </Box>
   );

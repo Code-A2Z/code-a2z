@@ -2,9 +2,9 @@
 import { Badge, Box, Button } from '@mui/material';
 import MailIcon from '@mui/icons-material/Mail';
 import CardMembershipIcon from '@mui/icons-material/CardMembership';
-import InputBox from '../../../atoms/input-box';
-import A2ZModal from '../../../atoms/modal';
-import A2ZTypography from '../../../atoms/typography';
+import InputBox from '../../../../shared/components/atoms/input-box';
+import A2ZModal from '../../../../shared/components/atoms/modal';
+import A2ZTypography from '../../../../shared/components/atoms/typography';
 
 interface SubscribeModalProps {
   subscribeEmailRef: React.RefObject<HTMLInputElement | null>;

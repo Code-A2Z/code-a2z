@@ -8,6 +8,8 @@ import useHomeV1 from './hooks';
 import { HomePageProjectsAtom } from './states';
 import { SearchLazyComponentV1 } from '../modules';
 import useSearchV1 from '../modules/search/v1/hooks';
+import SubscribeModal from './components/subscribe-modal';
+import { useSubscribe } from './hooks/use-subscribe';
 
 const Home = () => {
   const setProjects = useSetAtom(HomePageProjectsAtom);
@@ -27,6 +29,13 @@ const Home = () => {
 
   const { handleSearchChange, handleSearchSubmit, handleSearchClear } =
     useSearchV1();
+
+  const {
+    subscribeEmailRef,
+    showSubscribeModal,
+    setShowSubscribeModal,
+    handleSubscribe,
+  } = useSubscribe();
 
   useEffect(() => {
     if (isHomePage) {
@@ -72,6 +81,7 @@ const Home = () => {
         onSearchChange={handleSearchChange}
         onSearchSubmit={handleSearchSubmit}
         onSearchClear={handleSearchClear}
+        setShowSubscribeModal={setShowSubscribeModal}
       />
 
       {activeModule === 'search' ? (
@@ -85,6 +95,13 @@ const Home = () => {
           fetchProjectsByCategory={fetchProjectsByCategory}
         />
       )}
+
+      <SubscribeModal
+        subscribeEmailRef={subscribeEmailRef}
+        showSubscribeModal={showSubscribeModal}
+        setShowSubscribeModal={setShowSubscribeModal}
+        handleSubscribe={handleSubscribe}
+      />
     </>
   );
 };

@@ -1,4 +1,4 @@
-export const categories = [
+export const CATEGORIES = [
   // REPLACE ME WITH POPULAR TAGS
   'web',
   'data science',
@@ -7,3 +7,5 @@ export const categories = [
   'cloud computing',
   'blockchain',
 ];
+
+export const PAGE_SIZE = 10;

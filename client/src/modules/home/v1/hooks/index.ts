@@ -6,13 +6,13 @@ import {
   getTrendingProjects,
   searchProjects,
 } from '../../../../infra/rest/apis/project';
-import { HOME_ROUTES, HOME_QUERY_PARAMS } from '../../routes';
+import { homeRoutes, HOME_QUERY_PARAMS } from '../../routes';
 import { useLocation, useSearchParams } from 'react-router-dom';
 import { ROUTES_V1 } from '../../../../app/routes/constants/routes';
 import { getTrendingProjectsResponse } from '../../../../infra/rest/apis/project/typing';
 
 const useHomeV1 = () => {
-  const { routes } = HOME_ROUTES();
+  const { routes } = homeRoutes();
   const location = useLocation();
   const [searchParams] = useSearchParams();
   const setProjects = useSetAtom(HomePageProjectsAtom);

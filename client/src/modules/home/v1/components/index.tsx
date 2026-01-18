@@ -1,7 +1,7 @@
 import { Box, Stack } from '@mui/material';
 import A2ZTypography from '../../../../shared/components/atoms/typography';
 import TrendingUpIcon from '@mui/icons-material/TrendingUp';
-import { categories } from '../constants';
+import { CATEGORIES } from '../constants';
 import { CategoryButton } from './category-button';
 import InPageNavigation from '../../../../shared/components/molecules/page-navigation';
 import NoBannerProjectCard from './no-banner-project';
@@ -117,7 +117,7 @@ const HomeContent = ({
             />
 
             <Box sx={{ display: 'flex', gap: 1.5, flexWrap: 'wrap' }}>
-              {categories.map((category, i) => {
+              {CATEGORIES.map((category, i) => {
                 return (
                   <CategoryButton
                     key={i}
