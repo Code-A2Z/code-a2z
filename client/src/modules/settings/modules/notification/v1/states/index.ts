@@ -1,5 +1,5 @@
 import { atom } from 'jotai';
-import { GetNotificationsResponse } from '../../../infra/rest/apis/notification/typing';
+import { GetNotificationsResponse } from '../../../../../../infra/rest/apis/notification/typing';
 
 export interface NotificationPaginationState {
   results: GetNotificationsResponse[];

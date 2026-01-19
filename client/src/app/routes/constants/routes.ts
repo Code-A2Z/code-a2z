@@ -16,6 +16,7 @@ export enum ROUTES_HOME_V1 {
 
 export enum ROUTES_SETTINGS_V1 {
   PROFILE = '/profile',
+  NOTIFICATION = '/notification',
   MANAGE_ARTICLES = '/manage-articles',
   INTEGRATIONS = '/integrations',
 }

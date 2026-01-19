@@ -10,3 +10,6 @@ export const OpenAILazyComponentV1 = lazy(
 export const ManageArticlesLazyComponentV1 = lazy(
   () => import('./manage-articles/v1')
 );
+export const NotificationLazyComponentV1 = lazy(
+  () => import('./notification/v1')
+);

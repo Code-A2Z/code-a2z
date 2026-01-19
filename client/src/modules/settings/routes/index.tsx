@@ -1,6 +1,7 @@
 import AccountCircleOutlinedIcon from '@mui/icons-material/AccountCircleOutlined';
 import ExtensionIcon from '@mui/icons-material/Extension';
 import ArticleIcon from '@mui/icons-material/Article';
+import NotificationsIcon from '@mui/icons-material/Notifications';
 import {
   ROUTES_V1,
   ROUTES_SETTINGS_V1,
@@ -14,6 +15,7 @@ import {
   IntegrationsLazyComponentV1,
   OpenAILazyComponentV1,
   ManageArticlesLazyComponentV1,
+  NotificationLazyComponentV1,
 } from '../modules';
 import OpenAIIcon from '../../../shared/icons/openai';
 
@@ -28,21 +30,28 @@ export const settingsRoutes = ({
       icon: <AccountCircleOutlinedIcon sx={{ fontSize: 20 }} />,
       path: ROUTES_SETTINGS_V1.PROFILE,
       name: 'Your profile',
-      description: 'Edit your personal details',
+      description: 'Manage your personal details and preferences',
+    },
+    {
+      id: 'notification',
+      icon: <NotificationsIcon sx={{ fontSize: 20 }} />,
+      path: ROUTES_SETTINGS_V1.NOTIFICATION,
+      name: 'Notifications',
+      description: 'Stay updated with your latest activity and interactions',
     },
     {
       id: 'manage-articles',
       icon: <ArticleIcon sx={{ fontSize: 20 }} />,
       path: ROUTES_SETTINGS_V1.MANAGE_ARTICLES,
       name: 'Manage Articles',
-      description: 'Manage your articles',
+      description: 'Edit, publish, and manage your articles',
     },
     {
       id: 'integrations',
       icon: <ExtensionIcon sx={{ fontSize: 20 }} />,
       path: ROUTES_SETTINGS_V1.INTEGRATIONS,
       name: 'Integrations',
-      description: 'Manage your integrations',
+      description: 'Connect your accounts and services',
     },
   ];
 
@@ -52,6 +61,16 @@ export const settingsRoutes = ({
       path={ROUTES_SETTINGS_V1.PROFILE}
       element={
         <ProtectedRoute component={ProfileLazyComponentV1} hasAccess={true} />
+      }
+    />,
+    <Route
+      key={ROUTES_SETTINGS_V1.NOTIFICATION}
+      path={ROUTES_SETTINGS_V1.NOTIFICATION}
+      element={
+        <ProtectedRoute
+          component={NotificationLazyComponentV1}
+          hasAccess={true}
+        />
       }
     />,
     <Route
