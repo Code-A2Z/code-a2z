@@ -12,6 +12,8 @@ import LockIcon from '@mui/icons-material/Lock';
 import { ROUTES_PAGE_V1 } from '../../../../../app/routes/constants/routes';
 import { useCustomNavigate } from '../../../../hooks/use-custom-navigate';
 import { openPopup } from '../../../../utils/popup';
+import { useNotifications } from '../../../../hooks/use-notification';
+import { NotificationType } from '../../../../states/notification';
 
 const SidebarMenuItem: FC<{
   Icon: ElementType;
@@ -40,6 +42,7 @@ const SidebarMenuItem: FC<{
 }) => {
   const navigate = useCustomNavigate();
   const theme = useTheme();
+  const { addNotification } = useNotifications();
 
   const getCurrentPage = useCallback(() => {
     if (!path || !screenName) return false;
@@ -80,8 +83,8 @@ const SidebarMenuItem: FC<{
     <LockIcon
       sx={{
         marginLeft: 'auto',
-        height: '15px',
-        width: '15px',
+        height: '15px !important',
+        width: '15px !important',
         bgcolor: 'background.default',
         padding: '2px',
         borderRadius: '50%',
@@ -123,7 +126,10 @@ const SidebarMenuItem: FC<{
   const handleClick = useCallback(
     (event: MouseEvent<Element>) => {
       if (isLocked && !onClick) {
-        return;
+        return addNotification({
+          message: 'Coming soon',
+          type: NotificationType.INFO,
+        });
       }
 
       if (path) {
@@ -141,7 +147,7 @@ const SidebarMenuItem: FC<{
         onClick?.(event);
       }
     },
-    [isLocked, onClick, path, navigate]
+    [isLocked, onClick, path, navigate, addNotification]
   );
 
   if (hide) return null;
@@ -189,6 +195,7 @@ const SidebarMenuItem: FC<{
             flex: '0 0 auto',
             width: '28px',
             height: '28px',
+            padding: '3px',
             color: iconColorValue,
             transition: 'all 280ms ease-in-out',
             '& svg': {

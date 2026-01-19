@@ -12,6 +12,12 @@ export const LoginLazyComponent = lazy(() => import('../../modules/auth/v1'));
 export const HomePageLazyComponent = lazy(
   () => import('../../modules/home/v1')
 );
+export const ChatsPageLazyComponent = lazy(
+  () => import('../../modules/chats/v1')
+);
+export const CodePageLazyComponent = lazy(
+  () => import('../../modules/code/v1')
+);
 export const SettingsPageLazyComponent = lazy(
   () => import('../../modules/settings/v1')
 );
