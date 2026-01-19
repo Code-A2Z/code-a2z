@@ -5,7 +5,10 @@ import { useSetAtom } from 'jotai';
 import { deleteProjectById } from '../../../../../../infra/rest/apis/project';
 import { useNotifications } from '../../../../../../shared/hooks/use-notification';
 import { useAuth } from '../../../../../../shared/hooks/use-auth';
-import { ROUTES_V1 } from '../../../../../../app/routes/constants/routes';
+import {
+  ROUTES_HOME_V1,
+  ROUTES_V1,
+} from '../../../../../../app/routes/constants/routes';
 import {
   PublishedProjectsAtom,
   ManageProjectsPaginationState,
@@ -187,7 +190,7 @@ const ManagePublishedArticle = ({
             >
               <Button
                 component={Link}
-                to={`/editor/${_id}`}
+                to={`${ROUTES_V1.HOME}${ROUTES_HOME_V1.EDITOR_WITH_ID.replace(':project_id', _id || '')}`}
                 size="small"
                 startIcon={<EditIcon />}
                 variant="contained"

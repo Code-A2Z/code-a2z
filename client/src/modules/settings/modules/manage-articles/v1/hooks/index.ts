@@ -11,10 +11,10 @@ import {
 } from '../states';
 
 const useManageArticles = () => {
-  const [publishedProjects, setPublishedProjects] = useAtom(
+  const [publishedArticles, setPublishedArticles] = useAtom(
     PublishedProjectsAtom
   );
-  const [draftProjects, setDraftProjects] = useAtom(DraftProjectsAtom);
+  const [draftArticles, setDraftArticles] = useAtom(DraftProjectsAtom);
 
   const [query, setQuery] = useState('');
 
@@ -38,7 +38,7 @@ const useManageArticles = () => {
           const newResults = projectsResponse.data || [];
 
           if (is_draft) {
-            setDraftProjects(
+            setDraftArticles(
               (prevState: ManageProjectsPaginationState | null) => {
                 const previousResults = prevState?.results || [];
 
@@ -56,7 +56,7 @@ const useManageArticles = () => {
               }
             );
           } else {
-            setPublishedProjects(
+            setPublishedArticles(
               (prevState: ManageProjectsPaginationState | null) => {
                 const previousResults = prevState?.results || [];
 
@@ -79,32 +79,32 @@ const useManageArticles = () => {
         console.error('Error fetching projects:', error);
       }
     },
-    [setPublishedProjects, setDraftProjects]
+    [setPublishedArticles, setDraftArticles]
   );
 
   const handleSearchChange = (value: string) => {
     setQuery(value);
     if (!value.length) {
-      setPublishedProjects(null);
-      setDraftProjects(null);
+      setPublishedArticles(null);
+      setDraftArticles(null);
     }
   };
 
   const handleSearchSubmit = () => {
     if (query.length) {
-      setPublishedProjects(null);
-      setDraftProjects(null);
+      setPublishedArticles(null);
+      setDraftArticles(null);
     }
   };
 
   const handleSearchClear = () => {
     setQuery('');
-    setPublishedProjects(null);
-    setDraftProjects(null);
+    setPublishedArticles(null);
+    setDraftArticles(null);
   };
 
   const handleLoadMore = (is_draft: boolean) => {
-    const currentState = is_draft ? draftProjects : publishedProjects;
+    const currentState = is_draft ? draftArticles : publishedArticles;
     if (currentState && currentState.results.length < currentState.totalDocs) {
       fetchProjects({
         page: currentState.page + 1,
@@ -117,8 +117,8 @@ const useManageArticles = () => {
 
   return {
     fetchProjects,
-    publishedProjects,
-    draftProjects,
+    publishedArticles,
+    draftArticles,
     query,
     setQuery,
     handleSearchChange,

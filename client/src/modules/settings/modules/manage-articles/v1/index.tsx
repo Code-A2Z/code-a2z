@@ -14,8 +14,8 @@ const ManageArticles = () => {
   const activeTab = searchParams.get('tab');
   const {
     fetchProjects,
-    publishedProjects,
-    draftProjects,
+    publishedArticles,
+    draftArticles,
     query,
     handleSearchChange,
     handleSearchSubmit,
@@ -24,14 +24,14 @@ const ManageArticles = () => {
   } = useManageArticles();
 
   useEffect(() => {
-    if (publishedProjects === null) {
+    if (publishedArticles === null) {
       fetchProjects({ page: 1, is_draft: false, query });
     }
-    if (draftProjects === null) {
+    if (draftArticles === null) {
       fetchProjects({ page: 1, is_draft: true, query });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [publishedProjects, draftProjects, query]);
+  }, [publishedArticles, draftArticles, query]);
 
   return (
     <>
@@ -53,19 +53,19 @@ const ManageArticles = () => {
       >
         <InPageNavigation
           routes={[
-            `Published Articles (${publishedProjects?.totalDocs ?? 0})`,
-            `Drafts (${draftProjects?.totalDocs ?? 0})`,
+            `Published Articles (${publishedArticles?.totalDocs ?? 0})`,
+            `Drafts (${draftArticles?.totalDocs ?? 0})`,
           ]}
           defaultActiveIndex={activeTab !== 'draft' ? 0 : 1}
         >
           {/* Published Articles */}
-          {publishedProjects === null ? (
+          {publishedArticles === null ? (
             <Box sx={{ display: 'flex', justifyContent: 'center', py: 6 }}>
               <CircularProgress />
             </Box>
-          ) : publishedProjects.results.length ? (
+          ) : publishedArticles.results.length ? (
             <>
-              {publishedProjects.results.map((project, i) => (
+              {publishedArticles.results.map((project, i) => (
                 <ManagePublishedArticle
                   key={project._id || i}
                   project={project}
@@ -73,8 +73,8 @@ const ManageArticles = () => {
                 />
               ))}
 
-              {publishedProjects.results.length <
-                publishedProjects.totalDocs && (
+              {publishedArticles.results.length <
+                publishedArticles.totalDocs && (
                 <Box sx={{ mt: 4, display: 'flex', justifyContent: 'center' }}>
                   <Button
                     onClick={() => handleLoadMore(false)}
@@ -91,13 +91,13 @@ const ManageArticles = () => {
           )}
 
           {/* Draft Articles */}
-          {draftProjects === null ? (
+          {draftArticles === null ? (
             <Box sx={{ display: 'flex', justifyContent: 'center', py: 6 }}>
               <CircularProgress />
             </Box>
-          ) : draftProjects.results.length ? (
+          ) : draftArticles.results.length ? (
             <>
-              {draftProjects.results.map((project, i) => (
+              {draftArticles.results.map((project, i) => (
                 <ManageDraftArticle
                   key={project._id || i}
                   project={project}
@@ -105,7 +105,7 @@ const ManageArticles = () => {
                 />
               ))}
 
-              {draftProjects.results.length < draftProjects.totalDocs && (
+              {draftArticles.results.length < draftArticles.totalDocs && (
                 <Box sx={{ mt: 4, display: 'flex', justifyContent: 'center' }}>
                   <Button
                     onClick={() => handleLoadMore(true)}
