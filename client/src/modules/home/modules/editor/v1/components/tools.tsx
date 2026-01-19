@@ -13,7 +13,7 @@ import Warning from '@editorjs/warning';
 import Attaches from '@editorjs/attaches';
 import LinkTool from '@editorjs/link';
 
-import { uploadImage } from '../../../infra/rest/apis/media';
+import { uploadImage } from '../../../../../../infra/rest/apis/media';
 
 const uploadImageByFile = async (e: File) => {
   return await uploadImage(e).then(({ data }) => {

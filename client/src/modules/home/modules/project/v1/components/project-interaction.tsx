@@ -13,6 +13,10 @@ import { likeStatus } from '../../../../../../infra/rest/apis/like';
 import useProjectInteraction from '../hooks/use-project-interaction';
 import { CommentsWrapperAtom } from '../../../../../../shared/components/organisms/comments-wrapper/states';
 import A2ZTypography from '../../../../../../shared/components/atoms/typography';
+import {
+  ROUTES_V1,
+  ROUTES_HOME_V1,
+} from '../../../../../../app/routes/constants/routes';
 
 // Module-level refs to prevent duplicate API calls across component instances
 const fetchedProjectIdRef: { current: string | null } = { current: null };
@@ -131,7 +135,7 @@ const ProjectInteraction = () => {
             <Tooltip title="Edit Project">
               <IconButton
                 component={Link}
-                to={`/editor/${project?._id}`}
+                to={`${ROUTES_V1.HOME}${ROUTES_HOME_V1.EDITOR_WITH_ID.replace(':project_id', project?._id || '')}`}
                 sx={{
                   color: 'text.secondary',
                   '&:hover': { color: 'primary.main' },

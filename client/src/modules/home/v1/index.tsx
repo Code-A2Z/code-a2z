@@ -13,6 +13,10 @@ import { SearchLazyComponentV1 } from '../modules';
 import useSearchV1 from '../modules/search/v1/hooks';
 import SubscribeModal from './components/subscribe-modal';
 import { useSubscribe } from './hooks/use-subscribe';
+import {
+  ROUTES_V1,
+  ROUTES_HOME_V1,
+} from '../../../app/routes/constants/routes';
 
 const Home = () => {
   const setProjects = useSetAtom(HomePageProjectsAtom);
@@ -49,7 +53,7 @@ const Home = () => {
           <CreateIcon />
         </Badge>
       ),
-      link: '/editor',
+      link: `${ROUTES_V1.HOME}${ROUTES_HOME_V1.EDITOR}`,
     },
     {
       key: 'subscribe',

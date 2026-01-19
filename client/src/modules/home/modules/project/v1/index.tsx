@@ -14,7 +14,7 @@ import ProjectContent from './components/project-content';
 import {
   defaultDarkThumbnail,
   defaultLightThumbnail,
-} from '../../../../editor/constants';
+} from '../../../../../shared/constants';
 import { useA2ZTheme } from '../../../../../shared/hooks/use-theme';
 import OpenInNewIcon from '@mui/icons-material/OpenInNew';
 import GitHubIcon from '@mui/icons-material/GitHub';

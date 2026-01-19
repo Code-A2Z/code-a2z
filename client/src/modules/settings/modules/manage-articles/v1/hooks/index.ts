@@ -1,22 +1,22 @@
-import { useCallback } from 'react';
-import { useSetAtom, useAtomValue } from 'jotai';
+import { useCallback, useState } from 'react';
+import { useAtom } from 'jotai';
 import {
   userProjects,
   userProjectsCount,
-} from '../../../infra/rest/apis/project';
+} from '../../../../../../infra/rest/apis/project';
 import {
   PublishedProjectsAtom,
   DraftProjectsAtom,
   ManageProjectsPaginationState,
 } from '../states';
-import { useAuth } from '../../../shared/hooks/use-auth';
 
-const useManageProjects = () => {
-  const setPublishedProjects = useSetAtom(PublishedProjectsAtom);
-  const setDraftProjects = useSetAtom(DraftProjectsAtom);
-  const publishedProjects = useAtomValue(PublishedProjectsAtom);
-  const draftProjects = useAtomValue(DraftProjectsAtom);
-  const { isAuthenticated } = useAuth();
+const useManageArticles = () => {
+  const [publishedArticles, setPublishedArticles] = useAtom(
+    PublishedProjectsAtom
+  );
+  const [draftArticles, setDraftArticles] = useAtom(DraftProjectsAtom);
+
+  const [query, setQuery] = useState('');
 
   const fetchProjects = useCallback(
     async (params: {
@@ -25,8 +25,6 @@ const useManageProjects = () => {
       query?: string;
       deletedDocCount?: number;
     }) => {
-      if (!isAuthenticated()) return;
-
       const { page, is_draft, query = '', deletedDocCount = 0 } = params;
 
       try {
@@ -40,7 +38,7 @@ const useManageProjects = () => {
           const newResults = projectsResponse.data || [];
 
           if (is_draft) {
-            setDraftProjects(
+            setDraftArticles(
               (prevState: ManageProjectsPaginationState | null) => {
                 const previousResults = prevState?.results || [];
 
@@ -58,7 +56,7 @@ const useManageProjects = () => {
               }
             );
           } else {
-            setPublishedProjects(
+            setPublishedArticles(
               (prevState: ManageProjectsPaginationState | null) => {
                 const previousResults = prevState?.results || [];
 
@@ -81,14 +79,53 @@ const useManageProjects = () => {
         console.error('Error fetching projects:', error);
       }
     },
-    [isAuthenticated, setPublishedProjects, setDraftProjects]
+    [setPublishedArticles, setDraftArticles]
   );
+
+  const handleSearchChange = (value: string) => {
+    setQuery(value);
+    if (!value.length) {
+      setPublishedArticles(null);
+      setDraftArticles(null);
+    }
+  };
+
+  const handleSearchSubmit = () => {
+    if (query.length) {
+      setPublishedArticles(null);
+      setDraftArticles(null);
+    }
+  };
+
+  const handleSearchClear = () => {
+    setQuery('');
+    setPublishedArticles(null);
+    setDraftArticles(null);
+  };
+
+  const handleLoadMore = (is_draft: boolean) => {
+    const currentState = is_draft ? draftArticles : publishedArticles;
+    if (currentState && currentState.results.length < currentState.totalDocs) {
+      fetchProjects({
+        page: currentState.page + 1,
+        is_draft,
+        query,
+        deletedDocCount: currentState.deletedDocCount || 0,
+      });
+    }
+  };
 
   return {
     fetchProjects,
-    publishedProjects,
-    draftProjects,
+    publishedArticles,
+    draftArticles,
+    query,
+    setQuery,
+    handleSearchChange,
+    handleSearchSubmit,
+    handleSearchClear,
+    handleLoadMore,
   };
 };
 
-export default useManageProjects;
+export default useManageArticles;

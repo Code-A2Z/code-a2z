@@ -1,9 +1,13 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
+import {
+  ROUTES_HOME_V1,
+  ROUTES_V1,
+} from '../../../../../../app/routes/constants/routes';
 import { useSetAtom } from 'jotai';
-import { deleteProjectById } from '../../../infra/rest/apis/project';
-import { useNotifications } from '../../../shared/hooks/use-notification';
-import { useAuth } from '../../../shared/hooks/use-auth';
+import { deleteProjectById } from '../../../../../../infra/rest/apis/project';
+import { useNotifications } from '../../../../../../shared/hooks/use-notification';
+import { useAuth } from '../../../../../../shared/hooks/use-auth';
 import { DraftProjectsAtom, ManageProjectsPaginationState } from '../states';
 import {
   Box,
@@ -15,17 +19,14 @@ import {
 } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
-import { userProjectsResponse } from '../../../infra/rest/apis/project/typing';
+import { userProjectsResponse } from '../../../../../../infra/rest/apis/project/typing';
 
-interface ManageDraftProjectPostProps {
+interface ManageDraftArticleProps {
   project: userProjectsResponse;
   index: number;
 }
 
-const ManageDraftProjectPost = ({
-  project,
-  index,
-}: ManageDraftProjectPostProps) => {
+const ManageDraftArticle = ({ project, index }: ManageDraftArticleProps) => {
   const { _id, title, description } = project;
   const setDraftProjects = useSetAtom(DraftProjectsAtom);
   const { addNotification } = useNotifications();
@@ -77,10 +78,25 @@ const ManageDraftProjectPost = ({
         mb: 3,
         border: 1,
         borderColor: 'divider',
+        borderRadius: 3,
+        bgcolor: 'background.default',
+        boxShadow: theme => theme.shadows[1],
+        transition: 'transform 0.2s ease, box-shadow 0.2s ease',
+        '&:hover': {
+          transform: 'translateY(-2px)',
+          boxShadow: theme => theme.shadows[3],
+        },
       }}
     >
-      <CardContent>
-        <Box sx={{ display: 'flex', gap: 3, alignItems: 'flex-start' }}>
+      <CardContent sx={{ '&:last-child': { pb: 3 } }}>
+        <Box
+          sx={{
+            display: 'flex',
+            gap: 3,
+            alignItems: 'flex-start',
+            flexDirection: { xs: 'column', md: 'row' },
+          }}
+        >
           <Box
             sx={{
               minWidth: 60,
@@ -119,16 +135,16 @@ const ManageDraftProjectPost = ({
             </Typography>
 
             <Stack
-              direction="row"
-              spacing={2}
-              sx={{ flexWrap: 'wrap', gap: 1 }}
+              direction={{ xs: 'column', sm: 'row' }}
+              spacing={1.5}
+              sx={{ flexWrap: 'wrap' }}
             >
               <Button
                 component={Link}
-                to={`/editor/${_id}`}
+                to={`${ROUTES_V1.HOME}${ROUTES_HOME_V1.EDITOR_WITH_ID.replace(':project_id', _id || '')}`}
                 size="small"
                 startIcon={<EditIcon />}
-                variant="outlined"
+                variant="contained"
               >
                 Edit
               </Button>
@@ -151,4 +167,4 @@ const ManageDraftProjectPost = ({
   );
 };
 
-export default ManageDraftProjectPost;
+export default ManageDraftArticle;

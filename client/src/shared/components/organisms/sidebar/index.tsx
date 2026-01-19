@@ -29,7 +29,7 @@ const Sidebar = () => {
         position: 'absolute',
         height: '100%',
         top: 0,
-        zIndex: 3,
+        zIndex: theme => theme.zIndex.drawer + 1,
         left: 0,
         width: showExpandedView ? '230px' : `${SIDEBAR_WIDTH}px`,
         minWidth: showExpandedView ? '230px' : `${SIDEBAR_WIDTH}px`,

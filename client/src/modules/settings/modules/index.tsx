@@ -7,3 +7,6 @@ export const IntegrationsLazyComponentV1 = lazy(
 export const OpenAILazyComponentV1 = lazy(
   () => import('./integrations/modules/openai/v1')
 );
+export const ManageArticlesLazyComponentV1 = lazy(
+  () => import('./manage-articles/v1')
+);

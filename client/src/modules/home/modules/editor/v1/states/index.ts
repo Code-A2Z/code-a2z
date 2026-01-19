@@ -16,10 +16,20 @@ export interface EditorContent {
   repositoryURL: string;
 }
 
+export const DEFAULT_EDITOR_CONTENT: EditorContent = {
+  title: '',
+  description: '',
+  banner: '',
+  content: { blocks: [] },
+  tags: [],
+  liveURL: '',
+  repositoryURL: '',
+};
+
 export const EditorPageAtom = atom<EditorPageState>(EditorPageState.EDITOR);
 
 export const TextEditorAtom = atom<{ isReady: boolean; editor?: EditorJS }>({
   isReady: false,
 });
 
-export const EditorContentAtom = atom<EditorContent | null>(null);
+export const EditorContentAtom = atom<EditorContent>(DEFAULT_EDITOR_CONTENT);
