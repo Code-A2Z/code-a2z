@@ -1,10 +1,14 @@
 export enum ROUTES_PAGE_V1 {
   HOME = 'home',
+  CHATS = 'chats',
+  CODE = 'code',
   SETTINGS = 'settings',
 }
 
 export enum ROUTES_V1 {
   HOME = '/v1/home',
+  CHATS = '/v1/chats',
+  CODE = '/v1/code',
   SETTINGS = '/v1/settings',
 }
 
@@ -16,6 +20,7 @@ export enum ROUTES_HOME_V1 {
 
 export enum ROUTES_SETTINGS_V1 {
   PROFILE = '/profile',
+  NOTIFICATION = '/notification',
   MANAGE_ARTICLES = '/manage-articles',
   INTEGRATIONS = '/integrations',
 }

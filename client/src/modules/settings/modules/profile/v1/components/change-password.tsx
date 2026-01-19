@@ -1,12 +1,12 @@
 import { useRef, useState } from 'react';
-import { useNotifications } from '../../shared/hooks/use-notification';
-import { passwordRegex } from '../../shared/utils/regex';
-import { changePassword } from '../../infra/rest/apis/auth';
-import InputBox from '../../shared/components/atoms/input-box';
+import { useNotifications } from '../../../../../../shared/hooks/use-notification';
+import { passwordRegex } from '../../../../../../shared/utils/regex';
+import { changePassword } from '../../../../../../infra/rest/apis/auth';
+import InputBox from '../../../../../../shared/components/atoms/input-box';
 import { Box, Button, Stack, CircularProgress } from '@mui/material';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import VpnKeyOutlinedIcon from '@mui/icons-material/VpnKeyOutlined';
-import A2ZTypography from '../../shared/components/atoms/typography';
+import A2ZTypography from '../../../../../../shared/components/atoms/typography';
 
 const ChangePassword = () => {
   const changePasswordForm = useRef<HTMLFormElement>(null);

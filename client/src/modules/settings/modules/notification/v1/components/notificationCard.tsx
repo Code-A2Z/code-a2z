@@ -1,12 +1,12 @@
 import { Link } from 'react-router-dom';
 import { useState } from 'react';
-import { getDay } from '../../../shared/utils/date';
+import { getDay } from '../../../../../../shared/utils/date';
 import NotificationCommentField from './notificationCommentField';
-import { GetNotificationsResponse } from '../../../infra/rest/apis/notification/typing';
+import { GetNotificationsResponse } from '../../../../../../infra/rest/apis/notification/typing';
 import { NotificationPaginationState } from '../states';
-import { deleteComment } from '../../../infra/rest/apis/comment';
-import { useNotifications as useNotificationHook } from '../../../shared/hooks/use-notification';
-import { ROUTES_V1 } from '../../../app/routes/constants/routes';
+import { deleteComment } from '../../../../../../infra/rest/apis/comment';
+import { useNotifications as useNotificationHook } from '../../../../../../shared/hooks/use-notification';
+import { ROUTES_V1 } from '../../../../../../app/routes/constants/routes';
 import {
   ListItem,
   ListItemAvatar,
@@ -106,13 +106,18 @@ const NotificationCard = ({
       elevation={!seen ? 3 : 1}
       sx={{
         mb: 2,
-        borderLeft: !seen ? 4 : 2,
+        borderRadius: 2,
+        borderLeftWidth: !seen ? 4 : 2,
+        borderLeftStyle: 'solid',
         borderLeftColor: `${getNotificationColor()}.main`,
+        border: 1,
+        borderColor: 'divider',
+        bgcolor: 'background.paper',
         position: 'relative',
+        transition: 'box-shadow 0.2s ease, transform 0.2s ease',
         '&:hover': {
-          boxShadow: theme => theme.shadows[4],
-          transform: 'scale(1.01)',
-          transition: 'all 0.2s ease-in-out',
+          boxShadow: theme => theme.shadows[3],
+          transform: 'translateY(-2px)',
         },
       }}
     >
@@ -121,26 +126,26 @@ const NotificationCard = ({
         <Box
           sx={{
             position: 'absolute',
-            top: 16,
-            right: 16,
-            width: 12,
-            height: 12,
+            top: 14,
+            right: 14,
+            width: 10,
+            height: 10,
             bgcolor: 'primary.main',
             borderRadius: '50%',
-            animation: 'pulse 2s infinite',
+            boxShadow: theme => `0 0 0 4px ${theme.palette.primary.main}20`,
           }}
         />
       )}
 
-      <ListItem alignItems="flex-start" sx={{ p: 3 }}>
+      <ListItem alignItems="flex-start" sx={{ p: { xs: 2, sm: 3 } }}>
         <ListItemAvatar>
           <Box sx={{ position: 'relative' }}>
             <Avatar
               src={profile_img}
               alt={`${fullname}'s profile`}
               sx={{
-                width: 56,
-                height: 56,
+                width: { xs: 44, sm: 56 },
+                height: { xs: 44, sm: 56 },
                 border: 2,
                 borderColor: 'background.paper',
               }}
@@ -150,8 +155,8 @@ const NotificationCard = ({
                 position: 'absolute',
                 bottom: -4,
                 right: -4,
-                width: 24,
-                height: 24,
+                width: { xs: 20, sm: 24 },
+                height: { xs: 20, sm: 24 },
                 bgcolor: 'background.paper',
                 borderRadius: '50%',
                 display: 'flex',
@@ -162,13 +167,13 @@ const NotificationCard = ({
               }}
             >
               {type === 'like' ? (
-                <Favorite color="error" />
+                <Favorite color="error" fontSize="small" />
               ) : type === 'comment' ? (
-                <Comment color="primary" />
+                <Comment color="primary" fontSize="small" />
               ) : type === 'reply' ? (
-                <Reply color="success" />
+                <Reply color="success" fontSize="small" />
               ) : (
-                <Notifications color="action" />
+                <Notifications color="action" fontSize="small" />
               )}
             </Box>
           </Box>
@@ -176,7 +181,15 @@ const NotificationCard = ({
 
         <ListItemText
           primary={
-            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 1 }}>
+            <Box
+              sx={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: 1,
+                mb: 1,
+                flexWrap: 'wrap',
+              }}
+            >
               <Typography
                 variant="h6"
                 component="span"
@@ -223,8 +236,8 @@ const NotificationCard = ({
                   variant="outlined"
                   sx={{
                     p: 2,
-                    bgcolor: 'grey.100',
-                    borderColor: 'grey.300',
+                    bgcolor: 'background.default',
+                    borderColor: 'divider',
                   }}
                 >
                   <Typography variant="body2" sx={{ fontStyle: 'italic' }}>
@@ -256,13 +269,13 @@ const NotificationCard = ({
       </ListItem>
 
       {type !== 'like' && comment_id?.comment && (
-        <Box sx={{ ml: 9, mr: 3, mb: 2 }}>
+        <Box sx={{ ml: { xs: 2, sm: 9 }, mr: { xs: 2, sm: 3 }, mb: 2 }}>
           <Paper
             variant="outlined"
             sx={{
               p: 2,
-              bgcolor: 'grey.50',
-              borderColor: 'grey.300',
+              bgcolor: 'background.default',
+              borderColor: 'divider',
             }}
           >
             <Typography variant="body1" sx={{ fontFamily: 'Gelasio, serif' }}>
@@ -276,10 +289,12 @@ const NotificationCard = ({
 
       <Box
         sx={{
-          p: 2,
+          p: { xs: 1.5, sm: 2 },
           display: 'flex',
-          alignItems: 'center',
+          alignItems: { xs: 'flex-start', sm: 'center' },
           justifyContent: 'space-between',
+          flexDirection: { xs: 'column', sm: 'row' },
+          gap: { xs: 1.5, sm: 0 },
         }}
       >
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 3 }}>
@@ -314,7 +329,7 @@ const NotificationCard = ({
       </Box>
 
       <Collapse in={isReplying} timeout="auto" unmountOnExit>
-        <Box sx={{ p: 2, bgcolor: 'grey.50' }}>
+        <Box sx={{ p: { xs: 2, sm: 2.5 }, bgcolor: 'background.default' }}>
           <NotificationCommentField
             project_id={project_id}
             replyingTo={comment_id?._id}

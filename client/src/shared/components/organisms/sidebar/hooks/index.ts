@@ -1,5 +1,7 @@
 import { useCallback, useState, useMemo } from 'react';
 import HomeIcon from '@mui/icons-material/Home';
+import ChatIcon from '@mui/icons-material/Chat';
+import CodeIcon from '@mui/icons-material/Code';
 import PowerSettingsNewIcon from '@mui/icons-material/PowerSettingsNew';
 import SettingsIcon from '@mui/icons-material/Settings';
 import { SideBarItemsType } from '../typings';
@@ -31,6 +33,20 @@ const useSidebar = () => {
         path: ROUTES_V1.HOME,
         title: 'Home',
         screenName: ROUTES_PAGE_V1.HOME,
+      },
+      {
+        icon: ChatIcon,
+        path: ROUTES_V1.CHATS,
+        title: 'Chats',
+        screenName: ROUTES_PAGE_V1.CHATS,
+        hasAccess: false,
+      },
+      {
+        icon: CodeIcon,
+        path: ROUTES_V1.CODE,
+        title: 'Code',
+        screenName: ROUTES_PAGE_V1.CODE,
+        hasAccess: false,
       },
       {
         icon: SettingsIcon,

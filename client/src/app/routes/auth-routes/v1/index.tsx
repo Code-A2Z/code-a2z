@@ -5,7 +5,9 @@ import { LOADING } from '../../constants';
 import Loader from '../../../../shared/components/molecules/loader';
 import {
   HomePageLazyComponent,
+  ChatsPageLazyComponent,
   SettingsPageLazyComponent,
+  CodePageLazyComponent,
 } from '../../../components';
 
 export default function getRoutesV1() {
@@ -16,6 +18,24 @@ export default function getRoutesV1() {
       element={
         <Suspense fallback={<Loader size={32} secondary={LOADING} />}>
           <HomePageLazyComponent />
+        </Suspense>
+      }
+    />,
+    <Route
+      key={`${ROUTES_V1.CHATS}/*`}
+      path={`${ROUTES_V1.CHATS}/*`}
+      element={
+        <Suspense fallback={<Loader size={32} secondary={LOADING} />}>
+          <ChatsPageLazyComponent />
+        </Suspense>
+      }
+    />,
+    <Route
+      key={`${ROUTES_V1.CODE}/*`}
+      path={`${ROUTES_V1.CODE}/*`}
+      element={
+        <Suspense fallback={<Loader size={32} secondary={LOADING} />}>
+          <CodePageLazyComponent />
         </Suspense>
       }
     />,

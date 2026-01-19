@@ -1,8 +1,5 @@
 import { useState } from 'react';
 import axios from 'axios';
-import { useAtomValue } from 'jotai';
-import { UserAtom } from '../../../infra/states/user';
-import { useAuth } from '../../../shared/hooks/use-auth';
 import { TextField, Button, Box, Typography } from '@mui/material';
 import { Reply } from '@mui/icons-material';
 
@@ -20,17 +17,10 @@ const NotificationCommentField = ({
   notification_id,
 }: NotificationCommentFieldProps) => {
   const [comment, setComment] = useState('');
-  const user = useAtomValue(UserAtom);
-  const { isAuthenticated } = useAuth();
 
   const handleComment = () => {
     if (!comment.length) {
       console.error('Write something to leave a comment...');
-      return;
-    }
-
-    if (!isAuthenticated() || !user) {
-      console.error('User not authenticated');
       return;
     }
 
@@ -74,11 +64,12 @@ const NotificationCommentField = ({
           sx={{
             '& .MuiOutlinedInput-root': {
               resize: 'none',
+              bgcolor: 'background.paper',
               '& fieldset': {
-                borderColor: 'grey.300',
+                borderColor: 'divider',
               },
               '&:hover fieldset': {
-                borderColor: 'grey.400',
+                borderColor: 'text.secondary',
               },
               '&.Mui-focused fieldset': {
                 borderColor: 'primary.main',
@@ -105,6 +96,8 @@ const NotificationCommentField = ({
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'space-between',
+          flexWrap: 'wrap',
+          gap: 1,
         }}
       >
         <Button
