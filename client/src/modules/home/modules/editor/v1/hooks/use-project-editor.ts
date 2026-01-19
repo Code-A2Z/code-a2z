@@ -13,6 +13,10 @@ import { createProject } from '../../../../../../infra/rest/apis/project';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useEditor } from '.';
 import { TAG_LIMIT } from '../constants';
+import {
+  ROUTES_SETTINGS_V1,
+  ROUTES_V1,
+} from '../../../../../../app/routes/constants/routes';
 
 export const useProjectEditor = () => {
   const { addNotification } = useNotifications();
@@ -246,7 +250,7 @@ export const useProjectEditor = () => {
         type: response.status,
       });
       setTimeout(() => {
-        navigate('/dashboard/projects?tab=published');
+        navigate(`${ROUTES_V1.SETTINGS}${ROUTES_SETTINGS_V1.MANAGE_ARTICLES}`);
       }, 500);
       setEditorContent(null);
       setTextEditor({ isReady: false });

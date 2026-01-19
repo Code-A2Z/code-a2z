@@ -1,22 +1,24 @@
-import { useCallback } from 'react';
+import { useCallback, useState } from 'react';
 import { useSetAtom, useAtomValue } from 'jotai';
 import {
   userProjects,
   userProjectsCount,
-} from '../../../infra/rest/apis/project';
+} from '../../../../../../infra/rest/apis/project';
 import {
   PublishedProjectsAtom,
   DraftProjectsAtom,
   ManageProjectsPaginationState,
 } from '../states';
-import { useAuth } from '../../../shared/hooks/use-auth';
+import { useAuth } from '../../../../../../shared/hooks/use-auth';
 
-const useManageProjects = () => {
+const useManageArticles = () => {
   const setPublishedProjects = useSetAtom(PublishedProjectsAtom);
   const setDraftProjects = useSetAtom(DraftProjectsAtom);
   const publishedProjects = useAtomValue(PublishedProjectsAtom);
   const draftProjects = useAtomValue(DraftProjectsAtom);
   const { isAuthenticated } = useAuth();
+
+  const [query, setQuery] = useState('');
 
   const fetchProjects = useCallback(
     async (params: {
@@ -84,11 +86,50 @@ const useManageProjects = () => {
     [isAuthenticated, setPublishedProjects, setDraftProjects]
   );
 
+  const handleSearchChange = (value: string) => {
+    setQuery(value);
+    if (!value.length) {
+      setPublishedProjects(null);
+      setDraftProjects(null);
+    }
+  };
+
+  const handleSearchSubmit = () => {
+    if (query.length) {
+      setPublishedProjects(null);
+      setDraftProjects(null);
+    }
+  };
+
+  const handleSearchClear = () => {
+    setQuery('');
+    setPublishedProjects(null);
+    setDraftProjects(null);
+  };
+
+  const handleLoadMore = (is_draft: boolean) => {
+    const currentState = is_draft ? draftProjects : publishedProjects;
+    if (currentState && currentState.results.length < currentState.totalDocs) {
+      fetchProjects({
+        page: currentState.page + 1,
+        is_draft,
+        query,
+        deletedDocCount: currentState.deletedDocCount || 0,
+      });
+    }
+  };
+
   return {
     fetchProjects,
     publishedProjects,
     draftProjects,
+    query,
+    setQuery,
+    handleSearchChange,
+    handleSearchSubmit,
+    handleSearchClear,
+    handleLoadMore,
   };
 };
 
-export default useManageProjects;
+export default useManageArticles;

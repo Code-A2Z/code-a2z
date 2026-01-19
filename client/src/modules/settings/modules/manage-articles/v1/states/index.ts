@@ -1,5 +1,5 @@
 import { atom } from 'jotai';
-import { userProjectsResponse } from '../../../infra/rest/apis/project/typing';
+import { userProjectsResponse } from '../../../../../../infra/rest/apis/project/typing';
 
 export interface ManageProjectsPaginationState {
   results: userProjectsResponse[];

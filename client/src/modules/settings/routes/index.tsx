@@ -1,5 +1,6 @@
 import AccountCircleOutlinedIcon from '@mui/icons-material/AccountCircleOutlined';
 import ExtensionIcon from '@mui/icons-material/Extension';
+import ArticleIcon from '@mui/icons-material/Article';
 import {
   ROUTES_V1,
   ROUTES_SETTINGS_V1,
@@ -12,6 +13,7 @@ import {
   ProfileLazyComponentV1,
   IntegrationsLazyComponentV1,
   OpenAILazyComponentV1,
+  ManageArticlesLazyComponentV1,
 } from '../modules';
 import OpenAIIcon from '../../../shared/icons/openai';
 
@@ -29,6 +31,13 @@ export const settingsRoutes = ({
       description: 'Edit your personal details',
     },
     {
+      id: 'manage-articles',
+      icon: <ArticleIcon sx={{ fontSize: 20 }} />,
+      path: ROUTES_SETTINGS_V1.MANAGE_ARTICLES,
+      name: 'Manage Articles',
+      description: 'Manage your articles',
+    },
+    {
       id: 'integrations',
       icon: <ExtensionIcon sx={{ fontSize: 20 }} />,
       path: ROUTES_SETTINGS_V1.INTEGRATIONS,
@@ -43,6 +52,16 @@ export const settingsRoutes = ({
       path={ROUTES_SETTINGS_V1.PROFILE}
       element={
         <ProtectedRoute component={ProfileLazyComponentV1} hasAccess={true} />
+      }
+    />,
+    <Route
+      key={ROUTES_SETTINGS_V1.MANAGE_ARTICLES}
+      path={ROUTES_SETTINGS_V1.MANAGE_ARTICLES}
+      element={
+        <ProtectedRoute
+          component={ManageArticlesLazyComponentV1}
+          hasAccess={true}
+        />
       }
     />,
     <Route
