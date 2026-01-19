@@ -2,11 +2,11 @@ import { uploadImage } from '../../../../../../infra/rest/apis/media';
 import { useNotifications } from '../../../../../../shared/hooks/use-notification';
 import { useAtom, useSetAtom } from 'jotai';
 import {
-  EditorContent,
   EditorContentAtom,
   EditorPageAtom,
   EditorPageState,
   TextEditorAtom,
+  DEFAULT_EDITOR_CONTENT,
 } from '../states';
 import { OutputData } from '@editorjs/editorjs';
 import { createProject } from '../../../../../../infra/rest/apis/project';
@@ -38,9 +38,7 @@ export const useProjectEditor = () => {
               message,
               type: status,
             });
-            setEditorContent(
-              prev => ({ ...prev, banner: data.upload_url }) as EditorContent
-            );
+            setEditorContent(prev => ({ ...prev, banner: data.upload_url }));
           }
         })
         .catch(err => {
@@ -51,34 +49,26 @@ export const useProjectEditor = () => {
 
   const handleTitleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     const textarea = e.target;
-    setEditorContent(
-      prev => ({ ...prev, title: textarea.value }) as EditorContent
-    );
+    setEditorContent(prev => ({ ...prev, title: textarea.value }));
   };
 
   const handleDescriptionChange = (
     e: React.ChangeEvent<HTMLTextAreaElement>
   ) => {
     const textarea = e.target;
-    setEditorContent(
-      prev => ({ ...prev, description: textarea.value }) as EditorContent
-    );
+    setEditorContent(prev => ({ ...prev, description: textarea.value }));
   };
 
   const handleRepositoryURLChange = (
     e: React.ChangeEvent<HTMLInputElement>
   ) => {
     const input = e.target;
-    setEditorContent(
-      prev => ({ ...prev, repositoryURL: input.value }) as EditorContent
-    );
+    setEditorContent(prev => ({ ...prev, repositoryURL: input.value }));
   };
 
   const handleLiveURLChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const input = e.target;
-    setEditorContent(
-      prev => ({ ...prev, liveURL: input.value }) as EditorContent
-    );
+    setEditorContent(prev => ({ ...prev, liveURL: input.value }));
   };
 
   const handleTagsAdd = (tag: string) => {
@@ -88,19 +78,14 @@ export const useProjectEditor = () => {
         type: 'error',
       });
     }
-    setEditorContent(
-      prev => ({ ...prev, tags: [...(prev?.tags || []), tag] }) as EditorContent
-    );
+    setEditorContent(prev => ({ ...prev, tags: [...prev.tags, tag] }));
   };
 
   const handleTagsDelete = (index: number) => {
-    setEditorContent(
-      prev =>
-        ({
-          ...prev,
-          tags: prev?.tags.filter((_, i) => i !== index),
-        }) as EditorContent
-    );
+    setEditorContent(prev => ({
+      ...prev,
+      tags: prev.tags.filter((_, i) => i !== index),
+    }));
   };
 
   const handleDraftProject = async () => {
@@ -121,9 +106,7 @@ export const useProjectEditor = () => {
       textEditor.editor
         ?.save()
         .then(async (outputData: OutputData) => {
-          setEditorContent(
-            prev => ({ ...prev, content: outputData }) as EditorContent
-          );
+          setEditorContent(prev => ({ ...prev, content: outputData }));
           const response = await createProject({
             _id: project_id ?? undefined,
             title: editorContent.title,
@@ -143,7 +126,7 @@ export const useProjectEditor = () => {
             setTimeout(() => {
               navigate('/dashboard/projects?tab=draft');
             }, 500);
-            setEditorContent(null);
+            setEditorContent(DEFAULT_EDITOR_CONTENT);
             setTextEditor({ isReady: false });
             setEditorPageState(EditorPageState.EDITOR);
           }
@@ -172,9 +155,7 @@ export const useProjectEditor = () => {
         ?.save()
         .then((outputData: OutputData) => {
           if (outputData.blocks.length) {
-            setEditorContent(
-              prev => ({ ...prev, content: outputData }) as EditorContent
-            );
+            setEditorContent(prev => ({ ...prev, content: outputData }));
             handlePublish();
           } else {
             return addNotification({
@@ -252,7 +233,7 @@ export const useProjectEditor = () => {
       setTimeout(() => {
         navigate(`${ROUTES_V1.SETTINGS}${ROUTES_SETTINGS_V1.MANAGE_ARTICLES}`);
       }, 500);
-      setEditorContent(null);
+      setEditorContent(DEFAULT_EDITOR_CONTENT);
       setTextEditor({ isReady: false });
       setEditorPageState(EditorPageState.EDITOR);
     }

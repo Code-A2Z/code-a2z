@@ -1,5 +1,5 @@
 import { useCallback, useState } from 'react';
-import { useSetAtom, useAtomValue } from 'jotai';
+import { useAtom } from 'jotai';
 import {
   userProjects,
   userProjectsCount,
@@ -9,14 +9,12 @@ import {
   DraftProjectsAtom,
   ManageProjectsPaginationState,
 } from '../states';
-import { useAuth } from '../../../../../../shared/hooks/use-auth';
 
 const useManageArticles = () => {
-  const setPublishedProjects = useSetAtom(PublishedProjectsAtom);
-  const setDraftProjects = useSetAtom(DraftProjectsAtom);
-  const publishedProjects = useAtomValue(PublishedProjectsAtom);
-  const draftProjects = useAtomValue(DraftProjectsAtom);
-  const { isAuthenticated } = useAuth();
+  const [publishedProjects, setPublishedProjects] = useAtom(
+    PublishedProjectsAtom
+  );
+  const [draftProjects, setDraftProjects] = useAtom(DraftProjectsAtom);
 
   const [query, setQuery] = useState('');
 
@@ -27,8 +25,6 @@ const useManageArticles = () => {
       query?: string;
       deletedDocCount?: number;
     }) => {
-      if (!isAuthenticated()) return;
-
       const { page, is_draft, query = '', deletedDocCount = 0 } = params;
 
       try {
@@ -83,7 +79,7 @@ const useManageArticles = () => {
         console.error('Error fetching projects:', error);
       }
     },
-    [isAuthenticated, setPublishedProjects, setDraftProjects]
+    [setPublishedProjects, setDraftProjects]
   );
 
   const handleSearchChange = (value: string) => {
