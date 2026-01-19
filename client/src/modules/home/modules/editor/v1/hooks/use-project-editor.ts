@@ -1,5 +1,5 @@
-import { uploadImage } from '../../../infra/rest/apis/media';
-import { useNotifications } from '../../../shared/hooks/use-notification';
+import { uploadImage } from '../../../../../../infra/rest/apis/media';
+import { useNotifications } from '../../../../../../shared/hooks/use-notification';
 import { useAtom, useSetAtom } from 'jotai';
 import {
   EditorContent,
@@ -9,10 +9,10 @@ import {
   TextEditorAtom,
 } from '../states';
 import { OutputData } from '@editorjs/editorjs';
-import { createProject } from '../../../infra/rest/apis/project';
+import { createProject } from '../../../../../../infra/rest/apis/project';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useEditor } from '.';
-import { tagLimit } from '../constants';
+import { TAG_LIMIT } from '../constants';
 
 export const useProjectEditor = () => {
   const { addNotification } = useNotifications();
@@ -78,9 +78,9 @@ export const useProjectEditor = () => {
   };
 
   const handleTagsAdd = (tag: string) => {
-    if (editorContent?.tags && editorContent.tags.length >= tagLimit) {
+    if (editorContent?.tags && editorContent.tags.length >= TAG_LIMIT) {
       return addNotification({
-        message: `You can add up to ${tagLimit} tags only`,
+        message: `You can add up to ${TAG_LIMIT} tags only`,
         type: 'error',
       });
     }

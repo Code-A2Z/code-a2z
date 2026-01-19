@@ -2,20 +2,19 @@ import { Box, TextareaAutosize, Chip } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 import { useTheme } from '@mui/material/styles';
 import { useProjectEditor } from '../hooks/use-project-editor';
-import {
-  characterLimit,
-  defaultDarkThumbnail,
-  defaultLightThumbnail,
-  tagLimit,
-} from '../constants';
-import A2ZIconButton from '../../../shared/components/atoms/icon-button';
-import A2ZTypography from '../../../shared/components/atoms/typography';
-import InputBox from '../../../shared/components/atoms/input-box';
-import A2ZButton from '../../../shared/components/atoms/button';
+import { CHARACTER_LIMIT, TAG_LIMIT } from '../constants';
+import A2ZIconButton from '../../../../../../shared/components/atoms/icon-button';
+import A2ZTypography from '../../../../../../shared/components/atoms/typography';
+import InputBox from '../../../../../../shared/components/atoms/input-box';
+import A2ZButton from '../../../../../../shared/components/atoms/button';
 import { useEditor } from '../hooks';
-import { useA2ZTheme } from '../../../shared/hooks/use-theme';
+import { useA2ZTheme } from '../../../../../../shared/hooks/use-theme';
 import { useAtomValue } from 'jotai';
 import { EditorContentAtom } from '../states';
+import {
+  defaultDarkThumbnail,
+  defaultLightThumbnail,
+} from '../../../../../../shared/constants';
 
 const PublishForm = () => {
   const theme = useTheme();
@@ -156,7 +155,7 @@ const PublishForm = () => {
         />
         <TextareaAutosize
           placeholder="Your Project Description"
-          maxLength={characterLimit}
+          maxLength={CHARACTER_LIMIT}
           defaultValue={editorContent?.description}
           onChange={handleDescriptionChange}
           style={{
@@ -173,7 +172,7 @@ const PublishForm = () => {
           }}
         />
         <A2ZTypography
-          text={`${characterLimit - (editorContent?.description?.length || 0)} characters left`}
+          text={`${CHARACTER_LIMIT - (editorContent?.description?.length || 0)} characters left`}
           variant="caption"
           props={{
             color: 'text.secondary',
@@ -242,7 +241,7 @@ const PublishForm = () => {
 
         <A2ZTypography
           variant="caption"
-          text={`${tagLimit - (editorContent?.tags?.length || 0)} Tags left`}
+          text={`${TAG_LIMIT - (editorContent?.tags?.length || 0)} Tags left`}
           props={{
             color: 'text.secondary',
             sx: {

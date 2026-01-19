@@ -7,7 +7,7 @@ import { getDay } from '../../../../shared/utils/date';
 import {
   defaultDarkThumbnail,
   defaultLightThumbnail,
-} from '../../../editor/constants';
+} from '../../../../shared/constants';
 import { getAllProjectsResponse } from '../../../../infra/rest/apis/project/typing';
 import A2ZTypography from '../../../../shared/components/atoms/typography';
 import { ROUTES_V1 } from '../../../../app/routes/constants/routes';

@@ -47,7 +47,14 @@ const Header = ({
   const hasRightActions = Boolean(rightSideActions?.length);
 
   return (
-    <Box>
+    <Box
+      sx={{
+        position: 'sticky',
+        top: 0,
+        zIndex: theme => theme.zIndex.appBar,
+        bgcolor: 'background.paper',
+      }}
+    >
       <Box
         sx={{
           height: `${NAVBAR_HEIGHT}px`,
@@ -57,7 +64,6 @@ const Header = ({
           alignItems: 'center',
           px: { xs: 2, md: 3 },
           borderBottom: `1px solid ${theme.palette.divider}`,
-          bgcolor: 'background.paper',
           gap: 2,
         }}
       >
@@ -93,16 +99,21 @@ const Header = ({
         {hasRightActions && (
           <Box sx={{ display: { xs: 'none', md: 'flex' }, gap: 1 }}>
             {rightSideActions?.map(action => (
-              <A2ZIconButton
-                key={action.key}
-                link={action.link}
-                props={{
-                  onClick: action.onClick,
-                  'aria-label': action.ariaLabel ?? action.label,
-                }}
-              >
-                {action.icon}
-              </A2ZIconButton>
+              <Box key={action.key}>
+                {action.desktopNode ? (
+                  action.desktopNode
+                ) : (
+                  <A2ZIconButton
+                    link={action.link}
+                    props={{
+                      onClick: action.onClick,
+                      'aria-label': action.ariaLabel ?? action.label,
+                    }}
+                  >
+                    {action.icon}
+                  </A2ZIconButton>
+                )}
+              </Box>
             ))}
           </Box>
         )}

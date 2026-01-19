@@ -47,12 +47,15 @@ const RenderMobileMenu: FC<RenderMobileMenuProps> = ({
       open={isMobileMenuOpen}
       onClose={handleMobileMenuClose}
     >
-      {actions.map(action => (
-        <MenuItem key={action.key} onClick={() => handleActionClick(action)}>
-          <A2ZIconButton>{action.icon}</A2ZIconButton>
-          <A2ZTypography component="p" text={action.label} />
-        </MenuItem>
-      ))}
+      {actions.map(action => {
+        const mobileIcon = action.mobileIcon ?? action.icon;
+        return (
+          <MenuItem key={action.key} onClick={() => handleActionClick(action)}>
+            {mobileIcon && <A2ZIconButton>{mobileIcon}</A2ZIconButton>}
+            <A2ZTypography component="p" text={action.label} />
+          </MenuItem>
+        );
+      })}
     </Menu>
   );
 };

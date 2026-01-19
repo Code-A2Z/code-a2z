@@ -10,6 +10,8 @@ export enum ROUTES_V1 {
 
 export enum ROUTES_HOME_V1 {
   PROJECT = '/:project_id',
+  EDITOR = '/editor',
+  EDITOR_WITH_ID = '/editor/:project_id',
 }
 
 export enum ROUTES_SETTINGS_V1 {
