@@ -8,9 +8,7 @@ import { SIDEBAR_WIDTH } from '../../shared/components/organisms/sidebar/constan
 import { Routes } from 'react-router-dom';
 import getRoutesV1 from '../routes/auth-routes/v1';
 
-export const LoginLazyComponent = lazy(
-  () => import('../../modules/user-auth-form/v1')
-);
+export const LoginLazyComponent = lazy(() => import('../../modules/auth/v1'));
 export const HomePageLazyComponent = lazy(
   () => import('../../modules/home/v1')
 );
