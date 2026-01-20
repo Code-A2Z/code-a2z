@@ -9,7 +9,7 @@ export interface SubmitFeedbackPayload {
   details: string;
   category: FeedbackCategory;
   reproduce_steps?: string;
-  attachment?: File | null;
+  attachment?: string;
 }
 
 export interface FeedbackItem {

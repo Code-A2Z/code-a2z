@@ -15,7 +15,7 @@ import A2ZModal from '../../atoms/modal';
 import A2ZTypography from '../../atoms/typography';
 import { submitFeedback } from '../../../../infra/rest/apis/feedback';
 import { FeedbackCategory } from '../../../../infra/rest/apis/feedback/typing';
-import { toast } from 'react-toastify';
+import { useNotifications } from '../../../hooks/use-notification';
 
 interface FeedbackModalProps {
   open: boolean;
@@ -31,6 +31,7 @@ const FeedbackModal = ({ open, onClose }: FeedbackModalProps) => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const { addNotification } = useNotifications();
 
   const validate = () => {
     const newErrors: { [key: string]: string } = {};
@@ -51,26 +52,46 @@ const FeedbackModal = ({ open, onClose }: FeedbackModalProps) => {
     return Object.keys(newErrors).length === 0;
   };
 
+  const fileToBase64 = (file: File): Promise<string> => {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = () => resolve(reader.result as string);
+      reader.onerror = error => reject(error);
+    });
+  };
+
   const handleSubmit = async () => {
     if (!validate()) return;
 
     setIsSubmitting(true);
     try {
+      let attachmentBase64 = undefined;
+      if (attachment) {
+        attachmentBase64 = await fileToBase64(attachment);
+      }
+
       await submitFeedback({
         title,
         details,
         category: category as FeedbackCategory,
         reproduce_steps: reproduceSteps,
-        attachment,
+        attachment: attachmentBase64,
       });
 
-      toast.success('Feedback submitted successfully!');
+      addNotification({
+        message: 'Feedback submitted successfully!',
+        type: 'success',
+      });
       handleClose();
     } catch (error: unknown) {
       const message =
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         (error as any).response?.data?.message || 'Failed to submit feedback';
-      toast.error(message);
+      addNotification({
+        message,
+        type: 'error',
+      });
     } finally {
       setIsSubmitting(false);
     }
@@ -90,7 +111,10 @@ const FeedbackModal = ({ open, onClose }: FeedbackModalProps) => {
     if (e.target.files && e.target.files[0]) {
       const file = e.target.files[0];
       if (file.size > 5 * 1024 * 1024) {
-        toast.error('File size must be less than 5MB');
+        addNotification({
+          message: 'File size must be less than 5MB',
+          type: 'error',
+        });
         return;
       }
       setAttachment(file);
