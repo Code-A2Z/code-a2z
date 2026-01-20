@@ -1,4 +1,4 @@
-import { useRef, useState, useEffect } from 'react';
+import { useRef, useState, useEffect, useCallback } from 'react';
 import { useDevice } from '../../../../hooks/use-device';
 
 export const useHeader = ({
@@ -51,21 +51,24 @@ export const useHeader = ({
     onSearchClear?.();
   };
 
-  const triggerSearchByKeyboard = (e: KeyboardEvent) => {
-    if ((e.metaKey && e.key === 'k') || (e.ctrlKey && e.key === 'k')) {
-      e.preventDefault();
-      e.stopPropagation();
+  const triggerSearchByKeyboard = useCallback(
+    (e: KeyboardEvent) => {
+      if ((e.metaKey && e.key === 'k') || (e.ctrlKey && e.key === 'k')) {
+        e.preventDefault();
+        e.stopPropagation();
 
-      if (isDesktop && searchInputRef.current) {
-        setTimeout(() => {
-          if (searchInputRef.current) {
-            searchInputRef.current.focus();
-            searchInputRef.current.select();
-          }
-        }, 10);
+        if (isDesktop && searchInputRef.current) {
+          setTimeout(() => {
+            if (searchInputRef.current) {
+              searchInputRef.current.focus();
+              searchInputRef.current.select();
+            }
+          }, 10);
+        }
       }
-    }
-  };
+    },
+    [isDesktop]
+  );
 
   useEffect(() => {
     if (!enableSearch) {
@@ -76,7 +79,7 @@ export const useHeader = ({
     return () => {
       document.removeEventListener('keydown', triggerSearchByKeyboard, true);
     };
-  }, [isDesktop, enableSearch]);
+  }, [enableSearch, triggerSearchByKeyboard]);
 
   return {
     mobileMoreAnchorEl,
