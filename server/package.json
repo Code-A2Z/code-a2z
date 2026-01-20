@@ -48,7 +48,6 @@
     "nodemailer": "^7.0.5",
     "rate-limiter-flexible": "^7.3.0",
     "resend": "^6.1.2",
-    "sanitize-html": "^2.17.0",
     "winston": "^3.18.3"
   },
   "devDependencies": {

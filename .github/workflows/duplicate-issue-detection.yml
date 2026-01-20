@@ -10,7 +10,7 @@ permissions:
 jobs:
   check-duplicates:
     runs-on: ubuntu-latest
-    
+
     steps:
       - name: Check for Duplicate Issues
         uses: actions/github-script@v7
@@ -22,26 +22,26 @@ jobs:
             const issueTitle = issue.title.toLowerCase().trim();
             const issueBody = (issue.body || '').toLowerCase().trim();
             const issueLabels = issue.labels.map(label => label.name);
-            
+
             // Configuration
             const SIMILARITY_THRESHOLD = 0.80; // 80% similarity threshold
             const PROTECTED_LABELS = ['critical', 'security', 'urgent', 'high-priority'];
-            
+
             // Skip if issue has protected labels
             const hasProtectedLabel = issueLabels.some(label => 
               PROTECTED_LABELS.includes(label.toLowerCase())
             );
-            
+
             if (hasProtectedLabel) {
               console.log(`Issue #${issueNumber} has protected label. Skipping duplicate check.`);
               return;
             }
-            
+
             // Get issue category (bug, enhancement, feature)
             const issueCategory = issueLabels.find(label => 
               ['bug', 'enhancement', 'feature'].includes(label.toLowerCase())
             );
-            
+
             // Levenshtein distance algorithm for fuzzy string matching
             function levenshteinDistance(str1, str2) {
               const matrix = [];
@@ -70,7 +70,7 @@ jobs:
               
               return matrix[str2.length][str1.length];
             }
-            
+
             // Calculate similarity percentage
             function calculateSimilarity(str1, str2) {
               if (!str1 || !str2) return 0;
@@ -82,7 +82,7 @@ jobs:
               
               return 1 - (distance / maxLength);
             }
-            
+
             // Normalize text for comparison
             function normalizeText(text) {
               return text
@@ -91,7 +91,7 @@ jobs:
                 .replace(/\s+/g, ' ')
                 .trim();
             }
-            
+
             // Extract keywords (words longer than 3 characters, excluding common words)
             function extractKeywords(text) {
               const commonWords = new Set(['the', 'and', 'for', 'with', 'this', 'that', 'from', 'have', 'been', 'were', 'will', 'would', 'could', 'should', 'about', 'after', 'before', 'when', 'where', 'which', 'what', 'how', 'why', 'does', 'doesn', 'not', 'are', 'was', 'has']);
@@ -102,7 +102,7 @@ jobs:
                 .split(/\s+/)
                 .filter(word => word.length > 3 && !commonWords.has(word));
             }
-            
+
             // Calculate keyword overlap (Jaccard similarity)
             function calculateKeywordSimilarity(text1, text2) {
               const keywords1 = new Set(extractKeywords(text1));
@@ -116,7 +116,7 @@ jobs:
               
               return intersection.size / union.size;
             }
-            
+
             // Fetch all open issues
             const { data: openIssues } = await github.rest.issues.listForRepo({
               owner: context.repo.owner,
@@ -124,14 +124,14 @@ jobs:
               state: 'open',
               per_page: 100
             });
-            
+
             let mostSimilarIssue = null;
             let highestSimilarity = 0;
-            
+
             // Normalize current issue text once before the loop (performance optimization)
             const normalizedIssueTitle = normalizeText(issueTitle);
             const normalizedIssueBody = normalizeText(issueBody);
-            
+
             // Compare with existing open issues
             for (const existingIssue of openIssues) {
               // Skip the current issue and pull requests
@@ -164,7 +164,7 @@ jobs:
                 mostSimilarIssue = existingIssue;
               }
             }
-            
+
             // If similarity exceeds threshold, close as duplicate
             if (highestSimilarity >= SIMILARITY_THRESHOLD && mostSimilarIssue) {
               console.log(`Duplicate detected! Issue #${issueNumber} is ${(highestSimilarity * 100).toFixed(2)}% similar to #${mostSimilarIssue.number}`);
