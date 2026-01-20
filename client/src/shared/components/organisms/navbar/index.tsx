@@ -6,6 +6,7 @@ import Logo from '../../atoms/logo';
 import { useA2ZTheme } from '../../../hooks/use-theme';
 import { THEME } from '../../../states/theme';
 import { NAVBAR_HEIGHT } from './constants';
+import FeedbackPopper from '../../molecules/feedback-popper';
 
 const Navbar = () => {
   const { theme, setTheme } = useA2ZTheme();
@@ -57,6 +58,8 @@ const Navbar = () => {
               {theme === THEME.DARK ? <LightModeIcon /> : <DarkModeIcon />}
             </Badge>
           </A2ZIconButton>
+
+          <FeedbackPopper />
         </Box>
       </Toolbar>
     </AppBar>

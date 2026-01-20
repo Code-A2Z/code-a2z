@@ -6,4 +6,5 @@ export const COLLECTION_NAMES = {
   NOTIFICATIONS: 'notifications',
   COLLABORATION: 'collaborations',
   COLLECTIONS: 'collections',
+  FEEDBACK: 'feedback',
 };
