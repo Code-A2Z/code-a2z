@@ -1,14 +1,14 @@
 import React, { useState, useRef } from 'react';
 import {
-    Box,
-    Button,
-    FormControl,
-    InputLabel,
-    MenuItem,
-    Select,
-    TextField,
-    FormHelperText,
-    Typography,
+  Box,
+  Button,
+  FormControl,
+  InputLabel,
+  MenuItem,
+  Select,
+  TextField,
+  FormHelperText,
+  Typography,
 } from '@mui/material';
 
 import A2ZModal from '../../atoms/modal';
@@ -18,207 +18,207 @@ import { FeedbackCategory } from '../../../../infra/rest/apis/feedback/typing';
 import { toast } from 'react-toastify';
 
 interface FeedbackModalProps {
-    open: boolean;
-    onClose: () => void;
+  open: boolean;
+  onClose: () => void;
 }
 
 const FeedbackModal = ({ open, onClose }: FeedbackModalProps) => {
-    const [title, setTitle] = useState('');
-    const [details, setDetails] = useState('');
-    const [category, setCategory] = useState<FeedbackCategory | ''>('');
-    const [reproduceSteps, setReproduceSteps] = useState('');
-    const [attachment, setAttachment] = useState<File | null>(null);
-    const [isSubmitting, setIsSubmitting] = useState(false);
-    const [errors, setErrors] = useState<{ [key: string]: string }>({});
-    const fileInputRef = useRef<HTMLInputElement>(null);
+  const [title, setTitle] = useState('');
+  const [details, setDetails] = useState('');
+  const [category, setCategory] = useState<FeedbackCategory | ''>('');
+  const [reproduceSteps, setReproduceSteps] = useState('');
+  const [attachment, setAttachment] = useState<File | null>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [errors, setErrors] = useState<{ [key: string]: string }>({});
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
-    const validate = () => {
-        const newErrors: { [key: string]: string } = {};
+  const validate = () => {
+    const newErrors: { [key: string]: string } = {};
 
-        if (title.length < 5 || title.length > 200) {
-            newErrors.title = 'Title must be between 5 and 200 characters';
-        }
+    if (title.length < 5 || title.length > 200) {
+      newErrors.title = 'Title must be between 5 and 200 characters';
+    }
 
-        if (details.length < 10 || details.length > 2000) {
-            newErrors.details = 'Details must be between 10 and 2000 characters';
-        }
+    if (details.length < 10 || details.length > 2000) {
+      newErrors.details = 'Details must be between 10 and 2000 characters';
+    }
 
-        if (!category) {
-            newErrors.category = 'Please select a category';
-        }
+    if (!category) {
+      newErrors.category = 'Please select a category';
+    }
 
-        setErrors(newErrors);
-        return Object.keys(newErrors).length === 0;
-    };
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
 
-    const handleSubmit = async () => {
-        if (!validate()) return;
+  const handleSubmit = async () => {
+    if (!validate()) return;
 
-        setIsSubmitting(true);
-        try {
-            await submitFeedback({
-                title,
-                details,
-                category: category as FeedbackCategory,
-                reproduce_steps: reproduceSteps,
-                attachment,
-            });
+    setIsSubmitting(true);
+    try {
+      await submitFeedback({
+        title,
+        details,
+        category: category as FeedbackCategory,
+        reproduce_steps: reproduceSteps,
+        attachment,
+      });
 
-            toast.success('Feedback submitted successfully!');
-            handleClose();
-        } catch (error: unknown) {
-            const message =
-                // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                (error as any).response?.data?.message || 'Failed to submit feedback';
-            toast.error(message);
-        } finally {
-            setIsSubmitting(false);
-        }
-    };
+      toast.success('Feedback submitted successfully!');
+      handleClose();
+    } catch (error: unknown) {
+      const message =
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        (error as any).response?.data?.message || 'Failed to submit feedback';
+      toast.error(message);
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
 
-    const handleClose = () => {
-        setTitle('');
-        setDetails('');
-        setCategory('');
-        setReproduceSteps('');
-        setAttachment(null);
-        setErrors({});
-        onClose();
-    };
+  const handleClose = () => {
+    setTitle('');
+    setDetails('');
+    setCategory('');
+    setReproduceSteps('');
+    setAttachment(null);
+    setErrors({});
+    onClose();
+  };
 
-    const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        if (e.target.files && e.target.files[0]) {
-            const file = e.target.files[0];
-            if (file.size > 5 * 1024 * 1024) {
-                toast.error('File size must be less than 5MB');
-                return;
-            }
-            setAttachment(file);
-        }
-    };
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files[0]) {
+      const file = e.target.files[0];
+      if (file.size > 5 * 1024 * 1024) {
+        toast.error('File size must be less than 5MB');
+        return;
+      }
+      setAttachment(file);
+    }
+  };
 
-    return (
-        <A2ZModal open={open} onClose={handleClose}>
-            <Box
-                sx={{
-                    position: 'absolute',
-                    top: '50%',
-                    left: '50%',
-                    transform: 'translate(-50%, -50%)',
-                    width: { xs: '90%', sm: 600 },
-                    maxWidth: '100%',
-                    maxHeight: '80vh',
-                    bgcolor: 'background.paper',
-                    p: 4,
-                    display: 'flex',
-                    flexDirection: 'column',
-                    gap: 2,
-                    overflowY: 'auto',
-                    borderRadius: 2,
+  return (
+    <A2ZModal open={open} onClose={handleClose}>
+      <Box
+        sx={{
+          position: 'absolute',
+          top: '50%',
+          left: '50%',
+          transform: 'translate(-50%, -50%)',
+          width: { xs: '90%', sm: 600 },
+          maxWidth: '100%',
+          maxHeight: '80vh',
+          bgcolor: 'background.paper',
+          p: 4,
+          display: 'flex',
+          flexDirection: 'column',
+          gap: 2,
+          overflowY: 'auto',
+          borderRadius: 2,
+        }}
+      >
+        <A2ZTypography variant="h5" component="h2" text="Share Your Feedback" />
+
+        <TextField
+          label="Short and descriptive title"
+          fullWidth
+          value={title}
+          onChange={e => setTitle(e.target.value)}
+          error={!!errors.title}
+          helperText={errors.title || `${title.length}/200`}
+          FormHelperTextProps={{ sx: { textAlign: 'right' } }}
+          inputProps={{ maxLength: 200 }}
+        />
+
+        <FormControl fullWidth error={!!errors.category}>
+          <InputLabel>Category</InputLabel>
+          <Select
+            value={category}
+            label="Category"
+            onChange={e => setCategory(e.target.value as FeedbackCategory)}
+          >
+            <MenuItem value={FeedbackCategory.ARTICLES}>Articles</MenuItem>
+            <MenuItem value={FeedbackCategory.CHATS}>Chats</MenuItem>
+            <MenuItem value={FeedbackCategory.CODE}>Code</MenuItem>
+          </Select>
+          {errors.category && (
+            <FormHelperText>{errors.category}</FormHelperText>
+          )}
+        </FormControl>
+
+        <TextField
+          label="Details box"
+          multiline
+          minRows={3}
+          fullWidth
+          value={details}
+          onChange={e => setDetails(e.target.value)}
+          error={!!errors.details}
+          helperText={errors.details || `${details.length}/2000`}
+          FormHelperTextProps={{ sx: { textAlign: 'right' } }}
+          inputProps={{ maxLength: 2000 }}
+        />
+
+        <TextField
+          label="Reproduce steps (Optional)"
+          multiline
+          minRows={2}
+          fullWidth
+          value={reproduceSteps}
+          onChange={e => setReproduceSteps(e.target.value)}
+          placeholder="1. Go to page X&#10;2. Click button Y..."
+        />
+
+        <Box>
+          <input
+            type="file"
+            accept="image/*"
+            style={{ display: 'none' }}
+            ref={fileInputRef}
+            onChange={handleFileChange}
+          />
+          <Button
+            variant="outlined"
+            onClick={() => fileInputRef.current?.click()}
+            sx={{ mr: 2 }}
+          >
+            {attachment ? 'Change Attachment' : 'Add Attachment'}
+          </Button>
+          {attachment && (
+            <Typography variant="caption" sx={{ display: 'block', mt: 1 }}>
+              Attached: {attachment.name}
+              <Button
+                size="small"
+                color="error"
+                onClick={() => {
+                  setAttachment(null);
+                  if (fileInputRef.current) fileInputRef.current.value = '';
                 }}
-            >
-                <A2ZTypography variant="h5" component="h2" text="Share Your Feedback" />
+                sx={{ ml: 1 }}
+              >
+                Remove
+              </Button>
+            </Typography>
+          )}
+        </Box>
 
-                <TextField
-                    label="Short and descriptive title"
-                    fullWidth
-                    value={title}
-                    onChange={e => setTitle(e.target.value)}
-                    error={!!errors.title}
-                    helperText={errors.title || `${title.length}/200`}
-                    FormHelperTextProps={{ sx: { textAlign: 'right' } }}
-                    inputProps={{ maxLength: 200 }}
-                />
-
-                <FormControl fullWidth error={!!errors.category}>
-                    <InputLabel>Category</InputLabel>
-                    <Select
-                        value={category}
-                        label="Category"
-                        onChange={e => setCategory(e.target.value as FeedbackCategory)}
-                    >
-                        <MenuItem value={FeedbackCategory.ARTICLES}>Articles</MenuItem>
-                        <MenuItem value={FeedbackCategory.CHATS}>Chats</MenuItem>
-                        <MenuItem value={FeedbackCategory.CODE}>Code</MenuItem>
-                    </Select>
-                    {errors.category && (
-                        <FormHelperText>{errors.category}</FormHelperText>
-                    )}
-                </FormControl>
-
-                <TextField
-                    label="Details box"
-                    multiline
-                    minRows={3}
-                    fullWidth
-                    value={details}
-                    onChange={e => setDetails(e.target.value)}
-                    error={!!errors.details}
-                    helperText={errors.details || `${details.length}/2000`}
-                    FormHelperTextProps={{ sx: { textAlign: 'right' } }}
-                    inputProps={{ maxLength: 2000 }}
-                />
-
-                <TextField
-                    label="Reproduce steps (Optional)"
-                    multiline
-                    minRows={2}
-                    fullWidth
-                    value={reproduceSteps}
-                    onChange={e => setReproduceSteps(e.target.value)}
-                    placeholder="1. Go to page X&#10;2. Click button Y..."
-                />
-
-                <Box>
-                    <input
-                        type="file"
-                        accept="image/*"
-                        style={{ display: 'none' }}
-                        ref={fileInputRef}
-                        onChange={handleFileChange}
-                    />
-                    <Button
-                        variant="outlined"
-                        onClick={() => fileInputRef.current?.click()}
-                        sx={{ mr: 2 }}
-                    >
-                        {attachment ? 'Change Attachment' : 'Add Attachment'}
-                    </Button>
-                    {attachment && (
-                        <Typography variant="caption" sx={{ display: 'block', mt: 1 }}>
-                            Attached: {attachment.name}
-                            <Button
-                                size="small"
-                                color="error"
-                                onClick={() => {
-                                    setAttachment(null);
-                                    if (fileInputRef.current) fileInputRef.current.value = '';
-                                }}
-                                sx={{ ml: 1 }}
-                            >
-                                Remove
-                            </Button>
-                        </Typography>
-                    )}
-                </Box>
-
-                <Box
-                    sx={{ display: 'flex', justifyContent: 'flex-end', gap: 2, mt: 2 }}
-                >
-                    <Button variant="text" onClick={handleClose}>
-                        Cancel
-                    </Button>
-                    <Button
-                        variant="contained"
-                        onClick={handleSubmit}
-                        disabled={isSubmitting}
-                    >
-                        {isSubmitting ? 'Submitting...' : 'Submit Feedback'}
-                    </Button>
-                </Box>
-            </Box>
-        </A2ZModal>
-    );
+        <Box
+          sx={{ display: 'flex', justifyContent: 'flex-end', gap: 2, mt: 2 }}
+        >
+          <Button variant="text" onClick={handleClose}>
+            Cancel
+          </Button>
+          <Button
+            variant="contained"
+            onClick={handleSubmit}
+            disabled={isSubmitting}
+          >
+            {isSubmitting ? 'Submitting...' : 'Submit Feedback'}
+          </Button>
+        </Box>
+      </Box>
+    </A2ZModal>
+  );
 };
 
 export default FeedbackModal;
