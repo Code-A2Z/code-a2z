@@ -17,7 +17,6 @@ import { Virtuoso } from 'react-virtuoso';
 import { getTrendingProjectsResponse } from '../../../../infra/rest/apis/project/typing';
 import { PAGE_SIZE } from '../../../../shared/constants';
 
-
 interface HomeContentProps {
   selectedCategory: string | null;
   setSelectedCategory: (category: string | null) => void;
@@ -25,7 +24,6 @@ interface HomeContentProps {
   fetchLatestProjects: (page?: number) => void;
   fetchProjectsByCategory: (params: { tag?: string; page?: number }) => void;
 }
-
 
 const HomeContent = ({
   selectedCategory,
@@ -35,7 +33,6 @@ const HomeContent = ({
   fetchProjectsByCategory,
 }: HomeContentProps) => {
   const projects = useAtomValue(HomePageProjectsAtom);
-
 
   return (
     <Box
@@ -90,25 +87,22 @@ const HomeContent = ({
           {trendingProjects && trendingProjects.length === 0 ? (
             <NoBannerSkeleton count={3} />
           ) : trendingProjects && trendingProjects.length ? (
-            trendingProjects.map((project, i) => {
-              return (
-                <NoBannerProjectCard key={i} project={project} index={i} />
-              );
-            })
+            trendingProjects.map((project, i) => (
+              <NoBannerProjectCard key={i} project={project} index={i} />
+            ))
           ) : (
             <NoDataMessageBox message="No trending projects" />
           )}
         </InPageNavigation>
       </Box>
 
-
       {/* filters and trending projects */}
       <Box
         sx={{
           minWidth: { lg: 400 },
           maxWidth: 400,
-          maxHeight: 'calc(100vh - 100px)',
-          overflowY: 'auto',
+          maxHeight: 'calc(100vh - 130px)', 
+          overflowY: 'auto',                
           borderLeft: theme => `1px solid ${theme.palette.divider}`,
           pl: 4,
           pt: 1,
@@ -123,25 +117,21 @@ const HomeContent = ({
               props={{ mb: 3 }}
             />
 
-
             <Box sx={{ display: 'flex', gap: 1.5, flexWrap: 'wrap' }}>
-              {CATEGORIES.map((category, i) => {
-                return (
-                  <CategoryButton
-                    key={i}
-                    onClick={() => {
-                      setSelectedCategory(
-                        selectedCategory === category ? null : category
-                      );
-                    }}
-                  >
-                    {category}
-                  </CategoryButton>
-                );
-              })}
+              {CATEGORIES.map((category, i) => (
+                <CategoryButton
+                  key={i}
+                  onClick={() => {
+                    setSelectedCategory(
+                      selectedCategory === category ? null : category,
+                    );
+                  }}
+                >
+                  {category}
+                </CategoryButton>
+              ))}
             </Box>
           </Box>
-
 
           <Box
             sx={{
@@ -162,15 +152,12 @@ const HomeContent = ({
               <TrendingUpIcon fontSize="medium" />
             </Box>
 
-
             {trendingProjects && trendingProjects.length === 0 ? (
               <NoBannerSkeleton count={3} />
             ) : trendingProjects && trendingProjects.length ? (
-              trendingProjects.map((project, i) => {
-                return (
-                  <NoBannerProjectCard key={i} project={project} index={i} />
-                );
-              })
+              trendingProjects.map((project, i) => (
+                <NoBannerProjectCard key={i} project={project} index={i} />
+              ))
             ) : (
               <NoDataMessageBox message="No trending projects" />
             )}
@@ -180,6 +167,5 @@ const HomeContent = ({
     </Box>
   );
 };
-
 
 export default HomeContent;
