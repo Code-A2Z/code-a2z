@@ -1,6 +1,7 @@
 import { useCallback, useState, useMemo } from 'react';
 import HomeIcon from '@mui/icons-material/Home';
 import ChatIcon from '@mui/icons-material/Chat';
+import NotesIcon from '@mui/icons-material/Notes';
 import CodeIcon from '@mui/icons-material/Code';
 import PowerSettingsNewIcon from '@mui/icons-material/PowerSettingsNew';
 import SettingsIcon from '@mui/icons-material/Settings';
@@ -39,6 +40,13 @@ const useSidebar = () => {
         path: ROUTES_V1.CHATS,
         title: 'Chats',
         screenName: ROUTES_PAGE_V1.CHATS,
+        hasAccess: false,
+      },
+      {
+        icon: NotesIcon,
+        path: ROUTES_V1.NOTES,
+        title: 'Notes',
+        screenName: ROUTES_PAGE_V1.NOTES,
         hasAccess: false,
       },
       {
