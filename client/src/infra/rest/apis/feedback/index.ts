@@ -14,12 +14,9 @@ export const getUserFeedback = async (params?: {
   limit?: number;
   skip?: number;
 }) => {
-  const queryString = params
-    ? // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      `?${new URLSearchParams(params as any).toString()}`
-    : '';
+  const { limit = 10, skip = 0 } = params || {};
   return get<
     undefined,
     ApiResponse<{ feedback: FeedbackItem[]; total: number; hasMore: boolean }>
-  >(`/api/feedback/user${queryString}`, true);
+  >(`/api/feedback/user?limit=${limit}&skip=${skip}`, true);
 };

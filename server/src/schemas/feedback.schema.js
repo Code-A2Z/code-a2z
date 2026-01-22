@@ -1,5 +1,6 @@
 import { Schema } from 'mongoose';
 import { COLLECTION_NAMES } from '../constants/db.js';
+import { FEEDBACK_STATUS, FEEDBACK_CATEGORY } from '../constants/feedback.js';
 
 const FEEDBACK_SCHEMA = Schema(
   {
@@ -24,7 +25,7 @@ const FEEDBACK_SCHEMA = Schema(
     category: {
       type: String,
       required: true,
-      enum: ['articles', 'chats', 'code'],
+      enum: Object.values(FEEDBACK_CATEGORY),
     },
     reproduce_steps: {
       type: String,
@@ -40,8 +41,8 @@ const FEEDBACK_SCHEMA = Schema(
     },
     status: {
       type: String,
-      enum: ['pending', 'reviewed', 'resolved'],
-      default: 'pending',
+      enum: Object.values(FEEDBACK_STATUS),
+      default: FEEDBACK_STATUS.PENDING,
       index: true,
     },
   },

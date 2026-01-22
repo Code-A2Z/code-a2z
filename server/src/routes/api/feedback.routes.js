@@ -9,7 +9,12 @@ import getUserFeedback from '../../controllers/feedback/get-user-feedback.js';
 const feedbackRoutes = express.Router();
 
 // Route checks authentication and handles single file upload logic for 'attachment' field
-feedbackRoutes.post('/submit', authenticateUser, submitFeedback);
+feedbackRoutes.post(
+  '/submit',
+  authenticateUser,
+  upload.single('attachment'),
+  submitFeedback
+);
 
 feedbackRoutes.get('/user', authenticateUser, getUserFeedback);
 

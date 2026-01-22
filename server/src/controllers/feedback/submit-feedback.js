@@ -12,6 +12,10 @@ import Feedback from '../../models/feedback.model.js';
 import { sendResponse } from '../../utils/response.js';
 import cloudinary from '../../config/cloudinary.js';
 import { nanoid } from 'nanoid';
+import {
+  FEEDBACK_CATEGORY,
+  FEEDBACK_STATUS,
+} from '../../constants/feedback.js';
 
 const submitFeedback = async (req, res, next) => {
   try {
@@ -32,7 +36,7 @@ const submitFeedback = async (req, res, next) => {
         'Details must be between 10 and 2000 characters'
       );
     }
-    if (!['articles', 'chats', 'code'].includes(category)) {
+    if (!Object.values(FEEDBACK_CATEGORY).includes(category)) {
       return sendResponse(res, 400, 'Invalid category');
     }
 
@@ -67,7 +71,7 @@ const submitFeedback = async (req, res, next) => {
       reproduce_steps,
       attachment_url,
       attachment_public_id,
-      status: 'pending',
+      status: FEEDBACK_STATUS.PENDING,
     });
 
     return sendResponse(res, 201, 'Feedback submitted successfully', {

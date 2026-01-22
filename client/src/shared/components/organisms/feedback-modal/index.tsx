@@ -174,6 +174,7 @@ const FeedbackModal = ({ open, onClose }: FeedbackModalProps) => {
           label="Details box"
           multiline
           minRows={3}
+          maxRows={10}
           fullWidth
           value={details}
           onChange={e => setDetails(e.target.value)}
@@ -187,6 +188,7 @@ const FeedbackModal = ({ open, onClose }: FeedbackModalProps) => {
           label="Reproduce steps (Optional)"
           multiline
           minRows={2}
+          maxRows={10}
           fullWidth
           value={reproduceSteps}
           onChange={e => setReproduceSteps(e.target.value)}
