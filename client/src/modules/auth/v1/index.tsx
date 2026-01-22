@@ -22,7 +22,7 @@ const StyledSection = styled('section')(({ theme }) => ({
 }));
 
 const StyledForm = styled('form')(() => ({
-  width: '80%',
+  width: '100%',
   maxWidth: 400,
 }));
 
@@ -35,10 +35,21 @@ const StyledTitle = styled(Typography)(({ theme }) => ({
 }));
 
 const StyledFooter = styled('p')(({ theme }) => ({
-  marginTop: theme.spacing(6),
+  marginTop: theme.spacing(5),
   color: theme.palette.text.secondary,
-  fontSize: '1.125rem',
+  fontSize: '1rem',
   textAlign: 'center',
+}));
+
+const AuthCard = styled(Box)(({ theme }) => ({
+  width: '100%',
+  maxWidth: 420,
+  padding: theme.spacing(6),
+  borderRadius: 16,
+  background: 'rgba(255, 255, 255, 0.04)',
+  backdropFilter: 'blur(12px)',
+  boxShadow: '0 20px 40px rgba(0,0,0,0.4)',
+  border: '1px solid rgba(255,255,255,0.08)',
 }));
 
 const UserAuthForm = () => {
@@ -47,88 +58,108 @@ const UserAuthForm = () => {
 
   return (
     <StyledSection>
-      <StyledForm id="formElement" onSubmit={handleSubmit}>
-        <StyledTitle>
-          {formType === 'login' ? 'Welcome back' : 'Join us today'}
-        </StyledTitle>
-
-        <Box
-          sx={{
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-            justifyContent: 'center',
-            gap: 1,
-          }}
-        >
-          {formType !== 'login' && (
-            <InputBox
-              id="auth-form-fullname"
-              name="fullname"
-              type="text"
-              placeholder="Full Name"
-              fullWidth
-              icon={<PersonIcon />}
-            />
-          )}
-
-          <InputBox
-            id="auth-form-email"
-            name="email"
-            type="email"
-            placeholder="Email"
-            fullWidth
-            icon={<EmailIcon />}
-          />
-
-          <InputBox
-            id="auth-form-password"
-            name="password"
-            type="password"
-            placeholder="Password"
-            fullWidth
-            icon={<PasswordIcon />}
-          />
-
-          <A2ZButton
-            type="submit"
+      <AuthCard>
+        <StyledForm id="formElement" onSubmit={handleSubmit}>
+          <StyledTitle>
+            {formType === 'login' ? 'Welcome back' : 'Join us today'}
+          </StyledTitle>
+          <Typography
             sx={{
-              mt: 2,
-              display: 'flex',
-              gap: 1,
+              textAlign: 'center',
+              color: 'text.secondary',
+              mb: 4,
             }}
-            loading={loading}
-            loadingPosition="end"
           >
-            {formType === 'login' ? 'Login' : 'Sign Up'}
-            {formType === 'login' ? <LoginIcon /> : <AppRegistrationIcon />}
-          </A2ZButton>
-        </Box>
+            {formType === 'login'
+              ? 'Login to continue'
+              : 'Create your free account'}
+          </Typography>
 
-        <StyledFooter>
-          {formType === 'login'
-            ? "Don't have an account ?"
-            : 'Already a member ?'}{' '}
-          <A2ZTypography
-            text={formType === 'login' ? 'Join us today' : 'Sign in here'}
-            component="span"
-            props={{
-              onClick: () =>
-                setFormType(formType === 'login' ? 'signup' : 'login'),
-              sx: {
-                fontSize: '1.125rem',
-                marginLeft: 1,
-                textDecoration: 'underline',
-                color: 'inherit',
-                cursor: 'pointer',
-                '&:hover': {
-                  opacity: 0.8,
-                },
+          <Box
+            key={formType}
+            sx={{
+              animation: 'fadeIn 0.3s ease-in-out',
+              '@keyframes fadeIn': {
+                from: { opacity: 0, transform: 'translateY(6px)' },
+                to: { opacity: 1, transform: 'translateY(0)' },
               },
+              display: 'flex',
+              flexDirection: 'column',
+              gap: 1,
+              alignItems: 'center',
             }}
-          />
-        </StyledFooter>
-      </StyledForm>
+          >
+            {formType !== 'login' && (
+              <InputBox
+                id="auth-form-fullname"
+                name="fullname"
+                type="text"
+                placeholder="Full Name"
+                fullWidth
+                icon={<PersonIcon />}
+              />
+            )}
+
+            <InputBox
+              id="auth-form-email"
+              name="email"
+              type="email"
+              placeholder="Email"
+              fullWidth
+              icon={<EmailIcon />}
+            />
+
+            <InputBox
+              id="auth-form-password"
+              name="password"
+              type="password"
+              placeholder="Password"
+              fullWidth
+              icon={<PasswordIcon />}
+            />
+
+            <A2ZButton
+              fullWidth
+              size="large"
+              sx={{
+                mt: 3,
+                py: 1.2,
+                fontSize: '1rem',
+                borderRadius: 2,
+                textTransform: 'none',
+              }}
+              loading={loading}
+            >
+              {formType === 'login' ? 'Login' : 'Sign Up'}
+              {formType === 'login' ? <LoginIcon /> : <AppRegistrationIcon />}
+            </A2ZButton>
+          </Box>
+
+          <StyledFooter>
+            {formType === 'login'
+              ? "Don't have an account ?"
+              : 'Already a member ?'}{' '}
+            <A2ZTypography
+              text={formType === 'login' ? 'Join us today' : 'Sign in here'}
+              component="span"
+              props={{
+                onClick: () =>
+                  setFormType(formType === 'login' ? 'signup' : 'login'),
+                sx: {
+                  fontSize: '1.125rem',
+                  marginLeft: 1,
+                  textDecoration: 'underline',
+                  color: 'inherit',
+                  cursor: 'pointer',
+                  '&:hover': {
+                    opacity: 0.8,
+                  },
+                },
+              }}
+            />
+          </StyledFooter>
+        </StyledForm>
+      </AuthCard>
     </StyledSection>
   );
 };
