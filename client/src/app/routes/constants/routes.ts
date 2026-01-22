@@ -1,6 +1,7 @@
 export enum ROUTES_PAGE_V1 {
   HOME = 'home',
   CHATS = 'chats',
+  NOTES = 'notes',
   CODE = 'code',
   SETTINGS = 'settings',
 }
@@ -8,6 +9,7 @@ export enum ROUTES_PAGE_V1 {
 export enum ROUTES_V1 {
   HOME = '/v1/home',
   CHATS = '/v1/chats',
+  NOTES = '/v1/notes',
   CODE = '/v1/code',
   SETTINGS = '/v1/settings',
 }

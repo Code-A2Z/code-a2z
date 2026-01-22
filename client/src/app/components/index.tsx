@@ -21,6 +21,9 @@ export const CodePageLazyComponent = lazy(
 export const SettingsPageLazyComponent = lazy(
   () => import('../../modules/settings/v1')
 );
+export const NotesPageLazyComponent = lazy(
+  () => import('../../modules/notes/v1')
+);
 
 export const AppLayout = () => {
   return (
