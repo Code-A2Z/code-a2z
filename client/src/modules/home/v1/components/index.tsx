@@ -101,8 +101,8 @@ const HomeContent = ({
         sx={{
           minWidth: { lg: 400 },
           maxWidth: 400,
-          maxHeight: 'calc(100vh - 130px)', 
-          overflowY: 'auto',                
+          maxHeight: 'calc(100vh - 130px)',
+          overflowY: 'auto',
           borderLeft: theme => `1px solid ${theme.palette.divider}`,
           pl: 4,
           pt: 1,
@@ -123,7 +123,7 @@ const HomeContent = ({
                   key={i}
                   onClick={() => {
                     setSelectedCategory(
-                      selectedCategory === category ? null : category,
+                      selectedCategory === category ? null : category
                     );
                   }}
                 >

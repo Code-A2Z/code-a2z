@@ -36,7 +36,7 @@ const useHomeV1 = () => {
         setProjects(response.data);
       }
     },
-    [setProjects]
+    [setProjects, isHomePage]
   );
 
   const fetchTrendingProjects = useCallback(async () => {
@@ -45,7 +45,7 @@ const useHomeV1 = () => {
     if (response.data) {
       setTrendingProjects(response.data);
     }
-  }, [setTrendingProjects]);
+  }, [setTrendingProjects, isHomePage]);
 
   const fetchProjectsByCategory = useCallback(
     async ({
@@ -76,7 +76,7 @@ const useHomeV1 = () => {
         setProjects(response.data);
       }
     },
-    [setProjects]
+    [setProjects, isHomePage]
   );
 
   const searchTerm = useMemo(() => {

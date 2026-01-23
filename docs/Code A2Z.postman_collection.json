@@ -1,6 +1,6 @@
 {
   "info": {
-    "_postman_id": "37ce35ba-a1a6-45e7-b5fb-2a9b9975f785",
+    "_postman_id": "f6bfbb7e-3069-4e03-85e8-3563cb852338",
     "name": "Code A2Z",
     "description": "### **Code A2Z API Collection**\n\nThis collection contains all endpoints for the **Code A2Z platform**, a collaborative blogging and project-sharing platform. It provides APIs to manage users, projects, notifications, likes, comments, collections, and collaborations.\n\nThe APIs are organized into folders based on feature domains:\n\n---\n\n#### **1\\. User**\n\nEndpoints for **user search, profile fetching, and profile updates**.\n\n- Search users by username.\n    \n- Fetch a user profile by username.\n    \n- Update authenticated user’s profile details and profile image.\n    \n\n---\n\n#### **2\\. Projects**\n\nEndpoints to **create, fetch, update, delete, and manage projects**.\n\n- Create, edit, and delete projects.\n    \n- Fetch all projects, trending projects, search projects, or user-written projects.\n    \n- Paginate and filter projects with counts.\n    \n\n---\n\n#### **3\\. Notifications**\n\nEndpoints to **handle user notifications**.\n\n- Fetch notifications (with pagination and filters).\n    \n- Check if new notifications are available.\n    \n- Get total notifications count.\n    \n- Marks notifications as seen when fetched.\n    \n\n---\n\n#### **4\\. Likes**\n\nEndpoints to **like or unlike a project and check like status**.\n\n- Like or unlike a project.\n    \n- Check if a project is liked by the authenticated user.\n    \n\n---\n\n#### **5\\. Comments**\n\nEndpoints to **add, fetch, delete, and reply to comments** on projects.\n\n- Add comments or replies.\n    \n- Fetch comments with pagination.\n    \n- Fetch replies of a comment.\n    \n- Delete a comment along with its replies (if authorized).\n    \n\n---\n\n#### **6\\. Collections**\n\nEndpoints to **manage user project collections**.\n\n- Create or delete collections.\n    \n- Save projects to a collection or remove them.\n    \n- Fetch projects of a collection and sort them by likes, newest, or oldest.\n    \n\n---\n\n#### **7\\. Collaborators**\n\nEndpoints to **manage project collaboration**.\n\n- Invite a user to collaborate on a project.\n    \n- Accept or reject collaboration invitations using a secure token.\n    \n- Fetch the list of collaborators for a project (project author only).\n    \n\n---\n\n**Notes:**\n\n- All endpoints requiring authentication need a valid user token.\n    \n- Endpoints follow **RESTful standards** with proper HTTP methods for GET, POST, PATCH, and DELETE.\n    \n- Responses are standardized with `status`, `message`, and `data`.\n    \n- Sensitive user information (like passwords) is never exposed.\n    \n- Pagination, filtering, and sorting are implemented wherever applicable for efficient data handling.",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
@@ -35,7 +35,7 @@
               },
               "status": "OK",
               "code": 200,
-              "_postman_previewlanguage": null,
+              "_postman_previewlanguage": "Text",
               "header": [
                 {
                   "key": "Access-Control-Allow-Origin",
@@ -144,7 +144,7 @@
               },
               "status": "OK",
               "code": 200,
-              "_postman_previewlanguage": null,
+              "_postman_previewlanguage": "Text",
               "header": [
                 {
                   "key": "Access-Control-Allow-Origin",
@@ -277,7 +277,7 @@
               },
               "status": "Created",
               "code": 201,
-              "_postman_previewlanguage": null,
+              "_postman_previewlanguage": "Text",
               "header": [
                 {
                   "key": "Access-Control-Allow-Origin",
@@ -389,7 +389,7 @@
               },
               "status": "Bad Request",
               "code": 400,
-              "_postman_previewlanguage": null,
+              "_postman_previewlanguage": "Text",
               "header": [
                 {
                   "key": "Access-Control-Allow-Origin",
@@ -493,7 +493,7 @@
               },
               "status": "Internal Server Error",
               "code": 500,
-              "_postman_previewlanguage": null,
+              "_postman_previewlanguage": "Text",
               "header": [
                 {
                   "key": "Access-Control-Allow-Origin",
@@ -620,7 +620,7 @@
               },
               "status": "OK",
               "code": 200,
-              "_postman_previewlanguage": null,
+              "_postman_previewlanguage": "Text",
               "header": [
                 {
                   "key": "Access-Control-Allow-Origin",
@@ -745,7 +745,7 @@
               },
               "status": "OK",
               "code": 200,
-              "_postman_previewlanguage": null,
+              "_postman_previewlanguage": "Text",
               "header": [
                 {
                   "key": "Access-Control-Allow-Origin",
@@ -848,7 +848,7 @@
               },
               "status": "Unauthorized",
               "code": 401,
-              "_postman_previewlanguage": null,
+              "_postman_previewlanguage": "Text",
               "header": [
                 {
                   "key": "Access-Control-Allow-Origin",
@@ -965,7 +965,7 @@
               },
               "status": "OK",
               "code": 200,
-              "_postman_previewlanguage": null,
+              "_postman_previewlanguage": "Text",
               "header": [
                 {
                   "key": "Access-Control-Allow-Origin",
@@ -1100,7 +1100,7 @@
               },
               "status": "OK",
               "code": 200,
-              "_postman_previewlanguage": null,
+              "_postman_previewlanguage": "Text",
               "header": [
                 {
                   "key": "Access-Control-Allow-Origin",
@@ -1204,7 +1204,7 @@
               },
               "status": "Forbidden",
               "code": 403,
-              "_postman_previewlanguage": null,
+              "_postman_previewlanguage": "Text",
               "header": [
                 {
                   "key": "Access-Control-Allow-Origin",
@@ -1308,7 +1308,7 @@
               },
               "status": "Too Many Requests",
               "code": 429,
-              "_postman_previewlanguage": null,
+              "_postman_previewlanguage": "Text",
               "header": [
                 {
                   "key": "Access-Control-Allow-Origin",
@@ -1441,7 +1441,7 @@
               },
               "status": "OK",
               "code": 200,
-              "_postman_previewlanguage": null,
+              "_postman_previewlanguage": "Text",
               "header": [
                 {
                   "key": "Access-Control-Allow-Origin",
@@ -1568,7 +1568,7 @@
               },
               "status": "OK",
               "code": 200,
-              "_postman_previewlanguage": null,
+              "_postman_previewlanguage": "Text",
               "header": [
                 {
                   "key": "Access-Control-Allow-Origin",
@@ -1676,10 +1676,6 @@
               "originalRequest": {
                 "method": "GET",
                 "header": [],
-                "body": {
-                  "mode": "raw",
-                  "raw": ""
-                },
                 "url": {
                   "raw": "{{baseURL}}/api/subscriber/all",
                   "host": ["{{baseURL}}"],
@@ -1688,7 +1684,7 @@
               },
               "status": "OK",
               "code": 200,
-              "_postman_previewlanguage": null,
+              "_postman_previewlanguage": "Text",
               "header": [
                 {
                   "key": "Access-Control-Allow-Origin",
@@ -1811,7 +1807,7 @@
                     {
                       "key": "image",
                       "type": "file",
-                      "src": "/Users/asspl/Downloads/img1.jpeg"
+                      "src": ["/Users/asspl/Downloads/img1.jpeg"]
                     }
                   ]
                 },
@@ -1823,7 +1819,7 @@
               },
               "status": "OK",
               "code": 200,
-              "_postman_previewlanguage": null,
+              "_postman_previewlanguage": "Text",
               "header": [
                 {
                   "key": "Access-Control-Allow-Origin",
@@ -1916,7 +1912,7 @@
                     {
                       "key": "image",
                       "type": "file",
-                      "src": "/Users/asspl/Downloads/img1.jpeg"
+                      "src": ["/Users/asspl/Downloads/img1.jpeg"]
                     }
                   ]
                 },
@@ -1928,7 +1924,7 @@
               },
               "status": "Unauthorized",
               "code": 401,
-              "_postman_previewlanguage": null,
+              "_postman_previewlanguage": "Text",
               "header": [
                 {
                   "key": "Access-Control-Allow-Origin",
@@ -2053,15 +2049,6 @@
               "originalRequest": {
                 "method": "GET",
                 "header": [],
-                "body": {
-                  "mode": "raw",
-                  "raw": "",
-                  "options": {
-                    "raw": {
-                      "language": "json"
-                    }
-                  }
-                },
                 "url": {
                   "raw": "{{baseURL}}/api/user/search?q=hello",
                   "host": ["{{baseURL}}"],
@@ -2076,7 +2063,7 @@
               },
               "status": "OK",
               "code": 200,
-              "_postman_previewlanguage": null,
+              "_postman_previewlanguage": "Text",
               "header": [
                 {
                   "key": "Access-Control-Allow-Origin",
@@ -2195,15 +2182,6 @@
               "originalRequest": {
                 "method": "GET",
                 "header": [],
-                "body": {
-                  "mode": "raw",
-                  "raw": "",
-                  "options": {
-                    "raw": {
-                      "language": "json"
-                    }
-                  }
-                },
                 "url": {
                   "raw": "{{baseURL}}/api/user/profile?username=hello",
                   "host": ["{{baseURL}}"],
@@ -2218,7 +2196,7 @@
               },
               "status": "OK",
               "code": 200,
-              "_postman_previewlanguage": null,
+              "_postman_previewlanguage": "Text",
               "header": [
                 {
                   "key": "Access-Control-Allow-Origin",
@@ -2345,7 +2323,7 @@
               },
               "status": "OK",
               "code": 200,
-              "_postman_previewlanguage": null,
+              "_postman_previewlanguage": "Text",
               "header": [
                 {
                   "key": "Access-Control-Allow-Origin",
@@ -2449,7 +2427,7 @@
               },
               "status": "Bad Request",
               "code": 400,
-              "_postman_previewlanguage": null,
+              "_postman_previewlanguage": "Text",
               "header": [
                 {
                   "key": "Access-Control-Allow-Origin",
@@ -2553,7 +2531,7 @@
               },
               "status": "Unauthorized",
               "code": 401,
-              "_postman_previewlanguage": null,
+              "_postman_previewlanguage": "Text",
               "header": [
                 {
                   "key": "Access-Control-Allow-Origin",
@@ -2680,7 +2658,7 @@
               },
               "status": "OK",
               "code": 200,
-              "_postman_previewlanguage": null,
+              "_postman_previewlanguage": "Text",
               "header": [
                 {
                   "key": "Access-Control-Allow-Origin",
@@ -2813,7 +2791,7 @@
               },
               "status": "OK",
               "code": 200,
-              "_postman_previewlanguage": null,
+              "_postman_previewlanguage": "Text",
               "header": [
                 {
                   "key": "Access-Control-Allow-Origin",
@@ -2934,7 +2912,7 @@
               },
               "status": "OK",
               "code": 200,
-              "_postman_previewlanguage": null,
+              "_postman_previewlanguage": "Text",
               "header": [
                 {
                   "key": "Access-Control-Allow-Origin",
@@ -3043,7 +3021,7 @@
               },
               "status": "OK",
               "code": 200,
-              "_postman_previewlanguage": null,
+              "_postman_previewlanguage": "Text",
               "header": [
                 {
                   "key": "Access-Control-Allow-Origin",
@@ -3204,7 +3182,7 @@
               },
               "status": "OK",
               "code": 200,
-              "_postman_previewlanguage": null,
+              "_postman_previewlanguage": "Text",
               "header": [
                 {
                   "key": "Access-Control-Allow-Origin",
@@ -3313,7 +3291,7 @@
               },
               "status": "OK",
               "code": 200,
-              "_postman_previewlanguage": null,
+              "_postman_previewlanguage": "Text",
               "header": [
                 {
                   "key": "Access-Control-Allow-Origin",
@@ -3450,7 +3428,7 @@
               },
               "status": "OK",
               "code": 200,
-              "_postman_previewlanguage": null,
+              "_postman_previewlanguage": "Text",
               "header": [
                 {
                   "key": "Access-Control-Allow-Origin",
@@ -3571,7 +3549,7 @@
               },
               "status": "OK",
               "code": 200,
-              "_postman_previewlanguage": null,
+              "_postman_previewlanguage": "Text",
               "header": [
                 {
                   "key": "Access-Control-Allow-Origin",
@@ -3708,7 +3686,7 @@
               },
               "status": "OK",
               "code": 200,
-              "_postman_previewlanguage": null,
+              "_postman_previewlanguage": "Text",
               "header": [
                 {
                   "key": "Access-Control-Allow-Origin",
@@ -3837,7 +3815,7 @@
               },
               "status": "OK",
               "code": 200,
-              "_postman_previewlanguage": null,
+              "_postman_previewlanguage": "Text",
               "header": [
                 {
                   "key": "Access-Control-Allow-Origin",
@@ -3946,7 +3924,7 @@
               },
               "status": "OK",
               "code": 200,
-              "_postman_previewlanguage": null,
+              "_postman_previewlanguage": "Text",
               "header": [
                 {
                   "key": "Access-Control-Allow-Origin",
@@ -4041,7 +4019,7 @@
               },
               "status": "Not Found",
               "code": 404,
-              "_postman_previewlanguage": null,
+              "_postman_previewlanguage": "Text",
               "header": [
                 {
                   "key": "Access-Control-Allow-Origin",
@@ -4174,7 +4152,7 @@
               },
               "status": "OK",
               "code": 200,
-              "_postman_previewlanguage": null,
+              "_postman_previewlanguage": "Text",
               "header": [
                 {
                   "key": "Access-Control-Allow-Origin",
@@ -4295,7 +4273,7 @@
               },
               "status": "OK",
               "code": 200,
-              "_postman_previewlanguage": null,
+              "_postman_previewlanguage": "Text",
               "header": [
                 {
                   "key": "Access-Control-Allow-Origin",
@@ -4428,7 +4406,7 @@
               },
               "status": "OK",
               "code": 200,
-              "_postman_previewlanguage": null,
+              "_postman_previewlanguage": "Text",
               "header": [
                 {
                   "key": "Access-Control-Allow-Origin",
@@ -4557,7 +4535,7 @@
               },
               "status": "OK",
               "code": 200,
-              "_postman_previewlanguage": null,
+              "_postman_previewlanguage": "Text",
               "header": [
                 {
                   "key": "Access-Control-Allow-Origin",
@@ -4686,7 +4664,7 @@
               },
               "status": "OK",
               "code": 200,
-              "_postman_previewlanguage": null,
+              "_postman_previewlanguage": "Text",
               "header": [
                 {
                   "key": "Access-Control-Allow-Origin",
@@ -4795,7 +4773,7 @@
               },
               "status": "OK",
               "code": 200,
-              "_postman_previewlanguage": null,
+              "_postman_previewlanguage": "Text",
               "header": [
                 {
                   "key": "Access-Control-Allow-Origin",
@@ -4890,7 +4868,7 @@
               },
               "status": "Not Found",
               "code": 404,
-              "_postman_previewlanguage": null,
+              "_postman_previewlanguage": "Text",
               "header": [
                 {
                   "key": "Access-Control-Allow-Origin",
@@ -5033,7 +5011,7 @@
               },
               "status": "OK",
               "code": 200,
-              "_postman_previewlanguage": null,
+              "_postman_previewlanguage": "Text",
               "header": [
                 {
                   "key": "Access-Control-Allow-Origin",
@@ -5142,7 +5120,7 @@
               },
               "status": "OK",
               "code": 200,
-              "_postman_previewlanguage": null,
+              "_postman_previewlanguage": "Text",
               "header": [
                 {
                   "key": "Access-Control-Allow-Origin",
@@ -5263,7 +5241,7 @@
               },
               "status": "OK",
               "code": 200,
-              "_postman_previewlanguage": null,
+              "_postman_previewlanguage": "Text",
               "header": [
                 {
                   "key": "Access-Control-Allow-Origin",
@@ -5396,7 +5374,7 @@
               },
               "status": "Created",
               "code": 201,
-              "_postman_previewlanguage": null,
+              "_postman_previewlanguage": "Text",
               "header": [
                 {
                   "key": "Access-Control-Allow-Origin",
@@ -5500,7 +5478,7 @@
               },
               "status": "Bad Request",
               "code": 400,
-              "_postman_previewlanguage": null,
+              "_postman_previewlanguage": "Text",
               "header": [
                 {
                   "key": "Access-Control-Allow-Origin",
@@ -5627,7 +5605,7 @@
               },
               "status": "Created",
               "code": 201,
-              "_postman_previewlanguage": null,
+              "_postman_previewlanguage": "Text",
               "header": [
                 {
                   "key": "Access-Control-Allow-Origin",
@@ -5731,7 +5709,7 @@
               },
               "status": "OK",
               "code": 200,
-              "_postman_previewlanguage": null,
+              "_postman_previewlanguage": "Text",
               "header": [
                 {
                   "key": "Access-Control-Allow-Origin",
@@ -5860,7 +5838,7 @@
               },
               "status": "OK",
               "code": 200,
-              "_postman_previewlanguage": null,
+              "_postman_previewlanguage": "Text",
               "header": [
                 {
                   "key": "Access-Control-Allow-Origin",
@@ -5987,7 +5965,7 @@
               },
               "status": "OK",
               "code": 200,
-              "_postman_previewlanguage": null,
+              "_postman_previewlanguage": "Text",
               "header": [
                 {
                   "key": "Access-Control-Allow-Origin",
@@ -6091,7 +6069,7 @@
               },
               "status": "Not Found",
               "code": 404,
-              "_postman_previewlanguage": null,
+              "_postman_previewlanguage": "Text",
               "header": [
                 {
                   "key": "Access-Control-Allow-Origin",
@@ -6218,7 +6196,7 @@
               },
               "status": "OK",
               "code": 200,
-              "_postman_previewlanguage": null,
+              "_postman_previewlanguage": "Text",
               "header": [
                 {
                   "key": "Access-Control-Allow-Origin",
@@ -6322,7 +6300,7 @@
               },
               "status": "Not Found",
               "code": 404,
-              "_postman_previewlanguage": null,
+              "_postman_previewlanguage": "Text",
               "header": [
                 {
                   "key": "Access-Control-Allow-Origin",
@@ -6455,7 +6433,7 @@
               },
               "status": "Bad Request",
               "code": 400,
-              "_postman_previewlanguage": null,
+              "_postman_previewlanguage": "Text",
               "header": [
                 {
                   "key": "Access-Control-Allow-Origin",
@@ -6559,7 +6537,7 @@
               },
               "status": "Internal Server Error",
               "code": 500,
-              "_postman_previewlanguage": null,
+              "_postman_previewlanguage": "Text",
               "header": [
                 {
                   "key": "Access-Control-Allow-Origin",
@@ -6704,6 +6682,312 @@
       "description": "This folder contains endpoints related to **project collaboration management**, including sending collaboration invitations, accepting/rejecting invitations, and fetching collaborators for a project.\n\n**Endpoints:**\n\n1. **`/invite`** **(POST)** – Send a collaboration invitation to a project author.\n    \n    - Requires authentication.\n        \n    - Accepts `project_id` in the request body.\n        \n    - Sends an email invitation to the project author and creates a pending collaboration record in the database.\n        \n2. **`/accept/:token`** **(POST)** – Accept a collaboration invitation.\n    \n    - Requires authentication.\n        \n    - Accepts `token` as a route parameter.\n        \n    - Marks the collaboration request as accepted and invalidates the token.\n        \n3. **`/reject/:token`** **(POST)** – Reject a collaboration invitation.\n    \n    - Requires authentication.\n        \n    - Accepts `token` as a route parameter.\n        \n    - Marks the collaboration request as rejected and invalidates the token.\n        \n4. **`/list/:project_id`** **(GET)** – Fetch the list of collaborators for a project.\n    \n    - Requires authentication.\n        \n    - Accepts `project_id` as a route parameter.\n        \n    - Returns all collaborators where the authenticated user is the project author.\n        \n\n**Notes:**\n\n- Only authenticated users can send, accept, or reject collaboration invitations.\n    \n- Tokens are invalidated after accepting or rejecting an invitation to prevent reuse.\n    \n- Fetching collaborators is restricted to the project author to ensure privacy."
     },
     {
+      "name": "Feedback",
+      "item": [
+        {
+          "name": "Submit Feedback",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "title",
+                  "value": "Sample Feedback Title",
+                  "type": "text",
+                  "uuid": "244c4d99-aa8e-41c0-b703-6eba90bb6584"
+                },
+                {
+                  "key": "details",
+                  "value": "Sample Feedback Details with atmost 2000 characters",
+                  "type": "text",
+                  "uuid": "ad66dee1-ccc7-4072-a9be-3113a8566658"
+                },
+                {
+                  "key": "category",
+                  "value": "articles",
+                  "type": "text",
+                  "uuid": "8f9dd525-909d-4454-b816-3c7ad338f0c4"
+                },
+                {
+                  "key": "reproduce_steps",
+                  "value": "This is the reproduce steps of the faced bug",
+                  "type": "text",
+                  "uuid": "5edb7c8e-5ea8-4d66-b455-66e852579aae"
+                },
+                {
+                  "key": "attachment",
+                  "type": "file",
+                  "uuid": "93d75608-b35f-436e-8d2d-7ce016258495",
+                  "src": "/Users/asspl/Downloads/2e9748eb-daf1-4cd8-9971-bc5ce6d11ec4.jpg"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{baseURL}}/api/feedback/submit",
+              "host": ["{{baseURL}}"],
+              "path": ["api", "feedback", "submit"]
+            }
+          },
+          "response": [
+            {
+              "name": "201",
+              "originalRequest": {
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "formdata",
+                  "formdata": [
+                    {
+                      "key": "title",
+                      "value": "Sample Feedback Title",
+                      "type": "text",
+                      "uuid": "244c4d99-aa8e-41c0-b703-6eba90bb6584"
+                    },
+                    {
+                      "key": "details",
+                      "value": "Sample Feedback Details with atmost 2000 characters",
+                      "type": "text",
+                      "uuid": "ad66dee1-ccc7-4072-a9be-3113a8566658"
+                    },
+                    {
+                      "key": "category",
+                      "value": "articles",
+                      "type": "text",
+                      "uuid": "8f9dd525-909d-4454-b816-3c7ad338f0c4"
+                    },
+                    {
+                      "key": "reproduce_steps",
+                      "value": "This is the reproduce steps of the faced bug",
+                      "type": "text",
+                      "uuid": "5edb7c8e-5ea8-4d66-b455-66e852579aae"
+                    },
+                    {
+                      "key": "attachment",
+                      "type": "file",
+                      "uuid": "93d75608-b35f-436e-8d2d-7ce016258495",
+                      "src": "/Users/asspl/Downloads/2e9748eb-daf1-4cd8-9971-bc5ce6d11ec4.jpg"
+                    }
+                  ],
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseURL}}/api/feedback/submit",
+                  "host": ["{{baseURL}}"],
+                  "path": ["api", "feedback", "submit"]
+                }
+              },
+              "status": "Created",
+              "code": 201,
+              "_postman_previewlanguage": null,
+              "header": [
+                {
+                  "key": "Vary",
+                  "value": "Origin"
+                },
+                {
+                  "key": "Access-Control-Allow-Credentials",
+                  "value": "true"
+                },
+                {
+                  "key": "Content-Security-Policy",
+                  "value": "default-src 'self';base-uri 'self';font-src 'self' https: data:;form-action 'self';frame-ancestors 'self';img-src 'self' data:;object-src 'none';script-src 'self';script-src-attr 'none';style-src 'self' https: 'unsafe-inline';upgrade-insecure-requests"
+                },
+                {
+                  "key": "Cross-Origin-Opener-Policy",
+                  "value": "same-origin"
+                },
+                {
+                  "key": "Cross-Origin-Resource-Policy",
+                  "value": "same-origin"
+                },
+                {
+                  "key": "Origin-Agent-Cluster",
+                  "value": "?1"
+                },
+                {
+                  "key": "Referrer-Policy",
+                  "value": "no-referrer"
+                },
+                {
+                  "key": "Strict-Transport-Security",
+                  "value": "max-age=31536000; includeSubDomains"
+                },
+                {
+                  "key": "X-Content-Type-Options",
+                  "value": "nosniff"
+                },
+                {
+                  "key": "X-DNS-Prefetch-Control",
+                  "value": "off"
+                },
+                {
+                  "key": "X-Download-Options",
+                  "value": "noopen"
+                },
+                {
+                  "key": "X-Frame-Options",
+                  "value": "DENY"
+                },
+                {
+                  "key": "X-Permitted-Cross-Domain-Policies",
+                  "value": "none"
+                },
+                {
+                  "key": "X-XSS-Protection",
+                  "value": "0"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json; charset=utf-8"
+                },
+                {
+                  "key": "Content-Length",
+                  "value": "694"
+                },
+                {
+                  "key": "ETag",
+                  "value": "W/\"2b6-vZG0P1XlxKpTj6zqo1+Tz8gOvls\""
+                },
+                {
+                  "key": "Date",
+                  "value": "Fri, 23 Jan 2026 18:05:04 GMT"
+                },
+                {
+                  "key": "Connection",
+                  "value": "keep-alive"
+                },
+                {
+                  "key": "Keep-Alive",
+                  "value": "timeout=5"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n    \"status\": \"success\",\n    \"message\": \"Thanks for sharing your feedback\",\n    \"data\": {\n        \"feedback\": {\n            \"user_id\": \"6973b7ae0397bcb6997068f3\",\n            \"title\": \"Sample Feedback Title\",\n            \"details\": \"Sample Feedback Details with atmost 2000 characters\",\n            \"category\": \"articles\",\n            \"reproduce_steps\": \"This is the reproduce steps of the faced bug\",\n            \"attachment_url\": \"https://res.cloudinary.com/avdhesh-varshney/image/upload/v1769191502/feedback_attachments/feedback-hdG4DLZfpbEFimFcxJ1LK-1769191495818.jpg\",\n            \"attachment_public_id\": \"feedback_attachments/feedback-hdG4DLZfpbEFimFcxJ1LK-1769191495818\",\n            \"status\": \"pending\",\n            \"_id\": \"6973b8500397bcb6997068f7\",\n            \"createdAt\": \"2026-01-23T18:05:04.103Z\",\n            \"updatedAt\": \"2026-01-23T18:05:04.103Z\",\n            \"__v\": 0\n        }\n    }\n}"
+            }
+          ]
+        },
+        {
+          "name": "Get User Feedback",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseURL}}/api/feedback/user",
+              "host": ["{{baseURL}}"],
+              "path": ["api", "feedback", "user"]
+            }
+          },
+          "response": [
+            {
+              "name": "200",
+              "originalRequest": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseURL}}/api/feedback/user",
+                  "host": ["{{baseURL}}"],
+                  "path": ["api", "feedback", "user"]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": null,
+              "header": [
+                {
+                  "key": "Vary",
+                  "value": "Origin"
+                },
+                {
+                  "key": "Access-Control-Allow-Credentials",
+                  "value": "true"
+                },
+                {
+                  "key": "Content-Security-Policy",
+                  "value": "default-src 'self';base-uri 'self';font-src 'self' https: data:;form-action 'self';frame-ancestors 'self';img-src 'self' data:;object-src 'none';script-src 'self';script-src-attr 'none';style-src 'self' https: 'unsafe-inline';upgrade-insecure-requests"
+                },
+                {
+                  "key": "Cross-Origin-Opener-Policy",
+                  "value": "same-origin"
+                },
+                {
+                  "key": "Cross-Origin-Resource-Policy",
+                  "value": "same-origin"
+                },
+                {
+                  "key": "Origin-Agent-Cluster",
+                  "value": "?1"
+                },
+                {
+                  "key": "Referrer-Policy",
+                  "value": "no-referrer"
+                },
+                {
+                  "key": "Strict-Transport-Security",
+                  "value": "max-age=31536000; includeSubDomains"
+                },
+                {
+                  "key": "X-Content-Type-Options",
+                  "value": "nosniff"
+                },
+                {
+                  "key": "X-DNS-Prefetch-Control",
+                  "value": "off"
+                },
+                {
+                  "key": "X-Download-Options",
+                  "value": "noopen"
+                },
+                {
+                  "key": "X-Frame-Options",
+                  "value": "DENY"
+                },
+                {
+                  "key": "X-Permitted-Cross-Domain-Policies",
+                  "value": "none"
+                },
+                {
+                  "key": "X-XSS-Protection",
+                  "value": "0"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json; charset=utf-8"
+                },
+                {
+                  "key": "Content-Length",
+                  "value": "691"
+                },
+                {
+                  "key": "ETag",
+                  "value": "W/\"2b3-Ez+QhvBtdXSSKGYwQnm681+G5VU\""
+                },
+                {
+                  "key": "Date",
+                  "value": "Fri, 23 Jan 2026 18:06:49 GMT"
+                },
+                {
+                  "key": "Connection",
+                  "value": "keep-alive"
+                },
+                {
+                  "key": "Keep-Alive",
+                  "value": "timeout=5"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n    \"status\": \"success\",\n    \"message\": \"User feedback fetched successfully\",\n    \"data\": {\n        \"feedbacks\": [\n            {\n                \"_id\": \"6973b8500397bcb6997068f7\",\n                \"user_id\": \"6973b7ae0397bcb6997068f3\",\n                \"title\": \"Sample Feedback Title\",\n                \"details\": \"Sample Feedback Details with atmost 2000 characters\",\n                \"category\": \"articles\",\n                \"reproduce_steps\": \"This is the reproduce steps of the faced bug\",\n                \"attachment_url\": \"https://res.cloudinary.com/avdhesh-varshney/image/upload/v1769191502/feedback_attachments/feedback-hdG4DLZfpbEFimFcxJ1LK-1769191495818.jpg\",\n                \"attachment_public_id\": \"feedback_attachments/feedback-hdG4DLZfpbEFimFcxJ1LK-1769191495818\",\n                \"status\": \"pending\",\n                \"createdAt\": \"2026-01-23T18:05:04.103Z\",\n                \"updatedAt\": \"2026-01-23T18:05:04.103Z\"\n            }\n        ]\n    }\n}"
+            }
+          ]
+        }
+      ]
+    },
+    {
       "name": "First Route",
       "protocolProfileBehavior": {
         "disableBodyPruning": true
@@ -6727,10 +7011,6 @@
           "originalRequest": {
             "method": "GET",
             "header": [],
-            "body": {
-              "mode": "raw",
-              "raw": ""
-            },
             "url": {
               "raw": "{{baseURL}}/",
               "host": ["{{baseURL}}"],
@@ -6739,7 +7019,7 @@
           },
           "status": "OK",
           "code": 200,
-          "_postman_previewlanguage": null,
+          "_postman_previewlanguage": "Text",
           "header": [
             {
               "key": "Access-Control-Allow-Origin",
@@ -6824,6 +7104,16 @@
       ]
     }
   ],
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiNjk3M2I3YWUwMzk3YmNiNjk5NzA2OGYzIiwic3Vic2NyaWJlcl9pZCI6IjY5NzNiN2FlMDM5N2JjYjY5OTcwNjhmMSIsImlhdCI6MTc2OTE5MTM3NSwiZXhwIjoxNzY5MTkyMjc1fQ.rKQDwowd-hHaFxewoxIOy6HbxuHzCi62tpkNTSwgXgU",
+        "type": "string"
+      }
+    ]
+  },
   "event": [
     {
       "listen": "prerequest",
@@ -6847,8 +7137,7 @@
   "variable": [
     {
       "key": "baseURL",
-      "value": "http://localhost:8000",
-      "type": "string"
+      "value": "http://localhost:8000"
     }
   ]
 }
