@@ -1,4 +1,3 @@
-import React, { useState, useRef } from 'react';
 import {
   Box,
   Button,
@@ -13,113 +12,35 @@ import {
 
 import A2ZModal from '../../atoms/modal';
 import A2ZTypography from '../../atoms/typography';
-import { submitFeedback } from '../../../../infra/rest/apis/feedback';
 import { FeedbackCategory } from '../../../../infra/rest/apis/feedback/typing';
-import { useNotifications } from '../../../hooks/use-notification';
+import useFeedbackModal from './hooks';
 
-interface FeedbackModalProps {
+const FeedbackModal = ({
+  open,
+  onClose,
+}: {
   open: boolean;
   onClose: () => void;
-}
-
-const FeedbackModal = ({ open, onClose }: FeedbackModalProps) => {
-  const [title, setTitle] = useState('');
-  const [details, setDetails] = useState('');
-  const [category, setCategory] = useState<FeedbackCategory | ''>('');
-  const [reproduceSteps, setReproduceSteps] = useState('');
-  const [attachment, setAttachment] = useState<File | null>(null);
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [errors, setErrors] = useState<{ [key: string]: string }>({});
-  const fileInputRef = useRef<HTMLInputElement>(null);
-  const { addNotification } = useNotifications();
-
-  const validate = () => {
-    const newErrors: { [key: string]: string } = {};
-
-    if (title.length < 5 || title.length > 200) {
-      newErrors.title = 'Title must be between 5 and 200 characters';
-    }
-
-    if (details.length < 10 || details.length > 2000) {
-      newErrors.details = 'Details must be between 10 and 2000 characters';
-    }
-
-    if (!category) {
-      newErrors.category = 'Please select a category';
-    }
-
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
-  };
-
-  const fileToBase64 = (file: File): Promise<string> => {
-    return new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      reader.readAsDataURL(file);
-      reader.onload = () => resolve(reader.result as string);
-      reader.onerror = error => reject(error);
-    });
-  };
-
-  const handleSubmit = async () => {
-    if (!validate()) return;
-
-    setIsSubmitting(true);
-    try {
-      let attachmentBase64 = undefined;
-      if (attachment) {
-        attachmentBase64 = await fileToBase64(attachment);
-      }
-
-      await submitFeedback({
-        title,
-        details,
-        category: category as FeedbackCategory,
-        reproduce_steps: reproduceSteps,
-        attachment: attachmentBase64,
-      });
-
-      addNotification({
-        message: 'Feedback submitted successfully!',
-        type: 'success',
-      });
-      handleClose();
-    } catch (error: unknown) {
-      const message =
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        (error as any).response?.data?.message || 'Failed to submit feedback';
-      addNotification({
-        message,
-        type: 'error',
-      });
-    } finally {
-      setIsSubmitting(false);
-    }
-  };
-
-  const handleClose = () => {
-    setTitle('');
-    setDetails('');
-    setCategory('');
-    setReproduceSteps('');
-    setAttachment(null);
-    setErrors({});
-    onClose();
-  };
-
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files && e.target.files[0]) {
-      const file = e.target.files[0];
-      if (file.size > 5 * 1024 * 1024) {
-        addNotification({
-          message: 'File size must be less than 5MB',
-          type: 'error',
-        });
-        return;
-      }
-      setAttachment(file);
-    }
-  };
+}) => {
+  const {
+    title,
+    setTitle,
+    details,
+    setDetails,
+    category,
+    setCategory,
+    reproduceSteps,
+    setReproduceSteps,
+    attachment,
+    setAttachment,
+    errors,
+    setErrors,
+    fileInputRef,
+    isSubmitting,
+    handleFileChange,
+    handleSubmit,
+    handleClose,
+  } = useFeedbackModal({ onClose });
 
   return (
     <A2ZModal open={open} onClose={handleClose}>
@@ -147,7 +68,10 @@ const FeedbackModal = ({ open, onClose }: FeedbackModalProps) => {
           label="Short and descriptive title"
           fullWidth
           value={title}
-          onChange={e => setTitle(e.target.value)}
+          onChange={e => {
+            setTitle(e.target.value);
+            setErrors(prev => ({ ...prev, title: '' }));
+          }}
           error={!!errors.title}
           helperText={errors.title || `${title.length}/200`}
           FormHelperTextProps={{ sx: { textAlign: 'right' } }}
@@ -159,7 +83,10 @@ const FeedbackModal = ({ open, onClose }: FeedbackModalProps) => {
           <Select
             value={category}
             label="Category"
-            onChange={e => setCategory(e.target.value as FeedbackCategory)}
+            onChange={e => {
+              setCategory(e.target.value);
+              setErrors(prev => ({ ...prev, category: '' }));
+            }}
           >
             <MenuItem value={FeedbackCategory.ARTICLES}>Articles</MenuItem>
             <MenuItem value={FeedbackCategory.CHATS}>Chats</MenuItem>
@@ -174,10 +101,13 @@ const FeedbackModal = ({ open, onClose }: FeedbackModalProps) => {
           label="Details box"
           multiline
           minRows={3}
-          maxRows={10}
+          maxRows={8}
           fullWidth
           value={details}
-          onChange={e => setDetails(e.target.value)}
+          onChange={e => {
+            setDetails(e.target.value);
+            setErrors(prev => ({ ...prev, details: '' }));
+          }}
           error={!!errors.details}
           helperText={errors.details || `${details.length}/2000`}
           FormHelperTextProps={{ sx: { textAlign: 'right' } }}
@@ -188,7 +118,7 @@ const FeedbackModal = ({ open, onClose }: FeedbackModalProps) => {
           label="Reproduce steps (Optional)"
           multiline
           minRows={2}
-          maxRows={10}
+          maxRows={8}
           fullWidth
           value={reproduceSteps}
           onChange={e => setReproduceSteps(e.target.value)}

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import {
   Popper,
   Paper,
@@ -12,17 +12,15 @@ import ChatBubbleOutlineIcon from '@mui/icons-material/ChatBubbleOutline';
 import LightbulbIcon from '@mui/icons-material/Lightbulb';
 import FeedbackModal from '../../feedback-modal';
 
-interface FeedbackMenuProps {
-  feedbackOpen: boolean;
-  feedbackAnchorEl: HTMLElement | null;
-  onClose: () => void;
-}
-
 const FeedbackMenu = ({
   feedbackOpen,
   feedbackAnchorEl,
   onClose,
-}: FeedbackMenuProps) => {
+}: {
+  feedbackOpen: boolean;
+  feedbackAnchorEl: HTMLElement | null;
+  onClose: () => void;
+}) => {
   const [isFeedbackModalOpen, setIsFeedbackModalOpen] = useState(false);
 
   const handleFeedbackModalOpen = () => {
@@ -38,9 +36,6 @@ const FeedbackMenu = ({
     onClose();
   };
 
-  // Sync internal modal state request with external prop if needed, or handle exclusively here
-  // Actually, keeping Modal local is fine, but the menu trigger is external now.
-
   return (
     <>
       <Popper
@@ -50,7 +45,13 @@ const FeedbackMenu = ({
         disablePortal={false}
         sx={{ zIndex: 1300 }}
       >
-        <Paper sx={{ mt: 1, minWidth: 200, boxShadow: 3 }}>
+        <Paper
+          sx={{
+            mt: 1,
+            minWidth: 200,
+            boxShadow: 3,
+          }}
+        >
           <ClickAwayListener onClickAway={onClose}>
             <MenuList autoFocusItem={feedbackOpen} id="feedback-menu">
               <MenuItem onClick={handleFeedbackModalOpen}>
@@ -59,6 +60,7 @@ const FeedbackMenu = ({
                 </ListItemIcon>
                 <ListItemText>Feedback</ListItemText>
               </MenuItem>
+
               <MenuItem onClick={handleRequestFeatureClick}>
                 <ListItemIcon>
                   <LightbulbIcon fontSize="small" />
@@ -72,7 +74,7 @@ const FeedbackMenu = ({
 
       <FeedbackModal
         open={isFeedbackModalOpen}
-        onClose={() => setIsFeedbackModalOpen(false)}
+        onClose={() => setIsFeedbackModalOpen(prev => !prev)}
       />
     </>
   );

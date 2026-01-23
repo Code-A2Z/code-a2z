@@ -1,6 +1,6 @@
 import { Schema } from 'mongoose';
 import { COLLECTION_NAMES } from '../constants/db.js';
-import { FEEDBACK_STATUS, FEEDBACK_CATEGORY } from '../constants/feedback.js';
+import { FEEDBACK_STATUS, FEEDBACK_CATEGORY } from '../typings/index.js';
 
 const FEEDBACK_SCHEMA = Schema(
   {

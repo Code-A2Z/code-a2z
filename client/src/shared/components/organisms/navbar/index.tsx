@@ -13,7 +13,7 @@ import FeedbackMenu from './components/feedback-menu';
 const Navbar = () => {
   const { theme, setTheme } = useA2ZTheme();
   const [feedbackOpen, setFeedbackOpen] = useState(false);
-  const [feedbackAnchorEl, setFeedbackAnchorEl] = useState<null | HTMLElement>(
+  const [feedbackAnchorEl, setFeedbackAnchorEl] = useState<HTMLElement | null>(
     null
   );
 
@@ -22,81 +22,74 @@ const Navbar = () => {
     setFeedbackOpen(prev => !prev);
   };
 
-  const handleFeedbackClose = () => {
-    setFeedbackOpen(false);
-  };
-
   return (
-    <AppBar
-      position="static"
-      sx={{
-        minHeight: `${NAVBAR_HEIGHT}px`,
-        maxHeight: `${NAVBAR_HEIGHT}px`,
-        height: `${NAVBAR_HEIGHT}px`,
-      }}
-    >
-      <Toolbar
+    <>
+      <AppBar
+        position="static"
         sx={{
-          minHeight: `${NAVBAR_HEIGHT}px !important`,
+          minHeight: `${NAVBAR_HEIGHT}px`,
           maxHeight: `${NAVBAR_HEIGHT}px`,
           height: `${NAVBAR_HEIGHT}px`,
-          display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'center',
-          px: { xs: 2, sm: 3 },
         }}
       >
-        <Box
+        <Toolbar
           sx={{
+            minHeight: `${NAVBAR_HEIGHT}px !important`,
+            maxHeight: `${NAVBAR_HEIGHT}px`,
+            height: `${NAVBAR_HEIGHT}px`,
             display: 'flex',
+            justifyContent: 'space-between',
             alignItems: 'center',
-            height: '100%',
+            px: { xs: 2, sm: 3 },
           }}
         >
-          <Logo />
-        </Box>
-
-        <Box
-          sx={{
-            display: 'flex',
-            alignItems: 'center',
-            gap: 1,
-          }}
-        >
-          <A2ZIconButton
-            props={{
-              onClick: () =>
-                setTheme(theme === THEME.DARK ? THEME.LIGHT : THEME.DARK),
+          <Box
+            sx={{
+              display: 'flex',
+              alignItems: 'center',
+              height: '100%',
             }}
           >
-            <Badge>
-              {theme === THEME.DARK ? <LightModeIcon /> : <DarkModeIcon />}
-            </Badge>
-          </A2ZIconButton>
-
-          <A2ZIconButton
-            props={{
-              onClick: handleFeedbackToggle,
-              'aria-controls': feedbackOpen ? 'feedback-menu' : undefined,
-              'aria-haspopup': 'true',
-              'aria-expanded': feedbackOpen ? 'true' : undefined,
-            }}
-          >
-            <Badge>
-              <SupportAgentIcon />
-            </Badge>
-          </A2ZIconButton>
-
-          <Box>
-            <FeedbackMenu
-              feedbackOpen={feedbackOpen}
-              feedbackAnchorEl={feedbackAnchorEl}
-              onClose={handleFeedbackClose}
-            />
+            <Logo />
           </Box>
-        </Box>
-      </Toolbar>
-    </AppBar>
+
+          <Box
+            sx={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: 1,
+            }}
+          >
+            <A2ZIconButton
+              props={{
+                onClick: () =>
+                  setTheme(theme === THEME.DARK ? THEME.LIGHT : THEME.DARK),
+              }}
+            >
+              <Badge>
+                {theme === THEME.DARK ? <LightModeIcon /> : <DarkModeIcon />}
+              </Badge>
+            </A2ZIconButton>
+
+            <A2ZIconButton
+              props={{
+                onClick: handleFeedbackToggle,
+              }}
+            >
+              <Badge>
+                <SupportAgentIcon />
+              </Badge>
+            </A2ZIconButton>
+          </Box>
+        </Toolbar>
+      </AppBar>
+
+      <FeedbackMenu
+        feedbackOpen={feedbackOpen}
+        feedbackAnchorEl={feedbackAnchorEl}
+        onClose={() => setFeedbackOpen(prev => !prev)}
+      />
+    </>
   );
 };
 
