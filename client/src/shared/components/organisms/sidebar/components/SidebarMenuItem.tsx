@@ -132,19 +132,22 @@ const SidebarMenuItem: FC<{
         });
       }
 
+      if (onClick) {
+        onClick(event);
+        return; 
+      }
+
       if (path) {
         if (
           event.ctrlKey ||
           event.shiftKey ||
-          event.metaKey || // apple
-          (event.button && event.button === 1) // middle click, >IE9 + everyone else
+          event.metaKey || 
+          (event.button && event.button === 1) 
         ) {
           openPopup(path, '_blank');
         } else {
           navigate({ pathname: path }, { clearExistingParams: true });
         }
-      } else {
-        onClick?.(event);
       }
     },
     [isLocked, onClick, path, navigate, addNotification]
