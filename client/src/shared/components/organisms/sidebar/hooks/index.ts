@@ -10,7 +10,8 @@ import {
   ROUTES_PAGE_V1,
   ROUTES_V1,
 } from '../../../../../app/routes/constants/routes';
-import { useAuth } from '../../../../hooks/use-auth'; 
+import { useAuth } from '../../../../hooks/use-auth';
+
 
 const logoutStyle = {
   marginTop: 'auto',
@@ -19,7 +20,8 @@ const logoutStyle = {
 
 const useSidebar = () => {
   const [showExpandedView, setShowExpandedView] = useState(false);
-  const { logout } = useAuth(); 
+  const { logout } = useAuth();
+
 
   const handleMouseHoverIn = useCallback(() => {
     setShowExpandedView(true);
@@ -29,23 +31,6 @@ const useSidebar = () => {
     setShowExpandedView(false);
   }, []);
 
-  const onLogout = useCallback(() => {
-    console.log('🚪 Logging out...');
-    
-    try {
-      logout();
-      
-      console.log('✅ Logout successful, redirecting...');
-      
-      // Redirect to login page
-      window.location.href = '/login'; 
-      
-    } catch (error) {
-      console.error('❌ Logout error:', error);
-      logout();
-      window.location.href = '/login';
-    }
-  }, [logout]);
 
   const sidebarItems = useMemo(() => {
     const items: SideBarItemsType[] = [
@@ -82,11 +67,12 @@ const useSidebar = () => {
         title: 'Settings',
         screenName: ROUTES_PAGE_V1.SETTINGS,
       },
-    ];   
+    ];
+    
     const secondaryItems: SideBarItemsType[] = [
       {
         icon: PowerSettingsNewIcon,
-        onClick: onLogout,
+        onClick: logout, 
         title: 'Logout',
         style: logoutStyle,
       },
@@ -95,7 +81,7 @@ const useSidebar = () => {
       items: items.filter(({ disable }) => !disable),
       secondaryItems: secondaryItems.filter(({ disable }) => !disable),
     };
-  }, [onLogout]);
+  }, [logout]);
 
 
   return {
@@ -105,5 +91,4 @@ const useSidebar = () => {
     sidebarItems,
   };
 };
-
 export default useSidebar;
