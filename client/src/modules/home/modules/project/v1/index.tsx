@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { Link, useParams } from 'react-router-dom';
+import { Link, useParams, useNavigate } from 'react-router-dom';
 import { Box, Button, Avatar, Link as MuiLink } from '@mui/material';
 import { getDay } from '../../../../../shared/utils/date';
 import { useAtomValue } from 'jotai';
@@ -18,6 +18,7 @@ import {
 import { useA2ZTheme } from '../../../../../shared/hooks/use-theme';
 import OpenInNewIcon from '@mui/icons-material/OpenInNew';
 import GitHubIcon from '@mui/icons-material/GitHub';
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import { getAllProjectsResponse } from '../../../../../infra/rest/apis/project/typing';
 import { OutputBlockData } from '@editorjs/editorjs';
 import { CommentsWrapperAtom } from '../../../../../shared/components/organisms/comments-wrapper/states';
@@ -25,6 +26,7 @@ import A2ZTypography from '../../../../../shared/components/atoms/typography';
 
 const Project = () => {
   const { project_id } = useParams();
+  const navigate = useNavigate();
   const { theme: a2zTheme } = useA2ZTheme();
   const selectedProject = useAtomValue(SelectedProjectAtom);
   const similarProjects = useAtomValue(HomePageProjectsAtom);
@@ -72,23 +74,51 @@ const Project = () => {
               gap: { xs: 2, sm: 0 },
             }}
           >
-            <A2ZTypography
-              variant="h5"
-              text={selectedProject.title}
-              noWrap
-              props={{
-                sx: {
-                  maxWidth:
-                    selectedProject.live_url && selectedProject.repository_url
-                      ? '60%'
-                      : '80%',
-                  overflow: 'hidden',
-                  textOverflow: 'ellipsis',
-                  whiteSpace: 'nowrap',
-                  fontWeight: 600,
-                },
-              }}
-            />
+            {/* Back Button + Title */}
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, maxWidth: { xs: '100%', sm: '60%' } }}>
+              {/* Desktop back button */}
+              <Button
+                onClick={() => navigate(-1)}
+                variant="outlined"
+                color="inherit"
+                startIcon={<ArrowBackIcon />}
+                sx={{ 
+                  minWidth: 'auto',
+                  display: { xs: 'none', sm: 'flex' }
+                }}
+              >
+              </Button>
+              
+              {/* Mobile back button - icon only */}
+              <Button
+                onClick={() => navigate(-1)}
+                variant="outlined"
+                color="inherit"
+                sx={{ 
+                  minWidth: 'auto',
+                  display: { xs: 'flex', sm: 'none' },
+                  px: 1
+                }}
+              >
+                <ArrowBackIcon />
+              </Button>
+
+              <A2ZTypography
+                variant="h5"
+                text={selectedProject.title}
+                noWrap
+                props={{
+                  sx: {
+                    overflow: 'hidden',
+                    textOverflow: 'ellipsis',
+                    whiteSpace: 'nowrap',
+                    fontWeight: 600,
+                    flex: 1,
+                  },
+                }}
+              />
+            </Box>
+
 
             <Box
               sx={{
