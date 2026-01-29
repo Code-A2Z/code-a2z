@@ -56,11 +56,10 @@ const Project = () => {
             color="inherit"
             startIcon={<ArrowBackIcon />}
           >
-            Back
           </Button>
         }
       />
-      
+
       <Box
         sx={{
           height: '100%',
