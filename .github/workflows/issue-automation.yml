@@ -1,0 +1,52 @@
+name: Issue Automation
+
+on:
+  issues:
+    types: [opened, edited, reopened]
+  issue_comment:
+    types: [created]
+  schedule:
+    - cron: '0 0 * * *' # Run daily at midnight UTC
+
+permissions:
+  contents: read # Required for checkout
+  issues: write
+  repository-projects: write
+
+jobs:
+  manage-issues:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10 # Prevent runaway jobs
+    
+    # Prevent concurrent runs that could cause race conditions
+    concurrency:
+      group: issue-automation-${{ github.repository }}
+      cancel-in-progress: false # Queue instead of canceling
+    
+    # Only run schedule in main repo (not forks)
+    if: github.repository == 'Code-A2Z/code-a2z' || github.event_name != 'schedule'
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Validate PAT secret
+        run: |
+          if [ -z "${{ secrets.CODE_A2Z_ORG_FINE_GRAINED_PAT_FOR_ASSIGN_WORKFLOW }}" ]; then
+            echo "::warning::CODE_A2Z_ORG_FINE_GRAINED_PAT_FOR_ASSIGN_WORKFLOW secret not configured"
+            echo "::warning::Project sync will fail. Please add the secret in repository settings."
+          fi
+
+      - name: Run automation script
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.CODE_A2Z_ORG_FINE_GRAINED_PAT_FOR_ASSIGN_WORKFLOW || secrets.GITHUB_TOKEN }}
+          script: |
+            try {
+              const script = require('./.github/scripts/issue-automation.js')
+              await script({github, context, core})
+            } catch (error) {
+              core.setFailed(`Script execution failed: ${error.message}`)
+              console.error('Full error:', error)
+              throw error
+            }
