@@ -9,6 +9,7 @@ import A2ZButton from '../../../shared/components/atoms/button';
 import { useUserAuthForm } from './hooks';
 import { useState } from 'react';
 import A2ZTypography from '../../../shared/components/atoms/typography';
+import { useNavigate } from 'react-router-dom';
 
 const StyledSection = styled('section')(({ theme }) => ({
   paddingTop: theme.spacing(4),
@@ -44,6 +45,7 @@ const StyledFooter = styled('p')(({ theme }) => ({
 const UserAuthForm = () => {
   const [formType, setFormType] = useState<string>('login');
   const { loading, handleSubmit } = useUserAuthForm({ type: formType });
+  const navigate = useNavigate();
 
   return (
     <StyledSection>
@@ -89,6 +91,28 @@ const UserAuthForm = () => {
             fullWidth
             icon={<PasswordIcon />}
           />
+
+          {/* Forgot Password Link - Only shown on login */}
+          {formType === 'login' && (
+            <Box sx={{ width: '100%', textAlign: 'right', mt: 0.5 }}>
+              <A2ZTypography
+                text="Forgot Password?"
+                component="span"
+                props={{
+                  onClick: () => navigate('/reset-password'),
+                  sx: {
+                    fontSize: '0.9rem',
+                    textDecoration: 'underline',
+                    color: 'text.secondary',
+                    cursor: 'pointer',
+                    '&:hover': {
+                      opacity: 0.8,
+                    },
+                  },
+                }}
+              />
+            </Box>
+          )}
 
           <A2ZButton
             type="submit"
