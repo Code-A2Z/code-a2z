@@ -23,6 +23,7 @@ import { getAllProjectsResponse } from '../../../../../infra/rest/apis/project/t
 import { OutputBlockData } from '@editorjs/editorjs';
 import { CommentsWrapperAtom } from '../../../../../shared/components/organisms/comments-wrapper/states';
 import A2ZTypography from '../../../../../shared/components/atoms/typography';
+import Header from '../../../../../shared/components/organisms/header';
 
 const Project = () => {
   const { project_id } = useParams();
@@ -47,7 +48,19 @@ const Project = () => {
   return (
     <>
       {commentsWrapper && <CommentsWrapper />}
-
+      <Header
+        leftSideChildren={
+          <Button
+            onClick={() => navigate(-1)}
+            variant="outlined"
+            color="inherit"
+            startIcon={<ArrowBackIcon />}
+          >
+            Back
+          </Button>
+        }
+      />
+      
       <Box
         sx={{
           height: '100%',
@@ -74,51 +87,23 @@ const Project = () => {
               gap: { xs: 2, sm: 0 },
             }}
           >
-            {/* Back Button + Title */}
-            <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, maxWidth: { xs: '100%', sm: '60%' } }}>
-              {/* Desktop back button */}
-              <Button
-                onClick={() => navigate(-1)}
-                variant="outlined"
-                color="inherit"
-                startIcon={<ArrowBackIcon />}
-                sx={{ 
-                  minWidth: 'auto',
-                  display: { xs: 'none', sm: 'flex' }
-                }}
-              >
-              </Button>
-              
-              {/* Mobile back button - icon only */}
-              <Button
-                onClick={() => navigate(-1)}
-                variant="outlined"
-                color="inherit"
-                sx={{ 
-                  minWidth: 'auto',
-                  display: { xs: 'flex', sm: 'none' },
-                  px: 1
-                }}
-              >
-                <ArrowBackIcon />
-              </Button>
-
-              <A2ZTypography
-                variant="h5"
-                text={selectedProject.title}
-                noWrap
-                props={{
-                  sx: {
-                    overflow: 'hidden',
-                    textOverflow: 'ellipsis',
-                    whiteSpace: 'nowrap',
-                    fontWeight: 600,
-                    flex: 1,
-                  },
-                }}
-              />
-            </Box>
-
+            <A2ZTypography
+              variant="h5"
+              text={selectedProject.title}
+              noWrap
+              props={{
+                sx: {
+                  maxWidth:
+                    selectedProject.live_url && selectedProject.repository_url
+                      ? '60%'
+                      : '80%',
+                  overflow: 'hidden',
+                  textOverflow: 'ellipsis',
+                  whiteSpace: 'nowrap',
+                  fontWeight: 600,
+                },
+              }}
+            />
 
             <Box
               sx={{
