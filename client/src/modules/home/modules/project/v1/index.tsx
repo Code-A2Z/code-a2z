@@ -47,16 +47,27 @@ const Project = () => {
 
   return (
     <>
-      {commentsWrapper && <CommentsWrapper />}
+      {commentsWrapper && <CommentsWrapper />}      
       <Header
         leftSideChildren={
-          <Button
+          <Box
             onClick={() => navigate(-1)}
-            variant="outlined"
-            color="inherit"
-            startIcon={<ArrowBackIcon />}
+            sx={{
+              display: 'flex',
+              alignItems: 'center',
+              cursor: 'pointer',
+              '&:hover': {
+                opacity: 0.7,
+              },
+            }}
           >
-          </Button>
+            <ArrowBackIcon
+              sx={{
+                fontSize: 32,
+                color: 'text.primary',
+              }}
+            />
+          </Box>
         }
       />
 
