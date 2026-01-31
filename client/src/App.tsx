@@ -4,6 +4,7 @@ import { AppUnProtectedRoutes } from './app/routes';
 import { AppProtectedRoutes } from './app/routes/auth-routes';
 import useScrollbar from './shared/components/atoms/scrollbar';
 import { useAuth } from './shared/hooks/use-auth';
+import Footer from './components/Footer';
 
 const App = memo(() => {
   const { GlobalScrollbar } = useScrollbar();
@@ -19,6 +20,7 @@ const App = memo(() => {
       <>
         <GlobalScrollbar />
         <AppUnProtectedRoutes />
+        <Footer />
       </>
     );
   }
@@ -27,6 +29,7 @@ const App = memo(() => {
     <>
       <GlobalScrollbar />
       <AppProtectedRoutes />
+      <Footer />
     </>
   );
 });
