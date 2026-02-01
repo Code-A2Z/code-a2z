@@ -19,16 +19,19 @@ const logoutStyle = {
 
 const useSidebar = () => {
   const [showExpandedView, setShowExpandedView] = useState(false);
+  const [showLogoutModal, setShowLogoutModal] = useState(false);
+
   const { logout } = useAuth();
 
-  const handleLogout = useCallback(() => {
-    const confirmed = window.confirm(
-      'Are you sure you want to logout?'
-    );
+  // open modal
+  const handleLogoutClick = useCallback(() => {
+    setShowLogoutModal(true);
+  }, []);
 
-    if (confirmed) {
-      logout();
-    }
+  // confirm logout
+  const confirmLogout = useCallback(() => {
+    setShowLogoutModal(false);
+    logout();
   }, [logout]);
 
   const handleMouseHoverIn = useCallback(() => {
@@ -79,7 +82,7 @@ const useSidebar = () => {
     const secondaryItems: SideBarItemsType[] = [
       {
         icon: PowerSettingsNewIcon,
-        onClick: handleLogout,
+        onClick: handleLogoutClick,
         title: 'Logout',
         style: logoutStyle,
       },
@@ -89,13 +92,18 @@ const useSidebar = () => {
       items: items.filter(({ disable }) => !disable),
       secondaryItems: secondaryItems.filter(({ disable }) => !disable),
     };
-  }, [handleLogout]);
+  }, [handleLogoutClick]);
 
   return {
     showExpandedView,
     handleMouseHoverIn,
     handleMouseHoverOut,
     sidebarItems,
+
+    // modal controls
+    showLogoutModal,
+    setShowLogoutModal,
+    confirmLogout,
   };
 };
 
